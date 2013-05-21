@@ -1,0 +1,140 @@
+\section{Bytecodes}
+
+PUTFIELD needs to remove path constraints from PC that enforcing equality between references.
+
+\noindent \textbf{Assume}: all symbolic locations are concertized lazily. Although the algorithm is not specific to any particular initialization strategy, the presentation assumes a lazy initialization. Extending to lazier initialization may be non-trivial even though this reduction is orthogonal to the lazier reduction (i.e., this reduction should further improve the performance of the lazier algorithm).
+
+\noindent \textbf{Assume}: all variables, symbolic or otherwise, are non-primitive (i.e. objects). \textit{Must relax this assumption because you need to do some interesting things with primitives as they relate to getfield}.
+
+This papers uses subsumption, which is expressed as a subtyping relation $\leq$ over types $T$. For classes $C$ and $D$, $C \leq D$ iff either $C = D$ or the class declaration for $C$ is \texttt{class C extends B $\{\ldots\}$} for some $B \leq D$. For example, in $A \leq B \leq C \leq D$, $D$ is the supertype, and if you have something that is an instance of $A$ but currently viewed as $B$, then you can move it toward $D$ in a typecast (up the hierarchy).
+
+Heap locations range over positive natural numbers $H \subseteq \mathbb{N}_{\geq 0}$. Every heap location has a special variable $T_h$ used in constraints over the type of the object stored in the heap location. The varable $\mathit{SH}$ is the set of heap locations created when concretizing symbolic variables. The set of constraints over the type stored in the heap location is given by the function $\mathtt{C}(h)$. Constraints are of the form $T_h \sim T$ or $T \sim T$ where $\sim\ \in \{\leq, =, \not =\}$. The initial type hierarchy for the program is expressed as a set of constraints $C_\mathrm{init}$. The set contains all relationships needed to describe the entire hierarchy.
+
+For a set of constraints $C$, the function $\mathtt{SAT}(C) \mapsto \{0,1\}$ returns 1 if the constraints are satisfiable and 0 otherwise. The usual Boolean connectives are used as expected. The function $\mathtt{Type}(h)$ returns the actual type of the object in the heap location and the function $\mathtt{Obj}(h)$ returns the object at the location.
+
+Each variable $v$ is associated with a set of heap locations $H(v) = \{h_0, h_1, \ldots, h_n\}$ that represents an equivalence class (i.e., each heap location yields the same execution path and behavior up to the current point of execution).  The representative object for a given variable (i.e., the one that is currently being used by the variable) is given by the function $I(v) \mapsto H(v)$. The set of heap locations and the representative location are part of the meta-deta for the variable. This meta-data follows the variable through the program execution and is appropriately copied on assignment to other variables such that each variable has its own copy of the meta-data that is separate from other copies.
+
+Finally, there is a global variable $\mathit{PC}$ that represents the path constraint along the current path of exploration. This path constraint is used to track relationships between symbolic variables such as equality. Properties of symbolic variables are represented in the path constraint by creating special variables for the representative and the set of represented objects. For a variable $v$, the special variable $I_v$ is the representative heap opbject and the special variable $H_v$ is the set of associated heap locations. It is assumed the $v$ is alpha-renamed to be unique in the path constraint. Finally, we use the special value \texttt{SYM} to denote a symbolic variable that is yet to be initialized.
+
+\subsection{Reference}
+\noindent \textbf{\texttt{GETFIELD}}: the bytecode behavior depends on the field operand: concrete, concrete though initialized from symbolic, and symbolic. Each case is enumerated:
+\begin{compactenum}
+\item Referencing a concrete field: the bytecode has default behavior returning the field.
+\item Referencing an initialized field from a symbolic variable (i.e., the base type for the field is initialized from a symbolic object): the bytecode may have multiple outcomes; it partitions the equiavalence class to group heap locations with objects that have common values for the field.
+\item Referencing a symbolic variable that has yet to be initialized: the bytecode has two outcomes: one that returns \texttt{null} and another that builds the potential equivalence class, chooses a representative location, and returns that location.
+\end{compactenum}
+Consider the code
+\begin{lstlisting}
+// The declared type of f is F
+T t = b.f;
+\end{lstlisting}
+For the case where \texttt{b.f} is an already initialized symbolic variable, $h = \mathtt{I}(\mathtt{b})$, $\mathtt{H}(\mathtt{b})$ is partitioned into disjoint sets, $S_0, P_1, \ldots, P_n$, with $n+1$ partitions, or choices. The first set $S_0$ is a special set that includes $h$, the representative object for \texttt{b}, and any members of the equivalence class that either have the same field value for \texttt{b.f} or the field value is a symbolic variable that has yet to be initialized:
+\begin{eqnarray*}
+S_0 &=& \{h_i \mid h_i \in \mathtt{H}(\mathtt{b})\ \wedge \\
+    & & (\mathtt{Obj}(h).\mathtt{f} = \mathtt{Obj}(h_i).\mathtt{f}\ \vee\ \mathtt{Obj}(h_i).\mathtt{f} = \mathtt{SYM})\}
+\end{eqnarray*}
+For this special case of $S_0$,  $\mathtt{H}_0(\mathtt{b}) = S_0$, and $I_0(\mathtt{b}) = h$ where the subscript indicates the choice number in the choice generator (i.e., the partition size may change but not the representative heap location). The other partitions group common values of the field such that
+\begin{compactitem}
+\item $\forall h_i, h_j \in P_i,\ \mathtt{Obj}(h_i).f = \mathtt{Obj}(h_j).f$ 
+\item $\mathtt{H}_i(\mathtt{b}) = P_i$ 
+\item $\exists h \in P_i,\ \mathtt{I}_i(\mathtt{b}) = h$
+\end{compactitem}
+The partitions are maximal and represent a unique value that has been created thus far in the program execution. The non-initialized symbolic members of the partition all belong to $S_0$ as the original representative heap location $h$ captures that these other aliases were intended to have the same field value for field \texttt{f} before the split (i.e., the value is assigned programatically but the change was only reflected in the representative heap location). Once the choice generator is created over the different partitions, the bytecode returns the requested field value of the representative as expected.
+
+Returning to the third behavior of the bytecode, the case in which the accessed field has yet to be initialized, then the bytecode follows lazy initialization creating a \texttt{null} instance, a new instance that is the representative, and the alias set. When creating the alias set, the new instance should be included in the set, as well as any prior object created in concretization of symbolic variables that is type compatible with the new instance. Recall that $\mathit{SH}$ is set of locations in the symbolic heap and $C_\mathrm{init}$ is the set of constraints describing the type hierarchy, assuming $h$ is the heap location of the new instance of the type, then 
+\begin{compactitem}
+\item $\mathtt{I}(\mathtt{b.f}) = h$
+\item $\forall h_i \in \mathit{SH}, \mathtt{SAT}(C_\mathrm{init} \cup \{T_h \leq \mathtt{Type}(h_i)\}) \rightarrow h_i \in \mathtt{H}(\mathtt{b.f})$  
+\item $\mathtt{C}(\mathtt{b.f}) = C_\mathrm{init} \cup \{T_h \leq \mathtt{Type}(h)\}$  
+\end{compactitem}
+The $C_\mathrm{init}$ set constains relationships in the class hierarchy with the correct sub-types and super-types as they relate to the delcared type of the object.
+
+\noindent \textbf{\texttt{GETSTATIC}}: the bytecode is handled similarly to \texttt{GETFIELD}. 
+
+\noindent \textbf{\texttt{ALOAD}}: the bytecode is handled similarly to \texttt{GETFIELD}. 
+
+\subsection{Comparison}
+
+\noindent \textbf{\texttt{IF\_ACMPEQ}}: the bytecode may return both the \texttt{true} and \texttt{false} values, and it must possibly refine the set of represented concretizations and mutate the heap location of the object involved in the bytecode according to the returned outcome. Consider the code
+\begin{lstlisting}
+if (a == b) {
+   // code...
+}
+\end{lstlisting}
+There are two cases that need to be considered to determine the outcome of the bytecode:
+\begin{compactenum}
+\item $\mathtt{H}(a) \cap \mathtt{H}(b) = \emptyset$: the bytecode returns \texttt{false} and nothing further is requred.
+\item $\mathtt{H}(a) \cap \mathtt{H}(b) \not = \emptyset$ $\wedge$ $\mathtt{SAT}(PC \cup \{I_a = I_b, H_a = H_b\})$: the bytecode may return either \texttt{true} or \texttt{false} and a choice generator needs to be created.
+\end{compactenum}
+The choice generator for the compare bytecode is more complex than for other bytecodes because it must create representative sets without enumerating all possible outcomes using the path constraint. For the case \texttt{true} outcome
+\begin{compactitem}
+\item $\mathit{PC} = \mathit{PC} \cup \{\mathtt{I}(a) = \mathtt{I}(b),\mathtt{H}(a) = \mathtt{H}(b)\}$
+\item $\mathtt{H}(a) = \mathtt{H}(b) = \mathtt{H}(a) \cap \mathtt{H}(b)$
+\item $\mathtt{I}(a) \in \mathtt{H}(a) \cap \mathtt{H}(b) \rightarrow \mathtt{I}(b) = \mathtt{I}(a)$ $\vee$ $\exists h \in \mathtt{H}(a) \cap \mathtt{H}(b)\ .\ \mathtt{I}(b) = \mathtt{I}(a) = h$
+\end{compactitem}
+In essence, in the case where two variable reference the same object, the path constraint and sets are modified to represent the new restriction. The \texttt{false} outcome is handled similarly with a few notable exceptions on the path constraint and the represented set.
+\begin{compactitem}
+\item $\mathit{PC} = \mathit{PC} \cup \{\mathtt{I}(a) \not = \mathtt{I}(b)\}$
+\item $\mathtt{I}(a) = \mathtt{I}(b) \rightarrow \exists h \in \mathtt{H}(b)\ .\ h \not = \mathtt{I}(a) \wedge \mathtt{I}(b) = h$
+\end{compactitem}
+
+\noindent \textbf{\texttt{IF\_ACMPNE}}: the bytecode is handled similarly to \texttt{IF\_ACMPEQ}. 
+
+\subsection{Invocation}
+\textbf{\texttt{INVOKEVIRTUAL}}
+
+When we come to an invoke virtual you have to look for all the specialized implementations
+of the method, creating choices with symbolic locations of various "actual types". The number
+of choices will be equal to the number of specialized implementations of the method. When you create a choice on a specialization, you need to update the "actual type" field in the symbolic location. The "current cast" does not need to change. The number of types that the symbolic location cannot be will also be updated according to the "actual type" field. The number of types that the symbolic location cannot be will be updated with the types of the other specializations since invoking a specialization associated with a type implies that the object cannot be the types containing the other specializations.
+
+\subsection{Checking Types and Casting}
+\noindent\textbf{\texttt{INSTANCEOF}}: the bytecode may return both the \texttt{true} and \texttt{false} values when dealing with initialized symbolic variables, and it must possibly refine the equivalence class for the represented object referenced by the variable and mutate the contents of the heap location of the object involved in the bytecode according to the returned outcome. The bytecode implements the default bahvior when the operand is concrete and not an initialized symbolic variable. For the rest of the discussion, assume the operand is an initialized symbolic variable.
+Consider the code
+\begin{lstlisting}
+if (a instanceof C) {
+   // code...
+}
+\end{lstlisting}
+There are two cases that need to be considered to determine the outcome of the bytecode where $h = \mathtt{I}(a)$ is the representative object of the equivalence class:
+\begin{compactenum}
+\item $\mathtt{Type}(h) = C$: the bytecode returns \texttt{true} and nothing further is required as the type stored in the heap location is $C$.
+\item $\neg \mathtt{SAT}(\mathtt{C}(h) \cup \{T_h \leq C\})$: the bytecode returns \texttt{false} and nothing further is requred as the current constraints on what is in the heap location restrict it from being of type $C$.
+\item $\mathtt{SAT}(\mathtt{C}(h) \cup \{T_h \leq C\})$: the bytecode can return either \texttt{true} or \texttt{false} requiring a choice generator.
+\end{compactenum}
+% // C <= B <= A
+% A a; // C(a) = {(T_a <= A)}
+%
+%if (a instance of C) {
+%    ** TRUE **
+%    (T_h \leq C)
+%    ...
+%}
+% ** FALSE **
+% (C \leq T_h) \wedge (T_h \not = C)
+% ** TRUE **
+% (T_h \leq C)
+\noindent The \texttt{true} outcome for the choice generator in clause (3) is
+\begin{compactitem}
+    \item $\mathtt{C}(h) = \mathtt{C}(h) \cup \{T_h \leq C\}$
+    \item $\mathtt{Type}(h) = C$
+    \item $\mathtt{H}(a) = H^\prime$ where $H^\prime = \{h_i \mid h_i \in \mathtt{H}(a) \wedge \mathtt{SAT}(\mathtt{C}(h_i) \cup \{T_{h_i} \leq C\})\}$ 
+\end{compactitem}
+The second statement indicates that the actual type in the heap location $h$ needs to change. As such, the object is mutated to be an instance of $C$. This mutation retains all fields and values from the previous object and only adds new fields for type $C$. The last statement refines the equivalence class to exclude any heap locations that cannot be considered something of type $C$. 
+
+For the \texttt{false} outcome of the generator, $\mathtt{C}(h) = \mathtt{C}(h) \cup \{C \leq T_h, T_h \not = C\}$. Unlike the \texttt{true} outcome, the \texttt{false} outcome retains the entire equivalence class and does not need to mutate any heap entries.
+
+\noindent\textbf{\texttt{CHECKCAST}}: the bytecode is syntactic sugar for 
+\begin{lstlisting}
+if (! (obj == null  ||  obj instanceof <class>)) {
+    throw new ClassCastException();
+}
+// if this point is reached, then object 
+// is either null, or an instance of <class> 
+// or one of its superclasses.
+\end{lstlisting}
+Please see the \texttt{IFNULL} and \texttt{INSTANCEOF} bytecodes for details. If the exception is thrown, then JPF will catch the unhandled exception as per its normal behavior.
+
+\subsection{Programs to consider}
+\begin{compactitem}
+\item \texttt{TestGetfieldSplit.java}: checks alias equivalence classes when assigning to initialized values.
+\end{compactitem}

@@ -337,6 +337,7 @@
 \usepackage{paralist}
 \usepackage{amssymb}
 
+\usepackage{minted}
 
 % *** Do not adjust lengths that control margins, column widths, etc. ***
 % *** Do not use packages that alter fonts (such as pslatex).         ***
@@ -429,6 +430,18 @@ The abstract goes here.
 
 \section{Introduction}
 Text goes here.
+
+\begin{figure}
+\begin{center}
+\begin{minted}{c}
+int main() {
+   printf("hello, world");
+   return 0;
+}
+\end{minted}
+\end{center}
+\caption{Minted Package}\label{minted}
+\end{figure}
 
 \begin{figure}
 \begin{center}
@@ -545,7 +558,7 @@ The conclusion goes here.
 
 
 The authors would like to thank...
-
+Plus I just rule. What?
 
 
 

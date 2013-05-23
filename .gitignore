@@ -1,4 +1,5 @@
 dirt
+*.pyg
 *.d
 *.acn
 *.acr

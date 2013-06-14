@@ -1,0 +1,31 @@
+\section{Semantic Model}
+Program execution proceeds an in standard symbolic execution, with additional rules to handle heap constructs. The Java Virtual Macine (JVM) implements five classes of semantic rules, a categorization which we find relevant to symbolic execution: 1) load/store instructions, 2) arithmetic instructions, 3) object creation / manipulation instructions, 4) control transfer instructions, and 5) assume/assert instructions. We will deal with each class of instruction in sequence.
+\subsection{Reference Target Resolution}
+Load and store instructions take symbolic references as arguments. Since an uninitialized symbolic reference may point to any one of a number of symbolic locations, we need to be able to resolve which locations are feasible targets of a particular references.
+Location resolution begins with an empty list of heap locations, and then adds locations by comparing locations on the symbolic heap to the constraints on the symbolic reference obtained from the abstract store. Locations are checked in the following order:
+\begin{compactenum}
+\item If the null location is feasible, return a null pointer exception and terminate execution.
+\item If the non-null location is feasible, create a new symbolic location of the proper type and add it to the symbolic heap. Search the heap for type-compatible objects and add those to the symbolic value set for the reference, and remove the non-null location from the symbolic value set.
+\item Check the symbolic heap for type-compatible objects, comparing those against the constraints in the symbolic value set. Add any feasible objects to the feasible location set.
+\end{compactenum}
+
+\subsection{Read}
+The load instruction has two arguments: a reference $r$ and a field index $f$. If $r$ is a symbolic location, then load simply accesses the field and returns the value contained there. If $r$ is a symbolic reference, then the following steps are taken, in order.
+\begin{compactenum}
+\item Resolve a list of feasible targets as described above.
+\item Access the fields of the feasible targets, gathering a set of the symbolic values contained therein. 
+\item Form a new symbolic value, and create a new entry in the symbolic store mapping the value to the symbolic value set. Return the new symbolic value.
+\end{compactenum}
+
+\subsection{Write}
+The write instruction takes three arguments: a reference $r$, a field $f$, and a value $v$. If $r$ is a symbolic location, then the target field is written with the value directly. If $r$ is a symbolic reference, write proceeds as follows:
+\begin{compactenum}
+\item Resolve a list of feasible targets.
+\item Access the fields of the feasible targets, performing a conditional write. The conditional write works by modifying the constraint equation as follows:
+\newline  ((A==h_n) => F==V) and (~(A==h_n) => Eqn_o_l_d)
+\end{compactenum}
+
+\subsection{Arithmetic Instructions}
+\subsection{Object Creation/Manipulation Instructions}
+\subsection{Control Transfer Instructions}
+\subsection{Assume / Assert Instructions}

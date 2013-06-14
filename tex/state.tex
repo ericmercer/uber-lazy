@@ -1,0 +1,16 @@
+\section{System State}
+The program state is represented using a path condition, a program location, a stack, a symbolic heap, and a symbolic store. The path condition is a collection of predicates over the program inputs that indicates constraints on the values of those inputs at the present location. The program location indicates the instruction to be executed presently. The symbolic heap is a mapping from heap locations symbolic objects. 
+\paragraph{Heap Symbols}
+Heap symbols are symbols which are created and destroyed in the process of performing heap operations. The dynamic nature of heap symbols distinguishes them from statically-created symbols like tbose found in the path condition. Heap symbols may be symbolic primitives, symbolic references, symbolic locations, or symbolic types.
+\paragraph{Symbolic References}
+Symbolic references are symbolic points-to relations. The symbolic reference has a state parameter that indicates whether the reference is uninitialized, non-null, or initialized. The uninitialized and non-null states indicate that the location pointed to by the reference has yet to be resolved. The non-null state reflects the additional constraint that the reference does not point to the null location. References in the initialized state are assosciated with constraints reflecting which location the reference points to and under what condition it points to that location. References point to one and only one location at a time, so the conditions must be mutually exclusive, yet collectively exhaustive.
+\paragraph{Symbolic Locations}
+Symbolic locations represent the locations of slots in the heap structure that may hold symbolic objects. Each symbolic location represents a unique slot on the symbolic heap. The constraints assosciated with symbolic locations reflect the uniqueness of each location. Each slot on the heap may contain a symbolic object. 
+\paragraph{Symbolic Objects}
+A symbolic object represents the contents of a heap slot. A symbolic object contains a symbolic type paired with a mapping from fields to heap symbols.
+\paragraph{Symbolic Store}
+The symbolic store is a mapping from heap symbols to symbolic value sets. The symbolic value set represents the values that may be assigned to the symbol, along with the constraints assosciated with each value. Taken together, the constraints in the abstract store represent a set of unique heaps common to the current program execution path. Compare this to the path condition, which contains constraints common to all the heaps in the abstract store.
+\paragraph{Heap}
+The symbolic heap is a mapping from symbolic locations to symbolic objects. Like the path condition, the symbolic heap contains heap state which is common to all heaps on the current execution path. Unlike the path condition, the symbolic heap does not contain any logical constraints.
+\paragraph{Stack}
+The Java Virtual Machine uses a system stack.

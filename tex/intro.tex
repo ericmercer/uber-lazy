@@ -1,0 +1,31 @@
+\section{Introduction}
+
+\newcommand{\Indstate}[1][1]{\State\hspace{#1\algorithmicindent}}
+
+\begin{figure}
+\begin{center}
+\begin{algorithmic}[1]
+\Procedure{load}{$r,f$}
+\If{$r$ is initialized and $f$ is uninitialized}
+\If{ $f$ has a reference type}
+\State nondeterministically assign to $f$:
+\State  \ \ null  %hacky way to indent.
+\State \ \ non-null
+\EndIf
+\If{$f$ has a primitive type}
+\State assign $f$ a new symbol
+\EndIf
+\EndIf
+\If{$r$ is uninitialized}
+\State nondeterministically assign to $f$:
+\State  \ \ a new symbolic location  %hacky way to indent.
+\State \ \ an existing symbolic location
+\EndIf
+\State\Return $r.f$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+\caption{Lazier\# Initialization}
+\end{figure}
+
+Lazy initialization is a symbolic execution technique where memory structures are created on-demand, as they are required.

@@ -22,10 +22,13 @@ The write instruction takes three arguments: a reference $r$, a field $f$, and a
 \begin{compactenum}
 \item Resolve a list of feasible targets.
 \item Access the fields of the feasible targets, performing a conditional write. The conditional write works by modifying the constraint equation as follows:
-\newline  ((A==h_n) => F==V) and (~(A==h_n) => Eqn_o_l_d)
+\begin{equation}
+  ((r\rightarrow h_n) \Rightarrow f\rightarrow v)  \wedge (\lnot (r\rightarrow h_n) \Rightarrow Eqn_o_l_d)
+\end{equation}
 \end{compactenum}
 
 \subsection{Arithmetic Instructions}
 \subsection{Object Creation/Manipulation Instructions}
 \subsection{Control Transfer Instructions}
+Control transfer instructions are those instructions that have a "branching" nature. They are instructions that have more than one possible program location successor. Control transfer instructions are executed by comparing the compare condition to the constraints contained in the symbolic store. Those values in the store for which the constraints are now infeasible are eliminated. 
 \subsection{Assume / Assert Instructions}

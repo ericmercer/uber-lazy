@@ -428,37 +428,6 @@ The abstract goes here.
 \IEEEpeerreviewmaketitle
 
 
-\section{Introduction}
-Text goes here.
-
-\begin{figure}
-\begin{center}
-\begin{minted}{c}
-int main() {
-   printf("hello, world");
-   return 0;
-}
-\end{minted}
-\end{center}
-\caption{Minted Package}\label{minted}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-\begin{algorithmic}[1]
-\Procedure{uber-lazy}{$a,b$}\Comment{The g.c.d. of a and b}
-\State $r\gets a\bmod b$
-\While{$r\not=0$}\Comment{We have the answer if r is 0}
-\State $a\gets b$
-\State $b\gets r$
-\State $r\gets a\bmod b$
-\EndWhile\label{euclidendwhile}
-\State \textbf{return} $b$\Comment{The gcd is b}
-\EndProcedure
-\end{algorithmic}
-\end{center}
-\caption{Euclid’s algorithm}\label{euclid}
-\end{figure}
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -542,8 +511,11 @@ int main() {
 % footnotes above bottom floats. This can be corrected via the \fnbelowfloat
 % command of the stfloats package.
 
-
-\input{bytecode}
+\input{intro}
+\input{state}
+\input{execution}
+\input{examples}
+%\input{bytecode}
 \section{Conclusion}
 The conclusion goes here.
 

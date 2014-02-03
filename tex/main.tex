@@ -193,8 +193,12 @@
 
 % *** SPECIALIZED LIST PACKAGES ***
 %
-\usepackage{algorithmicx}
-\usepackage{algpseudocode}
+\usepackage{algorithm2e}
+\usepackage{amssymb}
+\usepackage{comment}
+
+%\usepackage{algorithmicx}
+%\usepackage{algpseudocode}
 % algorithmic.sty was written by Peter Williams and Rogerio Brito.
 % This package provides an algorithmic environment fo describing algorithms.
 % You can use the algorithmic environment in-text or within a figure
@@ -511,6 +515,7 @@ The abstract goes here.
 % footnotes above bottom floats. This can be corrected via the \fnbelowfloat
 % command of the stfloats package.
 
+\input{pseudo-code}
 \input{intro}
 \input{state}
 \input{execution}

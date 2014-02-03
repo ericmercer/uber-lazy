@@ -23,7 +23,7 @@ The write instruction takes three arguments: a reference $r$, a field $f$, and a
 \item Resolve a list of feasible targets.
 \item Access the fields of the feasible targets, performing a conditional write. The conditional write works by modifying the constraint equation as follows:
 \begin{equation}
-  ((r\rightarrow h_n) \Rightarrow f\rightarrow v)  \wedge (\lnot (r\rightarrow h_n) \Rightarrow Eqn_o_l_d)
+  ((r\rightarrow h_n) \Rightarrow f\rightarrow v)  \wedge (\lnot (r\rightarrow h_n) \Rightarrow Eqn_\mathrm{old})
 \end{equation}
 \end{compactenum}
 

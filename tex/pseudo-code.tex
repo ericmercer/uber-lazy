@@ -1,0 +1,46 @@
+\section{Pseudo-code}
+The presentation assumes a purely syntactic semantics for a CEKS
+machine for a Java-like language \cite{saints-MS}. The machine state
+for the semantics consists of a (C)ontrol string representing the
+expression being evaluated, an (E)nvironment for local variables, a
+(K)ontinuation for what is to be executed next, and a (S)tore for the
+heap. This paper only defines salient features of the machine relevant
+to understanding JPF's partial order reduction. 
+\begin{itemize}
+\item $n$ is a number, and the set of all positive natural numbers is $\mathbb{N}^+$.
+\item $x$ is a variable, and the set of all variables is $\mathbb{X}$.
+\item $f$ is a named field in an object.
+\item $v$ is a value, and the set of all values is $\mathbb{V}$. A value can be a primitive, and object with named fields, or a reference to an object. 
+\item $\eta : \mathbb{X} \rightarrow \mathbb{V}$ is an environment
+\item $h : \mathbb{N}^+ \rightarrow \mathbb{V}$ is a heap
+\item $k$ is a continuation to resolve evaluation order and return points from calls. Are particular interest are the continuations for thread completion (\texttt{ret}), thread creation 
+\item $e$ is an expression. Expressions can be values $v$, sequencing ($(begin\ e\ \ldots)$),
+  thread start ($(\mathtt{thread}\ e.m(e\ \ldots))$), field access ($(x.f)$ or $(x.f := e)$), and other constructs
+  indicative of the Java language.
+\item $t = (\eta\ e\ k)$ is a thread state.
+\item $s = (\mu\ h\ (t\ \ldots))$ is a machine state.
+\item $(h^\prime\ (\eta^\prime \ e^\prime\ k^\prime)) = \mathrm{execute}(\mu, h, \eta, e, k)$ is a function that returns a new heap and thread by evaluating the expression in the thread until the thread is either done, creates a new thread, or accesses a field in the heap that is shared:
+  \begin{itemize}
+    \item $(\eta^\prime\ v (* \$ f \rightarrow k))$
+  \end{itemize}
+\end{itemize}
+
+% Algorithm2e environment
+% http://en.wikibooks.org/wiki/LaTeX/Algorithms#Typesetting_using_the_algorithm2e_package
+
+\begin{algorithm}
+ \SetAlgoLined
+ \KwData{this text}
+ \KwResult{how to write algorithm with \LaTeX2e }
+ initialization\;
+ \While{not at end of this document $\wedge x < 2$}{
+  read current\;
+  \eIf{understand}{
+   go to next section\;
+   current section becomes this one\;
+   }{
+   go back to the beginning of current section\;
+  }
+ }
+ \caption{How to write algorithms}
+\end{algorithm}

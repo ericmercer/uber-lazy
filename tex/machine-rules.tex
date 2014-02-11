@@ -4,39 +4,39 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Variable lookup]{}{
-      (h\ \eta\ \mathrm{x}\ k) \rightarrow (\mu\ h\ \eta\ \eta(\mathrm{x})\ k)
+      (L\ R\ \eta\ \mathrm{x}\ k) \rightarrow (L\ R\ \eta\ \eta(\mathrm{x})\ k)
 	}
 \and
 	\inferrule[Field Access(eval)]{}{
-      (h\ \eta\ (e\ \$\ \mathrm{f})\ k) \rightarrow (h\ \eta\ e\ (*\ \$\ \mathrm{f} \rightarrow k))
+      (L\ R\ \eta\ (e\ \$\ \mathrm{f})\ k) \rightarrow (L\ R\ \eta\ e\ (*\ \$\ \mathrm{f} \rightarrow k))
 	}
 \and
 	\inferrule[Field Access (NULL)]{
-      h(r) = \emptyset
+      L(r) = \emptyset
     }{
-      (h\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
-      (h[r \mapsto \{(\bot,\mathrm{T})\}]\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
+      (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (L[r \mapsto \{(\bot,\top)\}]\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
 	}
 \and
 	\inferrule[Field Access (non-NULL)]{
-      h(r) = \emptyset \\
-      \mathrm{type}(r) = C\\
-      \mathrm{fresh}_l(C) = l 
+      L(r) = \emptyset \\
+      \mathrm{type}(r) = \mathrm{C}_r\\
+      \mathrm{fresh}_l(\mathrm{C}_r) = l \\\\
+      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}\ ((l\ \mathrm{f}) \mapsto \mathit{fresh_r}(\mathit{type}(\mathrm{f})))]
     }{
-      (h\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
-      (h[r \mapsto \{(l,\mathrm{T})\}]\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
+      (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (L[r \mapsto \{(l,\top)\}]\ R^\prime\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
 	}
 \and
 	\inferrule[Field Access]{
       h(r) \neq \emptyset \\
       \mathrm{type}(r) = C \\
       \mathrm{fresh}_r(C) = r_f \\\\
-      h^\prime = h[\forall h(l\ \mathrm{f}) = \bot \in h(r) (r \mapsto \mathrm{fresh}_r(C))] \\\\
-      Q = \{(r^\prime\ \phi)\ |\ (l\ \phi) \in h^\prime(r) \wedge r^\prime \in h^\prime(l\ \mathrm{f})\} \\\\
-      h_f = h^\prime[r_f \mapsto \cup_{(r^\prime\ \phi)\in Q} \{(l\ \phi^\prime\phi)\ |\ (l\ \phi^\prime) \in h^\prime(r^\prime)\}]
+      Q = \{(r^\prime\ \phi)\ |\ (l\ \phi) \in L(r) \wedge r^\prime \in R(l\ \mathrm{f})\} \\\\
+      L_f = L[r_f \mapsto \cup_{(r^\prime\ \phi)\in Q} \{(l\ \phi^\prime\phi)\ |\ (l\ \phi^\prime) \in L(r^\prime)\}]
     }{
-      (h\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
-      (h_f\ \eta\ r_f\ k)
+      (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (L_f\ R\ \eta\ r_f\ k)
 	}
 \end{mathpar}
 \end{center}

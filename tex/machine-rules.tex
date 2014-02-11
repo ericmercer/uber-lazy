@@ -1,0 +1,95 @@
+
+\begin{figure*}[t]
+\begin{center}
+\mprset{flushleft}
+\begin{mathpar}
+	\inferrule[Variable lookup]{}{
+      (h\ \eta\ \mathrm{x}\ k) \rightarrow (\mu\ h\ \eta\ \eta(\mathrm{x})\ k)
+	}
+\and
+	\inferrule[Field Access(eval)]{}{
+      (h\ \eta\ (e\ \$\ \mathrm{f})\ k) \rightarrow (h\ \eta\ e\ (*\ \$\ \mathrm{f} \rightarrow k))
+	}
+\and
+	\inferrule[Field Access (NULL)]{
+      h(r) = \emptyset
+    }{
+      (h\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (h[r \mapsto \{(\bot,\mathrm{T})\}]\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
+	}
+\and
+	\inferrule[Field Access (non-NULL)]{
+      h(r) = \emptyset \\
+      \mathrm{type}(r) = C\\
+      \mathrm{fresh}_l(C) = l 
+    }{
+      (h\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (h[r \mapsto \{(l,\mathrm{T})\}]\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
+	}
+\and
+	\inferrule[Field Access]{
+      h(r) \neq \emptyset \\
+      \mathrm{type}(r) = C \\
+      \mathrm{fresh}_r(C) = r_f \\\\
+      h^\prime = h[\forall h(l\ \mathrm{f}) = \bot \in h(r) (r \mapsto \mathrm{fresh}_r(C))] \\\\
+      Q = \{(r^\prime\ \phi)\ |\ (l\ \phi) \in h^\prime(r) \wedge r^\prime \in h^\prime(l\ \mathrm{f})\} \\\\
+      h_f = h^\prime[r_f \mapsto \cup_{(r^\prime\ \phi)\in Q} \{(l\ \phi^\prime\phi)\ |\ (l\ \phi^\prime) \in h^\prime(r^\prime)\}]
+    }{
+      (h\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (h_f\ \eta\ r_f\ k)
+	}
+\end{mathpar}
+\end{center}
+\caption{Uber-lazy state reductions}
+\label{fig:expr:red}
+\end{figure*}
+
+
+%% Expression syntax
+
+\begin{comment}
+\begin{figure}[ht]
+\begin{center}
+\cfgstart
+
+\cfgrule{estate}{($\sigma$ $\eta$ \cfgnt{e} \cfgnt{k})}
+
+\cfgrule{$\sigma$}{$\emptyset$ \cfgor \lp $\sigma$ \cfgq{[}
+  \cfgnt{address} \cfgq{$\mapsto$} \cfgnt{v} \cfgq{]}\rp }
+
+\cfgrule{$\eta$}{$\emptyset$ \cfgor \lp $\eta$ \cfgq{[} \cfgnt{id}
+  \cfgq{$\mapsto$} \cfgnt{v} \cfgq{]}\rp }
+
+\cfgrule{ae}{\cfgnt{v} \cfgor \cfgnt{id}}	
+\cfgrule{e}{\cfgnt{ae} \cfgor \lp\cfgq{@} \cfgnt{e}\rp}
+	\cfgorline{\lp\cfgnt{setop} \lp\cfgnt{pattern} \cfgq{in} \cfgnt{e}\rp ~\cfgnt{e}\rp}
+	\cfgorline{\lp\cfgq{if} \cfgnt{e} \cfgnt{e} \cfgnt{e}\rp}
+	\cfgorline{\lp\cfgq{let} \lp\cfgq{[}\cfgnt{id} \cfgnt{e}\cfgq{]}\rp ~\cfgnt{e}\rp}
+	\cfgorline{\lp \cfgnt{op} \cfgnt{e} \cfgnt{e} ...\rp}
+\cfgrule{v}{\cfgt{number}}
+	\cfgorline{\cfgq{true} \cfgor \cfgq{false}}
+	\cfgorline{\cfgq{error}}
+	\cfgorline{\cfgt{string}}
+	\cfgorline{\lp\cfgq{addr} \cfgnt{address}\rp}
+	\cfgorline{\lp\cfgq{const-set} \cfgnt{v} ...\rp}
+	\cfgorline{\lp\cfgq{const-tuple} \cfgnt{v} ...\rp}
+\cfgrule{pattern}{\cfgnt{id} \cfgor \lp\cfgq{tuple} \cfgnt{id} ...\rp}
+\cfgrule{op}{\cfgnt{binop} \cfgor \cfgnt{unaop} \cfgor \cfgq{set} \cfgor \cfgq{tuple}}
+\cfgrule{setop}{\cfgq{setFilter} \cfgor \cfgq{setBuild}}
+
+\cfgrule{k}{\cfgq{ret}}
+	\cfgorline{\lp\cfgq{@} \cfgq{*} \cfgq{->} \cfgnt{k}\rp}
+	\cfgorline{\lp\cfgnt{setop} \lp\cfgnt{pattern} \cfgq{in} \cfgq{*}\rp ~\cfgnt{e} \cfgq{->} \cfgnt{k}\rp}
+	\cfgorline{\lp\cfgq{if} \cfgq{*} \cfgnt{e} \cfgnt{e} \cfgq{->} \cfgnt{k}\rp}
+	\cfgorline{\lp\cfgq{pop} \cfgnt{$\eta$} \cfgnt{k}\rp}
+	\cfgorline{\lp\cfgq{let} \lp\cfgq{[}\cfgnt{id} \cfgq{*}\cfgq{]}\rp ~\cfgnt{e} \cfgq{->} \cfgnt{k}\rp}
+	\cfgorline{\lp \cfgnt{op} \lp\cfgnt{v} ...\rp \cfgq{*}
+          \lp\cfgnt{e} ...\rp  \cfgq{->} \cfgnt{k}\rp}
+
+\cfgend
+\end{center}
+\caption{Expression Machine Syntax}
+\label{fig:expr:stx}
+\end{figure}
+\end{comment}
+

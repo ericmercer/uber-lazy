@@ -1,33 +1,65 @@
 \section{Pseudo-code}
+
+
 The presentation assumes a purely syntactic semantics for a CEKS
 machine for a Java-like language \cite{saints-MS}. The machine state
 for the semantics consists of a (C)ontrol string representing the
 expression being evaluated, an (E)nvironment for local variables, a
 (K)ontinuation for what is to be executed next, and a (S)tore for the
-heap. This paper only defines salient features of the machine relevant
-to understanding JPF's partial order reduction. 
+heap. This paper only defines salient features of the machine relevant to understanding the new algorithm.
 \begin{itemize}
-\item $n$ is a number, and the set of all positive natural numbers is $\mathbb{N}^+$.
-\item $x$ is a variable, and the set of all variables is $\mathbb{X}$.
-\item $f$ is a named field in an object.
-\item $v$ is a value, and the set of all values is $\mathbb{V}$. A value can be a primitive, and object with named fields, or a reference to an object. 
-\item $\eta : \mathbb{X} \rightarrow \mathbb{V}$ is an environment
-\item $h : \mathbb{N}^+ \rightarrow \mathbb{V}$ is a heap
-\item $k$ is a continuation to resolve evaluation order and return points from calls. Are particular interest are the continuations for thread completion (\texttt{ret}), thread creation 
-\item $e$ is an expression. Expressions can be values $v$, sequencing ($(begin\ e\ \ldots)$),
-  thread start ($(\mathtt{thread}\ e.m(e\ \ldots))$), field access ($(x.f)$ or $(x.f := e)$), and other constructs
-  indicative of the Java language.
-\item $t = (\eta\ e\ k)$ is a thread state.
-\item $s = (\mu\ h\ (t\ \ldots))$ is a machine state.
-\item $(h^\prime\ (\eta^\prime \ e^\prime\ k^\prime)) = \mathrm{execute}(\mu, h, \eta, e, k)$ is a function that returns a new heap and thread by evaluating the expression in the thread until the thread is either done, creates a new thread, or accesses a field in the heap that is shared:
-  \begin{itemize}
-    \item $(\eta^\prime\ v (* \$ f \rightarrow k))$
-  \end{itemize}
+\item $n$ are numbers, and the set of all positive natural numbers is $\mathbb{N}^+$.
+\item $x$ is a variable, and the set of all variables is $X$.
+\item $f$ is a field name in an object, and the set of all field names is $F$.
+\item $v$ is a value, and the set of all values is $V$. A value can only be a reference. 
+\item $\eta : X \rightarrow V$ is an environment
+\item $h$ is a heap represented as a bipartite graph (see below).
+\item $k$ is a continuation to resolve evaluation order and return points from calls. Of particular interest are the continuations for completion (\texttt{ret}), ...
+\item $e$ is an expression. Expressions can be values $v$, sequencing
+  ($(begin\ e\ \ldots)$), field access ($(x.f)$ or $(x.f := e)$), and
+  other constructs to be defined soon,...
+\item $\mu$ is the text that defines classes and methods.
+\item $P$ is a program $(\mu, (C m))$ where $C$ is a class defined in
+  $\mu$ and $m$ is a method in that class.
+\item $s = (\mu\ h\ \eta\ e\ k)$ is a machine state.
+\item $(\mu\ h^\prime\ \eta^\prime\ e^\prime\ k^\prime) =
+  \mathrm{execute}(\mu, h, \eta, e, k)$ is a function that returns a
+  state by evaluating the expression.
 \end{itemize}
+
+The heap is a bipartite graph defined on locations $L$ and references
+$R$. $R$ and $L$ include the special symbol $\bot$ to indicate an
+uninitialized reference and location respectively. Additionally, $L$
+includes a special location $\mathtt{NULL}$ for null references.
+
+Locations are boxes in the graphical representation and indicated with
+the letter $l$ in the math. References are circles in the graphical
+representation and indicated with the letter $r$ in the math. Edges
+from locations are labeled with field names $f \in F$. Edges from the
+references are labeled with constraints $\phi \in \Phi$ (we assume
+$\Phi$ is a power set over individual constraints and $phi$ is a set
+of constraints for the edge).
+
+The heap is now defined
+as $h = (L\ R\ \mathit{ref}\ \mathit{loc})$ where
+\begin{itemize}
+\item $\mathit{ref} : L \times F \mapsto R$ is the
+  connection between locations and references on a named field. The
+  function can also be viewed as a set $\mathit{ref} \subseteq L
+  \times F \times R$ in a set if that is preferred to a function.
+\item $\mathit{loc} : R \mapsto 2^{L \times \Phi}$ is the connection
+  between a reference and a location on a constraint. The function
+  $\mathit{loc}$ can also be viewed as a set $\mathit{loc} \subseteq R
+  \times \Phi \times L$.
+\end{itemize}
+
+\input{machine-rules}
+
+
 
 % Algorithm2e environment
 % http://en.wikibooks.org/wiki/LaTeX/Algorithms#Typesetting_using_the_algorithm2e_package
-
+\begin{comment}
 \begin{algorithm}
  \SetAlgoLined
  \KwData{this text}
@@ -44,3 +76,4 @@ to understanding JPF's partial order reduction.
  }
  \caption{How to write algorithms}
 \end{algorithm}
+\end{comment}

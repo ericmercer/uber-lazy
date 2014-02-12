@@ -47,49 +47,4 @@
 
 %% Expression syntax
 
-\begin{comment}
-\begin{figure}[ht]
-\begin{center}
-\cfgstart
-
-\cfgrule{estate}{($\sigma$ $\eta$ \cfgnt{e} \cfgnt{k})}
-
-\cfgrule{$\sigma$}{$\emptyset$ \cfgor \lp $\sigma$ \cfgq{[}
-  \cfgnt{address} \cfgq{$\mapsto$} \cfgnt{v} \cfgq{]}\rp }
-
-\cfgrule{$\eta$}{$\emptyset$ \cfgor \lp $\eta$ \cfgq{[} \cfgnt{id}
-  \cfgq{$\mapsto$} \cfgnt{v} \cfgq{]}\rp }
-
-\cfgrule{ae}{\cfgnt{v} \cfgor \cfgnt{id}}	
-\cfgrule{e}{\cfgnt{ae} \cfgor \lp\cfgq{@} \cfgnt{e}\rp}
-	\cfgorline{\lp\cfgnt{setop} \lp\cfgnt{pattern} \cfgq{in} \cfgnt{e}\rp ~\cfgnt{e}\rp}
-	\cfgorline{\lp\cfgq{if} \cfgnt{e} \cfgnt{e} \cfgnt{e}\rp}
-	\cfgorline{\lp\cfgq{let} \lp\cfgq{[}\cfgnt{id} \cfgnt{e}\cfgq{]}\rp ~\cfgnt{e}\rp}
-	\cfgorline{\lp \cfgnt{op} \cfgnt{e} \cfgnt{e} ...\rp}
-\cfgrule{v}{\cfgt{number}}
-	\cfgorline{\cfgq{true} \cfgor \cfgq{false}}
-	\cfgorline{\cfgq{error}}
-	\cfgorline{\cfgt{string}}
-	\cfgorline{\lp\cfgq{addr} \cfgnt{address}\rp}
-	\cfgorline{\lp\cfgq{const-set} \cfgnt{v} ...\rp}
-	\cfgorline{\lp\cfgq{const-tuple} \cfgnt{v} ...\rp}
-\cfgrule{pattern}{\cfgnt{id} \cfgor \lp\cfgq{tuple} \cfgnt{id} ...\rp}
-\cfgrule{op}{\cfgnt{binop} \cfgor \cfgnt{unaop} \cfgor \cfgq{set} \cfgor \cfgq{tuple}}
-\cfgrule{setop}{\cfgq{setFilter} \cfgor \cfgq{setBuild}}
-
-\cfgrule{k}{\cfgq{ret}}
-	\cfgorline{\lp\cfgq{@} \cfgq{*} \cfgq{->} \cfgnt{k}\rp}
-	\cfgorline{\lp\cfgnt{setop} \lp\cfgnt{pattern} \cfgq{in} \cfgq{*}\rp ~\cfgnt{e} \cfgq{->} \cfgnt{k}\rp}
-	\cfgorline{\lp\cfgq{if} \cfgq{*} \cfgnt{e} \cfgnt{e} \cfgq{->} \cfgnt{k}\rp}
-	\cfgorline{\lp\cfgq{pop} \cfgnt{$\eta$} \cfgnt{k}\rp}
-	\cfgorline{\lp\cfgq{let} \lp\cfgq{[}\cfgnt{id} \cfgq{*}\cfgq{]}\rp ~\cfgnt{e} \cfgq{->} \cfgnt{k}\rp}
-	\cfgorline{\lp \cfgnt{op} \lp\cfgnt{v} ...\rp \cfgq{*}
-          \lp\cfgnt{e} ...\rp  \cfgq{->} \cfgnt{k}\rp}
-
-\cfgend
-\end{center}
-\caption{Expression Machine Syntax}
-\label{fig:expr:stx}
-\end{figure}
-\end{comment}
 

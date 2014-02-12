@@ -1,26 +1,40 @@
 \section{Pseudo-code}
-
-
-The presentation assumes a purely syntactic semantics for a CEKS
-machine for a Java-like language \cite{saints-MS}. The machine state
-for the semantics consists of a (C)ontrol string representing the
+The presentation assumes a CEKS machine for a Java-like language
+(mostly a syntactic machine) \cite{saints-MS}. The machine state for
+the semantics consists of a (C)ontrol string representing the
 expression being evaluated, an (E)nvironment for local variables, a
 (K)ontinuation for what is to be executed next, and a (S)tore for the
-heap. This paper only defines salient features of the machine relevant to understanding the new algorithm.
+heap. This paper only defines salient features of the machine relevant
+to understanding the new algorithm.
+
+The language is defined as in the following figure.
+\input{grammar}
+
+%\item $n$ are numbers, and the set of all positive natural numbers is $\mathbb{N}^+$.
 \begin{itemize}
-\item $n$ are numbers, and the set of all positive natural numbers is $\mathbb{N}^+$.
-\item $x$ is a variable, and the set of all variables is $X$.
-\item $f$ is a field name in an object, and the set of all field names is $F$.
-\item $v$ is a value, and the set of all values is $V$. A value can only be a reference. 
-\item $\eta : X \rightarrow V$ is an environment
-\item $h$ is a heap represented as a bipartite graph (see below).
-\item $k$ is a continuation to resolve evaluation order and return points from calls. Of particular interest are the continuations for completion (\texttt{ret}), ...
-\item $e$ is an expression. Expressions can be values $v$, sequencing
+\item $x \in X$ is a variable
+\item $f\in F$ is a field name in an object
+\item $r\in V$ is a reference
+\item $e$ is an expression.
+  \begin{itemize}
+  \item $v$
+  \item $x$
+  \item $(e\ \$\ f)$
+  \item $(x\ := e)$
+  \item
+  \end{itemize} Expressions can be values $v$, sequencing
   ($(begin\ e\ \ldots)$), field access ($(x.f)$ or $(x.f := e)$), and
   other constructs to be defined soon,...
 \item $\mu$ is the text that defines classes and methods.
 \item $P$ is a program $(\mu, (C m))$ where $C$ is a class defined in
   $\mu$ and $m$ is a method in that class.
+\item $(L,R)$ represent the heap and form a bipartite graph (see below).
+\item $\eta : X \rightarrow V$ is an environment
+\item $k$ is a continuation to resolve evaluation order and return points from calls
+\begin{itemize}
+\item $\mathtt{end}$: nothing comes next
+\item $(*\ \$\ f \rightarrow k)$: access field $f$ once expression is reduced to a reference.
+\end{itemize}
 \item $s = (\mu\ h\ \eta\ e\ k)$ is a machine state.
 \item $(\mu\ h^\prime\ \eta^\prime\ e^\prime\ k^\prime) =
   \mathrm{execute}(\mu, h, \eta, e, k)$ is a function that returns a

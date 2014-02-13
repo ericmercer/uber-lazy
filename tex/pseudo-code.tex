@@ -1,14 +1,16 @@
 \section{Pseudo-code}
-The presentation assumes a CEKS machine for a Java-like language
-(mostly a syntactic machine) \cite{saints-MS}. The machine state for
-the semantics consists of a (C)ontrol string representing the
-expression being evaluated, an (E)nvironment for local variables, a
-(K)ontinuation for what is to be executed next, and a (S)tore for the
-heap. This paper only defines salient features of the machine relevant
-to understanding the new algorithm.
+\figref{fig:surface-syntax} defines the surface syntax for the
+Javalite language \cite{saints-MS}. The \figref{fig:machine-syntax} is
+the machine syntax. The semantics of Javalite is syntax based and
+defined as rewrites on a string. The semantics use a CEKS machine
+model with a (C)ontrol string representing the expression being
+evaluated, an (E)nvironment for local variables, a (K)ontinuation for
+what is to be executed next, and a (S)tore for the heap. This paper
+only defines salient features of the language and machine relevant to
+understanding the new algorithm.
 
-The language is defined as in the following figure.
-\input{grammar}
+\input{surface-syntax}
+\input{machine-syntax}
 
 %\item $n$ are numbers, and the set of all positive natural numbers is $\mathbb{N}^+$.
 \begin{itemize}

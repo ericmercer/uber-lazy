@@ -1,0 +1,30 @@
+\begin{figure}
+\begin{center}
+\cfgstart
+\cfgrule{e}{\lp .... \cfgor \lp\cfgt{raw} \cfgnt{v} \cfgt{@} \cfgnt{m} \lp\cfgnt{v} ...\rp\rp\rp}
+%    ;; eval syntax
+%  (object (C [f loc] ...))
+%  (hv v
+%      object)
+%  (h mt
+%     (h [loc -> hv]))
+%  (η mt
+%     (η [x -> loc]))
+%  (state (μ h η e k))
+%  (k ret
+%     (* $ f -> k)
+%     (* @ m (e ...) -> k)
+%     (v @ m (v ...) * (e ...) -> k)
+%     (* == e -> k)
+%     (v == * -> k)
+%     (x := * -> k)
+%     (x $ f := * -> k)
+%     (if * e else e -> k)
+%     (var T x := * in e -> k)
+%     (begin * (e ...) -> k)
+%     (pop η k))
+\cfgend
+\end{center}
+\caption{The machine syntax for Javalite.}
+\label{fig:machine-syntax}
+\end{figure}

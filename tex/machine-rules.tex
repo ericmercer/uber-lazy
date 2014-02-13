@@ -22,16 +22,16 @@
       L(r) = \emptyset \\
       \mathrm{type}(r) = \mathrm{C}_r\\
       \mathrm{fresh}_l(\mathrm{C}_r) = l \\\\
-      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}\ ((l\ \mathrm{f}) \mapsto \mathit{fresh_r}(\mathit{type}(\mathrm{f})))]
+      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}_r\ ((l\ \mathrm{f}) \mapsto \mathit{fresh_r}(\mathit{type}(\mathrm{f})))]
     }{
       (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
       (L[r \mapsto \{(l,\top)\}]\ R^\prime\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
 	}
 \and
 	\inferrule[Field Access]{
-      h(r) \neq \emptyset \\
-      \mathrm{type}(r) = C \\
-      \mathrm{fresh}_r(C) = r_f \\\\
+      L(r) \neq \emptyset \\
+      \mathrm{type}(r) = C_r \\
+      \mathrm{fresh}_r(C_r) = r_f \\\\
       Q = \{(r^\prime\ \phi)\ |\ (l\ \phi) \in L(r) \wedge r^\prime \in R(l\ \mathrm{f})\} \\\\
       L_f = L[r_f \mapsto \cup_{(r^\prime\ \phi)\in Q} \{(l\ \phi^\prime\phi)\ |\ (l\ \phi^\prime) \in L(r^\prime)\}]
     }{

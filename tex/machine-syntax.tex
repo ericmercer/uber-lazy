@@ -6,13 +6,15 @@
 %  (object (C [f loc] ...))
 %  (hv v
 %      object)
+\cfgrule{$\phi$}{\cfgnt{constraint}}
+\cfgrule{l}{\cfgt{number}}
 %  (h mt
 %     (h [loc -> hv]))
 %  (η mt
 %     (η [x -> loc]))
-%  (state (μ h η e k))
-%  (k ret
-%     (* $ f -> k)
+\cfgrule{s}{\lp$\mu$ \cfgnt{L} \cfgnt{R} $\eta$ \cfgnt{e} \cfgnt{k}\rp}
+\cfgrule{k}{\cfgt{end}}
+\cfgorline{\lp \cfgt{*} \cfgt{\$} \cfgnt{f} $\rightarrow$ \cfgnt{k}\rp}
 %     (* @ m (e ...) -> k)
 %     (v @ m (v ...) * (e ...) -> k)
 %     (* == e -> k)

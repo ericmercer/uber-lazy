@@ -13,40 +13,29 @@ understanding the new algorithm.
 \input{machine-syntax}
 
 %\item $n$ are numbers, and the set of all positive natural numbers is $\mathbb{N}^+$.
+This paper uses a standard definition of constraints $\phi \in \Phi$
+assuming all the usual relational operators and connectives. The heap
+is a labeled bipartite graph consisting of references $R$ and
+locations $L$ in the store. The functions $R$ and $L$ are defined for convenience
+in manipulating the labeled bipartite graph.
 \begin{itemize}
-\item $x \in X$ is a variable
-\item $f\in F$ is a field name in an object
-\item $r\in V$ is a reference
-\item $e$ is an expression.
-  \begin{itemize}
-  \item $v$
-  \item $x$
-  \item $(e\ \$\ f)$
-  \item $(x\ := e)$
-  \item
-  \end{itemize} Expressions can be values $v$, sequencing
-  ($(begin\ e\ \ldots)$), field access ($(x.f)$ or $(x.f := e)$), and
-  other constructs to be defined soon,...
-\item $\mu$ is the text that defines classes and methods.
-\item $P$ is a program $(\mu, (C m))$ where $C$ is a class defined in
-  $\mu$ and $m$ is a method in that class.
-\item $(L,R)$ represent the heap and form a bipartite graph (see below).
-\item $\eta : X \rightarrow V$ is an environment
-\item $k$ is a continuation to resolve evaluation order and return points from calls
-\begin{itemize}
-\item $\mathtt{end}$: nothing comes next
-\item $(*\ \$\ f \rightarrow k)$: access field $f$ once expression is reduced to a reference.
+\item $R(l,f)$ maps location-field pairs from the store to a reference in $R$; and
+\item $L(r)$ maps references to a set of location-constraint pairs in the store.
 \end{itemize}
-\item $s = (\mu\ h\ \eta\ e\ k)$ is a machine state.
-\item $(\mu\ h^\prime\ \eta^\prime\ e^\prime\ k^\prime) =
-  \mathrm{execute}(\mu, h, \eta, e, k)$ is a function that returns a
-  state by evaluating the expression.
-\end{itemize}
+A reference is a node that gathers the possible store locations for an
+object during symbolic execution. Each store location is guarded by a
+constraint derived from the path constraint in the symbolic execution.
+Intuitively, the reference is a level of indirection between a
+variable and the store, and the reference is used to group a set of
+possible store locations each predicated on the associated constraint.
+For an variable (or field) to access any particular store location associated with its reference, the corresponding constraint must be satisfied.
 
-The heap is a bipartite graph defined on locations $L$ and references
+\begin{comment}
+ defined on value sets $L$ and references
 $R$. $R$ and $L$ include the special symbol $\bot$ to indicate an
 uninitialized reference and location respectively. Additionally, $L$
 includes a special location $\mathtt{NULL}$ for null references.
+\end{comment}
 
 Locations are boxes in the graphical representation and indicated with
 the letter $l$ in the math. References are circles in the graphical
@@ -56,22 +45,7 @@ references are labeled with constraints $\phi \in \Phi$ (we assume
 $\Phi$ is a power set over individual constraints and $phi$ is a set
 of constraints for the edge).
 
-The heap is now defined
-as $h = (L\ R\ \mathit{ref}\ \mathit{loc})$ where
-\begin{itemize}
-\item $\mathit{ref} : L \times F \mapsto R$ is the
-  connection between locations and references on a named field. The
-  function can also be viewed as a set $\mathit{ref} \subseteq L
-  \times F \times R$ in a set if that is preferred to a function.
-\item $\mathit{loc} : R \mapsto 2^{L \times \Phi}$ is the connection
-  between a reference and a location on a constraint. The function
-  $\mathit{loc}$ can also be viewed as a set $\mathit{loc} \subseteq R
-  \times \Phi \times L$.
-\end{itemize}
-
 \input{machine-rules}
-
-
 
 % Algorithm2e environment
 % http://en.wikibooks.org/wiki/LaTeX/Algorithms#Typesetting_using_the_algorithm2e_package

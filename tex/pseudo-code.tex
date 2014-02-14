@@ -47,6 +47,16 @@ references are labeled with constraints $\phi \in \Phi$ (we assume
 $\Phi$ is a power set over individual constraints and $\phi$ is a set
 of constraints for the edge).
 
+The function $\mathbb{VS}(L,R,r,f)$ constructs the value-set given a heap, reference, and desired field.
+
+\begin{eqnarray*}
+  	 \{(l^\prime\ \phi\wedge\phi^\prime)\ |\ \exists (l\ \phi)\exists r^\prime \exists(l^\prime\ \phi^\prime) & & \\
+                        & & ((l\ \phi) \in L(r) \wedge \\
+                        & & r^\prime \in R(l, f) \wedge \\
+                        & & (l^\prime\ \phi^\prime) \in L(r^\prime) \wedge\\
+                        & & \mathbb{S}(\phi\wedge\phi^\prime))\} 
+\end{eqnarray*}
+
 \input{machine-rules}
 
 % Algorithm2e environment

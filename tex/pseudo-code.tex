@@ -52,13 +52,11 @@ heap, reference, and desired field such that
 $(l^\prime\ \phi^\prime\wedge\phi) \in \mathbb{VS}(L,R,r,f)$ if and
 only if
 \[
-  \exists (l\ \phi) \in L(r) \left ( 
-     \exists r^\prime \in R(l,f) \left ( 
-        \exists (l^\prime\ \phi^\prime) \in L(r^\prime) \left ( 
-           \mathbb{S}(\phi\wedge\phi^\prime) 
-        \right ) 
-     \right )
-  \right )
+\begin{array}{l}
+  \exists (l\ \phi) \in L(r) ( \\
+  \ \ \ \ \ \ \ \ \ \exists r^\prime \in R(l,f) ( \\
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists (l^\prime\ \phi^\prime) \in L(r^\prime) (\mathbb{S}(\phi\wedge\phi^\prime))))
+\end{array}
 \]
 where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
 

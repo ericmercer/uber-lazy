@@ -36,6 +36,16 @@
       (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
       (L[r_f \mapsto \mathbb{VS}(L,R,r,f)]\ R\ \eta\ r_f\ k)
 	}
+\and
+	\inferrule[New]{
+      \mathrm{fresh}_r(\cfgnt{C}) = r \\
+      \mathrm{fresh}_r(\cfgnt{C}) = l \\\\
+      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}\ ((l\ \mathrm{f}) \mapsto \mathit{fresh_r}(\mathit{type}(\mathrm{f})))]
+      L^\prime = L[r \mapsto (l\ \top)]
+    }{
+      (L\ R\ \eta\ (\cfgt{new}\ \cfgnt{C})\ k) \rightarrow 
+      (L^\prime\ R^\prime\ \eta\ r\ k)
+	}
 \end{mathpar}
 \end{center}
 \caption{Uber-lazy state reductions}

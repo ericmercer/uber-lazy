@@ -31,12 +31,10 @@
 	\inferrule[Field Access]{
       L(r) \neq \emptyset \\
       \mathrm{type}(r) = C_r \\
-      \mathrm{fresh}_r(C_r) = r_f \\\\
-      Q = \{(r^\prime\ \phi)\ |\ (l\ \phi) \in L(r) \wedge r^\prime \in R(l\ \mathrm{f})\} \\\\
-      L_f = L[r_f \mapsto \cup_{(r^\prime\ \phi)\in Q} \{(l\ \phi^\prime\phi)\ |\ (l\ \phi^\prime) \in L(r^\prime)\}]
+      \mathrm{fresh}_r(C_r) = r_f \\
     }{
       (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
-      (L_f\ R\ \eta\ r_f\ k)
+      (L[r_f \mapsto \mathbb{VS}(L,R,r,f)]\ R\ \eta\ r_f\ k)
 	}
 \end{mathpar}
 \end{center}

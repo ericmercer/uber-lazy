@@ -4,28 +4,38 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Variable lookup]{}{
-      (L\ R\ \eta\ \mathrm{x}\ k) \rightarrow (L\ R\ \eta\ \eta(\mathrm{x})\ k)
+      (L\ R\ \eta\ \cfgnt{x}\ k) \rightarrow (L\ R\ \eta\ \eta(\cfgnt{x})\ k)
 	}
 \and
 	\inferrule[Field Access(eval)]{}{
-      (L\ R\ \eta\ (e\ \$\ \mathrm{f})\ k) \rightarrow (L\ R\ \eta\ e\ (*\ \$\ \mathrm{f} \rightarrow k))
+      (L\ R\ \eta\ (e\ \$\ \cfgnt{f})\ k) \rightarrow (L\ R\ \eta\ e\ (*\ \$\ \cfgnt{f} \rightarrow k))
 	}
 \and
 	\inferrule[Field Access (NULL)]{
       L(r) = \emptyset
     }{
-      (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
-      (L[r \mapsto \{(\bot,\top)\}]\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
+      (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
+      (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
 	}
 \and
 	\inferrule[Field Access (non-NULL)]{
       L(r) = \emptyset \\
       \mathrm{type}(r) = \mathrm{C}_r\\
       \mathrm{fresh}_l(\mathrm{C}_r) = l \\\\
-      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}_r\ ((l\ \mathrm{f}) \mapsto \mathit{fresh_r}(\mathit{type}(\mathrm{f})))]
+      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}_r\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))]
     }{
-      (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
-      (L[r \mapsto \{(l,\top)\}]\ R^\prime\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k))
+      (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
+      (L[r \mapsto \{(l,\phi_T)\}]\ R^\prime\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
+	}
+\and
+	\inferrule[New]{
+      \mathrm{fresh}_r(\cfgnt{C}) = r \\
+      \mathrm{fresh}_r(\cfgnt{C}) = l \\\\
+      R^\prime = R[\forall \cfgnt{f} \in \mathrm{C}\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))] \\\\
+      L^\prime = L[r \mapsto \{(l\ \phi_T)\}]
+    }{
+      (L\ R\ \eta\ (\cfgt{new}\ \cfgnt{C})\ k) \rightarrow 
+      (L^\prime\ R^\prime\ \eta\ r\ k)
 	}
 \and
 	\inferrule[Field Access]{
@@ -33,19 +43,41 @@
       \mathrm{type}(r) = C_r \\
       \mathrm{fresh}_r(C_r) = r_f \\
     }{
-      (L\ R\ \eta\ r\ (*\ \$\ \mathrm{f} \rightarrow k)) \rightarrow 
+      (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
       (L[r_f \mapsto \mathbb{VS}(L,R,r,f)]\ R\ \eta\ r_f\ k)
 	}
 \and
-	\inferrule[New]{
-      \mathrm{fresh}_r(\cfgnt{C}) = r \\
-      \mathrm{fresh}_r(\cfgnt{C}) = l \\\\
-      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}\ ((l\ \mathrm{f}) \mapsto \mathit{fresh_r}(\mathit{type}(\mathrm{f})))]
-      L^\prime = L[r \mapsto (l\ \top)]
-    }{
-      (L\ R\ \eta\ (\cfgt{new}\ \cfgnt{C})\ k) \rightarrow 
-      (L^\prime\ R^\prime\ \eta\ r\ k)
-	}
+    \inferrule[Equals (l-operand eval)]{}{
+      (L\ R\ \eta\ (\cfgnt{e}_0 = \cfgnt{e}) \ k) \rightarrow 
+      (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k}))
+    }
+\and
+    \inferrule[Equals (r-operand eval)]{}{
+    (L\ R\ \eta\ \cfgnt{v}\ (\cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}\ (\cfgnt{v}\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}))
+    }
+\and
+    \inferrule[Equals (bool)]{
+    \cfgnt{v}_0 \in \{\cfgt{true}, \cfgt{false}\} \\
+    \cfgnt{v}_1 \in \{\cfgt{true}, \cfgt{false}\} \\ 
+    \mathrm{eq?}(v_0, v_1) = \cfgnt{v}_r}{
+    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgnt{v}_r\ \cfgnt{k})
+    }
+\and
+    \inferrule[Equals (references-true)]{
+    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
+    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
+    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
+    }
+\and
+    \inferrule[Equals (references-false)]{
+    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
+    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
+    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
+    }
 \end{mathpar}
 \end{center}
 \caption{Uber-lazy state reductions}

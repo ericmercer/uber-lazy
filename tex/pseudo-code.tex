@@ -24,11 +24,13 @@ in manipulating the labeled bipartite graph.
 \end{itemize}
 A reference is a node that gathers the possible store locations for an
 object during symbolic execution. Each store location is guarded by a
-constraint derived from the path constraint in the symbolic execution.
-Intuitively, the reference is a level of indirection between a
-variable and the store, and the reference is used to group a set of
-possible store locations each predicated on the associated constraint.
-For an variable (or field) to access any particular store location associated with its reference, the corresponding constraint must be satisfied.
+constraint that determines the aliasing in the heap. Intuitively, the
+reference is a level of indirection between a variable and the store,
+and the reference is used to group a set of possible store locations
+each predicated on the possible aliasing in the associated constraint.
+For a variable (or field) to access any particular store location
+associated with its reference, the corresponding constraint must be
+satisfied.
 
 \begin{comment}
  defined on value sets $L$ and references
@@ -42,7 +44,7 @@ the letter $l$ in the math. References are circles in the graphical
 representation and indicated with the letter $r$ in the math. Edges
 from locations are labeled with field names $f \in F$. Edges from the
 references are labeled with constraints $\phi \in \Phi$ (we assume
-$\Phi$ is a power set over individual constraints and $phi$ is a set
+$\Phi$ is a power set over individual constraints and $\phi$ is a set
 of constraints for the edge).
 
 \input{machine-rules}

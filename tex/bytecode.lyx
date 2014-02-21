@@ -1,0 +1,1660 @@
+#LyX file created by tex2lyx 2.0.5
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass IEEEtran
+\options conference
+\use_default_options false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\paperfontsize default
+\spacing single
+\use_hyperref 0
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 1
+\use_mhchem 0
+\use_mathdots 0
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+
+Bytecodes
+\end_layout
+
+\begin_layout Standard
+
+PUTFIELD needs to remove path constraints from PC that enforcing equality between references.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+Assume
+\series default
+: all symbolic locations are concertized lazily. Although the algorithm is not specific to any particular initialization strategy, the presentation assumes a lazy initialization. Extending to lazier initialization may be non-trivial even though this reduction is orthogonal to the lazier reduction (i.e., this reduction should further improve the performance of the lazier algorithm).
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+Assume
+\series default
+: all variables, symbolic or otherwise, are non-primitive (i.e. objects). 
+\shape italic
+Must relax this assumption because you need to do some interesting things with primitives as they relate to getfield
+\shape default
+.
+\end_layout
+
+\begin_layout Standard
+
+This papers uses subsumption, which is expressed as a subtyping relation 
+\begin_inset Formula $\leq$
+\end_inset
+
+ over types 
+\begin_inset Formula $T$
+\end_inset
+
+. For classes 
+\begin_inset Formula $C$
+\end_inset
+
+ and 
+\begin_inset Formula $D$
+\end_inset
+
+, 
+\begin_inset Formula $C \leq D$
+\end_inset
+
+ iff either 
+\begin_inset Formula $C = D$
+\end_inset
+
+ or the class declaration for 
+\begin_inset Formula $C$
+\end_inset
+
+ is 
+\family typewriter
+class C extends B 
+\begin_inset Formula $\{\ldots\}$
+\end_inset
+
+
+\family default
+ for some 
+\begin_inset Formula $B \leq D$
+\end_inset
+
+. For example, in 
+\begin_inset Formula $A \leq B \leq C \leq D$
+\end_inset
+
+, 
+\begin_inset Formula $D$
+\end_inset
+
+ is the supertype, and if you have something that is an instance of 
+\begin_inset Formula $A$
+\end_inset
+
+ but currently viewed as 
+\begin_inset Formula $B$
+\end_inset
+
+, then you can move it toward 
+\begin_inset Formula $D$
+\end_inset
+
+ in a typecast (up the hierarchy).
+\end_layout
+
+\begin_layout Standard
+
+Heap locations range over positive natural numbers 
+\begin_inset Formula $H \subseteq \mathbb{N}_{\geq 0}$
+\end_inset
+
+. Every heap location has a special variable 
+\begin_inset Formula $T_h$
+\end_inset
+
+ used in constraints over the type of the object stored in the heap location. The varable 
+\begin_inset Formula $\mathit{SH}$
+\end_inset
+
+ is the set of heap locations created when concretizing symbolic variables. The set of constraints over the type stored in the heap location is given by the function 
+\begin_inset Formula $\mathtt{C}(h)$
+\end_inset
+
+. Constraints are of the form 
+\begin_inset Formula $T_h \sim T$
+\end_inset
+
+ or 
+\begin_inset Formula $T \sim T$
+\end_inset
+
+ where 
+\begin_inset Formula $\sim\ \in \{\leq, =, \not =\}$
+\end_inset
+
+. The initial type hierarchy for the program is expressed as a set of constraints 
+\begin_inset Formula $C_\mathrm{init}$
+\end_inset
+
+. The set contains all relationships needed to describe the entire hierarchy.
+\end_layout
+
+\begin_layout Standard
+
+For a set of constraints 
+\begin_inset Formula $C$
+\end_inset
+
+, the function 
+\begin_inset Formula $\mathtt{SAT}(C) \mapsto \{0,1\}$
+\end_inset
+
+ returns 1 if the constraints are satisfiable and 0 otherwise. The usual Boolean connectives are used as expected. The function 
+\begin_inset Formula $\mathtt{Type}(h)$
+\end_inset
+
+ returns the actual type of the object in the heap location and the function 
+\begin_inset Formula $\mathtt{Obj}(h)$
+\end_inset
+
+ returns the object at the location.
+\end_layout
+
+\begin_layout Standard
+
+Each variable 
+\begin_inset Formula $v$
+\end_inset
+
+ is associated with a set of heap locations 
+\begin_inset Formula $H(v) = \{h_0, h_1, \ldots, h_n\}$
+\end_inset
+
+ that represents an equivalence class (i.e., each heap location yields the same execution path and behavior up to the current point of execution). The representative object for a given variable (i.e., the one that is currently being used by the variable) is given by the function 
+\begin_inset Formula $I(v) \mapsto H(v)$
+\end_inset
+
+. The set of heap locations and the representative location are part of the meta-deta for the variable. This meta-data follows the variable through the program execution and is appropriately copied on assignment to other variables such that each variable has its own copy of the meta-data that is separate from other copies.
+\end_layout
+
+\begin_layout Standard
+
+Finally, there is a global variable 
+\begin_inset Formula $\mathit{PC}$
+\end_inset
+
+ that represents the path constraint along the current path of exploration. This path constraint is used to track relationships between symbolic variables such as equality. Properties of symbolic variables are represented in the path constraint by creating special variables for the representative and the set of represented objects. For a variable 
+\begin_inset Formula $v$
+\end_inset
+
+, the special variable 
+\begin_inset Formula $I_v$
+\end_inset
+
+ is the representative heap opbject and the special variable 
+\begin_inset Formula $H_v$
+\end_inset
+
+ is the set of associated heap locations. It is assumed the 
+\begin_inset Formula $v$
+\end_inset
+
+ is alpha-renamed to be unique in the path constraint. Finally, we use the special value 
+\family typewriter
+SYM
+\family default
+ to denote a symbolic variable that is yet to be initialized.
+\end_layout
+
+\begin_layout Subsection
+
+Reference
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+GETFIELD
+\family default
+
+\series default
+: the bytecode behavior depends on the field operand: concrete, concrete though initialized from symbolic, and symbolic. Each case is enumerated: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactenum}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+Referencing a concrete field: the bytecode has default behavior returning the field. 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+Referencing an initialized field from a symbolic variable (i.e., the base type for the field is initialized from a symbolic object): the bytecode may have multiple outcomes; it partitions the equiavalence class to group heap locations with objects that have common values for the field. 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+Referencing a symbolic variable that has yet to be initialized: the bytecode has two outcomes: one that returns 
+\family typewriter
+null
+\family default
+ and another that builds the potential equivalence class, chooses a representative location, and returns that location. 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactenum}
+\end_layout
+
+\end_inset
+
+ Consider the code 
+\begin_inset listings
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+// The declared type of f is F
+\end_layout
+
+\begin_layout Plain Layout
+
+T t = b.f;
+\end_layout
+
+\end_inset
+
+For the case where 
+\family typewriter
+b.f
+\family default
+ is an already initialized symbolic variable, 
+\begin_inset Formula $h = \mathtt{I}(\mathtt{b})$
+\end_inset
+
+, 
+\begin_inset Formula $\mathtt{H}(\mathtt{b})$
+\end_inset
+
+ is partitioned into disjoint sets, 
+\begin_inset Formula $S_0, P_1, \ldots, P_n$
+\end_inset
+
+, with 
+\begin_inset Formula $n+1$
+\end_inset
+
+ partitions, or choices. The first set 
+\begin_inset Formula $S_0$
+\end_inset
+
+ is a special set that includes 
+\begin_inset Formula $h$
+\end_inset
+
+, the representative object for 
+\family typewriter
+b
+\family default
+, and any members of the equivalence class that either have the same field value for 
+\family typewriter
+b.f
+\family default
+ or the field value is a symbolic variable that has yet to be initialized: 
+\begin_inset Formula \begin{eqnarray*}
+S_0 &=& \{h_i \mid h_i \in \mathtt{H}(\mathtt{b})\ \wedge \\
+    & & (\mathtt{Obj}(h).\mathtt{f} = \mathtt{Obj}(h_i).\mathtt{f}\ \vee\ \mathtt{Obj}(h_i).\mathtt{f} = \mathtt{SYM})\}
+\end{eqnarray*}
+\end_inset
+
+For this special case of 
+\begin_inset Formula $S_0$
+\end_inset
+
+, 
+\begin_inset Formula $\mathtt{H}_0(\mathtt{b}) = S_0$
+\end_inset
+
+, and 
+\begin_inset Formula $I_0(\mathtt{b}) = h$
+\end_inset
+
+ where the subscript indicates the choice number in the choice generator (i.e., the partition size may change but not the representative heap location). The other partitions group common values of the field such that 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactitem}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\forall h_i, h_j \in P_i,\ \mathtt{Obj}(h_i).f = \mathtt{Obj}(h_j).f$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{H}_i(\mathtt{b}) = P_i$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\exists h \in P_i,\ \mathtt{I}_i(\mathtt{b}) = h$
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactitem}
+\end_layout
+
+\end_inset
+
+ The partitions are maximal and represent a unique value that has been created thus far in the program execution. The non-initialized symbolic members of the partition all belong to 
+\begin_inset Formula $S_0$
+\end_inset
+
+ as the original representative heap location 
+\begin_inset Formula $h$
+\end_inset
+
+ captures that these other aliases were intended to have the same field value for field 
+\family typewriter
+f
+\family default
+ before the split (i.e., the value is assigned programatically but the change was only reflected in the representative heap location). Once the choice generator is created over the different partitions, the bytecode returns the requested field value of the representative as expected.
+\end_layout
+
+\begin_layout Standard
+
+Returning to the third behavior of the bytecode, the case in which the accessed field has yet to be initialized, then the bytecode follows lazy initialization creating a 
+\family typewriter
+null
+\family default
+ instance, a new instance that is the representative, and the alias set. When creating the alias set, the new instance should be included in the set, as well as any prior object created in concretization of symbolic variables that is type compatible with the new instance. Recall that 
+\begin_inset Formula $\mathit{SH}$
+\end_inset
+
+ is set of locations in the symbolic heap and 
+\begin_inset Formula $C_\mathrm{init}$
+\end_inset
+
+ is the set of constraints describing the type hierarchy, assuming 
+\begin_inset Formula $h$
+\end_inset
+
+ is the heap location of the new instance of the type, then 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactitem}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{I}(\mathtt{b.f}) = h$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\forall h_i \in \mathit{SH}, \mathtt{SAT}(C_\mathrm{init} \cup \{T_h \leq \mathtt{Type}(h_i)\}) \rightarrow h_i \in \mathtt{H}(\mathtt{b.f})$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{C}(\mathtt{b.f}) = C_\mathrm{init} \cup \{T_h \leq \mathtt{Type}(h)\}$
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactitem}
+\end_layout
+
+\end_inset
+
+ The 
+\begin_inset Formula $C_\mathrm{init}$
+\end_inset
+
+ set constains relationships in the class hierarchy with the correct sub-types and super-types as they relate to the delcared type of the object.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+GETSTATIC
+\family default
+
+\series default
+: the bytecode is handled similarly to 
+\family typewriter
+GETFIELD
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+ALOAD
+\family default
+
+\series default
+: the bytecode is handled similarly to 
+\family typewriter
+GETFIELD
+\family default
+.
+\end_layout
+
+\begin_layout Subsection
+
+Comparison
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+IF_ACMPEQ
+\family default
+
+\series default
+: the bytecode may return both the 
+\family typewriter
+true
+\family default
+ and 
+\family typewriter
+false
+\family default
+ values, and it must possibly refine the set of represented concretizations and mutate the heap location of the object involved in the bytecode according to the returned outcome. Consider the code 
+\begin_inset listings
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+if (a == b) {
+\end_layout
+
+\begin_layout Plain Layout
+
+   // code...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+There are two cases that need to be considered to determine the outcome of the bytecode: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactenum}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{H}(a) \cap \mathtt{H}(b) = \emptyset$
+\end_inset
+
+: the bytecode returns 
+\family typewriter
+false
+\family default
+ and nothing further is requred. 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{H}(a) \cap \mathtt{H}(b) \not = \emptyset$
+\end_inset
+
+ 
+\begin_inset Formula $\wedge$
+\end_inset
+
+ 
+\begin_inset Formula $\mathtt{SAT}(PC \cup \{I_a = I_b, H_a = H_b\})$
+\end_inset
+
+: the bytecode may return either 
+\family typewriter
+true
+\family default
+ or 
+\family typewriter
+false
+\family default
+ and a choice generator needs to be created. 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactenum}
+\end_layout
+
+\end_inset
+
+ The choice generator for the compare bytecode is more complex than for other bytecodes because it must create representative sets without enumerating all possible outcomes using the path constraint. For the case 
+\family typewriter
+true
+\family default
+ outcome 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactitem}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathit{PC} = \mathit{PC} \cup \{\mathtt{I}(a) = \mathtt{I}(b),\mathtt{H}(a) = \mathtt{H}(b)\}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{H}(a) = \mathtt{H}(b) = \mathtt{H}(a) \cap \mathtt{H}(b)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{I}(a) \in \mathtt{H}(a) \cap \mathtt{H}(b) \rightarrow \mathtt{I}(b) = \mathtt{I}(a)$
+\end_inset
+
+ 
+\begin_inset Formula $\vee$
+\end_inset
+
+ 
+\begin_inset Formula $\exists h \in \mathtt{H}(a) \cap \mathtt{H}(b)\ .\ \mathtt{I}(b) = \mathtt{I}(a) = h$
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactitem}
+\end_layout
+
+\end_inset
+
+ In essence, in the case where two variable reference the same object, the path constraint and sets are modified to represent the new restriction. The 
+\family typewriter
+false
+\family default
+ outcome is handled similarly with a few notable exceptions on the path constraint and the represented set. 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactitem}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathit{PC} = \mathit{PC} \cup \{\mathtt{I}(a) \not = \mathtt{I}(b)\}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{I}(a) = \mathtt{I}(b) \rightarrow \exists h \in \mathtt{H}(b)\ .\ h \not = \mathtt{I}(a) \wedge \mathtt{I}(b) = h$
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactitem}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+IF_ACMPNE
+\family default
+
+\series default
+: the bytecode is handled similarly to 
+\family typewriter
+IF_ACMPEQ
+\family default
+.
+\end_layout
+
+\begin_layout Subsection
+
+Invocation
+\end_layout
+
+\begin_layout Standard
+
+
+\series bold
+
+\family typewriter
+INVOKEVIRTUAL
+\family default
+
+\series default
+
+\end_layout
+
+\begin_layout Standard
+
+When we come to an invoke virtual you have to look for all the specialized implementations of the method, creating choices with symbolic locations of various "actual types". The number of choices will be equal to the number of specialized implementations of the method. When you create a choice on a specialization, you need to update the "actual type" field in the symbolic location. The "current cast" does not need to change. The number of types that the symbolic location cannot be will also be updated according to the "actual type" field. The number of types that the symbolic location cannot be will be updated with the types of the other specializations since invoking a specialization associated with a type implies that the object cannot be the types containing the other specializations.
+\end_layout
+
+\begin_layout Subsection
+
+Checking Types and Casting
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+INSTANCEOF
+\family default
+
+\series default
+: the bytecode may return both the 
+\family typewriter
+true
+\family default
+ and 
+\family typewriter
+false
+\family default
+ values when dealing with initialized symbolic variables, and it must possibly refine the equivalence class for the represented object referenced by the variable and mutate the contents of the heap location of the object involved in the bytecode according to the returned outcome. The bytecode implements the default bahvior when the operand is concrete and not an initialized symbolic variable. For the rest of the discussion, assume the operand is an initialized symbolic variable. Consider the code 
+\begin_inset listings
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+if (a instanceof C) {
+\end_layout
+
+\begin_layout Plain Layout
+
+   // code...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+There are two cases that need to be considered to determine the outcome of the bytecode where 
+\begin_inset Formula $h = \mathtt{I}(a)$
+\end_inset
+
+ is the representative object of the equivalence class: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactenum}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{Type}(h) = C$
+\end_inset
+
+: the bytecode returns 
+\family typewriter
+true
+\family default
+ and nothing further is required as the type stored in the heap location is 
+\begin_inset Formula $C$
+\end_inset
+
+. 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\neg \mathtt{SAT}(\mathtt{C}(h) \cup \{T_h \leq C\})$
+\end_inset
+
+: the bytecode returns 
+\family typewriter
+false
+\family default
+ and nothing further is requred as the current constraints on what is in the heap location restrict it from being of type 
+\begin_inset Formula $C$
+\end_inset
+
+. 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{SAT}(\mathtt{C}(h) \cup \{T_h \leq C\})$
+\end_inset
+
+: the bytecode can return either 
+\family typewriter
+true
+\family default
+ or 
+\family typewriter
+false
+\family default
+ requiring a choice generator. 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactenum}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% // C <= B <= A
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% A a; // C(a) = {(T_a <= A)}
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%if (a instance of C) {
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%    ** TRUE **
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%    (T_h 
+\backslash
+leq C)
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%    ...
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%}
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% ** FALSE **
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% (C 
+\backslash
+leq T_h) 
+\backslash
+wedge (T_h 
+\backslash
+not = C)
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% ** TRUE **
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% (T_h 
+\backslash
+leq C)
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+The 
+\family typewriter
+true
+\family default
+ outcome for the choice generator in clause (3) is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactitem}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{C}(h) = \mathtt{C}(h) \cup \{T_h \leq C\}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{Type}(h) = C$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\mathtt{H}(a) = H^\prime$
+\end_inset
+
+ where 
+\begin_inset Formula $H^\prime = \{h_i \mid h_i \in \mathtt{H}(a) \wedge \mathtt{SAT}(\mathtt{C}(h_i) \cup \{T_{h_i} \leq C\})\}$
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactitem}
+\end_layout
+
+\end_inset
+
+ The second statement indicates that the actual type in the heap location 
+\begin_inset Formula $h$
+\end_inset
+
+ needs to change. As such, the object is mutated to be an instance of 
+\begin_inset Formula $C$
+\end_inset
+
+. This mutation retains all fields and values from the previous object and only adds new fields for type 
+\begin_inset Formula $C$
+\end_inset
+
+. The last statement refines the equivalence class to exclude any heap locations that cannot be considered something of type 
+\begin_inset Formula $C$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+For the 
+\family typewriter
+false
+\family default
+ outcome of the generator, 
+\begin_inset Formula $\mathtt{C}(h) = \mathtt{C}(h) \cup \{C \leq T_h, T_h \not = C\}$
+\end_inset
+
+. Unlike the 
+\family typewriter
+true
+\family default
+ outcome, the 
+\family typewriter
+false
+\family default
+ outcome retains the entire equivalence class and does not need to mutate any heap entries.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+
+\series bold
+
+\family typewriter
+CHECKCAST
+\family default
+
+\series default
+: the bytecode is syntactic sugar for 
+\begin_inset listings
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+if (! (obj == null  ||  obj instanceof <class>)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    throw new ClassCastException();
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+// if this point is reached, then object 
+\end_layout
+
+\begin_layout Plain Layout
+
+// is either null, or an instance of <class> 
+\end_layout
+
+\begin_layout Plain Layout
+
+// or one of its superclasses.
+\end_layout
+
+\end_inset
+
+Please see the 
+\family typewriter
+IFNULL
+\family default
+ and 
+\family typewriter
+INSTANCEOF
+\family default
+ bytecodes for details. If the exception is thrown, then JPF will catch the unhandled exception as per its normal behavior.
+\end_layout
+
+\begin_layout Subsection
+
+Programs to consider
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{compactitem}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+item 
+\end_layout
+
+\end_inset
+
+
+\family typewriter
+TestGetfieldSplit.java
+\family default
+: checks alias equivalence classes when assigning to initialized values. 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+end{compactitem}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

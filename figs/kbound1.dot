@@ -1,0 +1,17 @@
+digraph massive_output{
+rank=max;
+1 [label="A" shape=circle];
+
+rank=min;
+2 -> 5;
+3 -> 6;
+4 -> 4;
+
+
+2 [label="A" shape=circle];
+3 [label="A" shape=circle];
+4 [label="A" shape=circle];
+
+5 [label="B" shape=circle];
+6 [label="N" shape=square];
+}

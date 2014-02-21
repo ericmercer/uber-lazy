@@ -30,7 +30,7 @@
 \and
 	\inferrule[New]{
       \mathrm{fresh}_r(\cfgnt{C}) = r \\
-      \mathrm{fresh}_r(\cfgnt{C}) = l \\\\
+      \mathrm{fresh}_l(\cfgnt{C}) = l \\\\
       R^\prime = R[\forall \cfgnt{f} \in \mathrm{C}\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))] \\\\
       L^\prime = L[r \mapsto \{(l\ \phi_T)\}]
     }{
@@ -67,9 +67,10 @@
 \and
     \inferrule[Equals (references-true)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
-    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
+    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
+      L^\prime = L[\forall r \exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\cfgnt{v}_0 =  \cfgnt{v}_1)]}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
+    (L^\prime\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
 \and
     \inferrule[Equals (references-false)]{

@@ -60,6 +60,9 @@ only if
 \]
 where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
 
+The function $\mathbb{CP}(L,r,\phi^\prime)$ constructs the location, constraint
+pair $(l\ \phi\wedge\phi^\prime)$ such that $(l\ \phi\wedge\phi^\prime)\in\mathbb{CP}(L,r,\phi^\prime)$ if and only if $\exists (l\ \phi)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime)$
+
 \input{machine-rules}
 
 % Algorithm2e environment

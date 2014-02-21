@@ -68,6 +68,7 @@
     \inferrule[Equals (references-true)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
+    \exists (l\ \phi) \in L(r_1)(\exists (l\ \phi^\prime) \in L(r_2) ( \mathbb{S}((r_1 = r_2) \wedge \phi \wedge \phi^\prime))) \\\\
       L^\prime = L[\forall r \exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\cfgnt{v}_0 =  \cfgnt{v}_1)]}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
     (L^\prime\ R\ \eta\ \cfgt{true}\ \cfgnt{k})

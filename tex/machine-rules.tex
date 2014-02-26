@@ -68,29 +68,63 @@
     \inferrule[Equals (references-true)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
-    \theta_\alpha = \forall (\phi_1 \phi_2 )\exists (l\ \phi_1) \in L(r_1)(\exists (l\ \phi_2) \in L(r_2) ( \mathbb{S}((r_1 = r_2) \wedge \phi_1 \wedge \phi_2))) \\\\
-    \theta_\beta = \forall (\phi_1 )\exists (l\ \phi_1) \in L(r_1)(\neg \exists (l\ \phi_2) \in L(r_2) ) \\\\
-    \theta_\gamma = \forall (\phi_2 )\exists (l\ \phi_2) \in L(r_2)(\neg \exists (l\ \phi_1) \in L(r_1) ) \\\\
-    \phi_g = (\vee_{(\phi_i , \phi_j)\in\theta_\alpha}\phi_i \wedge \phi_j)\wedge(\wedge_{\phi_\beta \in \theta_\beta} \neg \phi_\beta)  \wedge(\wedge_{\phi_\gamma
-    \in \theta_\gamma} \neg \phi_\gamma) \\\\
-      L^\prime = L[\forall r \exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\phi_g)]}{
+    \theta_\alpha = \{\phi_1 \wedge \phi_2\mid\exists (l\ \phi_1) \in L(v_1)(\exists (l\ \phi_2) \in L(v_2) ( \mathbb{S}(\phi_1 \wedge \phi_2)))\} \\\\
+    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_2\ \phi_2) \in L(v_2)(l_1 \neq l_2)\} \\\\
+    \theta_2 = \{\phi_2 \mid \exists (l_2\ \phi_2) \in L(v_2) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_1 \neq l_2)\} \\\\
+    \phi_g = (\vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge(\wedge_{\phi_1 \in \theta_1} \neg \phi_1)  \wedge(\wedge_{\phi_2
+    \in \theta_2} \neg \phi_2) \\\\
+      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\phi_g)))]\\\\
+      X = \mathbb{B}(l, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
     (L^\prime\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
-%\and
-%    \inferrule[Equals (references-false)]{
-%    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
-%    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
-%    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-%    (L\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
-%    }
-%    \and
-%    \inferrule[ITE ]{
-%    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
-%    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
-%    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-%    (L\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
-%    }
+\and
+    \inferrule[Equals (references-false)]{
+    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
+    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
+    \theta_\alpha = \{\phi_1 \rightarrow \neg \phi_2\mid\exists (l\ \phi_1) \in L(v_1)(\exists (l\ \phi_2) \in L(v_2) ( \mathbb{S}(\phi_1 \wedge \phi_2)))\} \\\\
+    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_2\ \phi_2) \in L(v_2)(l_1 \neq l_2)\} \\\\
+    \theta_2 = \{\phi_2 \mid \exists (l_2\ \phi_2) \in L(v_2) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_1 \neq l_2)\} \\\\
+    \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge((\vee_{\phi_1 \in \theta_1} \phi_1)  \vee(\vee_{\phi_2
+    \in \theta_2} \phi_2)) \\\\
+      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\phi_g)))]\\\\
+      X = \mathbb{B}(l, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
+    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L^\prime\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
+    }
+\and
+   \inferrule[Method Invocation (object eval)]{}{
+    (L\ R\ \eta\ \lp\cfgnt{e}_0\ \cfgt{@}\ \cfgnt{m}\ \lp\cfgnt{e}_1\ ...\rp\rp\ \cfgnt{k}) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \lp\cfgnt{e}_1\ ...\rp \rightarrow \cfgnt{k}))
+   }
+\and
+   \inferrule[Method Invocation (arg0 eval)]{}{
+    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m} \lp\cfgnt{e}_1\ \cfgnt{e}_2\ ...\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ ()\ \cfgt{*}\ \lp\cfgnt{e}_2\ ...\rp \rightarrow \cfgnt{k}))
+   }
+\and
+   \inferrule[Method Invocation (argi eval)]{}{
+    (L\ R\ \eta\ \cfgnt{v}_i\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ \cfgnt{e}_{i+2}\ ...\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_{i+1}\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...\ v_i)\ \cfgt{*}\ \lp\cfgnt{e}_{i+2}\ ...\rp \rightarrow \cfgnt{k}))
+   }
+\and
+   \inferrule[Method Invocation (args)]{}{
+    (L\ R\ \eta\ \cfgnt{v}_n\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...\ v_n))\ \cfgnt{k})
+   }
+\and
+   \inferrule[Method Invocation (no args)]{}{
+    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ ()\ \cfgnt{k})
+   }
+\and
+   \inferrule[Method Invocation (raw)]{
+    \mathrm{lookup}(\cfgnt{m}) = \lp\cfgnt{T}\ \cfgnt{m}\ \lp\lb\cfgnt{T}\ \cfgnt{x}\rb\ ...\rp\ e_m\rp \\
+    \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]\ ...}{
+    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgnt{k}) \rightarrow
+    (L^\prime\ R^\prime\ \eta_m\ \cfgnt{e}_m\ (\cfgt{pop}\ \eta\ \cfgnt{k}))
+   }
+
 \end{mathpar}
 \end{center}
 \caption{Uber-lazy state reductions}

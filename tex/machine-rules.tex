@@ -68,18 +68,29 @@
     \inferrule[Equals (references-true)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
-    \exists (l\ \phi) \in L(r_1)(\exists (l\ \phi^\prime) \in L(r_2) ( \mathbb{S}((r_1 = r_2) \wedge \phi \wedge \phi^\prime))) \\\\
-      L^\prime = L[\forall r \exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\cfgnt{v}_0 =  \cfgnt{v}_1)]}{
+    \theta_\alpha = \forall (\phi_1 \phi_2 )\exists (l\ \phi_1) \in L(r_1)(\exists (l\ \phi_2) \in L(r_2) ( \mathbb{S}((r_1 = r_2) \wedge \phi_1 \wedge \phi_2))) \\\\
+    \theta_\beta = \forall (\phi_1 )\exists (l\ \phi_1) \in L(r_1)(\neg \exists (l\ \phi_2) \in L(r_2) ) \\\\
+    \theta_\gamma = \forall (\phi_2 )\exists (l\ \phi_2) \in L(r_2)(\neg \exists (l\ \phi_1) \in L(r_1) ) \\\\
+    \phi_g = (\vee_{(\phi_i , \phi_j)\in\theta_\alpha}\phi_i \wedge \phi_j)\wedge(\wedge_{\phi_\beta \in \theta_\beta} \neg \phi_\beta)  \wedge(\wedge_{\phi_\gamma
+    \in \theta_\gamma} \neg \phi_\gamma) \\\\
+      L^\prime = L[\forall r \exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\phi_g)]}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
     (L^\prime\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
-\and
-    \inferrule[Equals (references-false)]{
-    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
-    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
-    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
-    }
+%\and
+%    \inferrule[Equals (references-false)]{
+%    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
+%    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
+%    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+%    (L\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
+%    }
+%    \and
+%    \inferrule[ITE ]{
+%    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
+%    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}}{
+%    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+%    (L\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
+%    }
 \end{mathpar}
 \end{center}
 \caption{Uber-lazy state reductions}

@@ -131,6 +131,26 @@
 \label{fig:expr:red}
 \end{figure*}
 
+\begin{figure*}[t]
+\begin{center}
+\mprset{flushleft}
+\begin{mathpar}
+	\inferrule[ITE (expr-eval)]{}{
+      (L\ R\ \eta\ (\cfgt{if}\ \cfgnt{e}_0\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2)\ k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k)
+	}
+\and
+	\inferrule[ITE (true)]{}{
+       (L\ R\ \eta\ \cfgt{true}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_1\  k)
+	}
+\and
+	\inferrule[ITE (false)]{}{
+       (L\ R\ \eta\ \cfgt{false}(\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_2\  k)
+	}
+\end{mathpar}
+\end{center}
+\caption{Uber-lazy state reductions}
+\label{fig:expr:red}
+\end{figure*}
 
 %% Expression syntax
 

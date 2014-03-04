@@ -144,8 +144,36 @@
 	}
 \and
 	\inferrule[ITE (false)]{}{
-       (L\ R\ \eta\ \cfgt{false}(\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_2\  k)
+       (L\ R\ \eta\ \cfgt{false}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_2\  k)
 	}
+\and
+	\inferrule[Field Write (expr-eval)]{}{
+       (L\ R\ \eta\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{e})\ k) \rightarrow (L\ R\ \eta\ \cfgnt{e}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k)
+	}
+\and
+	\inferrule[Field Write (NULL)]{
+      L(r) = \emptyset}{
+       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k)
+	}
+\and
+	\inferrule[Field Write (non-NULL)]{
+      L(r) = \emptyset \\
+      \mathrm{type}(r) = \mathrm{C}_r\\
+      \mathrm{fresh}_l(\mathrm{C}_r) = l \\\\
+      R^\prime = R[\forall \mathrm{f} \in \mathrm{C}_r\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))]
+    }{
+      (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
+      (L[r \mapsto \{(l,\phi_T)\}]\ R^\prime\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k))
+	}	
+\and
+	\inferrule[Field Write]{
+      L(r) \neq \emptyset \\
+      \Psi_x =\{\cfgnt{x}^\prime\ | \exists(\cfgnt{l}\ \phi) \in L(\cfgnt{x}) \wedge \exists \cfgnt{x}^\prime \in R(\cfgnt{l,f}) \}\\\\
+      L^\prime = [ \cfgnt{x}_i \mapsto (L(\cfgnt{r} ) \cup ( L(\cfgnt{x}_i) \wedge \neg(\vee_{(\l_j \phi_j)\in L(r)} \phi_j)) | \cfgnt{x}_i \in \Psi_x]
+    }{
+      (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
+      (L^\prime R\ \eta\ k))
+	}	
 \end{mathpar}
 \end{center}
 \caption{Uber-lazy state reductions}

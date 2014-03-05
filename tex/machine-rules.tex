@@ -168,8 +168,8 @@
 \and
 	\inferrule[Field Write]{
       L(r) \neq \emptyset \\
-      \Psi_x =\{\cfgnt{x}^\prime\ | \exists(\cfgnt{l}\ \phi) \in L(\cfgnt{x}) \wedge \exists \cfgnt{x}^\prime \in R(\cfgnt{l,f}) \}\\\\
-      L^\prime = [ \cfgnt{x}_i \mapsto (L(\cfgnt{r} ) \cup ( L(\cfgnt{x}_i) \wedge \neg(\vee_{(\l_j \phi_j)\in L(r)} \phi_j)) | \cfgnt{x}_i \in \Psi_x]
+      \Psi_x =\{(\cfgnt{x}^\prime,\phi)\ | \exists(\cfgnt{l},\phi) \in L(\cfgnt{x}) \wedge \exists \cfgnt{x}^\prime \in R(\cfgnt{l,f}) \}\\\\
+      L^\prime = [ \cfgnt{x}_i \mapsto ((L(\cfgnt{r} ) \wedge \phi_i) \cup ( L(\cfgnt{x}_i) \wedge \neg \phi_i) | (\cfgnt{x}_i,\phi_i) \in \Psi_x]
     }{
       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
       (L^\prime R\ \eta\ k))

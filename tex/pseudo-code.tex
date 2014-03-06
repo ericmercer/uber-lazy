@@ -63,6 +63,10 @@ where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
 The function $\mathbb{CP}(L,r,\phi^\prime)$ constructs the location, constraint
 pair $(l\ \phi\wedge\phi^\prime)$ such that $(l\ \phi\wedge\phi^\prime)\in\mathbb{CP}(L,r,\phi^\prime)$ if and only if $\exists (l\ \phi)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime)$
 
+The function $\mathbb{B}(l,\phi^\prime)$ returns the set of references: $\{r | \exists(l,\phi) \in L(r)(\neg \mathbb{S}(\phi \vee \phi^\prime))\}}$
+
+The function $\mathbb{C}(L,R,X,\eta,k)$ checks the heap to see if any references in set $X$ are connected to any references in $k$. If there are, then it returns $0$. Otherwise, it returns $1$: $$\mathbb{C}(L,R,X,\eta,k) =  \left\{ \begin{array}{rcl}0 & \exists r \in X ( \exists r^\prime \in \cfgt{ref}(k) \cup \cfgt{ref}(\eta)(\cfgt{reach}(r,r^\prime))) \\ 1 & \mbox{otherwise}\end{array}\right$$
+
 \input{machine-rules}
 
 % Algorithm2e environment

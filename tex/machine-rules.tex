@@ -73,8 +73,8 @@
     \theta_2 = \{\phi_2 \mid \exists (l_2\ \phi_2) \in L(v_2) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_1 \neq l_2)\} \\\\
     \phi_g = (\vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge(\wedge_{\phi_1 \in \theta_1} \neg \phi_1)  \wedge(\wedge_{\phi_2
     \in \theta_2} \neg \phi_2) \\\\
-      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\phi_g)))]\\\\
-      X = \mathbb{B}(l, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
+      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
+      X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
     (L^\prime\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
@@ -87,8 +87,8 @@
     \theta_2 = \{\phi_2 \mid \exists (l_2\ \phi_2) \in L(v_2) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_1 \neq l_2)\} \\\\
     \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge((\vee_{\phi_1 \in \theta_1} \phi_1)  \vee(\vee_{\phi_2
     \in \theta_2} \phi_2)) \\\\
-      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{CP}(L,r,\phi_g)))]\\\\
-      X = \mathbb{B}(l, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
+      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
+      X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
     (L^\prime\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
     }
@@ -167,9 +167,10 @@
 	}	
 \and
 	\inferrule[Field Write]{
-      L(r) \neq \emptyset \\
-      \Psi_x =\{(\cfgnt{x}^\prime,\phi)\ | \exists(\cfgnt{l},\phi) \in L(\cfgnt{x}) \wedge \exists \cfgnt{x}^\prime \in R(\cfgnt{l,f}) \}\\\\
-      L^\prime = [ \cfgnt{x}_i \mapsto ((L(\cfgnt{r} ) \wedge \phi_i) \cup ( L(\cfgnt{x}_i) \wedge \neg \phi_i) | (\cfgnt{x}_i,\phi_i) \in \Psi_x]
+      L(r) \neq \emptyset \\ r_x = \eta(\cfgt{x}) \\
+      \Psi_x =\{(r^\prime,\phi)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
+      X = \cup_{(r^\prime,\phi^\prime) \in \Psi_x} \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime)\\
+      L^\prime = [r^\prime \mapsto  X]
     }{
       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
       (L^\prime R\ \eta\ k))

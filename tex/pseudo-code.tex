@@ -60,12 +60,49 @@ only if
 \]
 where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
 
-The function $\mathbb{CP}(L,r,\phi^\prime)$ constructs the location, constraint
-pair $(l\ \phi\wedge\phi^\prime)$ such that $(l\ \phi\wedge\phi^\prime)\in\mathbb{CP}(L,r,\phi^\prime)$ if and only if $\exists (l\ \phi)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime)$
+The strengthen function $\mathbb{ST}(L,r,\phi^\prime)$ strengthens every
+constraint from the reference $r$ and keeps only location-constraint
+pairs that are satisfiable after strengthening. Formally,
+$(l\ \phi\wedge\phi^\prime)\in\mathbb{ST}(L,r,\phi^\prime)$ if and
+only if $\exists (l\ \phi)\in
+L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime)$
 
-The function $\mathbb{B}(l,\phi^\prime)$ returns the set of references: $\{r | \exists(l,\phi) \in L(r)(\neg \mathbb{S}(\phi \vee \phi^\prime))\}}$
+The empty-reference function $\mathbb{ER}(L,\phi^\prime) = \{r\ |\ L(r) \neq
+\emptyset \wedge \forall(l,\phi) \in L(r)(\neg \mathbb{S}(\phi \wedge
+\phi^\prime))\}$ searches the heap for references that become
+disconnected from all their locations after strengthening. These
+references, if reachable, imply the heap is no longer valid on the
+current search path. As such, the symbolic execution algorithm should
+backtrack. This check is similar to a feasibility check in classic
+symbolic execution with only primitive data types.
 
-The function $\mathbb{C}(L,R,X,\eta,k)$ checks the heap to see if any references in set $X$ are connected to any references in $k$. If there are, then it returns $0$. Otherwise, it returns $1$: $$\mathbb{C}(L,R,X,\eta,k) =  \left\{ \begin{array}{rcl}0 & \exists r \in X ( \exists r^\prime \in \cfgt{ref}(k) \cup \cfgt{ref}(\eta)(\cfgt{reach}(r,r^\prime))) \\ 1 & \mbox{otherwise}\end{array}\right$$
+The consistency function is critical to the soundness of the algorithm
+as it detects when a symbolic heap becomes invalid along a path,
+similar to a feasibility check when doing classical symbolic execution
+with just primitives. As the constraints in the heap are strengthened
+with different aliasing requirements, it is possible to reach a point
+where the heap is no longer connected. Meaning, a valid reference is
+live, either in the local environment or the continuation, the reaches
+another reference that is no longer connected to any locations due to
+strengthening. The function relies on the empty-reference function to
+identify disconnected references. The function in essence checks every
+reference in the local environment and every reference found in the
+continuation, as these are all considered live. This operation similar
+to garbage collection where the local environment and stack are
+inspected to find the roots of the heap for the scan.
+
+
+The consistency function relies on two auxiliary functions which are
+informally defined. The function $\mathrm{ref}(\eta,\cfgnt{k})$
+inspects the local environment and continuation for all live
+references, and it returns those references in a set. The function
+$\mathrm{reach}(L, R, r, r^\prime)$ returns true if $r^\prime$ is
+reachable from $r$ in the heap and false otherwise. The consistency function $\mathbb{C}(L,R,X,\eta,k)$ is now defined as
+\[
+ \left\{ \begin{array}{rl} 
+        0 & \exists r \in \mathrm{ref}(\eta, \cfgnt{k})\ (\exists r^\prime \in X\ (\mathrm{reach}(L, R, r,r^\prime))) \\ 
+        1 & \mbox{otherwise}\end{array}\right .
+\]
 
 \input{machine-rules}
 

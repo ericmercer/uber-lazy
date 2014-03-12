@@ -94,34 +94,47 @@
     }
 \and
    \inferrule[Method Invocation (object eval)]{}{
-    (L\ R\ \eta\ \lp\cfgnt{e}_0\ \cfgt{@}\ \cfgnt{m}\ \lp\cfgnt{e}_1\ ...\rp\rp\ \cfgnt{k}) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \lp\cfgnt{e}_1\ ...\rp \rightarrow \cfgnt{k}))
+    (L\ R\ \eta\ \lp\cfgnt{e}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\rp\ \cfgnt{k}) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k}))
    }
+   
 \and
-   \inferrule[Method Invocation (arg0 eval)]{}{
-    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m} \lp\cfgnt{e}_1\ \cfgnt{e}_2\ ...\rp \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ ()\ \cfgt{*}\ \lp\cfgnt{e}_2\ ...\rp \rightarrow \cfgnt{k}))
+   \inferrule[Method Invocation (arg eval)]{}{
+    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}))
    }
-\and
-   \inferrule[Method Invocation (argi eval)]{}{
-    (L\ R\ \eta\ \cfgnt{v}_i\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ \cfgnt{e}_{i+2}\ ...\rp \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_{i+1}\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...\ v_i)\ \cfgt{*}\ \lp\cfgnt{e}_{i+2}\ ...\rp \rightarrow \cfgnt{k}))
-   }
-\and
-   \inferrule[Method Invocation (args)]{}{
-    (L\ R\ \eta\ \cfgnt{v}_n\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...\ v_n))\ \cfgnt{k})
-   }
-\and
-   \inferrule[Method Invocation (no args)]{}{
-    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ ()\ \cfgnt{k})
-   }
+%\and
+%   \inferrule[Method Invocation (arg0 eval)]{}{
+%    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m} \lp\cfgnt{e}_1\ \cfgnt{e}_2\ ...\rp \rightarrow \cfgnt{k})) \rightarrow
+%    (L\ R\ \eta\ \cfgnt{e}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ ()\ \cfgt{*}\ \lp\cfgnt{e}_2\ ...\rp \rightarrow \cfgnt{k}))
+%   }
+%\and
+%   \inferrule[Method Invocation (argi eval)]{}{
+%    (L\ R\ \eta\ \cfgnt{v}_i\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ \cfgnt{e}_{i+2}\ ...\rp \rightarrow \cfgnt{k})) \rightarrow
+%    (L\ R\ \eta\ \cfgnt{e}_{i+1}\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...\ v_i)\ \cfgt{*}\ \lp\cfgnt{e}_{i+2}\ ...\rp \rightarrow \cfgnt{k}))
+%   }
+%\and
+%   \inferrule[Method Invocation (args)]{}{
+%    (L\ R\ \eta\ \cfgnt{v}_n\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
+%    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...\ v_n))\ \cfgnt{k})
+%   }
+%\and
+%   \inferrule[Method Invocation (no args)]{}{
+%    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
+%    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ ()\ \cfgnt{k}))
+%   }
 \and
    \inferrule[Method Invocation (raw)]{
-    \mathrm{lookup}(\cfgnt{m}) = \lp\cfgnt{T}\ \cfgnt{m}\ \lp\lb\cfgnt{T}\ \cfgnt{x}\rb\ ...\rp\ e_m\rp \\
-    \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]\ ...}{
-    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ (\cfgnt{v}_1\ ...)\ \cfgnt{k}) \rightarrow
+    \mathrm{lookup}(\cfgnt{m}) = \lp\cfgnt{T}\ \cfgnt{m}\ \lb\cfgnt{T}\ \cfgnt{x}\rb\ \ e_m\rp \\
+    \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]\ }{
+    (L\ R\ \eta\ \cfgnt{v}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{v}_1\ \cfgnt{k})
+   }
+\and
+   \inferrule[Method Invocation]{
+    \mathrm{lookup}(\cfgnt{m}) = \lp\cfgnt{T}\ \cfgnt{m}\ \lb\cfgnt{T}\ \cfgnt{x}\rb\ \ e_m\rp \\
+    \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]\ }{
+    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{v}_1\ \cfgnt{k}) \rightarrow
     (L^\prime\ R^\prime\ \eta_m\ \cfgnt{e}_m\ (\cfgt{pop}\ \eta\ \cfgnt{k}))
    }
 
@@ -173,37 +186,37 @@
       L^\prime(r) = \{\theta |  \exists (r, \theta)\in X \vee (\neg \exists (r, \theta)\in X \wedge \theta=L(r))\}  
     }{
       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L^\prime R\ \eta\ k))
+      (L^\prime R\ \eta\ k)
 	}	
 \and
    \inferrule[Begin (no args)]{}{
-    (L\ R\ \eta\ (\cfgt{begin})\ \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{k}))
+    (L\ R\ \eta\ (\cfgt{begin})\ \cfgnt{k}) \rightarrow
+    (L\ R\ \eta\ \cfgnt{k})
    }
 \and
    \inferrule[Begin (arg0 eval)]{}{
-    (L\ R\ \eta\ (\cfgt{begin}\ \lp \cfgnt{e}_0\ \cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k}))
+    (L\ R\ \eta\ (\cfgt{begin}\ \lp \cfgnt{e}_0\ \cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k}) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k})
    }
 \and
    \inferrule[Begin (argI eval)]{}{
-    (L\ R\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_i\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k}))
+    (L\ R\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k}) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_i\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k})
    }
 \and
    \inferrule[Begin (argN eval)]{}{
-    (L\ R\ \eta\ v\ (\cfgt{begin}\ \lp\cfgnt{e}_{n}\rp) \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_n\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp) \rightarrow \cfgnt{k}))
+    (L\ R\ \eta\ v\ (\cfgt{begin}\ \lp\cfgnt{e}_{n}\rp) \rightarrow \cfgnt{k}) \rightarrow
+    (L\ R\ \eta\ \cfgnt{e}_n\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp) \rightarrow \cfgnt{k})
    }
 \and
    \inferrule[Begin]{}{
-    (L\ R\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp) \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ v\ \cfgnt{k}))
+    (L\ R\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ v\ \cfgnt{k})
    }	
 \and
    \inferrule[Variable Declaration (eval)]{}{
     (L\ R\ \eta\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}_0\ \cfgt{in}\ \cfgnt{e}_1\rp \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_0\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k}))
+    (L\ R\ \eta\ \cfgnt{e}_0\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k})
    }	
 \and
    \inferrule[Variable Declaration]{
@@ -213,9 +226,14 @@
    R^\prime = R[\forall \cfgnt{f} \in \mathrm{C}\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))] \\\\
    L^\prime = L[r \mapsto \{(l\ \phi_T)\}]
    }{
-    (L\ R\ \eta\ v\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ v\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k}) \rightarrow
     (L^\prime\ R^\prime\ \eta^
     \prime\ \cfgnt{e}_1\ (\cfgt{pop}\ \eta\ \cfgnt{k}))
+   }	
+\and
+   \inferrule[Pop]{}{
+    (L\ R\ \eta\ (\cfgt{pop}\ \eta_0\ \cfgnt{k})) \rightarrow
+    (L\ R\ \eta_0\ \cfgnt{k})
    }
 \end{mathpar}
 \end{center}

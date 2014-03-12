@@ -5,18 +5,19 @@
 \cfgrule{$\mu$}{(\cfgnt{CL} ...)}
 \cfgrule{T}{\cfgt{bool} \cfgor \cfgnt{C}}
 \cfgrule{CL}{\lp\cfgt{class} \cfgnt{C} \lp\lb\cfgnt{T} \cfgnt{f}\rb ...\rp \lp\cfgnt{M} ...\rp}
-\cfgrule{M}{\lp\cfgnt{T} \cfgnt{m} \lp\lb\cfgnt{T} \cfgnt{x}\rb ...\rp e\rp}
+\cfgrule{M}{\lp\cfgnt{T} \cfgnt{m} \lb\cfgnt{T} \cfgnt{x}\rb\  e\rp}
 \cfgrule{e}{\cfgnt{x}}
 \cfgorline{\cfgnt{v}}
 \cfgorline{\lp\cfgt{new} \cfgnt{C}\rp}
 \cfgorline{\lp\cfgnt{e} \cfgt{\$} \cfgnt{f}\rp}
-\cfgorline{\lp\cfgnt{e} \cfgt{@} \cfgnt{m} \lp\cfgnt{e} ...\rp\rp}
+\cfgorline{\lp\cfgnt{e} \cfgt{@} \cfgnt{m} \cfgnt{e} \rp}
 \cfgorline{\lp\cfgnt{e} \cfgt{=} \cfgnt{e}\rp}
 \cfgorline{\lp\cfgnt{x} \cfgt{:=} \cfgnt{e}\rp}
 \cfgorline{\lp\cfgnt{x} \cfgt{\$} \cfgnt{f} \cfgt{:=} \cfgnt{e}\rp}
 \cfgorline{\lp\cfgt{if} \cfgnt{e} \cfgnt{e} \cfgt{else} \cfgnt{e}\rp}
 \cfgorline{\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{e} \cfgt{in} \cfgnt{e}\rp}
 \cfgorline{\lp\cfgt{begin} \cfgnt{e} ...\rp}
+\cfgorline{\lp\cfgt{pop} \eta \rp}
 \cfgrule{x}{\cfgt{this} \cfgor \cfgnt{id}}
 \cfgrule{f}{\cfgnt{id}}
 \cfgrule{m}{\cfgnt{id}}

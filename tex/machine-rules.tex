@@ -68,11 +68,11 @@
     \inferrule[Equals (references-true)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
-    \theta_\alpha = \{\phi_1 \wedge \phi_2\mid\exists (l\ \phi_1) \in L(v_1)(\exists (l\ \phi_2) \in L(v_2) ( \mathbb{S}(\phi_1 \wedge \phi_2)))\} \\\\
-    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_2\ \phi_2) \in L(v_2)(l_1 \neq l_2)\} \\\\
-    \theta_2 = \{\phi_2 \mid \exists (l_2\ \phi_2) \in L(v_2) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_1 \neq l_2)\} \\\\
-    \phi_g = (\vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge(\wedge_{\phi_1 \in \theta_1} \neg \phi_1)  \wedge(\wedge_{\phi_2
-    \in \theta_2} \neg \phi_2) \\\\
+    \theta_\alpha = \{\phi_0 \wedge \phi_1\mid\exists (l\ \phi_0) \in L(v_0)(\exists (l\ \phi_1) \in L(v_1) ( \mathbb{S}(\phi_0 \wedge \phi_1)))\} \\\\
+    \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
+    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
+    \phi_g = (\vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge(\wedge_{\phi_0 \in \theta_0} \neg \phi_0)  \wedge(\wedge_{\phi_1
+    \in \theta_1} \neg \phi_1) \\\\
       L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
       X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
@@ -82,11 +82,11 @@
     \inferrule[Equals (references-false)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
-    \theta_\alpha = \{\phi_1 \rightarrow \neg \phi_2\mid\exists (l\ \phi_1) \in L(v_1)(\exists (l\ \phi_2) \in L(v_2) ( \mathbb{S}(\phi_1 \wedge \phi_2)))\} \\\\
-    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_2\ \phi_2) \in L(v_2)(l_1 \neq l_2)\} \\\\
-    \theta_2 = \{\phi_2 \mid \exists (l_2\ \phi_2) \in L(v_2) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_1 \neq l_2)\} \\\\
-    \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge((\vee_{\phi_1 \in \theta_1} \phi_1)  \vee(\vee_{\phi_2
-    \in \theta_2} \phi_2)) \\\\
+    \theta_\alpha = \{\phi_0 \rightarrow \neg \phi_1\mid\exists (l\ \phi_0) \in L(v_0)(\exists (l\ \phi_1) \in L(v_1) ( \mathbb{S}(\phi_0 \wedge \phi_1)))\} \\\\
+    \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
+    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
+    \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge((\vee_{\phi_0 \in \theta_0} \phi_0)  \vee(\vee_{\phi_1
+    \in \theta_1} \phi_1)) \\\\
       L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
       X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
     (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
@@ -180,13 +180,13 @@
 	}	
 \and
 	\inferrule[Field Write]{
-      L(r) \neq \emptyset \\ r_x = \eta(\cfgt{x}) \\
-      \Psi_x =\{(r^\prime,\phi)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
+      L(r) \neq \emptyset \\ r_x = \eta(\cfgt{x}) \\ (\bot, \phi_T) \not\in L(r_x) \\\\
+      \Psi_x =\{(r^\prime,\phi)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge R(\cfgnt{l}, \cfgnt{f}) = r^\prime \}\\\\
       X = \{ (r^\prime, \theta)| (r^\prime,\phi^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
-      L^\prime(r) = \{\theta |  \exists (r, \theta)\in X \vee (\neg \exists (r, \theta)\in X \wedge \theta=L(r))\}  
+      L^\prime(r) = \{\theta\ |\ \exists (r, \theta)\in X \vee (\neg \exists (r, \theta)\in X \wedge \theta=L(r))\}  
     }{
       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L^\prime R\ \eta\ k)
+      (L^\prime\ R\ \eta\ k)
 	}	
 \and
    \inferrule[Begin (no args)]{}{
@@ -215,7 +215,7 @@
    }	
 \and
    \inferrule[Variable Declaration (eval)]{}{
-    (L\ R\ \eta\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}_0\ \cfgt{in}\ \cfgnt{e}_1\rp \cfgnt{k})) \rightarrow
+    (L\ R\ \eta\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}_0\ \cfgt{in}\ \cfgnt{e}_1\rp\ \cfgnt{k})) \rightarrow
     (L\ R\ \eta\ \cfgnt{e}_0\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k})
    }	
 \and

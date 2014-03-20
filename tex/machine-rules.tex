@@ -180,13 +180,14 @@
 	}	
 \and
 	\inferrule[Field Write]{
-      L(r) \neq \emptyset \\ r_x = \eta(\cfgt{x}) \\ (\bot, \phi_T) \not\in L(r_x) \\\\
-      \Psi_x =\{(r^\prime,\phi)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge R(\cfgnt{l}, \cfgnt{f}) = r^\prime \}\\\\
-      X = \{ (r^\prime, \theta)| (r^\prime,\phi^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
-      L^\prime(r) = \{\theta\ |\ \exists (r, \theta)\in X \vee (\neg \exists (r, \theta)\in X \wedge \theta=L(r))\}  
+      L(r) \neq \emptyset \\ r_x = \eta(\cfgt{x}) \\
+      \Psi_x =\{(\phi,l,r^\prime)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
+      X = \{ (r^\prime, l^\prime, \theta)| (\phi^\prime,l^\prime,r^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
+      Y= \{l|(\phi,l,r) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\
+      L^\prime = L[\forall l (\exists (r,l,\theta) \in X (\exists r = R (l,f) ( r \mapsto \theta) ) )]
     }{
       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L^\prime\ R\ \eta\ k)
+      (L^\prime R^\prime \ \eta\ k)
 	}	
 \and
    \inferrule[Begin (no args)]{}{

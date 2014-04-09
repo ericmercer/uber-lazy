@@ -170,22 +170,29 @@
 	}
 \and
 	\inferrule[Field Write (NULL)]{
-      L(r) = \emptyset}{
+	r_x = \eta(\cfgnt{x})\\
+      L(r_x) = \emptyset}{
        (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k)
 	}
 \and
 	\inferrule[Field Write (non-NULL)]{
-      L(r) = \emptyset \\
-      \mathrm{type}(r) = \mathrm{C}_r\\
+	r_x = \eta(\cfgnt{x})\\
+      L(r_x) = \emptyset \\
+      \mathrm{type}(r_x) = \mathrm{C}_r\\
       \mathrm{fresh}_l(\mathrm{C}_r) = l \\\\
+      \rho = \{ r_a |  l_a\in L \wedge \mathrm{type}(l_a) = \mathrm{C}_r \wedge r_a = R(l,\omega)\} \\
+      \phi_f = \wedge_{r_a \in \rho} r_x \ne r_a\\\\
+      \theta_a = \{ ( l_a\ \phi_a ) | l_a\in L \wedge \mathrm{type}(l_a) = \mathrm{C}_r \wedge r_a = R(l,\omega) \wedge \phi_a = (r_x = r_a) \} \\\\
+      \theta_f = {(l,\phi_f)}\\ 
+      \theta_t = \theta_a \cup \theta_f \\\\
       R^\prime = R[\forall \mathrm{f} \in \mathrm{C}_r\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))]
     }{
       (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L[r \mapsto \{(l,\phi_T)\}]\ R^\prime\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k))
+      (L[r_x \mapsto \theta_t]\ R^\prime\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k))
 	}	
 \and
 	\inferrule[Field Write]{
-      L(r) \neq \emptyset \\ r_x = \eta(\cfgt{x}) \\
+      L(r) \neq \emptyset \\ r_x = \eta(\cfgnt{x}) \\
       \Psi_x =\{(\phi,l,r^\prime)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
       X = \{ (r^\prime, l^\prime, \theta)| (\phi^\prime,l^\prime,r^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
       Y= \{l\ |\ (r^\prime, l^\prime, \theta) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\

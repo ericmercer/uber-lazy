@@ -43,7 +43,7 @@
 	}
 \and
 	\inferrule[Field Access]{
-      L(r) \neq \emptyset \\
+      (\bot,*) \notin L(r) \\ L(r) \neq \emptyset \\
       \mathrm{type}(r) = C_r \\
       \mathrm{fresh}_r(C_r) = r_f \\
     }{
@@ -190,7 +190,7 @@
 	}	
 \and
 	\inferrule[Field Write]{
-      L(r) \neq \emptyset \\ r_x = \eta(\cfgnt{x}) \\
+      (\bot,*) \notin L(r) \\ L(r) \neq \emptyset \\ r_x = \eta(\cfgnt{x}) \\\\
       \Psi_x =\{(\phi,l,r^\prime)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
       X = \{ (r^\prime, l^\prime, \theta)| (\phi^\prime,l^\prime,r^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
       Y= \{l\ |\ (r^\prime, l^\prime, \theta) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\

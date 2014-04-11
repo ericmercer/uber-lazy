@@ -1,30 +1,26 @@
 \begin{figure}
 \begin{center}
 \cfgstart
-\cfgrule{e}{\lp .... \cfgor \lp\cfgt{raw} \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgnt{v} \rp\rp}
-%    ;; eval syntax
-%  (object (C [f loc] ...))
-%  (hv v
-%      object)
+\cfgrule{e}{\lp ... \cfgor \lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgnt{v} \rp\rp}
+\cfgrule{object}{ (\cfgnt{C} [ \cfgnt{f} \cfgnt{loc} ] ...) }
+\cfgrule{hv}{ (\cfgnt{v} \cfgnt{object})}
 \cfgrule{$\phi$}{\cfgnt{constraint}}
 \cfgrule{l}{\cfgt{number}}
-%  (h mt
-%     (h [loc -> hv]))
-%  (η mt
-%     (η [x -> loc]))
+\cfgrule{h}{(\cfgnt{mt}\ (\cfgnt{h}\ [\cfgnt{loc} $\rightarrow$ \cfgnt{hv}]) )}
+\cfgrule{$\eta$}{(\cfgnt{mt}\ ($\eta$ [\cfgnt{x} $\rightarrow$ \cfgnt{loc}]))}
 \cfgrule{s}{\lp$\mu$ \cfgnt{L} \cfgnt{R} $\eta$ \cfgnt{e} \cfgnt{k}\rp}
 \cfgrule{k}{\cfgt{end}}
 \cfgorline{\lp \cfgt{*} \cfgt{\$} \cfgnt{f} $\rightarrow$ \cfgnt{k}\rp}
-%     (* @ m (e ...) -> k)
-%     (v @ m (v ...) * (e ...) -> k)
-%     (* == e -> k)
-%     (v == * -> k)
-%     (x := * -> k)
-%     (x $ f := * -> k)
-%     (if * e else e -> k)
-%     (var T x := * in e -> k)
-%     (begin * (e ...) -> k)
-%     (pop η k))
+\cfgorline{\lp \cfgt{*} \cfgt{@} \cfgnt{m} \lp \cfgnt{e} ... \rp $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgnt{v} \cfgt{*} \lp \cfgnt{e} ... \rp $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp \cfgt{*} \cfgt{=} \cfgnt{e} $\rightarrow$ \cfgnt{k}\rp}
+\cfgorline{\lp \cfgt{v} \cfgt{=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
+\cfgorline{\lp \cfgt{x} \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
+\cfgorline{\lp \cfgt{x} \cfgt{\$} \cfgnt{f}  \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
+\cfgorline{\lp \cfgt{if} \cfgnt{*} \cfgnt{e} \cfgt{else} \cfgnt{e} $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{*} \cfgt{in} \cfgnt{e}  $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp\cfgt{begin}  \cfgnt{*} \lp \cfgnt{e} ...\rp $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp\cfgt{pop} $\eta$ \cfgnt{k}\rp}
 \cfgend
 \end{center}
 \caption{The machine syntax for Javalite.}

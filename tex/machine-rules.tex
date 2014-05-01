@@ -11,13 +11,13 @@
       (L\ R\ \eta\ (e\ \$\ \cfgnt{f})\ k) \rightarrow (L\ R\ \eta\ e\ (*\ \$\ \cfgnt{f} \rightarrow k))
 	}
 \and
-	\inferrule[Field Access (NULL)]{
-      L(r) = \emptyset
-    }{
-      (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
-      (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
-	}
-\and
+%	\inferrule[Field Access (NULL)]{
+ %     L(r) = \emptyset
+ %   }{
+ %     (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
+%      (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
+%	}
+%\and
 	\inferrule[Field Access (non-NULL)]{
       L(r) = \emptyset \\
       \mathrm{type}(r) = \mathrm{C}_r\\
@@ -89,7 +89,7 @@
     \theta_\alpha = \{\phi_0 \rightarrow \neg \phi_1\mid\exists (l\ \phi_0) \in L(v_0)(\exists (l\ \phi_1) \in L(v_1) ( \mathbb{S}(\phi_0 \wedge \phi_1)))\} \\\\
     \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
     \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
-    \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge((\vee_{\phi_0 \in \theta_0} \phi_0)  \vee(\vee_{\phi_1
+    \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\vee((\vee_{\phi_0 \in \theta_0} \phi_0)  \vee(\vee_{\phi_1
     \in \theta_1} \phi_1)) \\\\
       L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
       X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{

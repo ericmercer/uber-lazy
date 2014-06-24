@@ -1,0 +1,141 @@
+\section{Uber-lazy Operational Semantics}
+\label{semantics}
+
+The operational semantics for Uber-lazy
+symbolic execution are specified using the Javalite 
+language~\cite{saints-MS}. Javalite is an imperative model of Java
+that includes many features of the Java language. In this work, we 
+present only the salient features of the Javalite
+language relevant to understanding the Uber-lazy symbolic execution
+algorithm. A detailed explanation of Javalite is available in~\cite{saints-MS}.
+
+Javalite is an imperative model of the Java language
+developed to facilitate rapid prototyping 
+of model checking algorithms and proofs about the
+algorithms. It is specified with a Java-like syntax and a set
+of reduction rules for syntacticly executing Javalite programs.
+Javalite is based on a variant of the CEKS syntactic 
+machine~\cite{Felleisen:1987}. The operational semantics are 
+defined using the structure (syntax)
+of the language and a set of reduction rules for syntactically
+executing Javalite programs. In a CEKS machine, the
+(C)ontrol string represents a program, command, or instruction to be
+evaluated; it is initialized to a string representing the entire progam. 
+An (E)nvironment  maps (local) variables to their values. The (K)ontinuation 
+specifies what is to be executed next, and the (S)tore is used to store 
+dynamically allocated data, i.e., the heap. 
+
+\subsection{Symbolic Store}
+
+At the core of the Uber-lazy symbolic execution algorithm
+is a fully symbolic heap, i.e., a heap in which objects
+are never materialized as concrete objects during symbolic
+execution, but instead are represented using constraints
+charactering feasible heap shapes. To represent the heap
+store ($S$), our algorithm defines a labeled bi-partite 
+graph where $S = (R, L, E)$.  $R$ contains the set of nodes 
+representing program \emph{references}.
+$L$ contains the set of nodes representing \emph{locations} in the store. 
+The store is initialized with two special locations: $null$ and $\bot$ representing a null object
+and an uninitialized location respectively. Each edge in the set of labeled
+edges, $E$, is uni-directional. An edge from a reference $r \in R$ to a location $l \in L$ is
+labeled with a constraint $\phi$ indicating the conditions under which $r$ references
+i.e., points to, that location in the store. This paper uses a standard definition
+of constraints $\phi \in \Phi$ assuming all of the usual relation operators and connectives.
+Reference nodes collect the the
+feasible points-to relations for a given program execution path during symbolic execution.
+Each edge from a location $l \in L$ to a reference $r \in R$ is labeled with the 
+name of a field $f \in F$. 
+
+More details here including we assume the input program is typesafe
+or if there is a type and a mismatch occurs, then the machine halts.
+
+The machine also halts if an exception is thrown.
+
+\subsection{Syntax}
+
+\input{surface-syntax}
+\input{machine-syntax} 
+
+Javalite programs and expressions are written in a syntax specified by the 
+grammar in~\figref{fig:machine-syntax}. The production rules correspond
+to the various features supported by Javalite such as classes, fields,
+methods, and expressions. 
+
+\figref{fig:machine-syntax} specifies
+the machine syntax for Javalite. The expression $e$ is equivalent to
+a CEKS machine's control string. The 
+
+\subsection{Reduction Rules}
+
+We first present the reduction rules 
+
+
+\subsubsection{Basic Reduction Rules}
+
+Most rules presented here - short discussion
+
+\subsubsection{Store Update Rules}
+
+Interesting rules presented here; more elaborate discussion
+
+Start off with helper functions for rules that manipulate the store...
+
+The function $\mathbb{VS}(L,R,r,f)$ constructs the value-set given a
+heap, reference, and desired field such that
+$(l^\prime\ \phi^\prime\wedge\phi) \in \mathbb{VS}(L,R,r,f)$ if and
+only if
+\[
+\begin{array}{l}
+  \exists (l\ \phi) \in L(r) ( \\
+  \ \ \ \ \ \ \ \ \ \exists r^\prime \in R(l,f) ( \\
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists (l^\prime\ \phi^\prime) \in L(r^\prime) (\mathbb{S}(\phi\wedge\phi^\prime))))
+\end{array}
+\]
+where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
+
+The strengthen function $\mathbb{ST}(L,r,\phi^\prime)$ strengthens every
+constraint from the reference $r$ and keeps only location-constraint
+pairs that are satisfiable after strengthening. Formally,
+$(l\ \phi\wedge\phi^\prime)\in\mathbb{ST}(L,r,\phi^\prime)$ if and
+only if $\exists (l\ \phi)\in
+L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime)$
+
+The empty-reference function $\mathbb{ER}(L,\phi^\prime) = \{r\ |\ L(r) \neq
+\emptyset \wedge \forall(l,\phi) \in L(r)(\neg \mathbb{S}(\phi \wedge
+\phi^\prime))\}$ searches the heap for references that become
+disconnected from all their locations after strengthening. These
+references, if reachable, imply the heap is no longer valid on the
+current search path. As such, the symbolic execution algorithm should
+backtrack. This check is similar to a feasibility check in classic
+symbolic execution with only primitive data types.
+
+The consistency function is critical to the soundness of the algorithm
+as it detects when a symbolic heap becomes invalid along a path,
+similar to a feasibility check when doing classical symbolic execution
+with just primitives. As the constraints in the heap are strengthened
+with different aliasing requirements, it is possible to reach a point
+where the heap is no longer connected. Meaning, a valid reference is
+live, either in the local environment or the continuation, the reaches
+another reference that is no longer connected to any locations due to
+strengthening. The function relies on the empty-reference function to
+identify disconnected references. The function in essence checks every
+reference in the local environment and every reference found in the
+continuation, as these are all considered live. This operation similar
+to garbage collection where the local environment and stack are
+inspected to find the roots of the heap for the scan.
+
+
+The consistency function relies on two auxiliary functions which are
+informally defined. The function $\mathrm{ref}(\eta,\cfgnt{k})$
+inspects the local environment and continuation for all live
+references, and it returns those references in a set. The function
+$\mathrm{reach}(L, R, r, r^\prime)$ returns true if $r^\prime$ is
+reachable from $r$ in the heap and false otherwise. The consistency function $\mathbb{C}(L,R,X,\eta,k)$ is now defined as
+\[
+ \left\{ \begin{array}{rl} 
+        0 & \exists r \in \mathrm{ref}(\eta, \cfgnt{k})\ (\exists r^\prime \in X\ (\mathrm{reach}(L, R, r,r^\prime))) \\ 
+        1 & \mbox{otherwise}\end{array}\right .
+\]
+
+\input{machine-rules}

@@ -1,5 +1,72 @@
 \section{Introduction}
 
+In recent years symbolic execution --
+a program analysis technique for systematic exploration of
+program execution paths using symbolic input values -- has provided
+the basis for many software testing and analysis techniques.
+For each execution path explored during symbolic execution, constraints
+on the symbolic inputs are collected to create a \emph{path
+condition}. The set of path conditions computed by symbolic execution
+characterize the observed program execution behaviours and can
+be used to perform various analyses of program behavior, e.g.,
+regression testing~\cite{} and differential program 
+analysis~\cite{}. 
+
+Initial work on symbolic execution largely focused on checking 
+properties of programs with primitive types, such as integers and 
+booleans~\cite{clarke76TSE,King:76}. With the advent of object-oriented
+languages, such as Java and C$++$, one of the fundamental challenges 
+of using symbolic execution for program analysis
+has been how to analyze programs containing
+complex data structures with unbounded domains, i.e., data stored
+on the heap. State-of-the-art symbolic execution techniques have 
+addressed this challenge by constructing the heap in a lazy manner, 
+deferring materialization of objects on the concrete heap until
+they are needed, i.e., until execution of a statement with a 
+dereference expression ($x = r.f$)~\cite{Kiasan06,Kiasan07,GSE03}. 
+
+Although the lazy symbolic execution techniques have been instrumental 
+in enabling analysis of heap manipulating software, treatment of
+heap data follows concrete program semantics once a heap location is
+materialized. The effect is to exacerbate 
+the state space explosion problem by creating additional points of 
+non-determinism during symbolic execution to account for the 
+different possible concrete heap configurations.
+
+Need a transition here to talk about a symbolic heap
+
+In this paper we present a novel approach to lazy symbolic
+execution....
+
+Our technique is 1) scalable -- it constructs the symbolic
+heap on-the-fly during symbolic execution but avoids introducing 
+additional points of non-determinism
+by maintaining only a (fully) symbolic heap,
+2) precise -- at any given point during symbolic execution, 
+the symbolic heap represents the exact set of feasible
+concrete heap structures for the program under analysis, and
+3) expressive -- the symbolic heap can represent recursive data structures 
+and heaps resulting from loops and recursive control structures in the code. 
+We report on a case-study of an implementation of our technique in the
+Symbolic PathFinder tool to illustrate
+ its scalability and we discuss how test case generation -- a common
+ use for the results of symbolic execution -- can benefit from symbolic
+ execution using a fully symbolic heap.
+
+This paper makes the following contributions:
+
+\begin{itemize}
+\item{We present a novel technique for analyzing heap manipulating
+programs that constructs a fully symbolic representatino of
+the heap on-the-fly durig symbolic execution.}
+\item{We prove the soundness and completeness of our algorithm...}
+\item{We implement our approach in the Symbolic PathFinder tool}
+\item{We demonstrate experimentally that our technique improves
+the scalability of symbolic execution of heap maninpulating software
+over state-of-the-art techniques.}
+  
+ \end{itemize}
+
 \begin{comment}
 \newcommand{\Indstate}[1][1]{\State\hspace{#1\algorithmicindent}}
 
@@ -31,3 +98,6 @@
 
 Lazy initialization is a symbolic execution technique where memory structures are created on-demand, as they are required.
 \end{comment}
+
+
+

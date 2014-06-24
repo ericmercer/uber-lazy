@@ -4,17 +4,17 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Variable lookup]{}{
-      (L\ R\ \eta\ \cfgnt{x}\ k) \rightarrow (L\ R\ \eta\ \eta(\cfgnt{x})\ k)
+      (L\ R\ g\ \eta\ \cfgnt{x}\ k) \rightarrow (L\ R\ g\ \eta\ \eta(\cfgnt{x})\ k)
 	}
 \and
 	\inferrule[Field Access(eval)]{}{
-      (L\ R\ \eta\ (e\ \$\ \cfgnt{f})\ k) \rightarrow (L\ R\ \eta\ e\ (*\ \$\ \cfgnt{f} \rightarrow k))
+      (L\ R\ g\ \eta\ (e\ \$\ \cfgnt{f})\ k) \rightarrow (L\ R\ g\ \eta\ e\ (*\ \$\ \cfgnt{f} \rightarrow k))
 	}
 \and
 %	\inferrule[Field Access (NULL)]{
  %     L(r) = \emptyset
  %   }{
- %     (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
+ %     (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
 %      (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
 %	}
 %\and
@@ -31,8 +31,8 @@
       \theta_n = \{ (l_{null} , r_{null} = r_f ) \}\\
       \theta_t = \theta_a \cup \theta_f \cup \theta_n
     }{
-      (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
-      (L[r_f \mapsto \theta_t]\ R[ (l_x,f) \mapsto r_f ]\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
+      (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
+      (L[r_f \mapsto \theta_t]\ R[ (l_x,f) \mapsto r_f ]\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
 	}
 \and
 	\inferrule[New]{
@@ -41,8 +41,8 @@
       R^\prime = R[\forall \cfgnt{f} \in \mathrm{C}\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))] \\\\
       L^\prime = L[r \mapsto \{(l\ \phi_T)\}]
     }{
-      (L\ R\ \eta\ (\cfgt{new}\ \cfgnt{C})\ k) \rightarrow 
-      (L^\prime\ R^\prime\ \eta\ r\ k)
+      (L\ R\ g\ \eta\ (\cfgt{new}\ \cfgnt{C})\ k) \rightarrow 
+      (L^\prime\ R^\prime\ g\ \eta\ r\ k)
 	}
 \and
 	\inferrule[Field Access]{
@@ -52,26 +52,26 @@
       \mathrm{type}(r) = C_r \\
       \mathrm{fresh}_r(C_r) = r_f \\
     }{
-      (L\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
-      (L[r_f \mapsto \mathbb{VS}(L,R,r,f)]\ R\ \eta\ r_f\ k)
+      (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
+      (L[r_f \mapsto \mathbb{VS}(L,R,r,f)]\ R\ g\ \eta\ r_f\ k)
 	}
 \and
     \inferrule[Equals (l-operand eval)]{}{
-      (L\ R\ \eta\ (\cfgnt{e}_0 = \cfgnt{e}) \ k) \rightarrow 
-      (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k}))
+      (L\ R\ g\ \eta\ (\cfgnt{e}_0 = \cfgnt{e}) \ k) \rightarrow 
+      (L\ R\ g\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k}))
     }
 \and
     \inferrule[Equals (r-operand eval)]{}{
-    (L\ R\ \eta\ \cfgnt{v}\ (\cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}\ (\cfgnt{v}\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}))
+    (L\ R\ g\ \eta\ \cfgnt{v}\ (\cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}\ (\cfgnt{v}\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}))
     }
 \and
     \inferrule[Equals (bool)]{
     \cfgnt{v}_0 \in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \in \{\cfgt{true}, \cfgt{false}\} \\ 
     \mathrm{eq?}(v_0, v_1) = \cfgnt{v}_r}{
-    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{v}_r\ \cfgnt{k})
+    (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{v}_r\ \cfgnt{k})
     }
 \and
     \inferrule[Equals (references-true)]{
@@ -81,11 +81,11 @@
     \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
     \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
     \phi_g = (\vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge(\wedge_{\phi_0 \in \theta_0} \neg \phi_0)  \wedge(\wedge_{\phi_1
-    \in \theta_1} \neg \phi_1) \\\\
-      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
-      X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
-    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L^\prime\ R\ \eta\ \cfgt{true}\ \cfgnt{k})
+    \in \theta_1} \neg \phi_1)\\ g^\prime = g \wedge \phi_g}{
+     % L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
+      %X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}
+    (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L^\prime\ R\ g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
 \and
     \inferrule[Equals (references-false)]{
@@ -95,22 +95,27 @@
     \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
     \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
     \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\vee((\vee_{\phi_0 \in \theta_0} \phi_0)  \vee(\vee_{\phi_1
-    \in \theta_1} \phi_1)) \\\\
-      L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
-      X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
-    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L^\prime\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
+    \in \theta_1} \phi_1)) \\ g^\prime = g \wedge \phi_g}{
+    (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+    (L^\prime\ R\ g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
+    
+  %  \\\\
+  %    L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
+  %    X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}{
+ %   (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
+ %   (L^\prime\ R\ \eta\ \cfgt{false}\ \cfgnt{k})
+ %   }
 \and
    \inferrule[Method Invocation (object eval)]{}{
-    (L\ R\ \eta\ \lp\cfgnt{e}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\rp\ \cfgnt{k}) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k}))
+    (L\ R\ g\ \eta\ \lp\cfgnt{e}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\rp\ \cfgnt{k}) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k}))
    }
    
 \and
    \inferrule[Method Invocation (arg eval)]{}{
-    (L\ R\ \eta\ \cfgnt{v}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}))
+    (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}))
    }
 %\and
 %   \inferrule[Method Invocation (arg0 eval)]{}{
@@ -136,15 +141,15 @@
    \inferrule[Method Invocation (raw)]{
     \mathrm{lookup}(\cfgnt{m}) = \lp\cfgnt{T}\ \cfgnt{m}\ \lb\cfgnt{T}\ \cfgnt{x}\rb\ \ e_m\rp \\
     \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]\ }{
-    (L\ R\ \eta\ \cfgnt{v}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{v}_1\ \cfgnt{k})
+    (L\ R\ g\ \eta\ \cfgnt{v}_1\ (\cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{v}_1\ \cfgnt{k})
    }
 \and
    \inferrule[Method Invocation]{
     \mathrm{lookup}(\cfgnt{m}) = \lp\cfgnt{T}\ \cfgnt{m}\ \lb\cfgnt{T}\ \cfgnt{x}\rb\ \ e_m\rp \\
     \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]\ }{
-    (L\ R\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{v}_1\ \cfgnt{k}) \rightarrow
-    (L^\prime\ R^\prime\ \eta_m\ \cfgnt{e}_m\ (\cfgt{pop}\ \eta\ \cfgnt{k}))
+    (L\ R\ g\ \eta\ (\cfgt{raw}\ \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{v}_1\ \cfgnt{k}) \rightarrow
+    (L^\prime\ R^\prime\ g\ \eta_m\ \cfgnt{e}_m\ (\cfgt{pop}\ \eta\ \cfgnt{k}))
    }
 
 \end{mathpar}
@@ -158,19 +163,19 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[ITE (expr-eval)]{}{
-      (L\ R\ \eta\ (\cfgt{if}\ \cfgnt{e}_0\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2)\ k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k)
+      (L\ R\ g\ \eta\ (\cfgt{if}\ \cfgnt{e}_0\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2)\ k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}_0\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k)
 	}
 \and
 	\inferrule[ITE (true)]{}{
-       (L\ R\ \eta\ \cfgt{true}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_1\  k)
+       (L\ R\ g\ \eta\ \cfgt{true}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}_1\  k)
 	}
 \and
 	\inferrule[ITE (false)]{}{
-       (L\ R\ \eta\ \cfgt{false}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ \eta\ \cfgnt{e}_2\  k)
+       (L\ R\ g\ \eta\ \cfgt{false}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}_2\  k)
 	}
 \and
 	\inferrule[Field Write (expr-eval)]{}{
-       (L\ R\ \eta\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{e})\ k) \rightarrow (L\ R\ \eta\ \cfgnt{e}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k)
+       (L\ R\ g\ \eta\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{e})\ k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k)
 	}
 \and
 	\inferrule[Field Write (init-fields)]{
@@ -187,8 +192,8 @@
       \theta_n = \{ (l_{null} , r_{null} = r_f ) \}\\
       \theta_t = \theta_a \cup \theta_f \cup \theta_n
     }{
-      (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L[r_x \mapsto \theta_t]\ R[ (l_x,f) \mapsto r_f ]\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k))
+      (L\ R\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
+      (L[r_x \mapsto \theta_t]\ R[ (l_x,f) \mapsto r_f ]\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k))
 	}	
 \and
 	\inferrule[Field Write]{
@@ -201,38 +206,38 @@
       Y= \{l\ |\ (r^\prime, l^\prime, \theta) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\
       L^\prime = L[\forall l^\prime\ (\exists (r^\prime,l^\prime,\theta) \in X\ (\exists r^{\prime\prime} = R (l^\prime,f) ( r^{\prime\prime} \mapsto \theta) ) )]
     }{
-      (L\ R\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L^\prime R^\prime \ \eta\ k)
+      (L\ R\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
+      (L^\prime R^\prime\ g\ \eta\ k)
 	}	
 \and
    \inferrule[Begin (no args)]{}{
-    (L\ R\ \eta\ (\cfgt{begin})\ \cfgnt{k}) \rightarrow
-    (L\ R\ \eta\ \cfgnt{k})
+    (L\ R\ g\ \eta\ (\cfgt{begin})\ \cfgnt{k}) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{k})
    }
 \and
    \inferrule[Begin (arg0 eval)]{}{
-    (L\ R\ \eta\ (\cfgt{begin}\ \lp \cfgnt{e}_0\ \cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k}) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_0\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k})
+    (L\ R\ g\ \eta\ (\cfgt{begin}\ \lp \cfgnt{e}_0\ \cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k}) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}_0\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_1\ ...\rp) \rightarrow \cfgnt{k})
    }
 \and
    \inferrule[Begin (argI eval)]{}{
-    (L\ R\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k}) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_i\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k})
+    (L\ R\ g\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k}) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}_i\ (\cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ ...\rp) \rightarrow \cfgnt{k})
    }
 \and
    \inferrule[Begin (argN eval)]{}{
-    (L\ R\ \eta\ v\ (\cfgt{begin}\ \lp\cfgnt{e}_{n}\rp) \rightarrow \cfgnt{k}) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_n\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp) \rightarrow \cfgnt{k})
+    (L\ R\ g\ \eta\ v\ (\cfgt{begin}\ \lp\cfgnt{e}_{n}\rp) \rightarrow \cfgnt{k}) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}_n\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp) \rightarrow \cfgnt{k})
    }
 \and
    \inferrule[Begin]{}{
-    (L\ R\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ v\ \cfgnt{k})
+    (L\ R\ g\ \eta\ v\ (\cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta\ v\ \cfgnt{k})
    }	
 \and
    \inferrule[Variable Declaration (eval)]{}{
-    (L\ R\ \eta\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}_0\ \cfgt{in}\ \cfgnt{e}_1\rp\ \cfgnt{k})) \rightarrow
-    (L\ R\ \eta\ \cfgnt{e}_0\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k})
+    (L\ R\ g\ \eta\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}_0\ \cfgt{in}\ \cfgnt{e}_1\rp\ \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta\ \cfgnt{e}_0\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k})
    }	
 \and
    \inferrule[Variable Declaration]{
@@ -242,14 +247,14 @@
    R^\prime = R[\forall \cfgnt{f} \in \mathrm{C}\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))] \\\\
    L^\prime = L[r \mapsto \{(l\ \phi_T)\}]
    }{
-    (L\ R\ \eta\ v\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k}) \rightarrow
-    (L^\prime\ R^\prime\ \eta^
+    (L\ R\ g\ \eta\ v\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1\rp \rightarrow \cfgnt{k}) \rightarrow
+    (L^\prime\ R^\prime\ g\ \eta^
     \prime\ \cfgnt{e}_1\ (\cfgt{pop}\ \eta\ \cfgnt{k}))
    }	
 \and
    \inferrule[Pop]{}{
-    (L\ R\ \eta\ (\cfgt{pop}\ \eta_0\ \cfgnt{k})) \rightarrow
-    (L\ R\ \eta_0\ \cfgnt{k})
+    (L\ R\ g\ \eta\ (\cfgt{pop}\ \eta_0\ \cfgnt{k})) \rightarrow
+    (L\ R\ g\ \eta_0\ \cfgnt{k})
    }
 \end{mathpar}
 \end{center}

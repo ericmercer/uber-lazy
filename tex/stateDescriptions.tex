@@ -54,9 +54,6 @@ The machine also halts if an exception is thrown.
 
 \subsection{Syntax}
 
-\input{surface-syntax}
-\input{machine-syntax} 
-
 Javalite programs and expressions are written in a syntax specified by the 
 grammar in~\figref{fig:machine-syntax}. The production rules correspond
 to the various features supported by Javalite such as classes, fields,
@@ -137,5 +134,3 @@ reachable from $r$ in the heap and false otherwise. The consistency function $\m
         0 & \exists r \in \mathrm{ref}(\eta, \cfgnt{k})\ (\exists r^\prime \in X\ (\mathrm{reach}(L, R, r,r^\prime))) \\ 
         1 & \mbox{otherwise}\end{array}\right .
 \]
-
-\input{machine-rules}

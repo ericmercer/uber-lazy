@@ -3,68 +3,93 @@
 In recent years symbolic execution --
 a program analysis technique for systematic exploration of
 program execution paths using symbolic input values -- has provided
-the basis for many software testing and analysis techniques.
+the basis for various software testing and analysis techniques.
 For each execution path explored during symbolic execution, constraints
 on the symbolic inputs are collected to create a \emph{path
 condition}. The set of path conditions computed by symbolic execution
 characterize the observed program execution behaviours and can
-be used to perform various analyses of program behavior, e.g.,
-regression testing~\cite{} and differential program 
-analysis~\cite{}. 
+be used as an enabling technology for various applications, e.g., 
+regression 
+analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12}, 
+data structure repair~\cite{KhurshidETAL05RepairingStructurally}, dynamic
+discovery of invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, 
+and debugging\cite{Ma:2011}. 
 
 Initial work on symbolic execution largely focused on checking 
 properties of programs with primitive types, such as integers and 
-booleans~\cite{clarke76TSE,King:76}. With the advent of object-oriented
-languages, such as Java and C$++$, one of the fundamental challenges 
-of using symbolic execution for program analysis
-has been how to analyze programs containing
+booleans~\cite{clarke76TSE,King:76}. Despite recent advances
+in constraint solving technologies, improvements in
+raw computing power, and advances in reduction
+and abstraction techniques~\cite{AnandETAL2009AbsSymExe,Godefroid:POPL07}
+symbolic execution of programs of modest size containing only
+primitive types, remains challenging
+because of the large number of execution paths generated
+during symbolic analysis. 
+
+With the advent of object-oriented
+languages that manipulate dynamically allocated data,
+ .g., Java and C$++$, recent work has generalized the core ideas of 
+symbolic execution to enable analysis of programs containing
 complex data structures with unbounded domains, i.e., data stored
-on the heap. State-of-the-art symbolic execution techniques have 
-addressed this challenge by constructing the heap in a lazy manner, 
+on the heap~\cite{Kiasan06,Kiasan07,GSE03}.
+These techniques onstruct the heap in a lazy manner, 
 deferring materialization of objects on the concrete heap until
-they are needed, i.e., until execution of a statement with a 
-dereference expression ($x = r.f$)~\cite{Kiasan06,Kiasan07,GSE03}. 
+they are needed for the analysis to proceed.
+%, i.e., until execution of a statement with a  dereference expression 
+%($x = r.f$).
+Treatment of
+heap allocated data then follows concrete program semantics 
+once a heap location is materialized, resulting in a large number
+of feasible concrete heap configurations, and as a result, a large
+number of points of 
+non-determinism to be analyzed, further exacerbating 
+the state space explosion problem.
 
-Although the lazy symbolic execution techniques have been instrumental 
-in enabling analysis of heap manipulating software, treatment of
-heap data follows concrete program semantics once a heap location is
-materialized. The effect is to exacerbate 
-the state space explosion problem by creating additional points of 
-non-determinism during symbolic execution to account for the 
-different possible concrete heap configurations.
+THIS PARA IS NOT QUITE RIGHT BUT THE IDEA IS STARTING TO COME OUT.
+Although lazy symbolic execution techniques have been instrumental 
+in enabling analysis of heap manipulating programs, they miss an
+important opportunity to control the state space explosion problem
+by treating only inputs with primitive types symbolically and
+materializing a concrete heap. As we show in this work, the use of
+a fully \emph{symbolic heap} during lazy symbolic execution, 
+can improve the scalability of the analysis while maintaining
+precision and efficiency. Moreover, the number of path conditions
+computed by lazy symbolic execution when a symbolic heap
+is used
+produces considerably fewer path conditions -- a valuable benefit
+for client analyses that use the results of symbolic execution,
+e.g., regression analyses.
 
-Need a transition here to talk about a symbolic heap
-
-In this paper we present a novel approach to lazy symbolic
-execution....
-
-Our technique is 1) scalable -- it constructs the symbolic
-heap on-the-fly during symbolic execution but avoids introducing 
-additional points of non-determinism
-by maintaining only a (fully) symbolic heap,
-2) precise -- at any given point during symbolic execution, 
+The key advantages of our approach to lazy symbolic execution
+using a fully symbolic heap include:
+\begin{itemize}
+\item{\emph{Scalability.} Our approach constructs the symbolic
+heap on-the-fly during symbolic execution and avoids creating
+the additional points of non-determinism
+introduced by existing lazy initialization techniques. Moreover, it explores
+each execution path only once for any given set of isomorphic heaps.}
+\item{\emph{Precision.} At any given point during symbolic execution, 
 the symbolic heap represents the exact set of feasible
-concrete heap structures for the program under analysis, and
-3) expressive -- the symbolic heap can represent recursive data structures 
-and heaps resulting from loops and recursive control structures in the code. 
-We report on a case-study of an implementation of our technique in the
-Symbolic PathFinder tool to illustrate
- its scalability and we discuss how test case generation -- a common
- use for the results of symbolic execution -- can benefit from symbolic
- execution using a fully symbolic heap.
+concrete heap structures for the program under analysis}
+\item{\emph{Expressiveness.} The symbolic heap can represent recursive 
+data structures  and heap structures resulting from loops and recursive control 
+structures in the analyzed code. }
+ \end{itemize}
 
 This paper makes the following contributions:
 
 \begin{itemize}
-\item{We present a novel technique for analyzing heap manipulating
+\item{We present a novel lazy symbolic execution technique
+ for analyzing heap manipulating
 programs that constructs a fully symbolic representatino of
 the heap on-the-fly durig symbolic execution.}
 \item{We prove the soundness and completeness of our algorithm...}
 \item{We implement our approach in the Symbolic PathFinder tool}
 \item{We demonstrate experimentally that our technique improves
 the scalability of symbolic execution of heap maninpulating software
-over state-of-the-art techniques.}
-  
+over state-of-the-art techniques, while maintaining efficiency and precision.}
+  \item{We discuss the benefits of using a symbolic heap that
+  can be realized by the client analysis that uses the results of symbolic execution.}
  \end{itemize}
 
 \begin{comment}

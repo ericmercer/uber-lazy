@@ -1,0 +1,28 @@
+digraph "" { 
+1[ label="r1" shape=circle color=red];
+2[ label="l1" shape=square color=blue];
+3[ label="r2" shape=circle color=red];
+4[ label="lN" shape=square color=blue];
+5[ label="l2" shape=square color=blue];
+6[ label="r3" shape=circle color=red];
+7[ label="this" shape=hexagon];
+8[ label="t" shape=hexagon];
+9[ label="r4" shape=circle color=red];
+10[ label="r5" shape=circle color=red style=dashed];
+11[ label="l3" shape=square color=blue];
+7->1;
+8->6;
+1->2[ label="T"];
+2->3[ label="x"];
+3->4[ label="rN=r2"];
+3->5[ label="rN!=r2"];
+6->4[ label="rN=r2"];
+6->5[ label="rN!=r2"];
+9->4[ label="r4=lN"];
+9->5[ label="r4!=lN, r4=r2"];
+9->11[ label="r4!=lN, r4!=r2"];
+10->4[ label="r4=lN"];
+10->5[ label="r4!=lN, r4=r2"];
+10->11[ label="r4!=lN, r4!=r2"];
+2->9 [label="y"];
+}

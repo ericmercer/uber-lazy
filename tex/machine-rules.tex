@@ -47,9 +47,10 @@
 \and
 	\inferrule[Field Access]{
 	\Lambda = \{ l_i | (l_i,*) \in L(r) \wedge R(l_i,f)= \emptyset\}\\
-      \Lambda = \emptyset \\\\
-      (\bot,*) \notin L(r) \\ L(r) \neq \emptyset \\
-      \mathrm{type}(r) = C_r \\
+      \Lambda = \emptyset \\
+      \mathrm{type}(r) = C_r \\ \\\\
+     % (\bot,*) \notin L(r) \\ L(r) \neq \emptyset \\
+     \{(l_{null},\phi)|(l_{null},\phi) \in L(r) \wedge \mathbb{S}(\phi)\}=\emptyset \\
       \mathrm{fresh}_r(C_r) = r_f \\
     }{
       (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
@@ -200,7 +201,8 @@
 	r_x = \eta(\cfgnt{x})\\
       	\Lambda = \{ l_i | (l_i,*) \in L(r_x) \wedge R(l_i,f)= \emptyset\}\\\\
       \Lambda = \emptyset \\
-      (\bot,*) \notin L(r_x)  \\\\
+      %(\bot,*) \notin L(r_x)  \\\\
+     \{(l_{null},\phi)|(l_{null},\phi) \in L(r) \wedge \mathbb{S}(\phi)\}=\emptyset \\\\
       \Psi_x =\{(\phi,l,r^\prime)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
       X = \{ (r^\prime, l^\prime, \theta)| (\phi^\prime,l^\prime,r^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
       Y= \{l\ |\ (r^\prime, l^\prime, \theta) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\

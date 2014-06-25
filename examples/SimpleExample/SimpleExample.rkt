@@ -11,7 +11,7 @@
           )
           
           (
-           (T run () (if ((this $ a) == (this $ b))
+           (T run () (if ((this $ a) = (this $ b))
                          (this $ a)
                       else
                          (this $ b)

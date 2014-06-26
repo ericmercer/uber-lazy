@@ -19,16 +19,16 @@
 %	}
 %\and
 	\inferrule[Lazy Initialization]{
-	  \Lambda = \{ l \mid \exists \phi\ ((l,\phi) \in L(r) \wedge  R(l,f) = \emptyset\}\\
-      l_x = \mathrm{min}_l(\Lambda) \\\\
+	  \Lambda = \{ l \mid \exists \phi\ ((\phi\ l) \in L(r) \wedge  R(l,f) = \emptyset\}\\
       \Lambda \neq \emptyset \\
+      l_x = \mathrm{min}_l(\Lambda) \\\\
       \mathrm{type}(\cfgnt{f}) = \mathrm{C}_r\\
       \mathrm{init}_r() = r_f\\ 
       \mathrm{init}_l(\mathrm{C}_r) = l_f \\\\
-      \rho = \{ (r^\prime,\ \phi^\prime,\ l^\prime) \mid \mathrm{isInit}(r^\prime) \wedge (l^\prime, \phi^\prime) \in L(r^\prime) \wedge \mathrm{type}(l^\prime) = \mathrm{C}_r \} \\\\
-      \theta_\mathit{alias} = \{ ( l ,\ \phi) | (r^\prime,\ \phi^\prime,\ \l) \in \rho \wedge \phi = (\phi^\prime \wedge r^\prime \neq r_\mathit{null} \wedge r^\prime = r_f \wedge (\wedge_{(r^{\prime\prime},\ \phi^{\prime\prime},\ l^{\prime\prime}) \in \rho\ (r^{\prime\prime} \neq r^\prime)} r^{\prime\prime} \neq r_f )) \} \\\\
-      \theta_\mathit{new} = \{(l_f,\ r_f \neq r_\mathit{null} \wedge (\wedge_{(r^\prime,\ \phi^\prime,\ l^\prime) \in \rho} r_f \ne r^\prime))\}\\\\
-      \theta_\mathit{null} = \{ (l_\mathit{null},\ r_f = r_\mathit{null}) \}\\\\
+      \rho = \{ (r^\prime\ \phi^\prime\ l^\prime) \mid \mathrm{isInit}(r^\prime) \wedge (\phi^\prime\ l^\prime) \in L(r^\prime) \wedge \mathrm{type}(l^\prime) = \mathrm{C}_r \} \\\\
+      \theta_\mathit{alias} = \{ (\phi\ l) \mid (r^\prime\ \phi^\prime\ \l) \in \rho \wedge \phi = (\phi^\prime \wedge r_f \neq r_\mathit{null} \wedge r_f = r^\prime \wedge (\wedge_{(r^{\prime\prime}\ \phi^{\prime\prime}\ l^{\prime\prime}) \in \rho\ (r^{\prime\prime} \neq r^\prime)} r_f \neq r^{\prime\prime} )) \} \\\\
+      \theta_\mathit{new} = \{(\phi\ l_f) \mid \phi = (r_f \neq r_\mathit{null} \wedge (\wedge_{(r^\prime,\ \phi^\prime,\ l^\prime) \in \rho} r_f \ne r^\prime))\}\\\\
+      \theta_\mathit{null} = \{ (\phi\ l_\mathit{null}) \mid \phi = (r_f = r_\mathit{null}) \}\\\\
       \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null}
     }{
       (L\ R\ g\ \eta\ r\ (\cfgt{init}\ \cfgnt{f}\ k)) \rightarrow 
@@ -36,7 +36,7 @@
 	}
 \and
 	\inferrule[Lazy Initialization (end)]{
-	\forall (l,\phi) \in L(r)\ (R(l,f) \neq \emptyset)
+	\forall (\phi\ l) \in L(r)\ (R(l,f) \neq \emptyset)
     }{
       (L\ R\ g\ \eta\ r\ (\cfgt{init}\ \cfgnt{f}\ k)) \rightarrow 
       (L\ R\ g\ \eta\ r\ k)
@@ -45,15 +45,16 @@
 	\inferrule[New]{
       \mathrm{fresh}_r(\cfgnt{C}) = r \\
       \mathrm{fresh}_l(\cfgnt{C}) = l \\\\
-      R^\prime = R[\forall \cfgnt{f} \in \mathrm{C}\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r(\mathrm{type}(\cfgnt{f})))] \\\\
-      L^\prime = L[r \mapsto \{(l\ \phi_T)\}]
+      R^\prime = R[\forall \cfgnt{f} \in \mathit{fields}(\mathrm{C})\ ((l\ \cfgnt{f}) \mapsto \mathrm{fresh}_r())] \\\\
+      \rho = \{r^\prime \mid \exists \cfgnt{f} \in \mathit{fields}(\mathrm{C})\ (r^\prime = R^\prime(l, f))\}\\\\
+      L^\prime = L[r \mapsto \{(\phi_T\ l)\} \wedge \forall r^\prime \in \rho\ (r^\prime \mapsto (\phi_T\ l_\mathit{null}))]
     }{
       (L\ R\ g\ \eta\ (\cfgt{new}\ \cfgnt{C})\ k) \rightarrow 
       (L^\prime\ R^\prime\ g\ \eta\ r\ k)
 	}
 \and
 	\inferrule[Field Access]{
-      \forall (l,\phi) \in L(r)\ (l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}(\phi \wedge g)) \\
+      \forall (\phi\ l) \in L(r)\ (l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}(\phi \wedge g)) \\
       \mathrm{fresh}_r() = r_f
     }{
       (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
@@ -81,27 +82,27 @@
     \inferrule[Equals (references-true)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
-    \theta_\alpha = \{\phi_0 \wedge \phi_1\mid\exists (l\ \phi_0) \in L(v_0)(\exists (l\ \phi_1) \in L(v_1) ( \mathbb{S}(\phi_0 \wedge \phi_1)))\} \\\\
-    \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
-    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
+    \theta_\alpha = \{\phi_0 \wedge \phi_1 \mid \exists l\ ((\phi_0\ l) \in L(v_0) \wedge (\phi_1\ l) \in L(v_1))\} \\\\
+    \theta_0 = \{\phi_0 \mid \exists l_0\ ((\phi_0\ l_0) \in L(v_0) \wedge \forall (\phi_1\ l_1) \in L(v_1)\ (l_0 \neq l_1))\} \\\\
+    \theta_1 = \{\phi_1 \mid \exists l_1\ ((\phi_1\ l_1) \in L(v_1) \wedge \forall (\phi_0\ l_0) \in L(v_0)\ (l_0 \neq l_1))\} \\\\
     \phi_g = (\vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\wedge(\wedge_{\phi_0 \in \theta_0} \neg \phi_0)  \wedge(\wedge_{\phi_1
     \in \theta_1} \neg \phi_1)\\ g^\prime = g \wedge \phi_g}{
      % L^\prime = L[\forall r (\exists (\cfgnt{l}\ \phi )\in L(r)(r \mapsto \mathbb{ST}(L,r,\phi_g)))]\\\\
       %X = \mathbb{ER}(L, \phi_g) \\ \mathbb{C}(L^\prime, R, X, \eta, k) = 1}
     (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L^\prime\ R\ g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k})
+    (L\ R\ g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
 \and
     \inferrule[Equals (references-false)]{
     \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
     \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
-    \theta_\alpha = \{\phi_0 \rightarrow \neg \phi_1\mid\exists (l\ \phi_0) \in L(v_0)(\exists (l\ \phi_1) \in L(v_1) ( \mathbb{S}(\phi_0 \wedge \phi_1)))\} \\\\
-    \theta_0 = \{\phi_0 \mid \exists (l_0\ \phi_0) \in L(v_0) \wedge \forall (l_1\ \phi_1) \in L(v_1)(l_0 \neq l_1)\} \\\\
-    \theta_1 = \{\phi_1 \mid \exists (l_1\ \phi_1) \in L(v_1) \wedge \forall (l_0\ \phi_0) \in L(v_0)(l_0 \neq l_1)\} \\\\
+    \theta_\alpha = \{\phi_0 \rightarrow \neg \phi_1 \mid \exists l\ ((\phi_0\ l) \in L(v_0) \wedge (\phi_1\ l) \in L(v_1))\} \\\\
+    \theta_0 = \{\phi_0 \mid \exists l_0\ ((\phi_0\ l_0) \in L(v_0) \wedge \forall (\phi_1\ l_1) \in L(v_1)\ (l_0 \neq l_1))\} \\\\
+    \theta_1 = \{\phi_1 \mid \exists l_1\ ((\phi_1\ l_1) \in L(v_1) \wedge \forall (\phi_0\ l_0) \in L(v_0)\ (l_0 \neq l_1))\} \\\\
     \phi_g = (\wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha)\vee((\vee_{\phi_0 \in \theta_0} \phi_0)  \vee(\vee_{\phi_1
     \in \theta_1} \phi_1)) \\ g^\prime = g \wedge \phi_g}{
     (L\ R\ g\ \eta\ \cfgnt{v}_0\ (\cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k})) \rightarrow
-    (L^\prime\ R\ g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k})
+    (L\ R\ g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k})
     }
     
   %  \\\\
@@ -184,14 +185,11 @@
 \and
 	\inferrule[Field Write]{
 	r_x = \eta(\cfgnt{x})\\
-      	\Lambda = \{ l_i | (l_i,*) \in L(r_x) \wedge R(l_i,f)= \emptyset\}\\\\
-      \Lambda = \emptyset \\
-      %(\bot,*) \notin L(r_x)  \\\\
-     \{(l_{null},\phi)|(l_{null},\phi) \in L(r) \wedge \mathbb{S}(\phi)\}=\emptyset \\\\
-      \Psi_x =\{(\phi,l,r^\prime)\ |\ \exists(\cfgnt{l},\phi) \in L(r_x) \wedge \exists r^\prime \in R(\cfgnt{l,f}) \}\\\\
-      X = \{ (r^\prime, l^\prime, \theta)| (\phi^\prime,l^\prime,r^\prime)\in \Psi_x \wedge \theta = \mathbb{ST}(L,r,\phi^\prime) \cup \mathbb{ST}(L,r^\prime,\neg\phi^\prime) \}\\\\
-      Y= \{l\ |\ (r^\prime, l^\prime, \theta) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\
-      L^\prime = L[\forall l^\prime\ (\exists (r^\prime,l^\prime,\theta) \in X\ (\exists r^{\prime\prime} = R (l^\prime,f) ( r^{\prime\prime} \mapsto \theta) ) )]
+\forall (\phi\ l) \in L(r_x)\ (l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}(\phi \wedge g)) \\\\
+      \Psi_x =\{(r_\mathit{old}\ \phi\ l) \mid (\phi\ \cfgnt{l}) \in L(r_x) \wedge r_\mathit{old} \in R(l,\cfgnt{f}) \}\\\\
+      X = \{ (r_\mathit{old}\ \theta\ l) \mid \exists \phi\ ((r_\mathit{old}\ \phi\ l)\in \Psi_x \wedge \theta = \mathbb{ST}(L,\cfgnt{r},\phi) \cup \mathbb{ST}(L,r_\mathit{old},\neg\phi)) \}\\\\
+      R^\prime = R[\forall (r_\mathit{old}\ \theta\ l^\prime) \in X\ ((l\ f) \mapsto \mathrm{fresh}_r())]\\\\
+      L^\prime = L[\forall (r_\mathit{old}\ \theta\ l^\prime) \in X\ (\exists r^{\prime} = R^\prime(l,f)\ ( r^{\prime} \mapsto \theta) )]
     }{
       (L\ R\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*}\ \rightarrow\ k)) \rightarrow 
       (L^\prime R^\prime\ g\ \eta\ k)

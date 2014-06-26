@@ -8,7 +8,7 @@
 	}
 \and
 	\inferrule[Field Access(eval)]{}{
-      (L\ R\ g\ \eta\ (e\ \$\ \cfgnt{f})\ k) \rightarrow (L\ R\ g\ \eta\ e\ (*\ \$\ \cfgnt{f} \rightarrow k))
+      (L\ R\ g\ \eta\ (e\ \$\ \cfgnt{f})\ k) \rightarrow (L\ R\ g\ \eta\ e\ (\cfgt{init}\ \cfgnt{f}\ (*\ \$\ \cfgnt{f} \rightarrow k)))
 	}
 \and
 %	\inferrule[Field Access (NULL)]{
@@ -18,21 +18,28 @@
 %      (L[r \mapsto \{(\bot,\phi_T)\}]\ R\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
 %	}
 %\and
-	\inferrule[Field Access (init-fields)]{
-	\Lambda = \{ l_i | (l_i,*) \in L(r) \wedge R(l_i,f)= \emptyset\}\\
-      \Lambda \neq \emptyset \\\\
+	\inferrule[Lazy Initialization]{
+	  \Lambda = \{ l \mid \exists \phi\ ((l,\phi) \in L(r) \wedge  R(l,f) = \emptyset\}\\
+      l_x = \mathrm{min}_l(\Lambda) \\\\
+      \Lambda \neq \emptyset \\
       \mathrm{type}(\cfgnt{f}) = \mathrm{C}_r\\
-      \mathrm{fresh}_r(\mathrm{C}_r) = r_f\\ 
-      \mathrm{fresh}_l(\mathrm{C}_r) = l_f \\
-      l_x = \mathrm{min}_l(\Lambda)\\\\
-      \rho = \{ r_a |  l_a\in L \wedge \mathrm{type}(l_a) = \mathrm{C}_r \} \\\\
-      \theta_a = \{ ( l_a ,\ \phi ) | r_a \in \rho \wedge \phi =((\wedge_{r_i \in \rho | i<a} (r_i \neq r_f) ) \wedge(r_a = r_f) )\} \\\\
-      \theta_f = \{(l_f,\wedge_{r_a \in \rho} r_a \ne r_f)\}\\ 
-      \theta_n = \{ (l_{null} , r_{null} = r_f ) \}\\
-      \theta_t = \theta_a \cup \theta_f \cup \theta_n
+      \mathrm{init}_r() = r_f\\ 
+      \mathrm{init}_l(\mathrm{C}_r) = l_f \\\\
+      \rho = \{ (r^\prime,\ \phi^\prime,\ l^\prime) \mid \mathrm{isInit}(r^\prime) \wedge (l^\prime, \phi^\prime) \in L(r^\prime) \wedge \mathrm{type}(l^\prime) = \mathrm{C}_r \} \\\\
+      \theta_\mathit{alias} = \{ ( l ,\ \phi) | (r^\prime,\ \phi^\prime,\ \l) \in \rho \wedge \phi = (\phi^\prime \wedge r^\prime \neq r_\mathit{null} \wedge r^\prime = r_f \wedge (\wedge_{(r^{\prime\prime},\ \phi^{\prime\prime},\ l^{\prime\prime}) \in \rho\ (r^{\prime\prime} \neq r^\prime)} r^{\prime\prime} \neq r_f )) \} \\\\
+      \theta_\mathit{new} = \{(l_f,\ r_f \neq r_\mathit{null} \wedge (\wedge_{(r^\prime,\ \phi^\prime,\ l^\prime) \in \rho} r_f \ne r^\prime))\}\\\\
+      \theta_\mathit{null} = \{ (l_\mathit{null},\ r_f = r_\mathit{null}) \}\\\\
+      \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null}
     }{
-      (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
-      (L[r_f \mapsto \theta_t]\ R[ (l_x,f) \mapsto r_f ]\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k))
+      (L\ R\ g\ \eta\ r\ (\cfgt{init}\ \cfgnt{f}\ k)) \rightarrow 
+      (L[r_f \mapsto \theta]\ R[ (l_x,f) \mapsto r_f ]\ g\ \eta\ r\ (\cfgt{init}\ \cfgnt{f}\ k))
+	}
+\and
+	\inferrule[Lazy Initialization (end)]{
+	\forall (l,\phi) \in L(r)\ (R(l,f) \neq \emptyset)
+    }{
+      (L\ R\ g\ \eta\ r\ (\cfgt{init}\ \cfgnt{f}\ k)) \rightarrow 
+      (L\ R\ g\ \eta\ r\ k)
 	}
 \and
 	\inferrule[New]{
@@ -46,15 +53,11 @@
 	}
 \and
 	\inferrule[Field Access]{
-	\Lambda = \{ l_i | (l_i,*) \in L(r) \wedge R(l_i,f)= \emptyset\}\\
-      \Lambda = \emptyset \\
-      \mathrm{type}(r) = C_r \\ \\\\
-     % (\bot,*) \notin L(r) \\ L(r) \neq \emptyset \\
-     \{(l_{null},\phi)|(l_{null},\phi) \in L(r) \wedge \mathbb{S}(\phi)\}=\emptyset \\
-      \mathrm{fresh}_r(C_r) = r_f \\
+      \forall (l,\phi) \in L(r)\ (l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}(\phi \wedge g)) \\
+      \mathrm{fresh}_r() = r_f
     }{
       (L\ R\ g\ \eta\ r\ (*\ \$\ \cfgnt{f} \rightarrow k)) \rightarrow 
-      (L[r_f \mapsto \mathbb{VS}(L,R,r,f)]\ R\ g\ \eta\ r_f\ k)
+      (L[r_f \mapsto \mathbb{VS}(L,R,r,f,g)]\ R\ g\ \eta\ r_f\ k)
 	}
 \and
     \inferrule[Equals (l-operand eval)]{}{
@@ -175,27 +178,9 @@
        (L\ R\ g\ \eta\ \cfgt{false}\ (\cfgt{if}\ \cfgnt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2) \rightarrow k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}_2\  k)
 	}
 \and
-	\inferrule[Field Write (expr-eval)]{}{
-       (L\ R\ g\ \eta\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{e})\ k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k)
+	\inferrule[Field Write (eval)]{}{
+       (L\ R\ g\ \eta\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{e})\ k) \rightarrow (L\ R\ g\ \eta\ \cfgnt{e}\ (\cfgt{init}\ \cfgnt{f}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*}\ \rightarrow\ k)))
 	}
-\and
-	\inferrule[Field Write (init-fields)]{
-	r_x = \eta(\cfgnt{x})\\
-      	\Lambda = \{ l_i | (l_i,*) \in L(r_x) \wedge R(l_i,f)= \emptyset\}\\
-      \Lambda \neq \emptyset \\\\
-      \mathrm{type}(\cfgnt{f}) = \mathrm{C}_r\\
-      \mathrm{fresh}_r(\mathrm{C}_r) = r_f\\ 
-      \mathrm{fresh}_l(\mathrm{C}_r) = l_f \\
-      l_x = \mathrm{min}_l(\Lambda)\\\\
-      \rho = \{ r_a |  l_a\in L \wedge \mathrm{type}(l_a) = \mathrm{C}_r \} \\\\
-      \theta_a = \{ ( l_a ,\ \phi ) | r_a \in \rho \wedge \phi =((\wedge_{r_i \in \rho | i<a} (r_i \neq r_f) ) \wedge(r_a = r_f) )\} \\\\
-      \theta_f = \{(l_f,\wedge_{r_a \in \rho} r_a \ne r_f)\}\\ 
-      \theta_n = \{ (l_{null} , r_{null} = r_f ) \}\\
-      \theta_t = \theta_a \cup \theta_f \cup \theta_n
-    }{
-      (L\ R\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
-      (L[r_x \mapsto \theta_t]\ R[ (l_x,f) \mapsto r_f ]\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k))
-	}	
 \and
 	\inferrule[Field Write]{
 	r_x = \eta(\cfgnt{x})\\
@@ -208,7 +193,7 @@
       Y= \{l\ |\ (r^\prime, l^\prime, \theta) \in X\}\\ R^\prime = R[\forall l \in Y ((l,f) \mapsto \mathrm{fresh}_r(\mathrm{C}_f)) ]\\\\
       L^\prime = L[\forall l^\prime\ (\exists (r^\prime,l^\prime,\theta) \in X\ (\exists r^{\prime\prime} = R (l^\prime,f) ( r^{\prime\prime} \mapsto \theta) ) )]
     }{
-      (L\ R\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*})\ \rightarrow\ k) \rightarrow 
+      (L\ R\ g\ \eta\ \cfgnt{r}\ (\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*}\ \rightarrow\ k)) \rightarrow 
       (L^\prime R^\prime\ g\ \eta\ k)
 	}	
 \and

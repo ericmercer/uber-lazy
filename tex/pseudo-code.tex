@@ -32,13 +32,6 @@ For a variable (or field) to access any particular store location
 associated with its reference, the corresponding constraint must be
 satisfied.
 
-\begin{comment}
- defined on value sets $L$ and references
-$R$. $R$ and $L$ include the special symbol $\bot$ to indicate an
-uninitialized reference and location respectively. Additionally, $L$
-includes a special location $\mathtt{NULL}$ for null references.
-\end{comment}
-
 Locations are boxes in the graphical representation and indicated with
 the letter $l$ in the math. References are circles in the graphical
 representation and indicated with the letter $r$ in the math. Edges
@@ -47,82 +40,28 @@ references are labeled with constraints $\phi \in \Phi$ (we assume
 $\Phi$ is a power set over individual constraints and $\phi$ is a set
 of constraints for the edge).
 
-The function $\mathbb{VS}(L,R,r,f)$ constructs the value-set given a
-heap, reference, and desired field such that
-$(l^\prime\ \phi^\prime\wedge\phi) \in \mathbb{VS}(L,R,r,f)$ if and
-only if
+The function $\mathbb{VS}(L,R,\phi_g,r,f)$ constructs the value-set given a
+heap, reference, and desired field:
 \[
-\begin{array}{l}
-  \exists (l\ \phi) \in L(r) ( \\
-  \ \ \ \ \ \ \ \ \ \exists r^\prime \in R(l,f) ( \\
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists (l^\prime\ \phi^\prime) \in L(r^\prime) (\mathbb{S}(\phi\wedge\phi^\prime))))
+\begin{array}{rcl}
+  \mathbb{VS}(L,R,\phi_g,r,f) & = & \{(l^\prime\ \phi^\prime\wedge\phi) \mid \\
+  & & \ \ \ \ \exists l\ ((l\ \phi) \in L(r)\ \wedge \\
+  & & \ \ \ \ \ \ \ \ \exists r^\prime \in R(l,f) ( \\
+  & & \ \ \ \ \ \ \ \ \ \ \ \ (l^\prime\ \phi^\prime) \in L(r^\prime)\ \wedge\\
+  & & \ \ \ \ \ \ \ \ \ \ \ \ \mathbb{S}(\phi\wedge\phi^\prime\wedge \phi_g)))\}
 \end{array}
 \]
-where $\mathbb{S}(\phi)$ returns true if $\phi \wedge \cfgnt{g} $ is satisfiable.
+where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
 
 The strengthen function $\mathbb{ST}(L,r,\phi^\prime)$ strengthens every
-constraint from the reference $r$ and keeps only location-constraint
-pairs that are satisfiable after strengthening. Formally,
-$(l\ \phi\wedge\phi^\prime)\in\mathbb{ST}(L,r,\phi^\prime)$ if and
-only if $\exists (l\ \phi)\in
-L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime)$
-
-The empty-reference function $\mathbb{ER}(L,\phi^\prime) = \{r\ |\ L(r) \neq
-\emptyset \wedge \forall(l,\phi) \in L(r)(\neg \mathbb{S}(\phi \wedge
-\phi^\prime))\}$ searches the heap for references that become
-disconnected from all their locations after strengthening. These
-references, if reachable, imply the heap is no longer valid on the
-current search path. As such, the symbolic execution algorithm should
-backtrack. This check is similar to a feasibility check in classic
-symbolic execution with only primitive data types.
-
-The consistency function is critical to the soundness of the algorithm
-as it detects when a symbolic heap becomes invalid along a path,
-similar to a feasibility check when doing classical symbolic execution
-with just primitives. As the constraints in the heap are strengthened
-with different aliasing requirements, it is possible to reach a point
-where the heap is no longer connected. Meaning, a valid reference is
-live, either in the local environment or the continuation, the reaches
-another reference that is no longer connected to any locations due to
-strengthening. The function relies on the empty-reference function to
-identify disconnected references. The function in essence checks every
-reference in the local environment and every reference found in the
-continuation, as these are all considered live. This operation similar
-to garbage collection where the local environment and stack are
-inspected to find the roots of the heap for the scan.
-
-
-The consistency function relies on two auxiliary functions which are
-informally defined. The function $\mathrm{ref}(\eta,\cfgnt{k})$
-inspects the local environment and continuation for all live
-references, and it returns those references in a set. The function
-$\mathrm{reach}(L, R, r, r^\prime)$ returns true if $r^\prime$ is
-reachable from $r$ in the heap and false otherwise. The consistency function $\mathbb{C}(L,R,X,\eta,k)$ is now defined as
+constraint from the reference $r$ with $\phi^\prime$ and keeps only location-constraint
+pairs that are satisfiable after this strengthening:
 \[
- \left\{ \begin{array}{rl} 
-        0 & \exists r \in \mathrm{ref}(\eta, \cfgnt{k})\ (\exists r^\prime \in X\ (\mathrm{reach}(L, R, r,r^\prime))) \\ 
-        1 & \mbox{otherwise}\end{array}\right .
+\begin{array}{rcl} 
+\mathbb{ST}(L,r,\phi^\prime) & = & \{ (l\ \phi\wedge\phi^\prime) \mid 
+(l\ \phi)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime) \}
+\end{array}
 \]
 
-\input{machine-rules}
 
-% Algorithm2e environment
-% http://en.wikibooks.org/wiki/LaTeX/Algorithms#Typesetting_using_the_algorithm2e_package
-\begin{comment}
-\begin{algorithm}
- \SetAlgoLined
- \KwData{this text}
- \KwResult{how to write algorithm with \LaTeX2e }
- initialization\;
- \While{not at end of this document $\wedge x < 2$}{
-  read current\;
-  \eIf{understand}{
-   go to next section\;
-   current section becomes this one\;
-   }{
-   go back to the beginning of current section\;
-  }
- }
- \caption{How to write algorithms}
-\end{algorithm}
-\end{comment}
+\input{machine-rules}

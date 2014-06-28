@@ -15,9 +15,9 @@
 	\inferrule[New]{
       \mathrm{fresh}_r\lp \rp  = \cfgnt{r} \\
       \mathrm{fresh}_l\lp \cfgnt{C}\rp  = l \\\\
-      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ] \\\\
-      \rho = \{r^\prime \mid \exists \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \cfgnt{r}^\prime = \cfgnt{R}^\prime\lp l, \cfgnt{f}\rp \rp \}\\\\
-      \cfgnt{L}^\prime = \cfgnt{L}[r \mapsto \{\lp \phi_T\ l\rp \}][\forall \cfgnt{r}^\prime \in \rho\ \lp \cfgnt{r}^\prime \mapsto \lp \phi_T\ l_\mathit{null}\rp \rp ]
+      \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ] = \cfgnt{R}^\prime \\\\
+      \{r^\prime \mid \exists \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \cfgnt{r}^\prime = \cfgnt{R}^\prime\lp l, \cfgnt{f}\rp \rp \} = \rho \\\\
+      \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \phi_T\ l\rp \}][\forall \cfgnt{r}^\prime \in \rho\ \lp \cfgnt{r}^\prime \mapsto \lp \phi_T\ l_\mathit{null}\rp \rp ] = \cfgnt{L}^\prime
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp  \rightarrow \\\\
       \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
@@ -151,52 +151,49 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Lazy Initialization (null)]{
-	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\}\\
-      \Lambda \neq \emptyset \\\\
-      l_x = \mathrm{min}_l\lp \Lambda\rp  \\
-      \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\ 
-       \{ \lp \phi_T\ l_\mathit{null}\rp \} = \theta_\mathit{null}
+	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\} = \Lambda\\
+      \emptyset  \neq \Lambda\\\\
+      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime\\ 
+      \{ \lp \phi_T\ l_\mathit{null}\rp \} = \theta_\mathit{null} \\
+      \mathrm{min}_l\lp \Lambda\rp = l_x
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[r_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{null}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
 	}
 \and
 	\inferrule[Lazy Initialization (new)]{
-	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\rp\}\\
-      \Lambda \neq \emptyset \\
-      l_x = \mathrm{min}_l\lp \Lambda\rp  \\\\
+	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\rp\} = \Lambda \\\\
+      \emptyset \neq \Lambda \\
       \mathrm{init}_l\lp \mathrm{C}_r\rp  = l_f \\
-      \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\ 
-      \{\lp \phi_T\ l_f\rp \} = \theta_\mathit{new}
+      \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\\\
+      \{\lp \phi_T\ l_f\rp \} = \theta_\mathit{new} \\
+      \mathrm{min}_l\lp \Lambda\rp = l_x 
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[r_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
 	}
 \and
-	\inferrule[Lazy Initialization]{
-	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\}\\
-      \Lambda \neq \emptyset \\
-      l_x = \mathrm{min}_l\lp \Lambda\rp  \\\\
+	\inferrule[Lazy Initialization (alias)]{
+	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\} = \Lambda\\
+       \emptyset \neq \Lambda\\\\
       \mathrm{type}\lp \cfgnt{f}\rp  = \mathrm{C}_r\\
-      \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\ 
-      \mathrm{init}_l\lp \mathrm{C}_r\rp  = l_f \\\\
-      \rho = \{ \lp \cfgnt{r}^\prime\ \phi^\prime\ l^\prime\rp  \mid \mathrm{isInit}\lp \cfgnt{r}^\prime\rp  \wedge \lp \phi^\prime\ l^\prime\rp  \in \cfgnt{L}\lp \cfgnt{r}^\prime\rp  \wedge \mathrm{type}\lp l^\prime\rp  = \mathrm{C}_r \} \\\\
-      \theta_\mathit{alias} = \{ \lp \phi\ l\rp  \mid \lp \cfgnt{r}^\prime\ \phi^\prime\ \l\rp  \in \rho \wedge \phi = \lp \phi^\prime \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}^\prime \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime\prime}\ \phi^{\prime\prime}\ l^{\prime\prime}\rp  \in \rho\ \lp \cfgnt{r}^{\prime\prime} \neq \cfgnt{r}^\prime\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime\prime} \rp \rp  \} \\\\
-      \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime,\ \phi^\prime,\ l^\prime\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime\rp \rp \}\\\\
-      \theta_\mathit{null} = \{ \lp \phi\ l_\mathit{null}\rp  \mid \phi = \lp \cfgnt{r}_f = \cfgnt{r}_\mathit{null}\rp  \}\\\\
-      \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null}
+      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime\\\\
+      \{ l^\prime \mid \exists \cfgnt{r}^\prime\ \lp \mathrm{isInit}\lp \cfgnt{r}^\prime\rp  \wedge \exists \phi^\prime\ \lp \lp \phi^\prime\ l^\prime\rp  \in \cfgnt{L}\lp \cfgnt{r}^\prime\rp  \wedge \mathrm{type}\lp l^\prime\rp  = \mathrm{C}_r\rp\rp \} = \rho \\\\
+      \{ \lp \phi_T\ l\rp \} = \theta_\mathit{alias}\\
+      l \in \rho \\
+      \mathrm{min}_l\lp \Lambda\rp = l_x
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow 
-      \lp \cfgnt{L}[r_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
 	}
 \and
 	\inferrule[Field Access]{
-      \cfgnt{r} \neq \cfgnt{r}_\mathit{null} \\
       \cfgnt{L}\lp\cfgnt{r}\rp = \{\lp\phi\ l\rp\} \\
+      l \neq \cfgnt{l}_\mathit{null}\\\\
       \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime \\
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[r^\prime \mapsto \lp\phi\ l\rp]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \lp\phi\ l\rp]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}
 \and
     \inferrule[Equals (reference)]{
@@ -209,8 +206,8 @@
 \and
 	\inferrule[Field Write]{
       \eta\lp \cfgnt{x}\rp = \cfgnt{r}_x\\ 
-      \cfgnt{r}_x \neq \cfgnt{r}_\mathit{null} \\ 
       \cfgnt{L}\lp\cfgnt{r}_x\rp = \{\lp\phi\ l\rp\} \\\\
+      l \neq \cfgnt{l}_\mathit{null}\\
       \mathrm{fresh}_r\lp\rp = \cfgnt{r}^\prime \\\\
       \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime] = \cfgnt{R}^\prime \\
       \cfgnt{L}[\cfgnt{r}^{\prime} \mapsto \cfgnt{L}\lp\cfgnt{r}\rp] = \cfgnt{L}^\prime
@@ -242,7 +239,7 @@
       \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null}
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow 
-      \lp \cfgnt{L}[r_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
 	}
 \and
 	\inferrule[Field Access]{
@@ -250,7 +247,7 @@
       \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow 
-      \lp \cfgnt{L}[r^\prime \mapsto \mathbb{VS}\lp \cfgnt{L},\cfgnt{R},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L},\cfgnt{R},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}
 \and
     \inferrule[Equals (references-true)]{

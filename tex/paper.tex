@@ -79,36 +79,7 @@
 \maketitle
 
 \begin{abstract}
-One of the fundamental challenges of using symbolic execution
-to analyze software has been the treatment of dynamically
-allocated data.
-%, i.e., programs with complex data structures with
-%unbounded domains.
-State-of-the-art symbolic execution techniques 
-have addressed this challenge by constructing the heap \emph{lazily},
-materializing objects on the concrete heap ``as needed'' and
-using non-deterministic choice points to explore each feasible
-concrete heap configuration. Because analysis of the materialized
-heap locations relies on concrete program semantics, the lazy
-initialization approach exacerbates the state space explosion
-problem that limits the scalability of symbolic execution.
-In this work we present a novel approach for lazy symbolic execution
-of heap manipulating software which utilizes 
-a fully symbolic heap constructed on-the-fly during symbolic execution.
-Our approach is 1) \emph{scalable} -- it does not
-create the additional points of non-determinism
-introduced by existing lazy initialization techniques and it explores
-each execution path only once for any given set of isomorphic heaps,
-2) \emph{precise} -- at any given point during symbolic execution, 
-the symbolic heap represents the exact set of feasible
-concrete heap structures for the program under analysis, and
-3) \emph{expressive} -- the symbolic heap can represent recursive data structures 
-and heaps resulting from loops and recursive control structures in the code. 
-We report on a case-study of an implementation of our technique in the
-Symbolic PathFinder tool to illustrate its scalability, precision
-and expressiveness. We also discuss how test case generation -- a common
- use for symbolic execution results -- can benefit from symbolic
- execution which uses a fully symbolic heap.
+\input{abstract}
 \end{abstract}
 
 \category{CR-number}{subcategory}{third-level}

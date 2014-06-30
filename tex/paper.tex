@@ -41,6 +41,79 @@
 \newcommand{\figref}[1]{Figure~\ref{#1}}
 \newcommand{\secref}[1]{Section~\ref{#1}}
 
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[T1]{fontenc}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{epsfig}
+\usepackage{comment}
+
+% used for inline lists
+\usepackage{paralist}
+
+%% This enables the xfig overlays to use the same font family as the document
+%% (i.e., font family and size is the same in the figure as it is
+%% in the text).
+
+\gdef\SetFigFont#1#2#3#4#5{}
+
+
+\usepackage{algorithm} 
+\RequirePackage[noend]{algorithmic}
+\renewenvironment{algorithm}[1][\textwidth]%  
+{\begin{minipage}[t][\totalheight][c]{#1}\begin{algorithmic}[1]}  %%% change [1] to [0] to turn off line numbers
+{\end{algorithmic}\end{minipage}}
+
+%% Use for each in ``FOR'' constructs
+
+\renewcommand{\algorithmicfor}{\textbf{for each}}
+
+%% All comments are in italics
+
+\renewcommand{\algorithmiccomment}[1]{\textit{${/\ast}$~#1~${\ast/}$}}
+
+%% Use ``procedure'' instead of ``Algorithm'' for off set
+
+\renewcommand{\algorithmicensure}{\textbf{procedure}}
+
+\newcommand{\algoname}[1]{\ENSURE #1}
+\newcommand*{\algobox}[1]{\framebox{#1}}
+
+\newcommand{\bo}[1]{\textbf{#1}}
+\newcommand{\cc}[1]{\cellcolor[gray]{.6}{#1}}
+\newcommand{\negspace}{\hspace{-.40cm}}
+
+
+%% This enables the xfig overlays to use the same font family as the document
+%% (i.e., font family and size is the same in the figure as it is
+%% in the text).
+
+\gdef\SetFigFont#1#2#3#4#5{}
 
 \begin{document}
 

@@ -40,3 +40,44 @@ location. The reference may assume any one of three states:
 uninitialized, non-null, or initialized. The reference is returned in
 an uninitialized state, and only in a subsequent memory access is the
 reference concretely initialized.
+
+\begin{figure}
+\begin{tabular}[c]{l}
+\begin{lstlisting}
+public class LinkedList {
+
+/** assume the linked list is valid with no cycles **/
+LLNode head;
+Data data0, data1, data2, data3, data4;
+
+private class Data { Integer val; }
+
+private class LLNode {
+  protected Data elem;
+  protected LLNode next; }
+
+public static boolean contains(LLNode root, Data val) {
+  LLNode node = root;
+  while (true) {
+    if(node.val == val)  return true;
+    if(node.next == null) return false;
+    node = node.next;
+}}
+
+public void run() {
+if(LinkedList.contains(head, data0) && LinkedList.contains(head,data1) &&
+   LinkedList.contains(head, data2) && LinkedList.contains(head, data3) &&
+   LinkedList.contains(head, data4)) return;
+\end{lstlisting}
+\end{tabular} 
+\caption{Linked list}
+\label{fig:example}
+\end{figure}
+
+\begin{figure}[htb]
+\scalebox{0.45}
+{\includegraphics[width=563px]{../figs/time_vs_complexity.pdf}}
+\caption{Time versus complexity for the linked list example}
+\label{fig:tvc}
+\end{figure}
+

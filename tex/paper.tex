@@ -1,4 +1,5 @@
-\documentclass[conference]{IEEEtran}
+%\documentclass[conference]{IEEEtran}
+\documentclass{sigplanconf}
 \usepackage{comment}
 \usepackage{mathpartir}
 \usepackage{amssymb}
@@ -20,11 +21,9 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Suzette Person and Neha Rungta}
-\IEEEauthorblockA{NASA}
-\and
-\IEEEauthorblockN{Eric Mercer and Benjamin Hillery}
-\IEEEauthorblockA{Brigham Young University}}
+\authorinfo{Suzette Person\and Neha Rungta}{NASA}{email1/2}
+\authorinfo{Eric Mercer\and Benjamin Hillery}{Brigham Young University}{email2/3}
+
 \maketitle
 
 \begin{abstract}
@@ -59,10 +58,11 @@ and expressiveness. We also discuss how test case generation -- a common
  use for symbolic execution results -- can benefit from symbolic
  execution which uses a fully symbolic heap.
 \end{abstract}
-\IEEEpeerreviewmaketitle
+%\IEEEpeerreviewmaketitle
 \input{intro}
 \input{motivation}
 \input{pseudo-code}
+\input{proofs}
 %\input{stateDescriptions}
 \input{related}
 %\input{state}

@@ -34,11 +34,12 @@ satisfied.
 
 Locations are boxes in the graphical representation and indicated with
 the letter $l$ in the math. References are circles in the graphical
-representation and indicated with the letter $r$ in the math. Edges
-from locations are labeled with field names $f \in F$. Edges from the
-references are labeled with constraints $\phi \in \Phi$ (we assume
-$\Phi$ is a power set over individual constraints and $\phi$ is a set
-of constraints for the edge).
+representation and indicated with the letter $\cfgnt{r}$ in the
+math. The special symbol $\bot$ is an uninitialized reference. Edges
+from locations are labeled with field names $\cfgnt{f}$. Edges from
+the references are labeled with constraints $\phi \in \Phi$ (it is
+assumed that $\Phi$ is a power set over individual constraints and
+$\phi$ is a set of constraints for the edge).
 
 The function $\mathbb{VS}(L,R,\phi_g,r,f)$ constructs the value-set given a
 heap, reference, and desired field:

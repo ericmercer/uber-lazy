@@ -151,7 +151,7 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Lazy Initialization (null)]{
-	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\} = \Lambda\\
+	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\} = \Lambda\\
       \emptyset  \neq \Lambda\\\\
       \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime\\ 
       \{ \lp \phi_T\ l_\mathit{null}\rp \} = \theta_\mathit{null} \\
@@ -162,7 +162,7 @@
 	}
 \and
 	\inferrule[Lazy Initialization (new)]{
-	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\rp\} = \Lambda \\\\
+	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\rp\} = \Lambda \\\\
       \emptyset \neq \Lambda \\
       \mathrm{init}_l\lp \mathrm{C}_r\rp  = l_f \\
       \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\\\
@@ -174,13 +174,12 @@
 	}
 \and
 	\inferrule[Lazy Initialization (alias)]{
-	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\} = \Lambda\\
+	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\} = \Lambda\\
        \emptyset \neq \Lambda\\\\
       \mathrm{type}\lp \cfgnt{f}\rp  = \mathrm{C}_r\\
       \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime\\\\
       \{ l^\prime \mid \exists \cfgnt{r}^\prime\ \lp \mathrm{isInit}\lp \cfgnt{r}^\prime\rp  \wedge \exists \phi^\prime\ \lp \lp \phi^\prime\ l^\prime\rp  \in \cfgnt{L}\lp \cfgnt{r}^\prime\rp  \wedge \mathrm{type}\lp l^\prime\rp  = \mathrm{C}_r\rp\rp \} = \rho \\\\
-      \{ \lp \phi_T\ l\rp \} = \theta_\mathit{alias}\\
-      l \in \rho \\
+      \{ \lp \phi_T\ l^\prime\rp \mid l^\prime \in \rho\} = \theta_\mathit{alias}\\
       \mathrm{min}_l\lp \Lambda\rp = l_x
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
@@ -188,13 +187,13 @@
 	}
 \and
 	\inferrule[Field Access]{
-      \cfgnt{L}\lp\cfgnt{r}\rp = \{\lp\phi\ l\rp\} \\
+      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}\rp\\
       l \neq \cfgnt{l}_\mathit{null}\\\\
-      \mathit{Need\ to\ get\ R(l,f)}
+      \{\lp\phi^\prime\ l^\prime\rp\} = \cfgnt{L}\lp\cfgnt{R}\lp l,\cfgnt{f}\rp\rp \\
       \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime \\
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \lp\phi\ l\rp]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}
 \and
     \inferrule[Equals (reference)]{
@@ -214,7 +213,7 @@
       \cfgnt{L}[\cfgnt{r}^{\prime} \mapsto \cfgnt{L}\lp\cfgnt{r}\rp] = \cfgnt{L}^\prime
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}^\prime \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}	
 \end{mathpar}
 \end{center}
@@ -227,7 +226,7 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Lazy Initialization]{
-	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \emptyset\ \rp\}\\
+	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
       \Lambda \neq \emptyset \\
       l_x = \mathrm{min}_l\lp \Lambda\rp  \\\\
       \mathrm{type}\lp \cfgnt{f}\rp  = \mathrm{C}_r\\

@@ -108,6 +108,13 @@
 \newcommand{\cc}[1]{\cellcolor[gray]{.6}{#1}}
 \newcommand{\negspace}{\hspace{-.40cm}}
 
+%define theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newenvironment{definition}[1][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 
 %% This enables the xfig overlays to use the same font family as the document
 %% (i.e., font family and size is the same in the figure as it is

@@ -43,9 +43,16 @@
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_I 
       \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{alias}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\rp 
 	}
+\and
+	\inferrule[Initialize (end)]{
+	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
+      \Lambda = \emptyset
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp 
+	}
 \end{mathpar}
 \end{center}
-\caption{The initialization machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$,
-for generalized symbolic execution with lazy initialization denoted by $\rightarrow_I$.}
+\caption{The initialization machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s \rightarrow_I^* s^\prime$ indicating repeating rewrites until the state does not change.}
 \label{fig:lazyInit}
 \end{figure*}

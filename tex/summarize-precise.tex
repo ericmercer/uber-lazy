@@ -9,18 +9,25 @@
       \cfgnt{r}_f = \mathrm{init}_r\lp \rp \\
       l_f  = \mathrm{init}_l\lp \mathrm{C}\rp\\\\
       \rho = \{ \lp \cfgnt{r}_a\ \phi_a\ l_a\rp  \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \} \\\\
-      \theta_\mathit{alias} = \{ \lp \phi\ l_a\rp  \mid \exists\cfgnt{r}_a\ \lp\exists \phi_a\ \lp\lp\cfgnt{r}_a\ \phi_a\ l_a\rp  \in \rho \wedge \phi = \lp \phi_a \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a\rp  \in \rho\ \lp \cfgnt{r}^\prime_a \neq \cfgnt{r}_a\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a \rp \rp \rp \rp \} \\\\
-      \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a\rp \rp \}\\\\
       \theta_\mathit{null} = \{ \lp \phi\ l_\mathit{null}\rp  \mid \phi = \lp \cfgnt{r}_f = \cfgnt{r}_\mathit{null}\rp  \}\\\\
+      \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a\rp \rp \}\\\\
+      \theta_\mathit{alias} = \{ \lp \phi\ l_a\rp  \mid \exists\cfgnt{r}_a\ \lp\exists \phi_a\ \lp\lp\cfgnt{r}_a\ \phi_a\ l_a\rp  \in \rho \wedge \phi = \lp \phi_a \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a\rp  \in \rho\ \lp \cfgnt{r}^\prime_a \neq \cfgnt{r}_a\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a \rp \rp \rp \rp \} \\\\
       \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null} \\
       l_x = \mathrm{min}_l\lp \Lambda\rp 
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp \rightarrow_S 
       \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \cfgnt{r}\ \cfgnt{f}\ \rp
 	}
+\and
+	\inferrule[Summarize (end)]{
+	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
+      \Lambda = \emptyset
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp 
+	}
 \end{mathpar}
 \end{center}
-\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp$,
-for precise heap summaries from symbolic execution denoted $\rightarrow_S$.}
+\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s\rightarrow_I^*s^\prime$ indicating repeated rewrites until the state does not change.}
 \label{fig:symInit}
 \end{figure*}

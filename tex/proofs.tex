@@ -2,7 +2,15 @@
 
 \subsection{Definitions}
 
-\subsubsection{State Representation Relation}
+\begin{definition}
 A symbolic system state represents a set of lazy system states. To denote the representation relationship, we use the expression $\mathcal{L}\sqsubset \mathcal{S} $ to say that lazy system state $\mathcal{L}:\lp \mu\ \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_{\mathcal{L}}\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp$ is represented by symbolic state $\mathcal{S}:\lp \mu\ \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_{\mathcal{S}}\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp$ . The representation relationship is defined as follows: $\mathcal{L}\sqsubseteq \mathcal{S} $ if and only if there exists functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \mapsto \cfgnt{l}$ such that for any reference $r \in \mathcal{L}$, location $l \in \mathcal{L}$, and field $f$, $$ l = L_{\mathcal{L}}(r) \leftrightarrow h(l)\in L_{\mathcal{S}}(g(r))$$ and $$ r = R_{\mathcal{L}}(\cfgnt{l},f) \leftrightarrow g(r) = R_{\mathcal{S}}(h(l),f)$$
+\end{definition}
 
 \subsection{Theorems}
+The following theorem demonstrates the use of the theorem environment.
+\begin{theorem}
+Let $f$ be continuous on $[a,b]$.  If $G$ is
+an antiderivative for $f$ on $[a,b]$, then
+\begin{displaymath}\int^b_af(t)dt = G(b) - G(a).\end{displaymath}
+\end{theorem}
+

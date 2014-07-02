@@ -144,89 +144,75 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Lazy Initialization (null)]{
-	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\} = \Lambda\\
-      \emptyset  \neq \Lambda\\\\
-      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime\\ 
-      \{ \lp \phi_T\ l_\mathit{null}\rp \} = \theta_\mathit{null} \\
-      \mathrm{min}_l\lp \Lambda\rp = l_x\\\\
-      \phi_g \wedge \lp\cfgnt{r}^\prime = \cfgnt{r}_\mathit{null}\rp = \phi_g^\prime
+	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
+      \Lambda \neq \emptyset\\\\
+      \cfgnt{r}^\prime = \mathrm{fresh}_r\lp \rp\\ 
+      \theta_\mathit{null} = \{ \lp \phi_T\ l_\mathit{null}\rp \} \\
+      l_x = \mathrm{min}_l\lp \Lambda\rp \\\\
+      \phi_g^\prime = \lp\phi_g \wedge \cfgnt{r}^\prime = \cfgnt{r}_\mathit{null}\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{null}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g^\prime\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_L 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{null}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\rp 
 	}
 \and
 	\inferrule[Lazy Initialization (new)]{
-	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\rp\} = \Lambda \\
-      \emptyset \neq \Lambda \\\\
-      \mathrm{type}\lp \cfgnt{f}\rp  = \mathrm{C}\\
-      \mathrm{init}_l\lp \mathrm{C}\rp  = l_f \\
-      \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\\\
-      \{ \cfgnt{r}^\prime \mid \mathrm{isInit}\lp \cfgnt{r}^\prime\rp  \wedge \exists \lp\phi^\prime\ l^\prime\rp \in \cfgnt{L}\lp\cfgnt{r}^\prime\rp\ \lp\mathrm{type}\lp l^\prime\rp  = \mathrm{C}\rp \} = \rho \\\\
-      \{\lp \phi_T\ l_f\rp \} = \theta_\mathit{new} \\
-      \mathrm{min}_l\lp \Lambda\rp = l_x \\\\
-      \phi_g \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\cfgnt{r}^\prime \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime\rp = \phi_g^\prime
+	  \Lambda  = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\rp\}\\
+      \Lambda \neq \emptyset\\\\
+      \mathrm{C} = \mathrm{type}\lp \cfgnt{f}\rp\\
+      l_f = \mathrm{init}_l\lp \mathrm{C}\rp \\
+      \cfgnt{r}_f = \mathrm{init}_r\lp \rp\\\\
+      \rho = \{ \lp\cfgnt{r}_a\ l_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \exists \phi_a\ \lp \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp  \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C}\rp \}\\\\
+      \theta_\mathit{new} = \{\lp \phi_T\ l_f\rp \} \\
+      l_x = \mathrm{min}_l\lp \Lambda\rp \\\\
+      \phi_g^\prime = \lp\phi_g \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ l_a\rp \in \rho} \cfgnt{r}_f \ne \cfgnt{r}_a\rp\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g^\prime\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_L 
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\rp 
 	}
 \and
 	\inferrule[Lazy Initialization (alias)]{
-	  \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\} = \Lambda\\
-       \emptyset \neq \Lambda\\\\
-      \mathrm{type}\lp \cfgnt{f}\rp  = \mathrm{C}\\
-      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime\\\\
-      \{ \lp\cfgnt{r}_f\ l^{\prime}\rp \mid \mathrm{isInit}\lp \cfgnt{r}_f\rp  \wedge \exists \phi^{\prime}\ \lp \lp \phi^{\prime}\ l^{\prime}\rp  \in \cfgnt{L}\lp \cfgnt{r}_f\rp  \wedge \mathrm{type}\lp l^{\prime}\rp  = \mathrm{C}\rp \} = \rho \\\\
-      \lp\cfgnt{r}_f\ l^\prime\rp \in \rho \\
-      \{ \lp \phi_T\ l^\prime\rp\} = \theta_\mathit{alias}\\
-      \mathrm{min}_l\lp \Lambda\rp = l_x\\\\
-      \phi_g \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}^\prime = \cfgnt{r}_f \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_f\ l^{\prime}\rp  \in \rho\ \lp \cfgnt{r}^{\prime}_f \neq \cfgnt{r}_f\rp } \cfgnt{r}^\prime \neq \cfgnt{r}^{\prime}_f \rp = \phi^\prime_g
+	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
+      \Lambda \neq \emptyset\\\\
+      \mathrm{C} = \mathrm{type}\lp \cfgnt{f}\rp\\
+      \cfgnt{r}^\prime = \mathrm{fresh}_r\lp \rp\\\\
+      \rho = \{ \lp\cfgnt{r}_a\ l_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \exists \phi_a\ \lp \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp  \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C}\rp \}\\\\
+      \lp\cfgnt{r}_a\ l_a\rp \in \rho \\
+      \theta_\mathit{alias} = \{ \lp \phi_T\ l_a\rp\}\\
+      l_x = \mathrm{min}_l\lp \Lambda\rp\\\\
+      \phi^\prime_g = \lp\phi_g \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}^\prime = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ l_a\rp  \in \rho\ \lp \cfgnt{r}^{\prime}_a \neq \cfgnt{r}_a\rp } \cfgnt{r}^\prime \neq \cfgnt{r}^{\prime}_a \rp\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi_g^\prime\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_L 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{alias}]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\rp 
 	}
-\and
+\end{mathpar}
+\end{center}
+\caption{The initialization machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$,
+for generalized symbolic execution with lazy initialization denoted by $\rightarrow_L$.}
+\label{fig:expr:lazyInit}
+\end{figure*}
+
+\begin{figure*}[t]
+\begin{center}
+\mprset{flushleft}
+\begin{mathpar}
 	\inferrule[Field Access]{
       \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}\rp\\
       l \neq \cfgnt{l}_\mathit{null}\\\\
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp \rightarrow^*_L 
       \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f} \rp \\\\ 
       \{\lp\phi^\prime\ l^\prime\rp\} = \cfgnt{L}^\prime\lp\cfgnt{R}^\prime\lp l,\cfgnt{f}\rp\rp \\
-      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime \\
+      \mathrm{fresh}_r\lp\rp  = \cfgnt{r}^\prime \\
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
       \lp \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime\ \phi_g^\prime\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}
 \and
-	\inferrule[Field Access]{
-      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}\rp\\
-      l \neq \cfgnt{l}_\mathit{null}\\\\
-      \{\lp\phi^\prime\ l^\prime\rp\} = \cfgnt{L}\lp\cfgnt{R}\lp l,\cfgnt{f}\rp\rp \\
-      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime \\
-    }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
-	}
-\and
-    \inferrule[Equals (reference-true)]{
-    \cfgnt{L}\lp \cfgnt{r}_0\rp = \cfgnt{L}\lp \cfgnt{r}_1\rp\\
-    \phi_g \wedge \lp r_0 = r_1\rp = \phi_g^\prime}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
-    }
-\and
-    \inferrule[Equals (reference-false)]{
-    \cfgnt{L}\lp \cfgnt{r}_0\rp \neq \cfgnt{L}\lp \cfgnt{r}_1\rp\\
-    \phi_g \wedge \lp r_0 \neq r_1\rp = \phi_g^\prime}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
-    }
-\and
 	\inferrule[Field Write]{
-      \eta\lp \cfgnt{x}\rp = \cfgnt{r}_x\\ 
-      \cfgnt{L}\lp\cfgnt{r}_x\rp = \{\lp\phi\ l\rp\} \\
+      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp\\ 
+      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}_x\rp \\
       l \neq \cfgnt{l}_\mathit{null}\\\\
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp \rightarrow^*_L 
-      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f} \rp \\\\ 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}_x\ \cfgnt{f}\rp \rightarrow^*_L 
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g^\prime\ \cfgnt{r}_x\ \cfgnt{f} \rp \\\\ 
       \mathrm{fresh}_r\lp\rp = \cfgnt{r}^\prime\\
       \theta =  \cfgnt{L}^\prime\lp\cfgnt{r}\rp 
     }{
@@ -234,20 +220,24 @@
       \lp \cfgnt{L}^\prime[\cfgnt{r}^{\prime} \mapsto \theta]\ \cfgnt{R}^\prime[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}	
 \and
-	\inferrule[Field Write]{
-      \eta\lp \cfgnt{x}\rp = \cfgnt{r}_x\\ 
-      \cfgnt{L}\lp\cfgnt{r}_x\rp = \{\lp\phi\ l\rp\} \\\\
-      l \neq \cfgnt{l}_\mathit{null}\\
-      \mathrm{fresh}_r\lp\rp = \cfgnt{r}^\prime \\\\
-      \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime] = \cfgnt{R}^\prime \\
-      \cfgnt{L}[\cfgnt{r}^{\prime} \mapsto \cfgnt{L}\lp\cfgnt{r}\rp] = \cfgnt{L}^\prime
+    \inferrule[Equals (reference-true)]{
+    \cfgnt{L}\lp \cfgnt{r}_0\rp = \cfgnt{L}\lp \cfgnt{r}_1\rp\\
+    \phi_g^\prime = \lp\phi_g \wedge r_0 = r_1\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
-	}	
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
+    }
+\and
+    \inferrule[Equals (reference-false)]{
+    \cfgnt{L}\lp \cfgnt{r}_0\rp \neq \cfgnt{L}\lp \cfgnt{r}_1\rp\\
+    \phi_g^\prime = \lp\phi_g \wedge r_0 \neq r_1\rp
+   }{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
+    }
 \end{mathpar}
 \end{center}
-\caption{Rules specific to classic symbolic execution with lazy initialization.}
+\caption{Generalized symbolic execution with lazy initialization.}
 \label{fig:expr:red}
 \end{figure*}
 
@@ -327,6 +317,83 @@
 \caption{Rules specific to the fully symbolic heap.}
 \label{fig:expr:red}
 \end{figure*}
-%% Expression syntax
+
+\begin{figure*}[t]
+\begin{center}
+\mprset{flushleft}
+\begin{mathpar}
+	\inferrule[Lazy Initialization]{
+	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
+      \Lambda \neq \emptyset \\
+      l_x = \mathrm{min}_l\lp \Lambda\rp  \\\\
+      \mathrm{type}\lp \cfgnt{f}\rp  = \mathrm{C}\\
+      \mathrm{init}_l\lp \mathrm{C}\rp  = l_f \\
+      \mathrm{init}_r\lp \rp  = \cfgnt{r}_f\\\\
+      \rho = \{ \lp \cfgnt{r}^\prime\ \phi^\prime\ l^\prime\rp  \mid \mathrm{isInit}\lp \cfgnt{r}^\prime\rp  \wedge \lp \phi^\prime\ l^\prime\rp  \in \cfgnt{L}\lp \cfgnt{r}^\prime\rp  \wedge \mathrm{type}\lp l^\prime\rp  = \mathrm{C} \} \\\\
+      \theta_\mathit{alias} = \{ \lp \phi\ l\rp  \mid \lp \cfgnt{r}^\prime\ \phi^\prime\ \l\rp  \in \rho \wedge \phi = \lp \phi^\prime \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}^\prime \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime\prime}\ \phi^{\prime\prime}\ l^{\prime\prime}\rp  \in \rho\ \lp \cfgnt{r}^{\prime\prime} \neq \cfgnt{r}^\prime\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime\prime} \rp \rp  \} \\\\
+      \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime,\ \phi^\prime,\ l^\prime\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime\rp \rp \}\\\\
+      \theta_\mathit{null} = \{ \lp \phi\ l_\mathit{null}\rp  \mid \phi = \lp \cfgnt{r}_f = \cfgnt{r}_\mathit{null}\rp  \}\\\\
+      \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null}
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow 
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp 
+	}
+\and
+	\inferrule[Lazy Initialization (end)]{
+	\forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp \ \lp \cfgnt{R}\lp l,\cfgnt{f}\rp  \neq \emptyset\rp 
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{init}\ \cfgnt{f}\ \cfgnt{k}\rp \rp  \rightarrow 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+	}
+\and
+	\inferrule[Field Access]{
+      \forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp \ \lp l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}\lp \phi \wedge \phi_g\rp \rp  \\
+      \mathrm{fresh}_r\lp \rp  = \cfgnt{r}^\prime
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L},\cfgnt{R},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
+	}
+\and
+    \inferrule[Equals (references-true)]{
+    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}, \cfgt{null}\} \\
+    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}, \cfgt{null}\}\\\\
+    \theta_\alpha = \{\phi_0 \wedge \phi_1 \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp v_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp v_1\rp \rp \} \\\\
+    \theta_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp v_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp v_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
+    \theta_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp v_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp v_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
+    \phi_g^\prime =  \phi_g \wedge \lp \vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \wedge\lp \wedge_{\phi_0 \in \theta_0} \neg \phi_0\rp \wedge\lp \wedge_{\phi_1
+    \in \theta_1} \neg \phi_1\rp \\\\ \mathbb{S}(\phi_g^\prime)}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}_0\ \lp \cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
+    }
+\and
+    \inferrule[Equals (references-false)]{
+    \cfgnt{v}_0 \not\in \{\cfgt{true}, \cfgt{false}\} \\
+    \cfgnt{v}_1 \not\in \{\cfgt{true}, \cfgt{false}\}\\\\
+    \theta_\alpha = \{\phi_0 \rightarrow \neg \phi_1 \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp v_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp v_1\rp \rp \} \\\\
+    \theta_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp v_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp v_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
+    \theta_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp v_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp v_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
+    \phi_g^\prime = \phi_g \wedge \lp \wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \vee\lp \lp \vee_{\phi_0 \in \theta_0} \phi_0\rp   \vee\lp \vee_{\phi_1
+    \in \theta_1} \phi_1\rp \rp  \\\\ \mathbb{S}(\phi_g^\prime)}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}_0\ \lp \cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
+    }
+\and
+	\inferrule[Field Write]{
+	\cfgnt{r}_x = \eta\lp \cfgnt{x}\rp \\
+\forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_x\rp \ \lp l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}\lp \phi \wedge \phi_g\rp \rp  \\\\
+      \Psi_x =\{\lp \cfgnt{r}_\mathit{old}\ \phi\ l\rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}_x\rp  \wedge \cfgnt{r}_\mathit{old} \in \cfgnt{R}\lp l,\cfgnt{f}\rp  \}\\\\
+      X = \{ \lp \cfgnt{r}_\mathit{old}\ \theta\ l\rp  \mid \exists \phi\ \lp \lp \cfgnt{r}_\mathit{old}\ \phi\ l\rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L},\cfgnt{r},\phi\rp  \cup \mathbb{ST}\lp \cfgnt{L},\cfgnt{r}_\mathit{old},\neg\phi\rp \rp  \}\\\\
+      \cfgnt{R}^\prime = \cfgnt{R}[\forall \lp \cfgnt{r}_\mathit{old}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
+      \cfgnt{L}^\prime = \cfgnt{L}[\forall \lp \cfgnt{r}_\mathit{old}\ \theta\ l\rp  \in X\ \lp \exists \cfgnt{r}^{\prime} = \cfgnt{R}^\prime\lp l,\cfgnt{f}\rp \ \lp  \cfgnt{r}^{\prime} \mapsto \theta\rp  \rp ]
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow 
+      \lp \cfgnt{L}^\prime \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{k}\rp 
+	}	
+\end{mathpar}
+\end{center}
+\caption{Rules specific to the fully symbolic heap.}
+\label{fig:expr:red}
+\end{figure*}
+
 
 

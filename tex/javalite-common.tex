@@ -1,0 +1,139 @@
+\begin{figure*}[t]
+\begin{center}
+\mprset{flushleft}
+\begin{mathpar}
+	\inferrule[Variable lookup]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{x}\ \cfgnt{k}\rp  \rightarrow \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \eta\lp \cfgnt{x}\rp \ \cfgnt{k}\rp 
+	}
+\and
+	\inferrule[New]{
+      \mathrm{fresh}_r\lp \rp  = \cfgnt{r} \\
+      \mathrm{fresh}_l\lp \cfgnt{C}\rp  = l \\\\
+      \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ] = \cfgnt{R}^\prime \\\\
+      \{r^\prime \mid \exists \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \cfgnt{r}^\prime = \cfgnt{R}^\prime\lp l, \cfgnt{f}\rp \rp \} = \rho \\\\
+      \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \phi_T\ l\rp \}][\forall \cfgnt{r}^\prime \in \rho\ \lp \cfgnt{r}^\prime \mapsto \lp \phi_T\ l_\mathit{null}\rp \rp ] = \cfgnt{L}^\prime
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+	}
+\and
+	\inferrule[Field Access(eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgnt{e}\ \cfgt{\$}\ \cfgnt{f}\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}\ \lp \cfgt{init}\ \cfgnt{f}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp \rp 
+	}
+\and
+	\inferrule[Field Write (eval)]{}{
+       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{e}\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}\ \lp \cfgt{init}\ \cfgnt{f}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp \rp 
+	}
+\and
+    \inferrule[Equals (l-operand eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgnt{e}_0\ \cfgt{=}\ \cfgnt{e}\rp  \ \cfgnt{k}\rp  \rightarrow \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_0\ \lp \cfgt{*}\ \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k}\rp \rp 
+    }
+\and
+    \inferrule[Equals (r-operand eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp \cfgt{*}\; \cfgt{=}\; \cfgnt{e} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}\ \lp \cfgnt{v}\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp 
+    }
+\and
+    \inferrule[Equals (bool)]{
+    \cfgnt{v}_0 \in \{\cfgt{true}, \cfgt{false}\} \\
+    \cfgnt{v}_1 \in \{\cfgt{true}, \cfgt{false}\} \\\\
+    \mathrm{eq?}\lp \cfgnt{v}_0, \cfgnt{v}_1\rp  = \cfgnt{v}_r}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}_0\ \lp \cfgnt{v}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}_r\ \cfgnt{k}\rp 
+    }
+\and
+    \inferrule[If-then-else (eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{if}\ \cfgnt{e}_0\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_0\ \lp \cfgt{if}\ \cfgt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2\rp  \rightarrow \cfgnt{k}\rp 
+	}
+\and
+	\inferrule[If-then-else (true) ]{}{
+       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{true}\ \lp \cfgt{if}\ \cfgt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2\rp  \rightarrow \cfgnt{k}\rp  \rightarrow \\\\
+       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_1\  \cfgnt{k}\rp 
+	}
+\and
+	\inferrule[If-then-else (false)]{}{
+       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{false}\ \lp \cfgt{if}\ \cfgt{*}\ \cfgnt{e}_1\ \cfgt{else}\ \cfgnt{e}_2\rp  \rightarrow \cfgnt{k}\rp  \rightarrow \\\\
+       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_2\  \cfgnt{k}\rp 
+	}
+\and
+   \inferrule[Variable Declaration (eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}_0\ \cfgt{in}\ \cfgnt{e}_1\rp\ \cfgnt{k}\rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_0\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{:=}\ \cfgt{*}\ \cfgt{in}\ \cfgnt{e}_1 \rightarrow \cfgnt{k}\rp\rp 
+   }	
+\and
+   \inferrule[Variable Declaration]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp\cfgt{var}\ \cfgnt{T}\ \cfgnt{x}\ \cfgt{*}\ \cfgt{:=}\ \cfgt{in}\ \cfgnt{e}_1 \rightarrow \cfgnt{k}\rp\rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta[x \mapsto \cfgnt{v}]\ \cfgnt{e}_1\ \lp \cfgt{pop}\ \eta\ \cfgnt{k}\rp \rp 
+   }	
+\and
+   \inferrule[Method Invocation (object eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp\cfgnt{e}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\rp\ \cfgnt{k}\rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_0\ \lp \cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k}\rp \rp 
+   }
+\and
+   \inferrule[Method Invocation (arg eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}_0\ \lp \cfgt{*}\ \cfgt{@}\ \cfgnt{m}\ \cfgnt{e}_1\ \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_1\ \lp \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}\rp \rp 
+   }
+\and
+   \inferrule[Method Invocation]{
+    \mathrm{lookup}\lp \cfgnt{m}\rp  = \lp\cfgnt{T}\ \cfgnt{m}\ \lb\cfgnt{T}\ \cfgnt{x}\rb\ \ \cfgnt{e}_m\rp \\\\
+    \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1] = \eta_m}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}_1\ \lp \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta_m\ \cfgnt{e}_m\ \lp \cfgt{pop}\ \eta\ \cfgnt{k}\rp \rp 
+   }
+\and
+   \inferrule[Variable Assignment (eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgnt{x}\ \cfgt{:=}\ \cfgnt{e}\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}\ \lp \cfgnt{x}\ \cfgt{:=}\ \cfgt{*} \rightarrow\ \cfgnt{k}\rp \rp 
+   }	
+\and
+   \inferrule[Variable Assignment]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp \cfgnt{x}\ \cfgt{:=}\ \cfgt{*} \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta[\cfgnt{x} \mapsto \cfgnt{v}]\ \cfgnt{v}\ \cfgnt{k}\rp 
+   }	
+\and
+   \inferrule[Begin (no args)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{begin}\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{k}\rp 
+   }
+\and
+   \inferrule[Begin (arg0 eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{begin}\ \cfgnt{e}_0\ \cfgnt{e}_1\ ...\rp \ \cfgnt{k}\rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_0\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_1\ ...\rp \rightarrow \cfgnt{k}\rp \rp 
+   }
+\and
+   \inferrule[Begin (argi eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_i\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ ...\rp \rightarrow \cfgnt{k}\rp \rp 
+   }
+\and
+   \inferrule[Begin (argN eval)]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{n}\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{e}_n\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp 
+   }
+\and
+   \inferrule[Begin]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \cfgnt{k}\rp 
+   }	
+\and
+	\inferrule[NULL]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{null}\ \cfgnt{k}\rp \rightarrow \\\\ 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_\mathit{null}\ \cfgnt{k}\rp 
+	}
+\and
+   \inferrule[Pop]{}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{v}\ \lp \cfgt{pop}\ \eta_0\ \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta_0\  \cfgnt{v}\ \cfgnt{k}\rp 
+   }
+\end{mathpar}
+\end{center}
+\caption{Javalite rewrite rules that are common to generalized symbolic execution and precise heap summaries.}
+\label{fig:general}
+\end{figure*}

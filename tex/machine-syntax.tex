@@ -1,24 +1,22 @@
 \begin{figure}
 \begin{center}
 \cfgstart
-\cfgrule{e}{\lp ... \cfgor \lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgnt{v} \rp\rp}
 \cfgrule{$\phi$}{\cfgnt{constraint}}
 \cfgrule{l}{\cfgt{number}}
 \cfgrule{$\eta$}{(\cfgnt{mt}\ ($\eta$ [\cfgnt{x} $\rightarrow$ \cfgnt{v}]))}
 \cfgrule{s}{\lp$\mu$ \cfgnt{L} \cfgnt{R} $\phi_g$ $\eta$ \cfgnt{e} \cfgnt{k}\rp}
 \cfgrule{k}{\cfgt{end}}
 \cfgorline{\lp \cfgt{*} \cfgt{\$} \cfgnt{f} $\rightarrow$ \cfgnt{k}\rp}
-\cfgorline{\lp \cfgt{*} \cfgt{@} \cfgnt{m} \cfgnt{e} $\rightarrow$ \cfgnt{k} \rp}
-\cfgorline{\lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgt{*} $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp \cfgnt{x} \cfgt{\$} \cfgnt{f}  \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
 \cfgorline{\lp \cfgt{*} \cfgt{=} \cfgnt{e} $\rightarrow$ \cfgnt{k}\rp}
 \cfgorline{\lp \cfgnt{v} \cfgt{=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
-\cfgorline{\lp \cfgnt{x} \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
-\cfgorline{\lp \cfgnt{x} \cfgt{\$} \cfgnt{f}  \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
 \cfgorline{\lp \cfgt{if} \cfgnt{*} \cfgnt{e} \cfgt{else} \cfgnt{e} $\rightarrow$ \cfgnt{k} \rp}
 \cfgorline{\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{*} \cfgt{in} \cfgnt{e}  $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp \cfgt{*} \cfgt{@} \cfgnt{m} \cfgnt{e} $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgt{*} $\rightarrow$ \cfgnt{k} \rp}
+\cfgorline{\lp \cfgnt{x} \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
 \cfgorline{\lp\cfgt{begin}  \cfgnt{*} \lp \cfgnt{e} ...\rp $\rightarrow$ \cfgnt{k} \rp}
 \cfgorline{\lp\cfgt{pop} $\eta$ \cfgnt{k}\rp}
-\cfgorline{\lp\cfgt{init} \cfgnt{f} \cfgnt{k}\rp}
 \cfgend
 \end{center}
 \caption{The machine syntax for Javalite.}

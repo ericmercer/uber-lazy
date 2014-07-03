@@ -25,7 +25,7 @@
 	}	
 \and
     \inferrule[Equals (references-true)]{
-    \theta_\alpha = \{\phi_0 \wedge \phi_1 \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
+    \theta_\alpha = \{\lp\phi_0 \wedge \phi_1\rp \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
     \theta_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
     \theta_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
     \phi_g^\prime =  \phi_g \wedge \lp \vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \wedge\lp \wedge_{\phi_0 \in \theta_0} \neg \phi_0\rp \wedge\lp \wedge_{\phi_1
@@ -35,7 +35,7 @@
     }
 \and
     \inferrule[Equals (references-false)]{
-    \theta_\alpha = \{\phi_0 \rightarrow \neg \phi_1 \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
+    \theta_\alpha = \{\lp\phi_0 \rightarrow \neg \phi_1\rp \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
     \theta_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
     \theta_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
     \phi_g^\prime = \phi_g \wedge \lp \wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \vee\lp \lp \vee_{\phi_0 \in \theta_0} \phi_0\rp   \vee\lp \vee_{\phi_1

@@ -3,11 +3,20 @@
 \subsection{Definitions}
 
 \begin{definition}
-A feasible symbolic heap is defined as...
+A \textbf{state transition function} $\Phi$ is a mapping $\Phi : s \mapsto s$ , which takes one machine state and transforms it into another machine state.
 \end{definition}
 
 \begin{definition}
-A subheap is defined as...
+Given a sequence of states $$\Sigma_n = s_0,s_1,...,s_n$$ where $$s_i = \lp \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i\rp$$ the \textbf{control flow sequence} of $\Sigma_n$ is the defined as the sequence of tuples $$ \sigma_n = \mathbb{CF}(\Sigma_n) = (\eta_0,\cfgnt{e}_0,\cfgnt{k}_0),(\eta_1,\cfgnt{e}_1,\cfgnt{k}_1),...,(\eta_n,\cfgnt{e}_n,\cfgnt{k}_n)$$
+\end{definition}
+
+\begin{definition}
+A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation: $$ \Sigma_n = s_0, \Phi (s_0) ,..., \Phi_{n-1} (s_0) $$
+\end{definition}
+
+\begin{definition}
+Given a state transition function $\Phi$, an initial state $s_0$ and a control flow sequence $\sigma_n$, the \textbf{feasible state set} $\zeta = \mathbb{FS}(\Phi,s_0,sigma)$ is defined as
+ $$\zeta = \{ \forall s | \sigma_n = \mathbb{CF}(\Sigma_n) \wedge s = max_s(\Sigma) \wedge s = \Phi_{n-1}(s_o)\} $$
 \end{definition}
 
 \begin{definition}
@@ -19,6 +28,9 @@ and there exists functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \map
 
 \begin{definition}
 A symbolic state $\mathcal{S}$ is \textbf{exact} if and only if it represents the set of all feasible lazy states on the current execution path, and represents no infeasible state.
+
+ \forall (R_S^i\ L_S^i) \in \mathit{Heaps}(S_s)\ (\exists (R_L\ S_L)\ ((R_L\ S_L) = (R_S^i\ L_S^i))) \\ \\
+
 \end{definition}
 
 \subsection{Theorems}
@@ -35,4 +47,8 @@ We now show that state $\mathcal{S}^\prime$ represents state $\mathcal{L}^\prime
 It only remains to show that the image of $\mathcal{L}^\prime$ in $\mathcal{S}^\prime$ is feasible, WHICH WILL BE EASY ONCE WE DEFINE WHAT THAT MEANS.
 
 Now, we show that no infeasible lazy states are allowed by $\mathcal{S}^\prime$. NEED TO FILL IN THIS BIT, TOO
+
+$\mathbb{S}(\bigwedge_{(\phi l) \in L_s^i} \phi)) \wedge \forall l \in L_L (\exists l \in L_s^i)$
 \end{proof}
+
+

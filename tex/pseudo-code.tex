@@ -1,21 +1,16 @@
 \section{Pseudo-code}
 \figref{fig:surface-syntax} defines the surface syntax for the
-Javalite language \cite{saints-MS}. The \figref{fig:machine-syntax} is
-the machine syntax. The semantics of Javalite is syntax based and
-defined as rewrites on a string. The semantics use a CEKS machine
-model with a (C)ontrol string representing the expression being
+Javalite language \cite{saints-MS}. \figref{fig:machine-syntax} is
+the machine syntax. Javalite is syntactic machine
+defined as rewrites on a string. The semantics use a CEKS model with a (C)ontrol string representing the expression being
 evaluated, an (E)nvironment for local variables, a (K)ontinuation for
-what is to be executed next, and a (S)tore for the heap. This paper
-only defines salient features of the language and machine relevant to
-understanding the new algorithm.
+what is to be executed next, and a (S)tore for the heap. 
 
 \input{surface-syntax}
 \input{machine-syntax}
 
 %\item $n$ are numbers, and the set of all positive natural numbers is $\mathbb{N}^+$.
-This paper uses a standard definition of constraints $\phi \in \Phi$
-assuming all the usual relational operators and connectives. The heap
-is a labeled bipartite graph consisting of references $R$ and
+The heap is a labeled bipartite graph consisting of references $R$ and
 locations $L$ in the store. The functions $R$ and $L$ are defined for convenience
 in manipulating the labeled bipartite graph.
 \begin{itemize}

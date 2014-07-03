@@ -2,20 +2,36 @@
 
 \subsection{Definitions}
 
-\begin{definition}{State Representation}
-A symbolic system state represents a set of lazy system states. To denote the representation relationship, we use the expression $\mathcal{L}\sqsubset \mathcal{S} $ to say that lazy system state $\mathcal{L}:\lp \mu\ \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_{\mathcal{L}}\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp$ is represented by symbolic state $\mathcal{S}:\lp \mu\ \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_{\mathcal{S}}\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp$ . The representation relationship is defined as follows: $\mathcal{L}\sqsubseteq \mathcal{S} $ if and only if there exists functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \mapsto \cfgnt{l}$ such that for any reference $r \in \mathcal{L}$, location $l \in \mathcal{L}$, and field $f$, $$ l = L_{\mathcal{L}}(r) \leftrightarrow h(l)\in L_{\mathcal{S}}(g(r))$$ and $$ r = R_{\mathcal{L}}(\cfgnt{l},f) \leftrightarrow g(r) = R_{\mathcal{S}}(h(l),f)$$
+\begin{definition}
+A feasible symbolic heap is defined as...
 \end{definition}
 
-\begin{definition}{Exact Symbolic State}
+\begin{definition}
+A subheap is defined as...
+\end{definition}
+
+\begin{definition}
+A symbolic system state represents a set of lazy system states. To denote the representation relationship, we use the expression $\mathcal{L}\sqsubset \mathcal{S} $ to say that lazy system state $\mathcal{L}:\lp \mu_{\mathcal{L}}\ \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_{\mathcal{L}}\ \eta_{\mathcal{L}}\ \cfgnt{e}_{\mathcal{L}}\ \cfgnt{k}_{\mathcal{L}}\rp$ is represented by symbolic state $\mathcal{S}:\lp \mu_{\mathcal{S}}\ \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_{\mathcal{S}}\ \eta_{\mathcal{S}}\ \cfgnt{e}_{\mathcal{S}}\ \cfgnt{k}_{\mathcal{S}}\rp$ . The \textbf{representation relation} is defined as follows: $\mathcal{L}\sqsubset \mathcal{S} $ if and only if 
+$$\eta_{\mathcal{L}} = \eta_{\mathcal{S}} ,\ \cfgnt{e}_{\mathcal{L}} = \cfgnt{e}_{\mathcal{S}} ,\ \cfgnt{k}_{\mathcal{L}} = \cfgnt{k}_{\mathcal{S}}$$
+and there exists functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \mapsto \cfgnt{l}$ such that for any reference $r \in \mathcal{L}$, location $l \in \mathcal{L}$, and field $f$, $$ l = L_{\mathcal{L}}(r) \leftrightarrow h(l)\in L_{\mathcal{S}}(g(r))$$ and $$ r = R_{\mathcal{L}}(\cfgnt{l},f) \leftrightarrow g(r) = R_{\mathcal{S}}(h(l),f)$$ and the subheap of state $\mathcal{S}$ formed by selecting the image of $g$ and $h$ is feasible.
+
+\end{definition}
+
+\begin{definition}
 A symbolic state $\mathcal{S}$ is \textbf{exact} if and only if it represents the set of all feasible lazy states on the current execution path, and represents no infeasible state.
 \end{definition}
 
 \subsection{Theorems}
 
 \begin{lemma}
-If symbolic state $\mathcal{S}$ is exact prior to executing the Field Access rule, then the state $\mathcal{S}^\prime$ is also exact.
+If symbolic state $\mathcal{S}$ is exact prior to executing the Field Access rule, then the state $\mathcal{S}^\prime $ is also exact.
 \end{lemma}
 
 \begin{proof}
-Suppose that all relevant fields are initialized. Take an arbitrary lazy state $\mathcal{L} \sqsubset \mathcal{S}$ and execute the lazy field access rule to achieve state $\mathcal{L}^\prime$. Note that by rule, $\mathcal{L} = The only differences between  $\mathcal{L}$ and  $\mathcal{L}^\prime$ are the
-\end{proof}
+Suppose we have some symbolic state  $\mathcal{S} =  \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp $ , and that all relevant fields are initialized. Take an arbitrary lazy state $\mathcal{L} \sqsubset \mathcal{S}$. Since $\mathcal{S}$ is exact,  $\mathcal{L} = \lp \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_L\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$. If we apply the lazy field access rule to $\mathcal{L}$, we achieve state $\mathcal{L}^\prime = \lp \cfgnt{L}_{\mathcal{L}} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\mathcal{L}}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $. Likewise, by applying the symbolic field access rule to $\mathcal{S}$, we obtain state $\mathcal{S}^\prime = \lp \cfgnt{L}_{\mathcal{S}}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{\mathcal{S}},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $.
+
+We now show that state $\mathcal{S}^\prime$ represents state $\mathcal{L}^\prime $. Since $\eta$, $e$, and $k$ are identical between $\mathcal{S}^\prime$ and $\mathcal{L}^\prime $, the first condition is met by default. Constructing the reference and location mappings is only slightly less trivial: $$g^\prime = g$$ $$h^\prime = h[ r^\prime \mapsto r^\prime]$$ 
+
+It only remains to show that the heap in $\mathcal{L}^\prime$ is feasible, WHICH WILL BE EASY ONCE WE DEFINE WHAT THAT MEANS.
+
+Now, we show that no infeasible lazy states are allowed by $\mathcal{S}^\prime$. NEED TO FILL IN THIS BIT, TOO

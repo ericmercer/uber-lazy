@@ -1,4 +1,21 @@
-\section{Pseudo-code}
+\section{Generalized Symbolic Execution with Lazy Initialization}
+Generalized symbolic execution with lazy initialization is a technique
+to apply symbolic execution to non-primitive data types (i.e.,
+objects) \cite{GSE03}. The approach initializes each symbolic object
+to be either null, a new instance of the object, or an alias to an
+object previously created as part of lazy initialization. Each of
+these outcomes is a possible choice, and a model checker is able to
+exhaustively enumerates these choices effectively creating all
+possible concrete heaps under the choice sets. The approach is first formalized in this section and then extended to describe the precise heap summaries.
+
+
+Many of these concrete
+heaps explore redundant control flow paths in the program under test,
+but since symbolic model checking is stateless, subject to a bound to
+terminate the search, the model checker needlessly explores many
+redundant state leading to severe state explosion.
+
+
 \figref{fig:surface-syntax} defines the surface syntax for the
 Javalite language \cite{saints-MS}. \figref{fig:machine-syntax} is
 the machine syntax. Javalite is syntactic machine

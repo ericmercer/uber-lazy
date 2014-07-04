@@ -3,24 +3,27 @@
 \subsection{Definitions}
 
 \begin{definition}
-A \textbf{state transition function} $\Phi$ is a mapping $\Phi : s \mapsto s$ , which takes one machine state and transforms it into another machine state.
+A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$ , which takes one machine state and transforms it into another machine state. The state transition function with superscript represents composition of the state transition function: $$ s_a \rightarrow_{\Phi} s_b \rightarrow_{\Phi} s_c \implies s_a \rightarrow_{\Phi}^2 s_c $$
 \end{definition}
 
 \begin{definition}
-Given a sequence of states $$\Sigma_n = s_0,s_1,...,s_n$$ where $$s_i = \lp \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i\rp$$ the \textbf{control flow sequence} of $\Sigma_n$ is the defined as the sequence of tuples $$ \sigma_n = \mathbb{CF}(\Sigma_n) = (\eta_0,\cfgnt{e}_0,\cfgnt{k}_0),(\eta_1,\cfgnt{e}_1,\cfgnt{k}_1),...,(\eta_n,\cfgnt{e}_n,\cfgnt{k}_n)$$
+A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
 \end{definition}
 
 \begin{definition}
-A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation: $$ \Sigma_n = s_0, \Phi (s_0) ,..., \Phi_{n-1} (s_0) $$
+Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = \lp \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i\rp$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
 \end{definition}
 
 \begin{definition}
-Given a state transition function $\Phi$, an initial state $s_0$ and a control flow sequence $\sigma_n$, the \textbf{feasible state set} $\zeta = \mathbb{FS}(\Phi,s_0,sigma)$ is defined as
- $$\zeta = \{ \forall s | \sigma_n = \mathbb{CF}(\Sigma_n) \wedge s = max_s(\Sigma) \wedge s = \Phi_{n-1}(s_o)\} $$
+Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set} $\zeta = \mathbb{FS}(\rightarrow_{\Phi},s_0,sigma)$ is defined as
+ $$\zeta = \{ \forall s | \pi_n = \mathbb{CF}(\Pi_n) \wedge s = max_s(\Pi) \wedge s_0 \rightarrow_{\Phi}^{n-1} s\} $$
 \end{definition}
 
 \begin{definition}
-A symbolic system state represents a set of lazy system states. To denote the representation relationship, we use the expression $\mathcal{L}\sqsubset \mathcal{S} $ to say that lazy system state $\mathcal{L}:\lp \mu_{\mathcal{L}}\ \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_{\mathcal{L}}\ \eta_{\mathcal{L}}\ \cfgnt{e}_{\mathcal{L}}\ \cfgnt{k}_{\mathcal{L}}\rp$ is represented by symbolic state $\mathcal{S}:\lp \mu_{\mathcal{S}}\ \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_{\mathcal{S}}\ \eta_{\mathcal{S}}\ \cfgnt{e}_{\mathcal{S}}\ \cfgnt{k}_{\mathcal{S}}\rp$ . The \textbf{representation relation} is defined as follows: $\mathcal{L}\sqsubset \mathcal{S} $ if and only if 
+A \textbf{heap homomorphism} between two states $s_x$ and $s_y$ is defined as a pair of functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \mapsto \cfgnt{l}$ such that for any reference $r \in \s_x$, location $l \in s_x$, and field $f$, $$ l = L_x(r) \leftrightarrow h(l)\in L_y(g(r))$$ and $$ r = R_x(\cfgnt{l},f) \leftrightarrow g(r) = R_y(h(l),f)$$ If a such a pair of functions exists from one state $s_x$ to another state $s_y$ we say that state $s_x$ is \textbf{heap homomorphic} to state $s_y$, indicated by the notation $(g\ f):\ s_x \rightarrow s_y$.
+
+\begin{definition}
+A symbolic system state represents a set of lazy system states. To denote the representation relationship, we use the expression $\mathcal{L} \sqsubset \mathcal{S} $ to say that lazy system state $\mathcal{L}:\lp \mu_{\mathcal{L}}\ \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_{\mathcal{L}}\ \eta_{\mathcal{L}}\ \cfgnt{e}_{\mathcal{L}}\ \cfgnt{k}_{\mathcal{L}}\rp$ is represented by symbolic state $\mathcal{S}:\lp \mu_{\mathcal{S}}\ \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_{\mathcal{S}}\ \eta_{\mathcal{S}}\ \cfgnt{e}_{\mathcal{S}}\ \cfgnt{k}_{\mathcal{S}}\rp$ . The \textbf{representation relation} is defined as follows: $\mathcal{L}\sqsubset \mathcal{S} $ if and only if 
 $$\eta_{\mathcal{L}} = \eta_{\mathcal{S}} ,\ \cfgnt{e}_{\mathcal{L}} = \cfgnt{e}_{\mathcal{S}} ,\ \cfgnt{k}_{\mathcal{L}} = \cfgnt{k}_{\mathcal{S}}$$
 and there exists functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \mapsto \cfgnt{l}$ such that for any reference $r \in \mathcal{L}$, location $l \in \mathcal{L}$, and field $f$, $$ l = L_{\mathcal{L}}(r) \leftrightarrow h(l)\in L_{\mathcal{S}}(g(r))$$ and $$ r = R_{\mathcal{L}}(\cfgnt{l},f) \leftrightarrow g(r) = R_{\mathcal{S}}(h(l),f)$$ and the subheap of state $\mathcal{S}$ formed by selecting the image of $g$ and $h$ is feasible.
 

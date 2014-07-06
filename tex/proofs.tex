@@ -28,32 +28,42 @@ $$\phi_G = \phi_y \bigwedge_{\phi_i \in \chi} \phi_i $$
  If the expression $\phi_G$ is satisfiable, we say that the heap homomorphism $(g\ h):\ s_x \rightarrow s_y $ is \textbf{valid}.
 \end{definition}
 \begin{definition}
-A symbolic system state represents a set of lazy system states. To denote the representation relationship, we use the expression $s_\ell \sqsubset s_s $ to say that lazy system state $s_\ell$ is represented by symbolic state $s_s$ . The \textbf{representation relation} is defined as follows: $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a valid heap homomorphism $(g\ h):\ s_\ell \rightarrow s_s $.
+The \textbf{representation relation} is defined as follows: given two states $s_\ell$ and $s_s$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a valid heap homomorphism $(g\ h):\ s_\ell \rightarrow s_s $. The expression $s_\ell \sqsubset s_s $ can be read as "state $s_\ell$ is represented by state $s_s$ . 
 \end{definition}
 
 \begin{definition}
-A symbolic state $s_s$ is \textbf{exact} with respect to an initial state $s_0$ and control flow path $\pi$ if and only if it represents every state in the set feasible lazy states and represents no infeasible state:
+A state $s_s$ is \textbf{congruent} to a set of states $\mathcal{S}$ if and only if $s$ represents every state in $\mathcal{S}$ and represents no other state: 
+$$ s_s \equiv \mathcal{S} : s_i \in \mathcal{S} \Leftrightarrow s_i \sqsubset s_s $$
+\end{definition}
 
-$$ s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi) \Leftrightarrow s_\ell \sqsubset s_s $$
-
+\begin{definition}
+A symbolic state $s_s$ is \textbf{exact} with respect to an initial state $s_0$ and control flow sequence $\pi$ if and only if it is congruent the set of feasible lazy states on the same control flow path:
+$$ s_s \equiv \mathbb{FS}(\rightarrow_{\ell},s_0,\pi)$$
 \end{definition}
 
 \subsection{Theorems}
 
 \begin{lemma}
-If symbolic state $\mathcal{S}$ is exact prior to executing the Field Access rule, then the state $\mathcal{S}^\prime $ is also exact.
+If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the state $s_s^\prime : s_s \rightarrow_s s_s^\prime$ is exact with respect to $s_0$ and $\pi_{n+1}.
 \end{lemma}
 
 \begin{proof}
-Suppose we have some symbolic state  $\mathcal{S} =  \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp $ , and that all relevant fields are initialized. Take an arbitrary lazy state $\mathcal{L} \sqsubset \mathcal{S}$. Since $\mathcal{S}$ is exact,  $\mathcal{L} = \lp \cfgnt{L}_{\mathcal{L}}\ \cfgnt{R}_{\mathcal{L}}\ \phi_L\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$. If we apply the lazy field access rule to $\mathcal{L}$, we achieve state $\mathcal{L}^\prime = \lp \cfgnt{L}_{\mathcal{L}} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\mathcal{L}}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $. Likewise, by applying the symbolic field access rule to $\mathcal{S}$, we obtain state $\mathcal{S}^\prime = \lp \cfgnt{L}_{\mathcal{S}}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{\mathcal{S}},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $.
+We will consider two cases for this proof. In the first case, we assume that all of the fields involved in the read are initialized. In the second case we consider the case of uninitialized fields. 
 
-We now show that state $\mathcal{S}^\prime$ represents state $\mathcal{L}^\prime $. Since $\eta$, $e$, and $k$ are identical between $\mathcal{S}^\prime$ and $\mathcal{L}^\prime $, the first condition is met by default. Constructing the reference and location mappings is only slightly less trivial: $$g^\prime = g$$ $$h^\prime = h[ r^\prime \mapsto r^\prime]$$ 
+Case 1: suppose all of the pertinent fields in $s_s$ are initialized. Take an arbitrary lazy state $s_\ell \sqsubset s_s$. Since $s_s$ is exact,  $s_\ell = \lp \cfgnt{L}_{\ell}\ \cfgnt{R}_{\ell}\ \phi_L\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$. If we apply the state transition functions to achieve states $s_\ell^\prime : s_\ell \rightarrow_\ell s_\ell^\prime$ and $s_s^\prime : s_s \rightarrow_s s_s^\prime$, we find that:
+$$s_\ell^\prime = \lp \cfgnt{L}_{\ell} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\ell}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
+ and 
+ $$ s_s^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
 
-It only remains to show that the image of $\mathcal{L}^\prime$ in $\mathcal{S}^\prime$ is feasible, WHICH WILL BE EASY ONCE WE DEFINE WHAT THAT MEANS.
+We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_s^\prime$ and $s_\ell^\prime $, the first condition is met by default. To find a valid heap homomorphism, first construct functions $g^\prime : g^\prime = g[ r^\prime \mapsto r^\prime]$ and $h^\prime : h^\prime = h$. 
+
+%we now need to show that we have a heap homomorphism here, and that the homomorphism is valid. once we've done that , we've proved the soundness case
 
 Now, we show that no infeasible lazy states are allowed by $\mathcal{S}^\prime$. NEED TO FILL IN THIS BIT, TOO
 
 $\mathbb{S}(\bigwedge_{(\phi l) \in L_s^i} \phi)) \wedge \forall l \in L_L (\exists l \in L_s^i)$
+
+Since $s_\ell \subseteq s_s$
 \end{proof}
 
 

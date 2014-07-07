@@ -46,8 +46,34 @@ $$ s_s \equiv \mathbb{FS}(\rightarrow_{\ell},s_0,\pi)$$
 
 \subsection{Theorems}
 
+\begin{theorem}
+\label{thm:mutex}
+In any symbolic state $s_s$, the constraints in the value set of any reference are mutually exclusive.
+\end{theorem}
+\begin{proof}
+\end{proof}
+
 \begin{lemma}
-If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the state $s_s^\prime : s_s \rightarrow_s s_s^\prime$ is exact with respect to $s_0$ and $\pi_{n+1}$.
+\label{lem:init}
+If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_f : s_s \rightarrow w_s s_f$ is congruent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
+\end{lemma}
+
+\begin{proof}%going through this one quickly, could be more formal...
+Given a lazy state $s_\ell \sqsubset s_s$, there are four distinct possibilities for $s_\ell^\prime$: either the field is already initialized, or the field is initialized to a new reference, the null reference, or an alias.
+
+Case 1: Suppose the field is initialized. In this case, the rule does nothing and the theorem is trivially true.
+
+%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is congruent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
+
+Case 2: The "new" rule gets executed. 
+
+Case 3: The "null" rule gets executed.
+
+Case 4: The "alias" rule gets executed.
+\end{proof}
+
+\begin{lemma}
+If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the state $s_s^\prime : s_s \rightarrow_s s_f$ is exact with respect to $s_0$ and $\pi_{n+1}$.
 \end{lemma}
 
 \begin{proof}
@@ -63,15 +89,42 @@ We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k
 From this, we may deduce that:
 $$ (\phi_\ell\ l) \in \cfgnt{L}_\ell^\prime(r^\prime) \Rightarrow (\phi_s \wedge \phi_s^\prime\ h^\prime(l))\in \cfgnt{L}_s^\prime(g^\prime(r^\prime))$$
 Since $r^\prime$ the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in s_\ell^\prime$. Thus, we have shown that $(g^\prime\ h^\prime)$ is a heap homomorphism from $s_\ell^\prime$ to $s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_s\wedge\phi_s^\prime\wedge \phi_g)$ holds true, we know that $(g^\prime\ h^\prime):\ s_\ell^\prime \rightarrow s_s^\prime$ is valid. Since there is a valid heap homomorphism, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, we  by definition \ref{representation} know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
-$$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime)$$
-%Since since only the lazy field access rule accepts states with the same form as $s_\ell$, and since only the lazy field access rule produces a state with the same form as $s_\ell^\prime$, we know that $$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$
-%by combining the previous two equations, we can finally conclude that 
-%$$s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow  s_\ell^\prime \sqsubset s_s^\prime}$$
+$$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime$$
+
+%there is a little hand-waving here. We claim that that a valid (g' h') implies a valid (g h), but the reason for this is actually pretty subtle and should probably be detailed better. Basically, it depends on the fact that the value set for the returned reference is contingent on the entire access path from the root of the heap. Another hand-wavy part is showing that the lazy machine will turn si into si'. Finally, we still need to show that if we run the lazy machine on every feasible state in si that we get every feasible state in si' .
 
 Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, there must exist a valid homomorphism $(g_i^\prime h_i^\prime): s_i^\prime \rightarrow s_s^\prime$. If $(g_i^\prime\ h_i^\prime)$ is valid, then there must also exist a valid homomorphism $(g_i\ h_i) : s_i \rightarrow s_s$, and by extension, state $s_i \sqsubset s_s$. However, since $s_s$ is exact, $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$, and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction. Therefore, $$s_i^\prime \sqsubset s_s^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$ Combining the two previous equations, we find that 
 $$s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime)$$
 By definition \ref{congruent}, $s_s^\prime \equiv \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, and so by definition \ref{exact}, $s_s^\prime$ is exact.
 
+Case 2: If there are uninitialized fields, then the lazy initialization machine will make an intermediate state $s_t$. By lemma \ref{lem:init}, the symbolic state is congruent to the set of lazy initialized states. From the intermediate state, the proof is the same as for case 1.
 \end{proof}
 
+%proof for field write
+\begin{lemma}
+The field write rule is correct.
+\end{lemma}
+\begin{proof}
+\end{proof}
 
+%proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function
+\begin{lemma}
+If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the state $s_s^\prime : s_s \rightarrow_s s_f$ is exact with respect to $s_0$ and $\pi_{n+1}$.
+\end{lemma}
+There are two rules that apply to state $s_s$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for clarity we will only prove the case for the $\cfgt{true}$ branch here. 
+\begin{proof}
+Choose any $s_\ell \sqsubset s_s$, and let $\zeta_T = \mathbb{FS}(\rightarrow_{\ell},s_0,(\pi_n,(\eta\ \cfgt{true}\ \cfgnt{k})))$. Since $s_s$ is exact, we know that $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, $s_l = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$, and that there exists $(g\ h) : s_\ell \rightarrow s_s$. 
+Depending on the values of $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$, there are two different rules that might apply to $s_\ell$. In either case, $\cfgnt{L}_\ell$ and $\cfgnt{R}_\ell$ are unchanged, and $\phi_\ell$ is strengthened, so we already know that 
+$$ \zeta_T \subseteq \{s_\ell^\prime | \exists s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n}) (s_\ell \rightarrow_\ell s_\ell^\prime )\}$$
+
+Case 1: Assume $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp = \cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$. In this case, the equals - references true rule applies, and we know state $s_\ell^\prime : s_\ell \rightarrow_\ell s_\ell^\prime$ is in $\zeta_T$. Since $(g\ h)$ is valid, we know that $\exists \lp \phi_0\ l \rp \in \cfgnt{L}_\ell\lp g \lp \cfgnt{r}_0\rp \rp$, $\exists \lp \phi_1\ l \rp \in \cfgnt{L}_\ell\lp g \lp \cfgnt{r}_1\rp \rp$, and that $\mathbb{S}\lp\phi_s\wedge\phi_0\wedge \phi_1\rp$ holds true. Observe that by applying theorem \ref{thm:mutex}, $\phi_s^\prime \wedge \phi_0 \wedge \phi_1$ reduces to $\phi_s$. Therefore, $\lp g\ h \rp: s_\ell^\prime \rightarrow s_s^\prime$ is a valid heap homomorphism, and by extension, $s_\ell^\prime \sqsubset s_s^\prime$. Since this relation holds for arbitrary $s_\ell^\prime \in \zeta_t$, we now know that $s_\ell^\prime \in \zeta_T \Rightarrow s_\ell^\prime \sqsubset s_s^\prime$.
+% Furthermore, since  and since we may conclude that $s_s^\prime \equiv \zeta_T$. 
+
+\end{proof}
+
+\begin{theorem}
+Every symbolic state on every execution path is exact.
+\end{theorem}
+\begin{proof}
+Combine all of the production-rule lemmas to inductively prove the theorem.
+\end{proof}

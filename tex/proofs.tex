@@ -86,8 +86,13 @@ Case 3: The "null" rule gets executed.
 Case 4: The "alias" rule gets executed.
 \end{proof}
 
+%we need to define how r' is arrived at for this one to work...
 \begin{lemma}
-If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the state $s_s^\prime : s_s \rightarrow_s s_f$ is exact with respect to $s_0$ and $\pi_{n+1}$.
+If there are symbolic states $s_s$ and $s_s^\prime$, and control sequences $\pi_n$ and $\pi_{n+1}$ such that 
+$$s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$$ 
+$$s_s \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp$$ 
+$$\pi_{n+1} =\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp$$ then 
+$$s_s^\prime \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_{n+1} \rp$$
 \end{lemma}
 
 \begin{proof}

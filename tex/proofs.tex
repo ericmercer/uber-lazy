@@ -32,25 +32,30 @@ where $\mathit{last}(\Pi_n)$ returns the last state on the feasible sequence.
 \end{definition}
 
 \begin{definition}
-A \textbf{heap homomorphism} $(g\ h)$ between two states $s_x$ and $s_y$ is defined as a pair of functions $g:\cfgnt{r} \mapsto \cfgnt{r}$ and $h:\cfgnt{l} \mapsto \cfgnt{l}$ such that for any reference $r \in \mathit{refs}(s_x)$, location $l \in \mathit{locs}(s_x)$, and field $f$, $$ (\phi_x\ l) \in \cfgnt{L}_x(r) \Rightarrow (\phi_y\ h(l))\in \cfgnt{L}_y(g(r))$$ and $$ r = \cfgnt{R}_x(l,f) \Rightarrow g(r) = \cfgnt{R}_y(h(l),f)$$ If a such a pair of functions exists from one state $s_x$ to another state $s_y$ we say that state $s_x$ is \textbf{heap homomorphic} to state $s_y$, indicated by the notation $s_x \rightharpoonup_{(g\ h)} s_y$. 
+A \textbf{homomorphism} $s_x \rightharpoonup_{(g\ h)} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
+%a pair of functions $g:\mathcal{R} \mapsto \mathcal{R}$ and $h: \mathcal{L} \mapsto \mathcal{L}$ such that the following conditions are met:
 
-Suppose we take the set of constraints from the image of $s_x$ in $s_y$ under $(g\ h)$ :
-$$\chi = \{ \phi\ | \exists (r \in \cfgnt{R}_x,\  l \in \cfgnt{L}_x) ( (\phi\ h(l)) \in \cfgnt{L}_y (g(r))  \}$$ and we conjoin those constraints with the global invariant $\phi_y$ from $s_y$ :
-$$\phi_G = \phi_y \wedge (\bigwedge_{\phi_i \in \chi} \phi_i) $$
- If the expression $\phi_G$ is satisfiable, we say that the heap homomorphism $s_x \rightharpoonup_{(g\ h)} s_y$ is \textbf{valid}.
-\end{definition}
+\begin{array}{l}
+ s_x \rightharpoonup_{(g\ h)} s_y \Leftrightarrow \\
+\ \ \ \ \ \ \ \ \exists g:\mathcal{R} \mapsto \mathcal{R}\ ( \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{r} \in \mathcal{R}\ (\forall \cfgnt{l} \in \mathcal{L}\ ( \\ 
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_x\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_y\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \cfgnt{r} = \cfgnt{R}_x(\cfgnt{l},f) \Rightarrow g(\cfgnt{r}) = \cfgnt{R}_y(h(\cfgnt{l}),f) )) )) 
+\end{array}
+
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} is defined as follows: given two states $s_\ell$ and $s_s$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a valid heap homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $. The expression $s_\ell \sqsubset s_s $ can be read as "state $s_\ell$ is represented by state $s_s$ . 
+The \textbf{representation relation} is defined as follows: given lazy state $s_\ell$ and summary state $s_s$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that if $$\chi = \{ \phi\ | \exists (r \in \cfgnt{R}_x,\  l \in \cfgnt{L}_x) ( (\phi\ h(l)) \in \cfgnt{L}_y (g(r))  \}$$ then 
+\begin{equation}
+\label{eqn:valid}
+ \mathbb{S}( \phi_y \wedge (\bigwedge_{\phi_i \in \chi} \phi_i)) 
+\end{equation}
 \end{definition}
 
 \begin{definition}
 \label{congruent}
-A state $s$ is \textbf{congruent} to a set of states $\mathcal{S}$ if and only if $s$ represents every state in $\mathcal{S}$ and represents no other state: 
-$$s \cong \mathcal{S} : s_i \in \mathcal{S} \Leftrightarrow s_i \sqsubset s $$
+A summary state $s$ is \textbf{congruent} to a set of lazy states $P$ if and only if $s$ represents every state in $P$ and represents no other state: 
+$$s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s) $$
 \end{definition}
-
-Need to define a \emph{lazy state} and a \emph{summary state} (or whatever name we are using).
 
 \begin{definition}
 \label{exact}
@@ -88,31 +93,40 @@ Case 4: The "alias" rule gets executed.
 
 %we need to define how r' is arrived at for this one to work...
 \begin{lemma}
-If there are symbolic states $s_s$ and $s_s^\prime$, and control sequences $\pi_n$ and $\pi_{n+1}$ such that 
-$$s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$$ 
-$$s_s \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp$$ 
-$$\pi_{n+1} =\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp$$ then 
+If there are symbolic states $s_s$ and $s_s^\prime$, control sequences $\pi_n$ and $\pi_{n+1}$, initial state $s_0$, and reference $\cfgnt{r}^\prime$ such that the following conditions hold:
+\begin{align}
+s_s &= \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp \\
+s_s &\cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp \\
+\cfgnt{r}^\prime &= \mathrm{fresh}_r\lp \rp \\
+\pi_{n+1} &=\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp \\
+s_s &\rightarrow_s s_s^\prime
+\end{align}
+%$$s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$$ 
+%$$s_s \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp$$ 
+%$$\pi_{n+1} =\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp$$ 
+
+then 
 $$s_s^\prime \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_{n+1} \rp$$
 \end{lemma}
 
 \begin{proof}
 We will consider two cases for this proof. In the first case, we assume that all of the fields involved in the read are initialized. In the second case we consider the case of uninitialized fields. 
 
-Case 1: suppose all of the pertinent fields in $s_s$ are initialized. Take an arbitrary lazy state $s_\ell \sqsubset s_s$. Since $s_s$ is exact,  $s_\ell = \lp \cfgnt{L}_{\ell}\ \cfgnt{R}_{\ell}\ \phi_L\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$, and that $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. If we apply the state transition functions to achieve states $s_\ell^\prime : s_\ell \rightarrow_\ell s_\ell^\prime$ and $s_s^\prime : s_s \rightarrow_s s_s^\prime$, we find that:
+Case 1: suppose all of the pertinent fields in $s_s$ are initialized. Take an arbitrary lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. Since $s_s$ is exact,  $s_\ell = \lp \cfgnt{L}_{\ell}\ \cfgnt{R}_{\ell}\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$, and $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. If we apply the state transition functions to achieve states $s_\ell^\prime$ and $s_s^\prime$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$ and  $s_s \rightarrow_s s_s^\prime$, we find that:
 $$s_\ell^\prime = \lp \cfgnt{L}_{\ell} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\ell}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
  and 
  $$ s_s^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
 
-We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_s^\prime$ and $s_\ell^\prime $, the first condition is met by default. Now we construct functions $g^\prime : g^\prime = g[ r^\prime \mapsto r^\prime]$ and $h^\prime : h^\prime = h$. Observe that since $s_\ell \rightarrow s_s$, and since $\cfgnt{R}_\ell$ and $\cfgnt{R}_s$ are unchanged from states $s_\ell$ to $s_\ell^\prime$ and $s_s$ to $s_s^\prime$ respectively, we are guaranteed that $ r = \cfgnt{R}_\ell(l,f) \Rightarrow g^\prime(r) = \cfgnt{R}_s(h^\prime(l),f)$. Since $(\phi_\ell^\prime\ l^\prime) =  \cfgnt{L}_\ell(\cfgnt{R}_\ell(l,f))$, and since $(g\ h)$ is valid, we know that:
+We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_s^\prime$ and $s_\ell^\prime $, the first condition is met by default. Now we construct functions $g^\prime$ and $h^\prime$ such that $g^\prime = g[ r^\prime \mapsto r^\prime]$ and $h^\prime = h$. Observe that since $s_\ell \rightharpoonup_{(g\ h)} s_s$, and since $\cfgnt{R}_\ell$ and $\cfgnt{R}_s$ are unchanged from states $s_\ell$ to $s_\ell^\prime$ and $s_s$ to $s_s^\prime$ respectively, we are guaranteed that $ r = \cfgnt{R}_\ell(l,f) \Rightarrow g^\prime(r) = \cfgnt{R}_s(h^\prime(l),f)$. Since $(\phi_\ell^\prime\ l^\prime) =  \cfgnt{L}_\ell(\cfgnt{R}_\ell(l,f))$, and since $(g\ h)$ is valid, we know that:
  $$(\phi_s \wedge \phi_s^\prime\ l^\prime) \in \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
 From this, we may deduce that:
 $$ (\phi_\ell\ l) \in \cfgnt{L}_\ell^\prime(r^\prime) \Rightarrow (\phi_s \wedge \phi_s^\prime\ h^\prime(l))\in \cfgnt{L}_s^\prime(g^\prime(r^\prime))$$
-Since $r^\prime$ the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in s_\ell^\prime$. Thus, we have shown that $(g^\prime\ h^\prime)$ is a heap homomorphism from $s_\ell^\prime$ to $s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_s\wedge\phi_s^\prime\wedge \phi_g)$ holds true, we know that $(g^\prime\ h^\prime):\ s_\ell^\prime \rightarrow s_s^\prime$ is valid. Since there is a valid heap homomorphism, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, we  by definition \ref{representation} know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
+Since $r^\prime$ the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\ell^\prime \rightharpoonup_{(g\ h)} s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_s\wedge\phi_s^\prime\wedge \phi_g)$ evaluates to $\cfgt{true}$, we know that equation \ref{eqn:valid} also evaluates to $\cfgt{true}$. Since there is a valid heap homomorphism, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, we  by definition \ref{representation} know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
 $$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime$$
 
 %there is a little hand-waving here. We claim that that a valid (g' h') implies a valid (g h), but the reason for this is actually pretty subtle and should probably be detailed better. Basically, it depends on the fact that the value set for the returned reference is contingent on the entire access path from the root of the heap. Another hand-wavy part is showing that the lazy machine will turn si into si'. Finally, we still need to show that if we run the lazy machine on every feasible state in si that we get every feasible state in si' .
 
-Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, there must exist a valid homomorphism $(g_i^\prime h_i^\prime): s_i^\prime \rightarrow s_s^\prime$. If $(g_i^\prime\ h_i^\prime)$ is valid, then there must also exist a valid homomorphism $(g_i\ h_i) : s_i \rightarrow s_s$, and by extension, state $s_i \sqsubset s_s$. However, since $s_s$ is exact, $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$, and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction. Therefore, $$s_i^\prime \sqsubset s_s^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$ Combining the two previous equations, we find that 
+Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, there must exist a valid homomorphism $s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime$. If $(g_i^\prime\ h_i^\prime)$ is valid, then there must also exist a valid homomorphism $(g_i\ h_i) : s_i \rightarrow s_s$, and by extension, state $s_i \sqsubset s_s$. However, since $s_s$ is exact, $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$, and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction. Therefore, $$s_i^\prime \sqsubset s_s^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$ Combining the two previous equations, we find that 
 $$s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime)$$
 By definition \ref{congruent}, $s_s^\prime \equiv \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, and so by definition \ref{exact}, $s_s^\prime$ is exact.
 

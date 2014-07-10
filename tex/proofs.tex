@@ -3,7 +3,7 @@
 \subsection{Definitions}
 
 \begin{definition}
-A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$, which takes one machine state and transforms it into another machine state. 
+A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$, which takes one machine state and transforms it into another machine state. Two important state transition functions are the \textbf{lazy state transition function} $\rightarrow_\ell$ and the \textbf{summary state transition function} $\rightarrow_s$.
 \end{definition}
 
 \begin{definition}
@@ -15,6 +15,22 @@ A \textbf{state sequence} is as a sequence of states denoted as $\Pi_n = s_0,s_1
 A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
 \end{definition}
 \end{comment}
+
+\begin{definition}
+A \textbf{lazy state} $s_\ell$ is any state such that there exists an integer $i$, initial state $s_0$, and feasible state sequence $\Pi_n^\ell$ satisfying the following requirements:
+\begin{align}
+\Pi_n^\ell &= s_0,s_1,...,s_n\\
+s_\ell &= s_i
+\end{align}
+\end{definition}
+
+\begin{definition}
+A \textbf{summary state} $s_s$ is any state such that there exists an integer $i$, initial state $s_0$, and feasible state sequence $\Pi_n^s$ satisfying the following requirements:
+\begin{align}
+\Pi_n^s &= s_0,s_1,...,s_n\\
+s_\ell &= s_i
+\end{align}
+\end{definition}
 
 \begin{definition}
 Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = ( \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
@@ -32,29 +48,59 @@ where $\mathit{last}(\Pi_n)$ returns the last state on the feasible sequence.
 \end{definition}
 
 \begin{definition}
-A \textbf{homomorphism} $s_x \rightharpoonup_{(g\ h)} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
-%a pair of functions $g:\mathcal{R} \mapsto \mathcal{R}$ and $h: \mathcal{L} \mapsto \mathcal{L}$ such that the following conditions are met:
+A \textbf{field access descriptor} $\gamma_i$ is a tuple 
+$$ \gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$$
+\end{definition}
 
+\begin{definition}
+An \textbf{access path} $\Gamma_n$ is a sequence of field access descriptors
+$ \Gamma_n = \gamma_0,\gamma_1,...,\gamma_n $.
+\end{definition}
+
+\begin{definition}
+For a given access path $\Gamma_n$ the \textbf{access path constraint} $\mathbb{PC}(\Gamma_n)$ is defined as
+$$\mathbb{PC}(\Gamma_n) =  \bigwedge \{\phi \mid \exists \gamma \in \Gamma_n \ (\gamma = (\cfgnt{r}\ \phi\ \cfgnt{e}\ \cfgnt{f}))\}$$  
+\end{definition}
+
+\begin{definition}
+For a given state $s= ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, a \textbf{valid access path} $\Gamma_n^s = \gamma_0,\gamma_1,...,\gamma_n$ satisfies the properties
+\begin{align*}
+\cfgnt{r}_0 &\in \mathit{refs}(\eta_s) \\
+\mathbb{S}(&\phi_s \wedge \mathbb{PC}(\Gamma_n^s)) \\
+\forall i & \in \mathbb{N}\ ( 0 \leq i < n \Leftrightarrow \gamma_i \in \Gamma_n^s\  \wedge\\
+&\ \ \ \  \gamma_{i+1} \in \Gamma_n^s\  \wedge\\
+&\ \ \ \  (\phi_i\ \cfgnt{l}_i)\in \cfgnt{L}_s(\cfgnt{r}_i)\ \wedge \\
+&\ \ \ \  \cfgnt{r}_{i+1} = \cfgnt{R}_s(\cfgnt{l}_i,\cfgnt{f}_i)\ \wedge\\
+&\ \ \ \ (\phi_{i+1}\ \cfgnt{l}_{i+1}) = \cfgnt{L}_s(\cfgnt{r}_{i+1}) )
+\end{align*}
+where $\gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$
+\end{definition}
+
+\begin{definition}
+A \textbf{homomorphism} $s_x \rightharpoonup_{(g\ h)} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
+$$
 \begin{array}{l}
  s_x \rightharpoonup_{(g\ h)} s_y \Leftrightarrow \\
 \ \ \ \ \ \ \ \ \exists g:\mathcal{R} \mapsto \mathcal{R}\ ( \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{r} \in \mathcal{R}\ (\forall \cfgnt{l} \in \mathcal{L}\ ( \\ 
 \ \ \ \ \ \ \ \ \ \ \ \ (\phi_x\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_y\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \cfgnt{r} = \cfgnt{R}_x(\cfgnt{l},f) \Rightarrow g(\cfgnt{r}) = \cfgnt{R}_y(h(\cfgnt{l}),f) )) )) 
 \end{array}
+$$
+\end{definition}
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} is defined as follows: given lazy state $s_\ell$ and summary state $s_s$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that if $$\chi = \{ \phi\ | \exists (r \in \cfgnt{R}_x,\  l \in \cfgnt{L}_x) ( (\phi\ h(l)) \in \cfgnt{L}_y (g(r))  \}$$ then 
+The \textbf{representation relation} is defined as follows: given lazy state $s_\ell$ and summary state $s_s$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that if $$\theta = \{ \phi\ | \exists (r \in \cfgnt{R}_x,\  l \in \cfgnt{L}_x) ( (\phi\ h(l)) \in \cfgnt{L}_y (g(r))  \}$$ then 
 \begin{equation}
 \label{eqn:valid}
- \mathbb{S}( \phi_y \wedge (\bigwedge_{\phi_i \in \chi} \phi_i)) 
+ \mathbb{S}( \phi_y \wedge (\bigwedge_{\phi_i \in \theta} \phi_i)) 
 \end{equation}
 \end{definition}
 
 \begin{definition}
 \label{congruent}
-A summary state $s$ is \textbf{congruent} to a set of lazy states $P$ if and only if $s$ represents every state in $P$ and represents no other state: 
-$$s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s) $$
+A summary state $s_s$ is \textbf{congruent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
+$$s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) $$
 \end{definition}
 
 \begin{definition}
@@ -69,6 +115,18 @@ $$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi)$$
 \label{thm:mutex}
 In any symbolic state $s_s$, the constraints in the value set of any reference are mutually exclusive.
 \end{theorem}
+\begin{proof}
+\end{proof}
+
+\begin{lemma}
+For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (r)$, $\phi$ is the conjunction of constraints for the access path to $l$.
+\end{lemma}
+\begin{proof}
+\end{proof}
+
+\begin{lemma}
+If there is some access path $\sigma$ in state $s_s$ such that $\mathbb{s}(\phi_\sigma \wedge \phi_s)$, then $\sigma \sqsubset$  
+\end{lemma}
 \begin{proof}
 \end{proof}
 

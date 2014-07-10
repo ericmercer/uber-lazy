@@ -106,7 +106,7 @@ $$s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightar
 \begin{definition}
 \label{exact}
 A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, an initial state, $s_0$, and specific control flow path, $\pi_n$, if and only if it is congruent to the set of feasible state set:
-$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi)$$
+$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
 \end{definition}
 
 \subsection{Theorems}
@@ -125,7 +125,7 @@ For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$
 \end{proof}
 
 \begin{lemma}
-If there is some access path $\sigma$ in state $s_s$ such that $\mathbb{s}(\phi_\sigma \wedge \phi_s)$, then $\sigma \sqsubset$  
+If there is some access path $\Gamma$ in state $s_s$ such that $\mathbb{S}(\phi_\sigma \wedge \phi_s)$, then $\sigma \sqsubset$  
 \end{lemma}
 \begin{proof}
 \end{proof}

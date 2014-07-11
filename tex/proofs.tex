@@ -3,32 +3,38 @@
 \subsection{Definitions}
 
 \begin{definition}
+The set of \textbf{states} $\mathcal{S}$ is defined as
+\end{definition}
+
+\begin{definition}
+The set of \textbf{initial states} $\mathcal{S}_0$ is defined as
+\end{definition}
+
+\begin{definition}
 A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$, which takes one machine state and transforms it into another machine state. Two important state transition functions are the \textbf{lazy state transition function} $\rightarrow_\ell$ and the \textbf{summary state transition function} $\rightarrow_s$.
 \end{definition}
 
 \begin{definition}
-A \textbf{state sequence} is as a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$.
+A \textbf{state sequence} is as a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
 \end{definition}
 
 \begin{comment}
 \begin{definition}
-A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
+A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
 \end{definition}
 \end{comment}
 
 \begin{definition}
-A \textbf{lazy state} $s_\ell$ is any state such that there exists an integer $i$, initial state $s_0$, and feasible state sequence $\Pi_n^\ell$ satisfying the following requirements:
+The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
 \begin{align}
-\Pi_n^\ell &= s_0,s_1,...,s_n\\
-s_\ell &= s_i
+\mathcal{S}_\ell = \{s_\ell \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_\ell)\}
 \end{align}
 \end{definition}
 
 \begin{definition}
-A \textbf{summary state} $s_s$ is any state such that there exists an integer $i$, initial state $s_0$, and feasible state sequence $\Pi_n^s$ satisfying the following requirements:
+The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
 \begin{align}
-\Pi_n^s &= s_0,s_1,...,s_n\\
-s_\ell &= s_i
+\mathcal{S}_s = \{s_s \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_s)\}
 \end{align}
 \end{definition}
 
@@ -82,7 +88,7 @@ $$
 \begin{array}{l}
  s_x \rightharpoonup_{(g\ h)} s_y \Leftrightarrow \\
 \ \ \ \ \ \ \ \ \exists g:\mathcal{R} \mapsto \mathcal{R}\ ( \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{r} \in \mathcal{R}\ (\forall \cfgnt{l} \in \mathcal{L}\ ( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_x\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_y\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_a\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_b\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \cfgnt{r} = \cfgnt{R}_x(\cfgnt{l},f) \Rightarrow g(\cfgnt{r}) = \cfgnt{R}_y(h(\cfgnt{l}),f) )) )) 
 \end{array}
 $$
@@ -90,22 +96,35 @@ $$
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} is defined as follows: given lazy state $s_\ell$ and summary state $s_s$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that if $$\theta = \{ \phi\ | \exists (r \in \cfgnt{R}_x,\  l \in \cfgnt{L}_x) ( (\phi\ h(l)) \in \cfgnt{L}_y (g(r))  \}$$ then 
+The \textbf{representation relation} is defined as follows: given lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$ and summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that if 
+$$\theta = \{ \phi_b\ | \exists r \in \cfgnt{L}_\ell^\leftarrow\ (\exists (\phi_a\ l) \in \cfgnt{L}_\ell^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (g(r))))  \}$$ then 
 \begin{equation}
 \label{eqn:valid}
- \mathbb{S}( \phi_y \wedge (\bigwedge_{\phi_i \in \theta} \phi_i)) 
+ \mathbb{S}( \phi_s \wedge (\bigwedge_{\phi_i \in \theta} \phi_i)) 
 \end{equation}
 \end{definition}
 
 \begin{definition}
 \label{congruent}
 A summary state $s_s$ is \textbf{congruent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
-$$s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) $$
+$$s_s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) $$
+\end{definition}
+
+\begin{definition}
+\label{sound}
+A state $s$ is \textbf{sound} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
+$$ \forall s_\ell \in \mathcal{S}_\ell\ (s_\ell \sqsubset s_s \Rightarrow s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n) ) $$
+\end{definition}
+
+\begin{definition}
+\label{complete}
+A state $s$ is \textbf{complete} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
+$$ \forall s_\ell \in \mathcal{S}_\ell\ ( s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)\Rightarrow s_\ell \sqsubset s_s ) $$
 \end{definition}
 
 \begin{definition}
 \label{exact}
-A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, an initial state, $s_0$, and specific control flow path, $\pi_n$, if and only if it is congruent to the set of feasible state set:
+A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if it is both sound and complete:
 $$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
 \end{definition}
 

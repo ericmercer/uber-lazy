@@ -1,157 +1,52 @@
 \section{Proofs}
 
-\subsection{Definitions}
-
-\begin{definition}
-The set of \textbf{states} $\mathcal{S}$ is defined as
-\end{definition}
-
-\begin{definition}
-The set of \textbf{initial states} $\mathcal{S}_0$ is defined as
-\end{definition}
-
-\begin{definition}
-A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$, which takes one machine state and transforms it into another machine state. Two important state transition functions are the \textbf{lazy state transition function} $\rightarrow_\ell$ and the \textbf{summary state transition function} $\rightarrow_s$.
-\end{definition}
-
-\begin{definition}
-A \textbf{state sequence} is as a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
-\end{definition}
-
-\begin{comment}
-\begin{definition}
-A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
-\end{definition}
-\end{comment}
-
-\begin{definition}
-The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
-\begin{align}
-\mathcal{S}_\ell = \{s_\ell \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_\ell)\}
-\end{align}
-\end{definition}
-
-\begin{definition}
-The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
-\begin{align}
-\mathcal{S}_s = \{s_s \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_s)\}
-\end{align}
-\end{definition}
-
-\begin{definition}
-Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = ( \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
-\end{definition}
-
-\begin{definition}
-Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
- $$
-\begin{array}{l}
-\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
-\ \ \ \ \ \ \{s \mid \exists \Pi_n^\phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s = \mathit{last}(\Pi_n))\} 
-\end{array}
-$$
-where $\mathit{last}(\Pi_n)$ returns the last state on the feasible sequence.
-\end{definition}
-
-\begin{definition}
-A \textbf{field access descriptor} $\gamma_i$ is a tuple 
-$$ \gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$$
-\end{definition}
-
-\begin{definition}
-An \textbf{access path} $\Gamma_n$ is a sequence of field access descriptors
-$ \Gamma_n = \gamma_0,\gamma_1,...,\gamma_n $.
-\end{definition}
-
-\begin{definition}
-For a given access path $\Gamma_n$ the \textbf{access path constraint} $\mathbb{PC}(\Gamma_n)$ is defined as
-$$\mathbb{PC}(\Gamma_n) =  \bigwedge \{\phi \mid \exists \gamma \in \Gamma_n \ (\gamma = (\cfgnt{r}\ \phi\ \cfgnt{e}\ \cfgnt{f}))\}$$  
-\end{definition}
-
-\begin{definition}
-For a given state $s= ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, a \textbf{valid access path} $\Gamma_n^s = \gamma_0,\gamma_1,...,\gamma_n$ satisfies the properties
-\begin{align*}
-\cfgnt{r}_0 &\in \mathit{refs}(\eta_s) \\
-\mathbb{S}(&\phi_s \wedge \mathbb{PC}(\Gamma_n^s)) \\
-\forall i & \in \mathbb{N}\ ( 0 \leq i < n \Leftrightarrow \gamma_i \in \Gamma_n^s\  \wedge\\
-&\ \ \ \  \gamma_{i+1} \in \Gamma_n^s\  \wedge\\
-&\ \ \ \  (\phi_i\ \cfgnt{l}_i)\in \cfgnt{L}_s(\cfgnt{r}_i)\ \wedge \\
-&\ \ \ \  \cfgnt{r}_{i+1} = \cfgnt{R}_s(\cfgnt{l}_i,\cfgnt{f}_i)\ \wedge\\
-&\ \ \ \ (\phi_{i+1}\ \cfgnt{l}_{i+1}) = \cfgnt{L}_s(\cfgnt{r}_{i+1}) )
-\end{align*}
-where $\gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$
-\end{definition}
-
-\begin{definition}
-A \textbf{homomorphism} $s_x \rightharpoonup_{(g\ h)} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
-$$
-\begin{array}{l}
- s_x \rightharpoonup_{(g\ h)} s_y \Leftrightarrow \\
-\ \ \ \ \ \ \ \ \exists g:\mathcal{R} \mapsto \mathcal{R}\ ( \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{r} \in \mathcal{R}\ (\forall \cfgnt{l} \in \mathcal{L}\ ( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_a\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_b\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \cfgnt{r} = \cfgnt{R}_x(\cfgnt{l},f) \Rightarrow g(\cfgnt{r}) = \cfgnt{R}_y(h(\cfgnt{l}),f) )) )) 
-\end{array}
-$$
-\end{definition}
-
-\begin{definition}
-\label{representation}
-The \textbf{representation relation} is defined as follows: given lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$ and summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that if 
-$$\theta = \{ \phi_b\ | \exists r \in \cfgnt{L}_\ell^\leftarrow\ (\exists (\phi_a\ l) \in \cfgnt{L}_\ell^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (g(r))))  \}$$ then 
-\begin{equation}
-\label{eqn:valid}
- \mathbb{S}( \phi_s \wedge (\bigwedge_{\phi_i \in \theta} \phi_i)) 
-\end{equation}
-\end{definition}
-
-\begin{definition}
-\label{congruent}
-A summary state $s_s$ is \textbf{congruent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
-$$s_s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) $$
-\end{definition}
-
-\begin{definition}
-\label{sound}
-A state $s$ is \textbf{sound} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
-$$ \forall s_\ell \in \mathcal{S}_\ell\ (s_\ell \sqsubset s_s \Rightarrow s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n) ) $$
-\end{definition}
-
-\begin{definition}
-\label{complete}
-A state $s$ is \textbf{complete} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
-$$ \forall s_\ell \in \mathcal{S}_\ell\ ( s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)\Rightarrow s_\ell \sqsubset s_s ) $$
-\end{definition}
-
-\begin{definition}
-\label{exact}
-A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if it is both sound and complete:
-$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
-\end{definition}
+\input{definitions}
 
 \subsection{Theorems}
+\begin{lemma}
+\label{lem:lazyrefprops}
+For any lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$, for any reference $r \in \cfgnt{L}_\ell^\leftarrow$, 
+$$ | \cfgnt{L}_\ell ( r) | = 1 $$
+\end{lemma}
+
+\begin{proof}
+In every rule in the Lazy machine that establishes a reference mapping, the value set contains exactly one location, constraint pair. 
+\end{proof}
 
 \begin{theorem}
 \label{thm:mutex}
-In any symbolic state $s_s$, the constraints in the value set of any reference are mutually exclusive.
+If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$ that is equivalent to some set of lazy states $\zeta$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, and any two pairs $(\phi_\alpha\ l_\alpha) &\in \cfgnt{L}_s(r)$ and $(\phi_\beta\ l_\beta) &\in \cfgnt{L}_s(r)$ such that $l_\alpha &\ne l_\beta$,
+%\begin{align*}
+%(\phi_\alpha\ l_\alpha) &\in \cfgnt{L}_s(r)\\
+%(\phi_\beta\ l_\beta) &\in \cfgnt{L}_s(r)\\
+%l_\alpha &\ne l_\beta
+%\end{align*}
+the following predicate is valid
+$$\neg (\phi_s \wedge \phi_\alpha \wedge \phi_\beta)$$
 \end{theorem}
 \begin{proof}
 \end{proof}
 
 \begin{lemma}
-For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (r)$, $\phi$ is the conjunction of constraints for the access path to $l$.
+\label{lem:ref}
+For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
+\begin{equation}
+\exists \Gamma_n^s\ ( \phi = \mathbb{PC} (\Gamma_n^s) )
+\end{equation}
 \end{lemma}
 \begin{proof}
 \end{proof}
 
 \begin{lemma}
-If there is some access path $\Gamma$ in state $s_s$ such that $\mathbb{S}(\phi_\sigma \wedge \phi_s)$, then $\sigma \sqsubset$  
+\label{lem:path}
+If there is some access path $\Gamma_n^s$ in state $s_s$ such that $\mathbb{S}(\phi_s \wedge \mathbb{PC}(\Gamma_n^s))$, then $\Gamma_n^\ell$ is an access path in some lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$
 \end{lemma}
 \begin{proof}
 \end{proof}
 
 \begin{lemma}
 \label{lem:init}
-If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_f : s_s \rightarrow_S s_f$ is congruent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
+If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_f : s_s \rightarrow_S s_f$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
 \end{lemma}
 
 \begin{proof}%going through this one quickly, could be more formal...
@@ -159,7 +54,7 @@ Given a lazy state $s_\ell \sqsubset s_s$, there are four distinct possibilities
 
 Case 1: Suppose the field is initialized. In this case, the rule does nothing and the theorem is trivially true.
 
-%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is congruent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
+%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
 
 Case 2: The "new" rule gets executed. 
 
@@ -170,6 +65,7 @@ Case 4: The "alias" rule gets executed.
 
 %we need to define how r' is arrived at for this one to work...
 \begin{lemma}
+\label{lem:access}
 If there are symbolic states $s_s$ and $s_s^\prime$, control sequences $\pi_n$ and $\pi_{n+1}$, initial state $s_0$, and reference $\cfgnt{r}^\prime$ such that the following conditions hold:
 \begin{align}
 s_s &= \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp \\
@@ -198,16 +94,38 @@ We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k
  $$(\phi_s \wedge \phi_s^\prime\ l^\prime) \in \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
 From this, we may deduce that:
 $$ (\phi_\ell\ l) \in \cfgnt{L}_\ell^\prime(r^\prime) \Rightarrow (\phi_s \wedge \phi_s^\prime\ h^\prime(l))\in \cfgnt{L}_s^\prime(g^\prime(r^\prime))$$
-Since $r^\prime$ the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\ell^\prime \rightharpoonup_{(g\ h)} s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_s\wedge\phi_s^\prime\wedge \phi_g)$ evaluates to $\cfgt{true}$, we know that equation \ref{eqn:valid} also evaluates to $\cfgt{true}$. Since there is a valid heap homomorphism, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, we  by definition \ref{representation} know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
+Since $r^\prime$ is the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\ell^\prime \rightharpoonup_{(g\ h)} s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_s\wedge\phi_s^\prime\wedge \phi_g)$ evaluates to $\cfgt{true}$, we know that equation \ref{eqn:valid} also evaluates to $\cfgt{true}$. Since there is a valid heap homomorphism, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, by Definition \ref{representation} we know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
 $$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime$$
+Since there is only one possible control flow sequence $\pi_{n+1}$, this means that if $s_\ell \rightarrow_\ell s_\ell^\prime$, then $$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime\ \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$
+Combining the two previous equations, we may finally conclude that $s_s^\prime$ is complete with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$
+\begin{equation}
+\label{eqn:readforwards}
+s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
+\end{equation}
 
 %there is a little hand-waving here. We claim that that a valid (g' h') implies a valid (g h), but the reason for this is actually pretty subtle and should probably be detailed better. Basically, it depends on the fact that the value set for the returned reference is contingent on the entire access path from the root of the heap. Another hand-wavy part is showing that the lazy machine will turn si into si'. Finally, we still need to show that if we run the lazy machine on every feasible state in si that we get every feasible state in si' .
 
-Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, there must exist a valid homomorphism $s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime$. If $(g_i^\prime\ h_i^\prime)$ is valid, then there must also exist a valid homomorphism $(g_i\ h_i) : s_i \rightarrow s_s$, and by extension, state $s_i \sqsubset s_s$. However, since $s_s$ is exact, $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$, and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction. Therefore, $$s_i^\prime \sqsubset s_s^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$ Combining the two previous equations, we find that 
-$$s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime)$$
-By definition \ref{congruent}, $s_s^\prime \equiv \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, and so by definition \ref{exact}, $s_s^\prime$ is exact.
+%Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Lemma \ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_s^\prime$. Furthermore, by Lemma \ref{lem:path} we can surmise that $\mathbb{S}(\phi_s^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_s$. Since $s_s$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
 
-Case 2: If there are uninitialized fields, then the lazy initialization machine will make an intermediate state $s_t$. By lemma \ref{lem:init}, the symbolic state is congruent to the set of lazy initialized states. From the intermediate state, the proof is the same as for case 1.
+Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Definition \ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime$, and that $\mathbb{S}( \phi_s^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
+\begin{align*}
+s_i &= \lp \cfgnt{L}_{i}\ \cfgnt{R}_{i}\ \phi_i\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp\\
+L_i &= L_i^\prime \setminus \cfgnt{r}^\prime \\
+R_i &= R_{i^\prime}\\
+\phi_i &= \phi_i^\prime
+\end{align*}
+Observe that $s_i \rightarrow_\ell s_i^\prime$. Now, construct functions $g_i$ and $h_i$ so that $g_i = g^\prime \setminus \cfgnt{r}^\prime$ and $h_i = h^\prime$. Observe that $s_i \rightharpoonup_{(g_i\ h_i)} s_s$, and that $\mathbb{S}( \phi_i \wedge \mathbb{HC}(s_i \rightharpoonup_{(g_i\ h_i)} s_s) )$, so $s_i \sqsubset s_s$. By the hypothesis that $s_s$ is exact, $s_i \in\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. Combining this with the fact that $s_i \rightarrow_\ell s_i^\prime$, we conclude that $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
+
+ Therefore, $s_s^\prime$ is sound with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$
+ \begin{equation}
+ \label{eqn:readbackwards}
+ s_i^\prime \sqsubset s_s^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})
+ \end{equation}
+Since $s_s$ is both sound and complete, we may combine Equations \ref{eqn:readforwards} and \ref{eqn:readbackwards} to find that 
+$$s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$
+By Definition \ref{equivalent}, $s_s^\prime \cong \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, and so by Definition \ref{exact}, $s_s^\prime$ is exact.
+
+Case 2: If there are uninitialized fields, then the lazy initialization machine will make an intermediate state $s_t$. By lemma \ref{lem:init}, the symbolic state is equivalent to the set of lazy initialized states. From the intermediate state, the proof is the same as for case 1.
 \end{proof}
 
 %proof for field write
@@ -241,7 +159,7 @@ $$\zeta_f = \zeta_T \setminus \{ s_t | \cfgnt{L}_t \lp \cfgnt{r}_0\rp = \cfgnt{L
 This means that the lazy ``equals - references false" rule applies. The proof for the ``equals - references false" rule is highly similar to the proof for ``equals - references true", so we omit it for the sake of brevity. The result for this case is:
 $$s_\ell^\prime \in \zeta_f \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$
 
-Since $\zeta_T = \zeta_t \cup \zeta_f$, we can combine the results of the two cases to find that $$s_\ell^\prime \in \zeta_T \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$. By definition \ref{congruent}, $s_s^\prime \equiv \zeta_T$, and by definition \ref{exact}, $s_s^\prime$ is exact.
+Since $\zeta_T = \zeta_t \cup \zeta_f$, we can combine the results of the two cases to find that $$s_\ell^\prime \in \zeta_T \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$. By definition \ref{equivalent}, $s_s^\prime \equiv \zeta_T$, and by definition \ref{exact}, $s_s^\prime$ is exact.
 \end{proof}
 
 \begin{theorem}

@@ -1,0 +1,136 @@
+\subsection{Definitions}
+
+\begin{definition}
+The set of \textbf{states} $\mathcal{S}$ is defined as
+\end{definition}
+
+\begin{definition}
+The set of \textbf{initial states} $\mathcal{S}_0$ is defined as
+\end{definition}
+
+\begin{definition}
+A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$, which takes one machine state and transforms it into another machine state. Two important state transition functions are the \textbf{lazy state transition function} $\rightarrow_\ell$ and the \textbf{summary state transition function} $\rightarrow_s$.
+\end{definition}
+
+\begin{definition}
+A \textbf{state sequence} is as a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
+\end{definition}
+
+\begin{comment}
+\begin{definition}
+A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
+\end{definition}
+\end{comment}
+
+\begin{definition}
+The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
+\begin{align}
+\mathcal{S}_\ell = \{s_\ell \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_\ell)\}
+\end{align}
+\end{definition}
+
+\begin{definition}
+The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
+\begin{align}
+\mathcal{S}_s = \{s_s \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_s)\}
+\end{align}
+\end{definition}
+
+\begin{definition}
+Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = ( \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
+\end{definition}
+
+\begin{definition}
+Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
+ $$
+\begin{array}{l}
+\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
+\ \ \ \ \ \ \{s \mid \exists \Pi_n^\phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s = \mathit{last}(\Pi_n))\} 
+\end{array}
+$$
+where $\mathit{last}(\Pi_n)$ returns the last state on the feasible sequence.
+\end{definition}
+
+\begin{definition}
+A \textbf{field access descriptor} $\gamma_i$ is a tuple 
+$$ \gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$$
+\end{definition}
+
+\begin{definition}
+An \textbf{access path} $\Gamma_n$ is a sequence of field access descriptors
+$ \Gamma_n = \gamma_0,\gamma_1,...,\gamma_n $.
+\end{definition}
+
+\begin{definition}
+For a given access path $\Gamma_n$ the \textbf{access path constraint} $\mathbb{PC}(\Gamma_n)$ is defined as
+$$\mathbb{PC}(\Gamma_n) =  \bigwedge \{\phi \mid \exists \gamma \in \Gamma_n \ (\gamma = (\cfgnt{r}\ \phi\ \cfgnt{e}\ \cfgnt{f}))\}$$  
+\end{definition}
+
+\begin{definition}
+For a given state $s= ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, a \textbf{valid access path} $\Gamma_n^s = \gamma_0,\gamma_1,...,\gamma_n$ satisfies the properties
+\begin{align*}
+\cfgnt{r}_0 &\in \mathit{refs}(\eta_s) \\
+\mathbb{S}(&\phi_s \wedge \mathbb{PC}(\Gamma_n^s)) \\
+\forall i & \in \mathbb{N}\ ( 0 \leq i < n \Leftrightarrow \gamma_i \in \Gamma_n^s\  \wedge\\
+&\ \ \ \  \gamma_{i+1} \in \Gamma_n^s\  \wedge\\
+&\ \ \ \  (\phi_i\ \cfgnt{l}_i)\in \cfgnt{L}_s(\cfgnt{r}_i)\ \wedge \\
+&\ \ \ \  \cfgnt{r}_{i+1} = \cfgnt{R}_s(\cfgnt{l}_i,\cfgnt{f}_i)\ \wedge\\
+&\ \ \ \ (\phi_{i+1}\ \cfgnt{l}_{i+1}) = \cfgnt{L}_s(\cfgnt{r}_{i+1}) )
+\end{align*}
+where $\gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$
+\end{definition}
+
+\begin{definition}
+A \textbf{homomorphism} $s_x \rightharpoonup_{(g\ h)} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
+$$
+\begin{array}{l}
+ s_x \rightharpoonup_{(g\ h)} s_y \Leftrightarrow \\
+\ \ \ \ \ \ \ \ \exists g:\mathcal{R} \mapsto \mathcal{R}\ ( \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{r} \in \mathcal{R}\ (\forall \cfgnt{l} \in \mathcal{L}\ ( \\ 
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_a\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_b\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \cfgnt{r} = \cfgnt{R}_x(\cfgnt{l},f) \Rightarrow g(\cfgnt{r}) = \cfgnt{R}_y(h(\cfgnt{l}),f) )) )) 
+\end{array}
+$$
+\end{definition}
+
+\begin{definition}
+\label{def:hc}
+Given homomorphism $s_x \rightharpoonup_{(g\ h)} s_y$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_x \rightharpoonup_{(g\ h)} s_y)$ is defined as:
+\begin{align*}
+\mathbb{HC}(s_x \rightharpoonup_{(g\ h)} s_y) = \\
+ \bigwedge \{ \phi_b\ | \exists r \in \cfgnt{L}_x^\leftarrow\ (\exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (g(r)))) 
+\end{align*}
+\end{definition}
+
+\begin{definition}
+\label{representation}
+The \textbf{representation relation} is defined as follows: given lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$ and summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that 
+\begin{equation}
+\label{eqn:valid}
+ \mathbb{S}( \phi_s \wedge \mathbb{HC}(s_\ell \rightharpoonup_{(g\ h)} s_s) ) 
+\end{equation}
+\end{definition}
+
+\begin{definition}
+\label{equivalent}
+A summary state $s_s$ is \textbf{equivalent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
+$$s_s \cong P \Leftrightarrow \forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) $$
+\end{definition}
+
+\begin{definition}
+\label{sound}
+A state $s$ is \textbf{sound} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
+$$ \forall s_\ell \in \mathcal{S}_\ell\ (s_\ell \sqsubset s_s \Rightarrow s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n) ) $$
+\end{definition}
+
+\begin{definition}
+\label{complete}
+A state $s$ is \textbf{complete} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
+$$ \forall s_\ell \in \mathcal{S}_\ell\ ( s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)\Rightarrow s_\ell \sqsubset s_s ) $$
+\end{definition}
+
+\begin{definition}
+\label{exact}
+A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if it is both sound and complete:
+$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
+\end{definition}
+

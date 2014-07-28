@@ -3,24 +3,19 @@
 \input{definitions}
 
 \subsection{Theorems}
-\begin{lemma}
-\label{lem:lazyrefprops}
-For any lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$, for any reference $r \in \cfgnt{L}_\ell^\leftarrow$, 
-$$ | \cfgnt{L}_\ell ( r) | = 1 $$
-\end{lemma}
-
-\begin{proof}
-In every rule in the Lazy machine that establishes a reference mapping, the value set contains exactly one location, constraint pair. 
-\end{proof}
+%\begin{lemma}
+%\label{lem:lazyrefprops}
+%For any lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$, for any reference $r \in \cfgnt{L}_\ell^\leftarrow$, 
+%$$ | \cfgnt{L}_\ell ( r) | = 1 $$
+%\end{lemma}
+%
+%\begin{proof}
+%In every rule in the Lazy machine that establishes a reference mapping, the value set contains exactly one location, constraint pair. 
+%\end{proof}
 
 \begin{theorem}
 \label{thm:mutex}
-If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, and any two pairs $(\phi_\alpha\ l_\alpha) &\in \cfgnt{L}_s(r)$ and $(\phi_\beta\ l_\beta) &\in \cfgnt{L}_s(r)$ such that $l_\alpha &\ne l_\beta$, then
-%\begin{align*}
-%(\phi_\alpha\ l_\alpha) &\in \cfgnt{L}_s(r)\\
-%(\phi_\beta\ l_\beta) &\in \cfgnt{L}_s(r)\\
-%l_\alpha &\ne l_\beta
-%\end{align*}
+If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, and any two pairs $(\phi_\alpha\ l_\alpha) \in \cfgnt{L}_s(r)$ and $(\phi_\beta\ l_\beta) \in \cfgnt{L}_s(r)$ such that $l_\alpha \ne l_\beta$, then
 $$(\phi_\alpha \wedge \phi_\beta) = \cfgt{false}$$
 \end{theorem}
 \begin{proof}
@@ -43,26 +38,26 @@ Suppose we have any instruction other that a read, write, or new. No machine rul
 Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
 \end{proof}
 
-\begin{lemma}
-\label{lem:ref}
-For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
-\begin{equation}
-\exists \Gamma_n^s\ ( \phi = \mathbb{PC} (\Gamma_n^s) )
-\end{equation}
-\end{lemma}
-\begin{proof}
-\end{proof}
-
-\begin{lemma}
-\label{lem:path}
-If there is some access path $\Gamma_n^s$ in state $s_s$ such that $\mathbb{S}(\phi_s \wedge \mathbb{PC}(\Gamma_n^s))$, then $\Gamma_n^\ell$ is an access path in some lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$
-\end{lemma}
-\begin{proof}
-\end{proof}
+%\begin{lemma}
+%\label{lem:ref}
+%For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
+%\begin{equation}
+%\exists \Gamma_n^s\ ( \phi = \mathbb{PC} (\Gamma_n^s) )
+%\end{equation}
+%\end{lemma}
+%\begin{proof}
+%\end{proof}
+%
+%\begin{lemma}
+%\label{lem:path}
+%If there is some access path $\Gamma_n^s$ in state $s_s$ such that $\mathbb{S}(\phi_s \wedge \mathbb{PC}(\Gamma_n^s))$, then $\Gamma_n^\ell$ is an access path in some lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$
+%\end{lemma}
+%\begin{proof}
+%\end{proof}
 
 \begin{lemma}
 \label{lem:init}
-If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_f : s_s \rightarrow_S s_f$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
+If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_f$ such that $s_s \rightarrow_S s_f$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
 \end{lemma}
 
 \begin{proof}%going through this one quickly, could be more formal...
@@ -119,7 +114,7 @@ Combining the two previous equations, we may finally conclude that $s_s^\prime$ 
 s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
 \end{equation}
 
-%there is a little hand-waving here. We claim that that a valid (g' h') implies a valid (g h), but the reason for this is actually pretty subtle and should probably be detailed better. Basically, it depends on the fact that the value set for the returned reference is contingent on the entire access path from the root of the heap. Another hand-wavy part is showing that the lazy machine will turn si into si'. Finally, we still need to show that if we run the lazy machine on every feasible state in si that we get every feasible state in si' .
+%there is a little hand-waving here. We claim that that a valid (g' h') implies a valid (g h), but the reason for this is actually pretty subtle and should probably be detailed better. Another hand-wavy part is showing that the lazy machine will turn si into si'. Finally, we still need to show that if we run the lazy machine on every feasible state in si that we get every feasible state in si' .
 
 %Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Lemma \ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_s^\prime$. Furthermore, by Lemma \ref{lem:path} we can surmise that $\mathbb{S}(\phi_s^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_s$. Since $s_s$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
 
@@ -153,11 +148,11 @@ The field write rule is correct.
 
 %proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function
 \begin{lemma}
-If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the state $s_s^\prime : s_s \rightarrow_s s_s^\prime$ is exact with respect to $s_0$ and $\pi_{n+1}$.
+If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is equal to $ \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_{s^\prime}\ \eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k})$.
 \end{lemma}
-There are two rules that apply to state $s_s$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for clarity we will only prove the case for the $\cfgt{true}$ branch here. 
+There are two rules that apply to state $s_s$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for clarity we will only show the proof for the case for the $\cfgt{true}$ branch here. 
 \begin{proof}
-Choose any $s_\ell \sqsubset s_s$, and let $\zeta_T = \mathbb{FS}(\rightarrow_{\ell},s_0,(\pi_n,(\eta\ \cfgt{true}\ \cfgnt{k})))$. Since $s_s$ is exact, we know that $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, $s_l = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$, and that there exists $(g\ h) : s_\ell \rightarrow s_s$. 
+Choose any $s_\ell \sqsubset s_s$, and let $\zeta_T = \mathbb{FS}(\rightarrow_{\ell},s_0,(\pi_n,(\eta\ \cfgt{true}\ \cfgnt{k})))$. Since $s_s$ is exact, we know that $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, $s_l = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$, and that there exists a homomorphism $s_\ell \rightarrow_{(g\ h) } s_s$ such that $\mathbb{S}( \phi_s \wedge \mathbb{HC}(s_\ell \rightharpoonup_{(g\ h)} s_s) ) $. 
 Depending on the values of $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$, there are two different rules that might apply to $s_\ell$.
 %I'm not sure we actually use this fact anywhere
  %In either case, $\cfgnt{L}_\ell$ and $\cfgnt{R}_\ell$ are unchanged, and $\phi_\ell$ is strengthened, so we already know that 

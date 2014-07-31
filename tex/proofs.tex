@@ -38,6 +38,14 @@ Suppose we have any instruction other that a read, write, or new. No machine rul
 Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
 \end{proof}
 
+\begin{theorem}
+\label{thm:colex}
+If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, 
+$$\bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r})\} = \cfgt{true}$$
+\end{theorem}
+\begin{proof}
+For now, the proof is left as an exercise to the reader.
+\end{proof}
 %\begin{lemma}
 %\label{lem:ref}
 %For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
@@ -57,21 +65,32 @@ Since the exclusivity property holds for any initial state, and since it holds f
 
 \begin{lemma}
 \label{lem:init}
-If symbolic state $s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_f$ such that $s_s \rightarrow_S s_f$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
+If symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_s^*$ such that $s_s \rightarrow_S^* s_s^*$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
 \end{lemma}
 
 \begin{proof}%going through this one quickly, could be more formal...
-Given a lazy state $s_\ell \sqsubset s_s$, there are four distinct possibilities for $s_\ell^\prime$: either the field is already initialized, or the field is initialized to a new reference, the null reference, or an alias.
+Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition \ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. The state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$ may take one of four forms: either the field is already initialized, or the uninitialized field is initialized to a new reference, the null reference, or an alias.
 
-Case 1: Suppose the field is initialized. In this case, the rule does nothing and the theorem is trivially true.
+We now show that the following four cases for $s_\ell^*$ are represented in $s_s^*$.
+
+Case 1: Suppose the field in question is initialized. In this case, we don't change the field so there is no way to mess anything up.
 
 %for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
 
-Case 2: The "new" rule gets executed. 
+Case 2: The "new" rule gets executed. We add a new location, so this case is represented.
 
-Case 3: The "null" rule gets executed.
+Case 3: The "null" rule gets executed. We add a link to the null location, so this case is represented.
 
-Case 4: The "alias" rule gets executed.
+Case 4: The "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
+
+Having demonstrated each of these four cases, we now know that 
+$$s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \} \Rightarrow  s_\ell^* \sqsubset s_s^*$$
+
+We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the write time, there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem \ref{thm:colex}, this implies that the wrong time is no time. We have now proven that 
+$$ s_\ell^* \sqsubset s_s^*  \Rightarrow  s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$
+This fact, combined with our previous result, proves that
+$$s_s^*  \cong \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$
+
 \end{proof}
 
 %we need to define how r' is arrived at for this one to work...
@@ -114,14 +133,12 @@ Combining the two previous equations, we may finally conclude that $s_s^\prime$ 
 s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
 \end{equation}
 
-%there is a little hand-waving here. We claim that that a valid (g' h') implies a valid (g h), but the reason for this is actually pretty subtle and should probably be detailed better. Another hand-wavy part is showing that the lazy machine will turn si into si'. Finally, we still need to show that if we run the lazy machine on every feasible state in si that we get every feasible state in si' .
-
 %Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Lemma \ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_s^\prime$. Furthermore, by Lemma \ref{lem:path} we can surmise that $\mathbb{S}(\phi_s^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_s$. Since $s_s$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
 
 Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Definition \ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime$, and that $\mathbb{S}( \phi_s^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
 \begin{align*}
 s_i &= \lp \cfgnt{L}_{i}\ \cfgnt{R}_{i}\ \phi_i\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp\\
-L_i &= L_i^\prime \setminus \cfgnt{r}^\prime \\
+L_i &= L_{i^\prime} \setminus \{\cfgnt{r}^\prime \}\\
 R_i &= R_{i^\prime}\\
 \phi_i &= \phi_i^\prime
 \end{align*}

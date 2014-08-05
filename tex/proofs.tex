@@ -71,22 +71,22 @@ If symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}
 \begin{proof}%going through this one quickly, could be more formal...
 Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition \ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. The state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$ may take one of four forms: either the field is already initialized, or the uninitialized field is initialized to a new reference, the null reference, or an alias.
 
-We now show that the following four cases for $s_\ell^*$ are represented in $s_s^*$.
+We now show that the following four cases for $s_\ell^*$ are represented in $s_s^*$. For the following cases, let $\rightharpoonup_{(g\ h)}$ be the homomorphism such that $s_\ell \rightharpoonup_{(g\ h)} s_s$, let $\cfgnt{l}_\ell = \cfgnt{L}_\ell(\cfgnt{r})$, and let $\cfgnt{l}_s = h(\cfgnt{l}_\ell) $
 
-Case 1: Suppose the field in question is initialized. In this case, we don't change the field so there is no way to mess anything up.
+Case 1: Suppose $\cfgnt{R}_\ell(\cfgnt{l}_\ell) \neq \bot$. In this case, because $s_\ell \rightharpoonup_{(g\ h)} s_s$, we know that $\cfgnt{L}_s(h(\cfgnt{l})) \neq \bot$. This means that in the Summarize rule, $\cfgnt{l} \notin \Lambda$, and therefore, $\cfgnt{R}_s = \cfgnt{R}_{s^*} $. By extension, 
+
+Case 2: Suppose the field is uninitialized, and the "new" rule gets executed. We add a new location, so this case is represented.
+
+Case 3: Suppose the field is uninitialized, and the "null" rule gets executed. We add a link to the null location, so this case is represented.
+
+Case 4: Suppose the field is uninitialized, and the "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
 
 %for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
-
-Case 2: The "new" rule gets executed. We add a new location, so this case is represented.
-
-Case 3: The "null" rule gets executed. We add a link to the null location, so this case is represented.
-
-Case 4: The "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
 
 Having demonstrated each of these four cases, we now know that 
 $$s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \} \Rightarrow  s_\ell^* \sqsubset s_s^*$$
 
-We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the write time, there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem \ref{thm:colex}, this implies that the wrong time is no time. We have now proven that 
+We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time, there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem \ref{thm:colex}, this implies that the wrong time is no time. We have now proven that 
 $$ s_\ell^* \sqsubset s_s^*  \Rightarrow  s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$
 This fact, combined with our previous result, proves that
 $$s_s^*  \cong \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$
@@ -118,16 +118,25 @@ We will consider two cases for this proof. In the first case, we assume that all
 Case 1: suppose all of the pertinent fields in $s_s$ are initialized. Take an arbitrary lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. Since $s_s$ is exact,  $s_\ell = \lp \cfgnt{L}_{\ell}\ \cfgnt{R}_{\ell}\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$, and $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. If we apply the state transition functions to achieve states $s_\ell^\prime$ and $s_s^\prime$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$ and  $s_s \rightarrow_s s_s^\prime$, we find that:
 $$s_\ell^\prime = \lp \cfgnt{L}_{\ell} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\ell}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
  and 
- $$ s_s^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
+ $$ s_s^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{s}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
 
-We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_s^\prime$ and $s_\ell^\prime $, the first condition is met by default. Now we construct functions $g^\prime$ and $h^\prime$ such that $g^\prime = g[ r^\prime \mapsto r^\prime]$ and $h^\prime = h$. Observe that since $s_\ell \rightharpoonup_{(g\ h)} s_s$, and since $\cfgnt{R}_\ell$ and $\cfgnt{R}_s$ are unchanged from states $s_\ell$ to $s_\ell^\prime$ and $s_s$ to $s_s^\prime$ respectively, we are guaranteed that $ r = \cfgnt{R}_\ell(l,f) \Rightarrow g^\prime(r) = \cfgnt{R}_s(h^\prime(l),f)$. Since $(\phi_\ell^\prime\ l^\prime) =  \cfgnt{L}_\ell(\cfgnt{R}_\ell(l,f))$, and since $(g\ h)$ is valid, we know that:
- $$(\phi_s \wedge \phi_s^\prime\ l^\prime) \in \mathbb{VS}\lp \cfgnt{L}_{\mathcal{S}},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
+We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_s^\prime$ and $s_\ell^\prime $, the first condition is met by default. Now we construct the function $h^\prime$ such that $h^\prime = h$. Observe that since $s_\ell \rightharpoonup_{h} s_s$, and since $\cfgnt{R}_\ell$ and $\cfgnt{R}_s$ are unchanged from states $s_\ell$ to $s_\ell^\prime$ and $s_s$ to $s_s^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\ell(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_s(h^\prime(l),f)$. Let $\{(\phi_\ell^\prime\ l^\prime)\} =  \cfgnt{L}_\ell(\cfgnt{R}_\ell(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s))$ is valid, we know that:
+ $$(\phi_s \wedge \phi_s^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
 From this, we may deduce that:
-$$ (\phi_\ell\ l) \in \cfgnt{L}_\ell^\prime(r^\prime) \Rightarrow (\phi_s \wedge \phi_s^\prime\ h^\prime(l))\in \cfgnt{L}_s^\prime(g^\prime(r^\prime))$$
-Since $r^\prime$ is the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\ell^\prime \rightharpoonup_{(g\ h)} s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_s\wedge\phi_s^\prime\wedge \phi_g)$ evaluates to $\cfgt{true}$, we know that equation \ref{eqn:valid} also evaluates to $\cfgt{true}$. Since there is a valid heap homomorphism, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, by Definition \ref{representation} we know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
-$$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime$$
-Since there is only one possible control flow sequence $\pi_{n+1}$, this means that if $s_\ell \rightarrow_\ell s_\ell^\prime$, then $$s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime\ \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$$
-Combining the two previous equations, we may finally conclude that $s_s^\prime$ is complete with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$
+$$ (\phi_\ell\ l) \in \cfgnt{L}_\ell^\prime(\cfgnt{r}^\prime) \Rightarrow (\phi_s \wedge \phi_s^\prime\ h^\prime(l))\in \cfgnt{L}_s^\prime(\cfgnt{r}^\prime)$$
+Since $\cfgnt{r}^\prime$ is the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\ell^\prime \rightharpoonup_{(g\ h)} s_s^\prime$. Furthermore, since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime))$, and since $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, by Definition \ref{representation} we know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that for any lazy state $s_\ell$: 
+\begin{equation}
+\label{eqn:slimpliesslprime}
+s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
+\end{equation}
+
+Since there is only one possible control flow sequence $\pi_{n+1}$, this means that if $s_\ell \rightarrow_\ell s_\ell^\prime$, then 
+\begin{equation}
+\label{eqn:slimpliesslprime2}
+s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime\ \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})
+\end{equation}
+
+Combining Equations \ref{eqn:slimpliesslprime} and \ref{eqn:slimpliesslprime2}, we may finally conclude that $s_s^\prime$ is complete with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$
 \begin{equation}
 \label{eqn:readforwards}
 s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
@@ -135,14 +144,14 @@ s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow s_\e
 
 %Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Lemma \ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_s^\prime$. Furthermore, by Lemma \ref{lem:path} we can surmise that $\mathbb{S}(\phi_s^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_s$. Since $s_s$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
 
-Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Definition \ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime$, and that $\mathbb{S}( \phi_s^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{(g^\prime\ h^\prime)} s_s^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
+Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Definition \ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{h^\prime} s_s^\prime$, and that $\mathbb{S}( \phi_i^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{h^\prime} s_s^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
 \begin{align*}
 s_i &= \lp \cfgnt{L}_{i}\ \cfgnt{R}_{i}\ \phi_i\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp\\
 L_i &= L_{i^\prime} \setminus \{\cfgnt{r}^\prime \}\\
 R_i &= R_{i^\prime}\\
 \phi_i &= \phi_i^\prime
 \end{align*}
-Observe that $s_i \rightarrow_\ell s_i^\prime$. Now, construct functions $g_i$ and $h_i$ so that $g_i = g^\prime \setminus \cfgnt{r}^\prime$ and $h_i = h^\prime$. Observe that $s_i \rightharpoonup_{(g_i\ h_i)} s_s$, and that $\mathbb{S}( \phi_i \wedge \mathbb{HC}(s_i \rightharpoonup_{(g_i\ h_i)} s_s) )$, so $s_i \sqsubset s_s$. By the hypothesis that $s_s$ is exact, $s_i \in\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. Combining this with the fact that $s_i \rightarrow_\ell s_i^\prime$, we conclude that $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
+Observe that $s_i \rightarrow_\ell s_i^\prime$. Now, construct function $h_i$ so that $h_i = h^\prime$. Observe that $s_i \rightharpoonup_{h_i} s_s$, and that $\mathbb{S}( \phi_i \wedge \mathbb{HC}(s_i \rightharpoonup_{h_i} s_s) )$, so $s_i \sqsubset s_s$. By the hypothesis that $s_s$ is exact, $s_i \in\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. Combining this with the fact that $s_i \rightarrow_\ell s_i^\prime$, we conclude that $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
 
  Therefore, $s_s^\prime$ is sound with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$
  \begin{equation}

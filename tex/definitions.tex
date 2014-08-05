@@ -89,32 +89,32 @@ where $\gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$
 \end{definition}
 
 \begin{definition}
-A \textbf{homomorphism} $s_x \rightharpoonup_{(g\ h)} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
+A \textbf{homomorphism} $s_x \rightharpoonup_{h} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
 $$
 \begin{array}{l}
- s_x \rightharpoonup_{(g\ h)} s_y \Leftrightarrow \\
-\ \ \ \ \ \ \ \ \exists g:\mathcal{R} \mapsto \mathcal{R}\ ( \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{r} \in \mathcal{R}\ (\forall \cfgnt{l} \in \mathcal{L}\ ( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_a\ \cfgnt{l}) \in \cfgnt{L}_x(\cfgnt{r}) \Rightarrow (\phi_b\ h(\cfgnt{l}))\in \cfgnt{L}_y(g(\cfgnt{r}))\ \wedge \\
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \cfgnt{r} = \cfgnt{R}_x(\cfgnt{l},f) \Rightarrow g(\cfgnt{r}) = \cfgnt{R}_y(h(\cfgnt{l}),f) )) )) 
+ s_x \rightharpoonup_{h} s_y \Leftrightarrow \\
+\ \ \ \ \ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha \in \mathcal{L}\ (\forall \cfgnt{l}_\beta \in \mathcal{L}\ ( \\ 
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f ))\ \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) 
 \end{array}
 $$
 \end{definition}
 
 \begin{definition}
 \label{def:hc}
-Given homomorphism $s_x \rightharpoonup_{(g\ h)} s_y$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_x \rightharpoonup_{(g\ h)} s_y)$ is defined as:
+Given homomorphism $s_x \rightharpoonup_{h} s_y$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_x \rightharpoonup_{h} s_y)$ is defined as:
 \begin{align*}
-\mathbb{HC}(s_x \rightharpoonup_{(g\ h)} s_y) = \\
- \bigwedge \{ \phi_b\ | \exists r \in \cfgnt{L}_x^\leftarrow\ (\exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (g(r)))) 
+\mathbb{HC}(s_x \rightharpoonup_{h} s_y) &= \\
+ \bigwedge \{ \phi_b\ | \exists r \in \cfgnt{L}_x^\leftarrow\ &(\exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (g(r)))) 
 \end{align*}
 \end{definition}
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} is defined as follows: given lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$ and summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{(g\ h)} s_s $ such that 
+The \textbf{representation relation} is defined as follows: given lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$ and summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{h} s_s $ such that 
 \begin{equation}
 \label{eqn:valid}
- \mathbb{S}( \phi_s \wedge \mathbb{HC}(s_\ell \rightharpoonup_{(g\ h)} s_s) ) 
+ \mathbb{S}( \phi_s \wedge \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s) ) 
 \end{equation}
 \end{definition}
 

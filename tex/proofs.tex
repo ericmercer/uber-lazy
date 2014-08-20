@@ -69,22 +69,38 @@ If symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}
 \end{lemma}
 
 \begin{proof}%going through this one quickly, could be more formal...
-Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition \ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. The state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$ may take one of four forms: either the field is already initialized, or the uninitialized field is initialized to a new reference, the null reference, or an alias.
+Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition \ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Take any state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$, and state $s_s^\prime$ where $s_s \rightarrow_S^* s_s^\prime$. Note that  state $s_\ell^\prime$ has the form: $s_\ell^\prime = \lp \cfgnt{L}_{\ell^\prime}\ \cfgnt{R}_{\ell^\prime}\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$.Take any location, field pair $\lp l_\ell\  \cfgnt{f}\rp$ such that $\lp l_\ell\  \cfgnt{f}\rp \in \cfgnt{R}_{\ell}^\leftarrow$, and let $l_s = h(l_\ell)$. We may classify $l_\ell$ into one of three categories, based on the values of the $\cfgnt{R}$ function in each of the states $s_\ell$, $s_\ell^\prime$, $s_s$, and $s_s^\prime$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
 
-We now show that the following four cases for $s_\ell^*$ are represented in $s_s^*$. For the following cases, let $\rightharpoonup_{(g\ h)}$ be the homomorphism such that $s_\ell \rightharpoonup_{(g\ h)} s_s$, let $\cfgnt{l}_\ell = \cfgnt{L}_\ell(\cfgnt{r})$, and let $\cfgnt{l}_s = h(\cfgnt{l}_\ell) $
+Class 1: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) = \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. In this case, let $h^\prime(l_\ell) = h(l_\ell)$. Since $s_\ell \rightharpoonup_h s_s$, obviously: 
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$$. Furthermore, since $\mathbb{HC}()$
 
-Case 1: Suppose $\cfgnt{R}_\ell(\cfgnt{l}_\ell) \neq \bot$. In this case, because $s_\ell \rightharpoonup_{(g\ h)} s_s$, we know that $\cfgnt{L}_s(h(\cfgnt{l})) \neq \bot$. This means that in the Summarize rule, $\cfgnt{l} \notin \Lambda$, and therefore, $\cfgnt{R}_s = \cfgnt{R}_{s^*} $. By extension, 
+Class 2: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. Notice that since $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$, we may deduce that $ (\phi_b\ \bot)\in \cfgnt{L}_{s}(\cfgnt{R}_{s} (\cfgnt{l}_s,f ))$, and by extension, ${(\phi_a\ \bot)} = \cfgnt{L}_{\ell}(\cfgnt{R}_{\ell} (\cfgnt{l}_\ell,f )) $. In this case, we let $h^\prime(l_\ell) = h(l_\ell)$. Since $(\phi_a\ \bot) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f ))$, and since by rule $ (\phi_b\ \bot)\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$, we can see that in this case:
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$$. STILL NEED TO SHOW WHAT HAPPENS WITH THE CONSTRAINTS.
 
-Case 2: Suppose the field is uninitialized, and the "new" rule gets executed. We add a new location, so this case is represented.
+Class 3: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) \neq \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$.
 
-Case 3: Suppose the field is uninitialized, and the "null" rule gets executed. We add a link to the null location, so this case is represented.
+Since for all possible $l_\ell$ there exists an $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ such that 
+$$ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f )) $$ we know that $s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime$. Furthermore, since the heap constraint is satisfiable, we know that $s_\ell^\prime \sqsubset s_s^\prime $. We have therefore shown that for some summary state $s_s$ and an arbitrary lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$ :
+\begin{equation} 
+(s_\ell \rightarrow_I^* s_\ell^\prime \wedge s_s \rightarrow_S^* s_s^\prime) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime 
+\end{equation}
 
-Case 4: Suppose the field is uninitialized, and the "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
-
-%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
-
-Having demonstrated each of these four cases, we now know that 
-$$s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \} \Rightarrow  s_\ell^* \sqsubset s_s^*$$
+%may take one of four forms: either the field is already initialized, or the uninitialized field is initialized to a new reference, the null reference, or an alias.
+%
+%We now show that the following four cases for $s_\ell^*$ are represented in $s_s^*$. For the following cases, let $\rightharpoonup_{h}$ be the homomorphism such that $s_\ell \rightharpoonup_{h} s_s$, let $\cfgnt{l}_\ell = \cfgnt{L}_\ell(\cfgnt{r})$, and let $\cfgnt{l}_s = h(\cfgnt{l}_\ell) $
+%
+%Case 1: Suppose $\cfgnt{R}_\ell(\cfgnt{l}_\ell) \neq \bot$. In this case, because $s_\ell \rightharpoonup_{h} s_s$, we know that $\cfgnt{R}_s(\cfgnt{l}_s) \neq \bot$. This means that in the Summarize rule, $\cfgnt{l}_s \notin \Lambda$, and therefore, $\cfgnt{R}_s(\cfgnt{l}_s) = \cfgnt{R}_{s^*}(\cfgnt{l}_s) $. By extension, 
+%
+%Case 2: Suppose the field is uninitialized, and the "new" rule gets executed. We add a new location, so this case is represented.
+%
+%Case 3: Suppose the field is uninitialized, and the "null" rule gets executed. We add a link to the null location, so this case is represented.
+%
+%Case 4: Suppose the field is uninitialized, and the "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
+%
+%%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
+%
+%Having demonstrated each of these four cases, we now know that 
+%$$s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \} \Rightarrow  s_\ell^* \sqsubset s_s^*$$
 
 We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time, there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem \ref{thm:colex}, this implies that the wrong time is no time. We have now proven that 
 $$ s_\ell^* \sqsubset s_s^*  \Rightarrow  s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$

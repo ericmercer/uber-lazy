@@ -89,6 +89,7 @@ where $\gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$
 \end{definition}
 
 \begin{definition}
+\label{def:homomorphism}
 A \textbf{homomorphism} $s_x \rightharpoonup_{h} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
 $$
 \begin{array}{l}
@@ -105,7 +106,7 @@ $$
 Given homomorphism $s_x \rightharpoonup_{h} s_y$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_x \rightharpoonup_{h} s_y)$ is defined as:
 \begin{align*}
 \mathbb{HC}(s_x \rightharpoonup_{h} s_y) &= \\
- \bigwedge \{ \phi_b\ | \exists r \in \cfgnt{L}_x^\leftarrow\ &(\exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (g(r)))) 
+ \bigwedge \{ \phi_b\ | \exists r \in \cfgnt{L}_y^\leftarrow\ &(\exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y (r))) 
 \end{align*}
 \end{definition}
 

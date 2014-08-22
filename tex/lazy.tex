@@ -1,27 +1,28 @@
-\section{Generalized Symbolic Execution with Lazy Initialization}
+\section{GSE with Lazy Initialization}
 
-The function $\mathbb{VS}(L,R,\phi_g,r,f)$ constructs the value-set given a
-heap, reference, and desired field:
+A special reference, $\cfgnt{r}_\mathit{un}$, and location,
+$\cfgnt{l}_\mathit{un}$, is introduced to support lazy initialization
+in GSE. The '$\mathit{un}$' is to indicate the reference or location
+is uninitialized at the point of execution. The initial state of the
+machine maps $\cfgnt{r}_\mathit{null}$ as before and adds
+$\cfgnt{L}(\cfgnt{r}_\mathit{un}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$
+
+A field in an object is symbolic, meaning it is uninitialized, if the
+location for the field is $\cfgnt{l}_\mathit{un}$ on some constraint. The function
+$\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
+\{\cfgnt{l}\ ...\}$ returns locations in which the field $\cfgnt{f}$
+is uninitialized:
 \[
 \begin{array}{rcl}
-  \mathbb{VS}(L,R,\phi_g,r,f) & = & \{(\phi\wedge\phi^\prime\ l^\prime) \mid \\
-  & & \ \ \ \ \exists l\ ((l\ \phi) \in L(r)\ \wedge \\
-  & & \ \ \ \ \ \ \ \ \exists r^\prime \in R(l,f) ( \\
-  & & \ \ \ \ \ \ \ \ \ \ \ \ (l^\prime\ \phi^\prime) \in L(r^\prime)\ \wedge\\
-  & & \ \ \ \ \ \ \ \ \ \ \ \ \mathbb{S}(\phi\wedge\phi^\prime\wedge \phi_g)))\}
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
+& & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
+& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\rp\}\\
 \end{array}
 \]
-where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
-
-The strengthen function $\mathbb{ST}(L,r,\phi^\prime)$ strengthens every
-constraint from the reference $r$ with $\phi^\prime$ and keeps only location-constraint
-pairs that are satisfiable after this strengthening:
-\[
-\begin{array}{rcl} 
-\mathbb{ST}(L,r,\phi) & = & \{ (\phi\wedge\phi^\prime\ l) \mid 
-(\phi^\prime\ l)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime\wedge\phi_g) \}
-\end{array}
-\]
+where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable. The
+cardinality of the set is never greater than one in GSE and the
+constraint is always satisfiable because all constraints are
+constant. This property is relaxed in GSE with heap summaries.
 
 \input{initialize-lazy}
 \input{lazy-fig}

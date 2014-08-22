@@ -40,21 +40,18 @@ some location and$\rho$ is a set of references.
 \[
 \cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \cfgt{true}\ l\rp \}][\forall \cfgnt{r}^\prime \in \rho\ \lp \cfgnt{r}^\prime \mapsto \lp \cfgt{true}\ l_\mathit{null}\rp \rp ]
 \]
-The new function $\cfgnt{L}^\prime$ is just like $\cfgnt{L}$ only it
-remaps $\cfgnt{r}$, and it remaps all the references in $\rho$.
+The new partial function $\cfgnt{L}^\prime$ is just like $\cfgnt{L}$ only it
+remaps $\cfgnt{r}$, and it remaps all the references in $\rho$. 
 
-The location $\cfgnt{l}_\mathit{null}$ is a special location in the
-heap to represent null. It has a companion reference
-$\cfgnt{r}_\mathit{null}$. The initial heap for the machine is defined such that $\cfgnt{L}(\cfgnt{r}_\mathit{null}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})}$
+The location $\cfgnt{l}_\mathit{null}$ is a special location in the heap
+to represent null. It has a companion reference
+$\cfgnt{r}_\mathit{null}$. The initial heap for the machine is defined
+such that $\cfgnt{L}(\cfgnt{r}_\mathit{null}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$
 
-$\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
-reference associated with the given location-field pair in the heap,
-and $\cfgnt{L}(r) = \{(\cfgnt{l}\ \phi)\ ...\}$
+The initial state of the machine needs to be defined.
 
 \input{javalite-common}
 
-The rewrite rules defining the semantics update those functions with the following notation: 
-
 The rewrite rules that define the Javalite semantics are in
-\figref{fig:general}.
+\figref{fig:javalite-common}.
 

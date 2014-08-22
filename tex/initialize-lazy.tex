@@ -3,7 +3,8 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Initialize (null)]{
-	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
+	  \Upsilon = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\\\
+      \Gamma = \\
       \Lambda \neq \emptyset\\\\
       \cfgnt{r}^\prime = \mathrm{fresh}_r\lp \rp\\ 
       \theta_\mathit{null} = \{ \lp \phi_T\ l_\mathit{null}\rp \} \\

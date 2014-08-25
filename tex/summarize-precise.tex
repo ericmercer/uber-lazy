@@ -9,7 +9,7 @@
       \cfgnt{r}_f = \mathrm{init}_r\lp \rp \\
       l_f  = \mathrm{init}_l\lp \mathrm{C}\rp\\\\
       \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l_f\ \cfgnt{f}\rp  \mapsto \bot \rp ] \\\\
-      \rho = \{ \lp \cfgnt{r}_a\ \phi_a\ l_a\rp  \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \} \\\\
+      \rho = \{ \lp \cfgnt{r}_a\ \phi_a\ l_a\rp  \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge\cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{-1}[l_a]\rp \wedge \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \} \\\\
       \theta_\mathit{null} = \{ \lp \phi\ l_\mathit{null}\rp  \mid \phi = \lp \cfgnt{r}_f = \cfgnt{r}_\mathit{null}\rp  \}\\\\
       \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a\rp \rp \}\\\\
       \theta_\mathit{alias} = \{ \lp \phi\ l_a\rp  \mid \exists\cfgnt{r}_a\ \lp\exists \phi_a\ \lp\lp\cfgnt{r}_a\ \phi_a\ l_a\rp  \in \rho \wedge \phi = \lp \phi_a \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a\rp  \in \rho\ \lp \cfgnt{r}^\prime_a \neq \cfgnt{r}_a\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a \rp \rp \rp \rp \} \\\\

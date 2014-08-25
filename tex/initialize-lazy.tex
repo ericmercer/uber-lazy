@@ -19,9 +19,9 @@
       \Lambda \neq \emptyset\\\\
       \mathrm{C} = \mathrm{type}\lp \cfgnt{f}\rp\\
       \cfgnt{r}_f = \mathrm{init}_r\lp \rp\\
-      l_f = \mathrm{init}_l\lp \mathrm{C}\rp \\\\
+      l_f = \mathrm{fresh}_l\lp \mathrm{C}\rp \\\\
       \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ] \\\\
-      \rho = \{ \lp\cfgnt{r}_a\ l_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \wedge \exists \phi_a\ \lp \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp\rp \}\\\\
+      \rho = \{ \lp\cfgnt{r}_a\ l_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{-1}[l_a]\rp \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \}\\\\
       \theta_\mathit{new} = \{\lp \cfgt{true}\ l_f\rp \} \\
       l_x = \mathrm{min}_l\lp \Lambda\rp \\\\
       \phi_g^\prime = \lp\phi_g \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ l_a\rp \in \rho} \cfgnt{r}_f \ne \cfgnt{r}_a\rp\rp
@@ -35,7 +35,7 @@
       \Lambda \neq \emptyset\\\\
       \mathrm{C} = \mathrm{type}\lp \cfgnt{f}\rp\\
       \cfgnt{r}^\prime = \mathrm{fresh}_r\lp \rp\\\\
-      \rho = \{ \lp\cfgnt{r}_a\ l_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \wedge \exists \phi_a\ \lp \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp\rp \}\\\\
+      \rho = \{ \lp\cfgnt{r}_a\ l_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{-1}[l_a]\rp \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \}\\\\
       \lp\cfgnt{r}_a\ l_a\rp \in \rho \\
       \theta_\mathit{alias} = \{ \lp \cfgt{true}\ l_a\rp\}\\
       l_x = \mathrm{min}_l\lp \Lambda\rp\\\\

@@ -38,6 +38,7 @@ Suppose we have any instruction other that a read, write, or new. No machine rul
 Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
 \end{proof}
 
+\begin{comment}
 %I'm wondering... do we use this theorem anywhere? I think the place we needed it got re-structured, am I right?
 \begin{theorem}
 \label{thm:colex}
@@ -62,6 +63,7 @@ Takes the form
 Suppose we have a state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$. 
  
 \end{proof}
+\end{comment}
 %\begin{lemma}
 %\label{lem:ref}
 %For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
@@ -259,16 +261,24 @@ $$s_\ell^\prime \in \zeta_T \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$
 \end{proof}
 
 \begin{theorem}
-If we have some initial state $s_0$, and we apply the summary state transition function n times in order to get a sequence of summary states $\Pi_n^s$, then the following statement is true:
+If $\Pi_n^s$ is a feasible summary state sequence, then the final state in $\Pi_n^s$ is equivalent to the feasible set of lazy states sharing the same control flow sequence:
 \begin{equation}
-\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rightarrow_\ell, s_0, \mathbb{CF}(\Pi_n^s) )
+\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rightarrow_\ell, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) )
 \end{equation}
 \end{theorem}
 \begin{proof}
 The proof will proceed inductively.
 
-Base case: The initial state is exact. (hands waving)
+Base case: For any initial state $s_0$, the feasible state set reduces to $\{s_0\}$:
+$$\mathbb{FS}(\rightarrow_\ell, s_0, \mathbb{CF}(s_0)) = \{s_0\}$$
+It's obvious that a homomorphism from $s_0$ to $s_0$ exists, and that the Heap Constraint is always satisfiable by construction. Thus, $s_0 \in  s_0 \sqsubset s_0$. 
 
-Inductive step: If summary state $s_s$ is exact, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is also exact. Suppose $s_s$ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_s^\prime$ will also be exact.
+
+Inductive step: If summary state $s_s$ is exact, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is also exact. Suppose $s_s $ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_s^\prime$ will also be exact.
+Suppose $s_s$ is accepted by the "new" rule. In this case, the new reference points to the new location on condition true, so it's obvious that $s_s$ represents all of the proper lazy states, and the existence of any infeasible lazy states represented by $s_s^prime$ would imply that $s_s$ is not exact.
+For all the other rules, the L and R functions are unchanged, and the rules for the $\eta$, $e$, and $k$ are exactly the same between the lazy and summary machines, so there is a bijective mapping between the represented states in $s_s$ and $s_s^\prime$. 
+Thus, in all cases, if $s_s$ is exact, then $s_s^\prime$ is also exact.
+
+Having proved both the base case and the inductive step, the it follows that for any $n$, $s_n$ will be exact. 
 
 \end{proof}

@@ -9,6 +9,28 @@ The set of \textbf{initial states} $\mathcal{S}_0$ is defined as
 \end{definition}
 
 \begin{definition}
+The set of \textbf{references} $\mathcal{R}$ is defined as the set of natural numbers
+ $$\mathcal{R} = \mathbb{N}$$
+\end{definition}
+
+The total number of references in a summary state and a lazy state that it represents are generally not the same. However, the number of references on the stack in either state is always the same. In order to make the distinction between different types of references, we partition the set of natural numbers using modular arithmetic.
+
+\begin{definition}
+The set of \textbf{stack references} $\mathcal{R}_t$ is defined as
+ $$\mathcal{R}_t =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 0\}$$. 
+\end{definition}
+
+\begin{definition}
+The set of \textbf{input heap references} $\mathcal{R}_h$ is defined as
+ $$\mathcal{R}_h =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 1\}$$. 
+\end{definition}
+
+\begin{definition}
+The set of \textbf{new heap references} $\mathcal{R}_f$ is defined as
+ $$\mathcal{R}_n =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 2\}$$. 
+\end{definition}
+
+\begin{definition}
 For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \textbf{preimage} $f^\leftarrow$ are defined as
 \begin{align}
  f^\rightarrow &= \{ f(a) \mid a \in A\}\\
@@ -21,7 +43,7 @@ A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightar
 \end{definition}
 
 \begin{definition}
-A \textbf{state sequence} is as a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
+A \textbf{state sequence} is a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
 \end{definition}
 
 \begin{comment}

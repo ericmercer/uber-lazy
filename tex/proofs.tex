@@ -38,13 +38,29 @@ Suppose we have any instruction other that a read, write, or new. No machine rul
 Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
 \end{proof}
 
+%I'm wondering... do we use this theorem anywhere? I think the place we needed it got re-structured, am I right?
 \begin{theorem}
 \label{thm:colex}
 If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, 
 $$\bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r})\} = \cfgt{true}$$
 \end{theorem}
 \begin{proof}
-For now, the proof is left as an exercise to the reader.
+The proof will proceed inductively.
+
+Base Case: In the initial state $s_0$ there is only one location, and all of it's fields are initialized to contain the uninitiated reference $\cfgnt{r}_{un}$. Since the only reference is the uninitialized reference, for which the desired property holds by construction, the property is true for all references on the heap.
+
+Inductive Step: 
+Suppose we have a summary state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_S s_s^\prime$. If all relevant fields are initialized, then $s_s = s_s^\prime$, and the property holds trivially. If there is some uninitialized fields, then on of those fields will have a new reference $\cfgnt{r}_{new}$ added to it. The disjunction
+$$ \bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r}_{new})\}$$
+Takes the form
+\begin{align*}
+ (\phi_0) \vee (\neg \phi_0 \wedge \phi_1) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge \phi_2) \vee ...\\
+ ... \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \phi_n) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \neg \phi_n)
+ \end{align*}
+ Which reduces to $\cfgt{true}$. Thus, the collective exhaustion property holds for intermediate states. Because the property holds for intermediate states, for summary machine rules we will assume without loss of generality that all relevant fields are initialized. 
+ Suppose that the rule executed in the transition from $s_s$ to $s_s^\prime$ is the field read rule. 
+Suppose we have a state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$. 
+ 
 \end{proof}
 %\begin{lemma}
 %\label{lem:ref}
@@ -65,7 +81,7 @@ For now, the proof is left as an exercise to the reader.
 
 \begin{lemma}
 \label{lem:init}
-If symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_s^*$ such that $s_s \rightarrow_S^* s_s^*$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
+If symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then the intermediate state state $s_s^\prime$ such that $s_s \rightarrow_S^* s_s^\prime$ is equivalent to $\{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$.
 \end{lemma}
 
 \begin{proof}%going through this one quickly, could be more formal...
@@ -106,14 +122,18 @@ $$ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime
 %Having demonstrated each of these four cases, we now know that 
 %$$s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \} \Rightarrow  s_\ell^* \sqsubset s_s^*$$
 
-%there is a flaw in the following argument: we claim that "every reference points to the right place at the right time" However, this statement is misleading. The truth is that the way we've defined representation, we can only guarantee that every reference points to the right place at some right time, not every right time like we imply here. The rest of the argument falls apart unless we can first prove that every reference points to the right place at every right time. So, instead of saying A points to B some time when condition X is true, we need to say that A points to B every time condition X is true. In other words, that condition X implies A points to B. This is easy to prove if we don't introduce new variables into the Heap Condition. However, in this case we certainly do introduce a new variable: it's the new reference that we put into the empty field.
-We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time (WARNING: though the preceding statement may be true, we haven't actually proved it yet. See the above comment), there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem \ref{thm:colex}, this implies that the wrong time is no time. We have now proven that 
+%Comment:
+% there is a flaw in the following argument: we claim that "every reference points to the right place at the right time" However, this statement is misleading. The truth is that the way we've defined representation, we can only guarantee that every reference points to the right place at some right time, not every right time like we imply here. The rest of the argument falls apart unless we can first prove that every reference points to the right place at every right time. So, instead of saying A points to B some time when condition X is true, we need to say that A points to B every time condition X is true. In other words, that condition X implies A points to B. This is easy to prove if we don't introduce new variables into the Heap Condition. However, in this case we certainly do introduce a new variable: it's the new reference that we put into the empty field.
+%Flawed argument:
+%We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time (WARNING: though the preceding statement may be true, we haven't actually proved it yet. See the above comment), there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem \ref{thm:colex}, this implies that the wrong time is no time. 
+
+%okay, here is another crack at proving soundness
+We now prove the reverse case, that $s_s^*$ represents no infeasible states. Suppose that $s_s^\prime$ represents some infeasible state. This means that we represent some lazy state that has some reference r which points somewhere that no place in the feasible set points to. Since we don't change the path condition, all the old references still point exactly to the same places they used to. So, the problem must be with one of the new references. All of the new references point to either a new location, the null location, the uninitialized location, or some alias. The new, null, and uninitialized locations are pretty straightforward and easy to show that they are all pointing to the correct places at the correct times. This means that there must be a feasible path to a target location that does not exist for any lazy heap. So, pick an arbitrary lazy heap containing the location and field in question. If said target location does not exist, then there is no reference in the lazy heap pointing to that location. In the summary heap, the path constraint on the path leading to the undesired target contains an aliasing condition that states that the source reference only points to this target location on condition that the parent reference points there. However, since we already know that no other reference in the lazy heap points there, this condition must be infeasible. Therefore, it is not part of the represented state. We have a contradiction. Therefore, there is no alias that points somewhere it's not supposed to.
+
+We have now proven that 
 $$ s_\ell^* \sqsubset s_s^*  \Rightarrow  s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$
 This fact, combined with our previous result, proves that
 $$s_s^*  \cong \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \}$$
-
-%okay, here is another crack at proving soundness
-So, suppose that $s_s^\prime$ represents some infeasible state. Since the path condition is unaltered, 
 
 \end{proof}
 
@@ -191,14 +211,23 @@ Case 2: If there are uninitialized fields, then the lazy initialization machine 
 
 %proof for field write
 \begin{lemma}
-The field write rule is correct.
+\label{lem:write}
+If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, and if $s_s \rightarrow_s s_s^\prime$ for some state $s_s^\prime$, then $s_s^\prime$ is equal to $ \lp \cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \eta\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{k}\ \emptyset)$.
+
 \end{lemma}
 \begin{proof}
+By Lemma \ref{lem:init} we know that if $s_s$ is exact, then the intermediate state $s_x$ such that $s_s \rightarrow_S^* s_x$ is also exact. Thus, for $s_s$ and any state  $s_i$ such that $s_i \sqsubset s_s$ we will assume, without loss of generality, that all relevant fields have been initialized.
+
+First, we show that every state in the feasible set is represented by the $s_s^\prime$. Take some lazy state $s_i$ such that $s_i \sqsubset s_s$. It is easy to see that $s_i^\prime$ is represented by $s_s^\prime$. 
+
+Next, we show that every state represented by $s_s^\prime$ is in the feasible set. We use the same argument as in the field read proof, that because $s_s^\prime$ represents every state in the feasible set, and since the cardinality of the set of states represented by $s_s^\prime$ is less than or equal to the cardinality of the feasible set, that $s_s^\prime$ can only represent feasible states.
+
 \end{proof}
 
 %proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function
 \begin{lemma}
-If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is equal to $ \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_{s^\prime}\ \eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k})$.
+\label{lem:compare}
+If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, and if $s_s \rightarrow_s s_s^\prime$ for some state $s_s^\prime$, then $s_s^\prime$ is equal to $ \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_{s^\prime}\ \eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k})$.
 \end{lemma}
 There are two rules that apply to state $s_s$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for clarity we will only show the proof for the case for the $\cfgt{true}$ branch here. 
 \begin{proof}
@@ -230,8 +259,16 @@ $$s_\ell^\prime \in \zeta_T \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$
 \end{proof}
 
 \begin{theorem}
-Every symbolic state on every execution path is exact.
+If we have some initial state $s_0$, and we apply the summary state transition function n times in order to get a sequence of summary states $\Pi_n^s$, then the following statement is true:
+\begin{equation}
+\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rightarrow_\ell, s_0, \mathbb{CF}(\Pi_n^s) )
+\end{equation}
 \end{theorem}
 \begin{proof}
-Combine all of the production-rule lemmas to inductively prove the theorem.
+The proof will proceed inductively.
+
+Base case: The initial state is exact. (hands waving)
+
+Inductive step: If summary state $s_s$ is exact, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is also exact. Suppose $s_s$ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_s^\prime$ will also be exact.
+
 \end{proof}

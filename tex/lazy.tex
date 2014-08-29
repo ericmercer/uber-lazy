@@ -10,13 +10,13 @@ $\cfgnt{L}(\cfgnt{r}_\mathit{un}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$
 A field in an object is symbolic, meaning it is uninitialized, if the
 location for the field is $\cfgnt{l}_\mathit{un}$ on some constraint. The function
 $\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
-\{\cfgnt{l}\ ...\}$ returns locations in which the field $\cfgnt{f}$
+\{\cfgnt{l}\ ...\}$ returns constraint-location pairs in which the field $\cfgnt{f}$
 is uninitialized:
 \[
 \begin{array}{rcl}
-\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
 & & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
-& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\rp\}\\
+& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
 \end{array}
 \]
 where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable. The

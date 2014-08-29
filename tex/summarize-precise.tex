@@ -2,37 +2,22 @@
 \begin{center}
 \mprset{flushleft}
 \begin{mathpar}
-	\inferrule[Field Write]{
-      \Psi_x =\{\lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}^\prime\lp \cfgnt{r}_x\rp  \wedge \cfgnt{r}_\mathit{cur} = \cfgnt{R}\lp l,\cfgnt{f}\rp  \}\\\\
-      X = \{ \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \mid \exists \phi\ \lp \lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r},\phi\rp  \cup \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r}_\mathit{cur},\neg\phi\rp \rp  \}\\\\
-      \cfgnt{R}^{\prime\prime} = \cfgnt{R}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
-      \cfgnt{L}^{\prime\prime} = \cfgnt{L}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \exists \cfgnt{r}_\mathit{targ}\ \lp \cfgnt{r}_\mathit{targ} = \cfgnt{R}^\prime\lp l,\cfgnt{f}\rp \wedge \lp\cfgnt{r}_\mathit{targ} \mapsto \theta\rp  \rp \rp ]
-    }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow 
-      \lp \cfgnt{L}^{\prime\prime} \cfgnt{R}^{\prime\prime}\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
-	}	
-\and
 	\inferrule[Summarize]{
 	\Lambda = \mathbb{UN}\lp \cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}\rp \\
-      \Lambda \neq \emptyset \\\\
-      \mathrm{C} = \mathrm{type}\lp \cfgnt{f}\rp \\
+      \Lambda \neq \emptyset \\
+      \lp\phi_x\ \cfgnt{l}_x\rp = \mathrm{min}_l\lp \Lambda\rp\\
       \cfgnt{r}_f = \mathrm{init}_r\lp \rp \\
       l_f  = \mathrm{fresh}_l\lp \mathrm{C}\rp\\\\
-      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ] \\\\
       \rho = \{ \lp \cfgnt{r}_a\ \phi_a\ l_a\rp  \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge\cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{-1}[l_a]\rp \wedge \lp \phi_a\ l_a\rp  \in \cfgnt{L}\lp \cfgnt{r}_a\rp \wedge \mathrm{type}\lp l_a\rp  = \mathrm{C} \} \\\\
-      \theta_\mathit{null} = \{ \lp \phi\ l_\mathit{null}\rp  \mid \phi = \lp \cfgnt{r}_f = \cfgnt{r}_\mathit{null}\rp   \} \\\\
-      \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a\rp \rp \}\\\\
-      \theta_\mathit{alias} = \{ \lp \phi\ l_a\rp  \mid \exists\cfgnt{r}_a\ \lp\exists \phi_a\ \lp\lp\cfgnt{r}_a\ \phi_a\ l_a\rp  \in \rho \wedge \phi = \lp \phi_a \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a\rp  \in \rho\ \lp \cfgnt{r}^\prime_a \neq \cfgnt{r}_a\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a \rp \rp \rp \rp \} \\\\
-      \theta_\mathit{all} = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null} \\\\
-\cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{all}] \\\\
-      \Psi_x =\{\lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}^\prime\lp \cfgnt{r}\rp  \wedge \cfgnt{r}_\mathit{cur} = \cfgnt{R}^\prime\lp l,\cfgnt{f}\rp  \}\\\\
-      X = \{ \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \mid \exists \phi\ \lp \lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r}_f,\phi\rp  \cup \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r}_\mathit{cur},\neg\phi\rp \rp  \}\\\\
-      \cfgnt{R}^{\prime\prime} = \cfgnt{R}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
-      \cfgnt{L}^{\prime\prime} = \cfgnt{L}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \exists \cfgnt{r}_\mathit{targ}\ \lp \cfgnt{r}_\mathit{targ} = \cfgnt{R}^\prime\lp l,\cfgnt{f}\rp \wedge \lp\cfgnt{r}_\mathit{targ} \mapsto \theta\rp  \rp \rp ] \\\\
-      \cfgnt{l}_x = \mathrm{min}_l\lp \Lambda\rp
+      \theta_\mathit{null} = \{ \lp \phi\ l_\mathit{null}\rp  \mid \phi = \lp \phi_x \wedge \cfgnt{r}_f = \cfgnt{r}_\mathit{null} \rp  \} \\\\
+      \theta_\mathit{new} = \{\lp \phi\ l_f\rp  \mid \phi = \lp \phi_x \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a\rp \rp \}\\\\
+      \theta_\mathit{alias} = \{ \lp \phi\ l_a\rp  \mid \exists\cfgnt{r}_a\ \lp\exists \phi_a\ \lp\lp\cfgnt{r}_a\ \phi_a\ l_a\rp  \in \rho \wedge \phi = \lp \phi_x \wedge \phi_a \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a\rp  \in \rho\ \lp \cfgnt{r}^\prime_a \neq \cfgnt{r}_a\rp } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a \rp \rp \rp \rp \} \\\\
+      \theta_\mathit{orig} = \{\lp\phi\ \cfgnt{l}_\mathit{orig}\rp \mid \exists \phi_\mathit{orig} \lp \lp\phi_\mathit{orig}\ \cfgnt{l}_\mathit{orig}\rp \in \cfgnt{L}\lp\cfgnt{R}\lp\cfgnt{l}_x,\cfgnt{f}\rp\rp \wedge \phi = \lp\neg\phi_x \wedge \phi_\mathit{orig}\rp\}\\\\ 
+      \theta = \theta_\mathit{alias} \cup \theta_\mathit{new} \cup \theta_\mathit{null} \cup \theta_\mathit{old} \\
+\cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ]
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp \rightarrow_S 
-      \lp \cfgnt{L}^{\prime\prime}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}^{\prime\prime}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \cfgnt{r}\ \cfgnt{f}\ \rp
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rightarrow_S 
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}^{\prime}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \cfgnt{r}\ \cfgnt{f}\ \ \cfgnt{C}\rp
 	}
 \and
 	\inferrule[Summarize (end)]{

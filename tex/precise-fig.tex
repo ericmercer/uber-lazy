@@ -4,7 +4,8 @@
 \begin{mathpar}
 	\inferrule[Field Access]{
       \forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp \ \lp l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}\lp \phi \wedge \phi_g\rp \rp  \\\\
-      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp \rightarrow^*_S \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\rp \\
+      \{\cfgnt{C}\} = \{\cfgnt{C} \mid \exists \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp\cfgnt{C} = \mathrm{type}\lp \cfgnt{l},\cfgnt{f}\rp\rp\} \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rightarrow^*_S \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \\
       \cfgnt{r}^\prime = \mathrm{stack}_r\lp \rp
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow 
@@ -14,7 +15,6 @@
 	\inferrule[Field Write]{
 	\cfgnt{r}_x = \eta\lp \cfgnt{x}\rp \\
 \forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_x\rp \ \lp l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}\lp \phi \wedge \phi_g\rp \rp  \\\\
-      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}_x\ \cfgnt{f}\rp \rightarrow^*_S \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}_x\ \cfgnt{f}\rp \\\\
       \Psi_x =\{\lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}^\prime\lp \cfgnt{r}_x\rp  \wedge \cfgnt{r}_\mathit{cur} = \cfgnt{R}\lp l,\cfgnt{f}\rp  \}\\\\
       X = \{ \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \mid \exists \phi\ \lp \lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r},\phi\rp  \cup \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r}_\mathit{cur},\neg\phi\rp \rp  \}\\\\
       \cfgnt{R}^{\prime\prime} = \cfgnt{R}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\

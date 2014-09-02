@@ -15,19 +15,23 @@
 
 \begin{theorem}
 \label{thm:mutex}
-If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, and any two pairs $(\phi_\alpha\ l_\alpha) \in \cfgnt{L}_s(r)$ and $(\phi_\beta\ l_\beta) \in \cfgnt{L}_s(r)$ such that $l_\alpha \ne l_\beta$, then
+If we have a reachable summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, and any two pairs $(\phi_\alpha\ l_\alpha) \in \cfgnt{L}_s(r)$ and $(\phi_\beta\ l_\beta) \in \cfgnt{L}_s(r)$ such that $l_\alpha \ne l_\beta$, then
 $$(\phi_\alpha \wedge \phi_\beta) = \cfgt{false}$$
 \end{theorem}
 \begin{proof}
-The proof will proceed inductively. For the base case, consider any initial state $s_0$. The property holds by construction. (Hands waving around in the air for emphasis)
+The proof will proceed inductively. 
 
-Now we will show that if the exclusivity property holds for some state $s_s$, then it holds for any state $s_s^\prime$ where $s_s \rightarrow_s s_s^\prime$.
+Base Case: Let $s_s$ be an initial state. By Definition \ref{def:initstate}, for every reference $r_i \in \cfgnt{L}_s^\leftarrow$, the set $\cfgnt{L}_s(r_i)$ contains at most one element. Thus, the requirement that $l_\alpha \ne l_\beta$ is never met, and the Theorem is vacuously true.
 
-First, suppose we have state $s_s$ and intermediate state $s_s^\prime$ where $s_s \rightarrow_S s_s^\prime$. If all fields are initialized, then $s_s$ and $s_s^\prime$ are identical, so the property holds for $s_s^\prime$. If any field is uninitialized, then the fields are initialized to new references, for which the exclusivity property holds by construction. (More hands waving)
+Inductive Step: Now we will show that if the exclusivity property holds for some state $s_s$, then it holds for any state $s_s^\prime$ where $s_s \rightarrow_s s_s^\prime$. In order to evaluate whether Theorem \ref{thm:mutex} holds for state any $s_s\prime$, we must consider the rule that applied during the transition from $s_s$ to $s_s\prime$. There are two broad classes of rules: rules where $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$, and rules where $ \cfgnt{L}_s =  \cfgnt{L}_{s^\prime}$. Rules in the $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$ class modify the structure of the heap, and must be considered carefully to to consider the impact of those modifications. Only three rules belong to the class $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$: Field Access, Field Read, and New. 
 
-Since the exclusivity property holds for every intermediate state, for any instruction that relies on the summary machine we can assume without loss of generality that all pertinent fields are initialized.
+We begin by considering the Field Access rule. Suppose $s_s$ has the form $\lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. In this case, the relationship between $s_s$ and $s_s^\prime$ is described by the Field Access rule. The Field Access rule uses the Summarize rule to describe the relation between $\cfgnt{L}_{s}$ and $\cfgnt{L}_{s^\prime}$. Because the summarize rule is essentially a fixed-point computation, we can reason about it as a machine that produces a sequence of intermediate states $s_1, s_2, ... , s_n$. We will use an inductive argument to show that the mutual exclusion property holds for any of those intermediate states. First, let state $s_\alpha$ be any state for which the property in Theorem \ref{thm:mutex} holds, and let $s_\beta$ be the intermediate state where $s_\alpha \rightarrow_S s_\beta$. If all fields are initialized, then $s_\alpha$ and $s_\beta$ are identical, so the mutually exclusive property holds for $s_\beta$. 
+Otherwise, there must be some location $\cfgnt{l}_{un} \in \cfgnt{L}_\alpha(r)$ for which field f contains a reference $r_a$ that could feasibly point to the uninitialized location. In this case, a new reference is created and a single entry is added to $\cfgnt{L}_\beta$. The elements of the set $\theta_{all} = \cfgnt{L}_\beta(\cfgnt{R}_\beta(\cfgnf{l}_{un},\cfgnt{f}))$ can be divided into four distinct subsets, $\theta_{cur}$, $\theta_{null}$, $\theta_{new}$, and $\theta_{alias}$. The set $\theta_{cur}$ contains the pairs containing locations from the reference $r_a$, $\theta_{null}$ contains the pair with the null location, $\theta_{new}$ contains a pair with a new location, and $\theta_{alias}$ contains pairs representing alias locations. Any two constraints in $\theta_{cur}$ are guaranteed to be pairwise mutually exclusive because of the inductive hypothesis, and any single constraint is guaranteed to be pairwise mutually exclusive with any constraint in $\theta_{null}$, $\theta_{new}$, or $\theta_{alias}$ because constraints in $\theta_{cur}$ contain the conjunct $\neg \phi$, while constraints in the other three sets are conjoined with $\phi$. The set $\theta_{null}$ contains only one element, which in turn contains the constraint $r_f = r_{null}$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{new}$, or $\theta_{alias}$ because constraints in those sets contain the conjunct $r_f \neq r_{null}$. The set $\theta_{new}$ contains one element, which in turn contains the constraint containing the conjunct $ \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{alias}$, because each constraint in that set contains the conjunct $r_f = r_a$ for some $(r_a\ \phi_a\ l_a)\in \rho$. Any two elements of the set $\theta_{alias}$ are guaranteed to pairwise mutually exclusive because for each constraint that contains the conjunct $r_f = r_a$, every other constraint contains the conjunct $r_f \ne r_a$. Thus, all constraints from all pairs in $\theta{all}$ are guaranteed to be mutually exclusive, and the property from Theorem \ref{thm:mutex} holds for intermediate state $s_\beta$. 
 
-Now, suppose we have a field read instruction. When we read the field, a new value set is created based on the $\mathbb{VS}$ function. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha$ and $\phi_\beta$ came from the same value set in $s_s$, and are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since the only new value set in $L_{s^\prime}^\rightarrow$ is generated by the $\mathbb{VS}$ function, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
+We have now shown that whether there are any uninitialized fields or not, the mutual exclusivity property holds for any intermediate state $s_\beta$, so long as $s_\alpha \rightarrow_S s_\beta$ and the property holds for $s_\alpha$. 
+So, since the mutual exclusivity property holds for $s_s$, $s_s \rightarrow_S s_1$, and $s_{i} \rightarrow_S s_{i+1} $ for all $i$ such that $0 < i < n$, we are guaranteed that the mutually exclusive property holds for the final intermediate state $s_n$. This concludes the inductive argument about intermediate state.
+
+We now use this result to show that the mutual exclusion property holds for state $s_s^\prime$. The relation between the L-functions from the final intermediate state and $s_s^\prime$ is $ $  SOMETHING MISSING HERE , a new value set is created based on the $\mathbb{VS}$ function. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha$ and $\phi_\beta$ came from the same value set in $s_s$, and are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since the only new value set in $L_{s^\prime}^\rightarrow$ is generated by the $\mathbb{VS}$ function, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
 
 Suppose we have a field write instruction. This case is nearly identical as the field read. In this instruction, a new value set is created. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha = \neg \phi_\beta$, so $\phi_\alpha$ and $\phi_\beta$ are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since exclusivity holds for the only new value set in $L_{s^\prime}^\rightarrow$, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
 
@@ -38,32 +42,32 @@ Suppose we have any instruction other that a read, write, or new. No machine rul
 Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
 \end{proof}
 
-\begin{comment}
-%I'm wondering... do we use this theorem anywhere? I think the place we needed it got re-structured, am I right?
-\begin{theorem}
-\label{thm:colex}
-If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, 
-$$\bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r})\} = \cfgt{true}$$
-\end{theorem}
-\begin{proof}
-The proof will proceed inductively.
-
-Base Case: In the initial state $s_0$ there is only one location, and all of it's fields are initialized to contain the uninitiated reference $\cfgnt{r}_{un}$. Since the only reference is the uninitialized reference, for which the desired property holds by construction, the property is true for all references on the heap.
-
-Inductive Step: 
-Suppose we have a summary state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_S s_s^\prime$. If all relevant fields are initialized, then $s_s = s_s^\prime$, and the property holds trivially. If there is some uninitialized fields, then on of those fields will have a new reference $\cfgnt{r}_{new}$ added to it. The disjunction
-$$ \bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r}_{new})\}$$
-Takes the form
-\begin{align*}
- (\phi_0) \vee (\neg \phi_0 \wedge \phi_1) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge \phi_2) \vee ...\\
- ... \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \phi_n) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \neg \phi_n)
- \end{align*}
- Which reduces to $\cfgt{true}$. Thus, the collective exhaustion property holds for intermediate states. Because the property holds for intermediate states, for summary machine rules we will assume without loss of generality that all relevant fields are initialized. 
- Suppose that the rule executed in the transition from $s_s$ to $s_s^\prime$ is the field read rule. 
-Suppose we have a state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$. 
- 
-\end{proof}
-\end{comment}
+%\begin{comment}
+%%I'm wondering... do we use this theorem anywhere? I think the place we needed it got re-structured, am I right?
+%\begin{theorem}
+%\label{thm:colex}
+%If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, 
+%$$\bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r})\} = \cfgt{true}$$
+%\end{theorem}
+%\begin{proof}
+%The proof will proceed inductively.
+%
+%Base Case: In the initial state $s_0$ there is only one location, and all of it's fields are initialized to contain the uninitiated reference $\cfgnt{r}_{un}$. Since the only reference is the uninitialized reference, for which the desired property holds by construction, the property is true for all references on the heap.
+%
+%Inductive Step: 
+%Suppose we have a summary state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_S s_s^\prime$. If all relevant fields are initialized, then $s_s = s_s^\prime$, and the property holds trivially. If there is some uninitialized fields, then on of those fields will have a new reference $\cfgnt{r}_{new}$ added to it. The disjunction
+%$$ \bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r}_{new})\}$$
+%Takes the form
+%\begin{align*}
+% (\phi_0) \vee (\neg \phi_0 \wedge \phi_1) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge \phi_2) \vee ...\\
+% ... \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \phi_n) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \neg \phi_n)
+% \end{align*}
+% Which reduces to $\cfgt{true}$. Thus, the collective exhaustion property holds for intermediate states. Because the property holds for intermediate states, for summary machine rules we will assume without loss of generality that all relevant fields are initialized. 
+% Suppose that the rule executed in the transition from $s_s$ to $s_s^\prime$ is the field read rule. 
+%Suppose we have a state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$. 
+% 
+%\end{proof}
+%\end{comment}
 %\begin{lemma}
 %\label{lem:ref}
 %For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
@@ -87,9 +91,9 @@ If symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}
 \end{lemma}
 
 \begin{proof}%going through this one quickly, could be more formal...
-Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition \ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Take any state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$, and state $s_s^\prime$ where $s_s \rightarrow_S^* s_s^\prime$. Note that  state $s_\ell^\prime$ has the form: $s_\ell^\prime = \lp \cfgnt{L}_{\ell^\prime}\ \cfgnt{R}_{\ell^\prime}\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$.Take any location, field pair $\lp l_\ell\  \cfgnt{f}\rp$ such that $\lp l_\ell\  \cfgnt{f}\rp \in \cfgnt{R}_{\ell}^\leftarrow$, and let $l_s = h(l_\ell)$. We may classify $l_\ell$ into one of three categories, based on the values of the $\cfgnt{R}$ function in each of the states $s_\ell$, $s_\ell^\prime$, $s_s$, and $s_s^\prime$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
+Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition \ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Take any state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$, and state $s_s^\prime$ where $s_s \rightarrow_S^* s_s^\prime$. Note that  state $s_\ell^\prime$ has the form: $s_\ell^\prime = \lp \cfgnt{L}_{\ell^\prime}\ \cfgnt{R}_{\ell^\prime}\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$.Take any location, field pair $\lp l_\ell\  \cfgnt{f}\rp$ such that $\lp l_\ell\  \cfgnt{f}\rp \in \cfgnt{R}_{\ell}^\leftarrow$, and let $l_s = h(l_\ell)$. We may classify $l_\ell$ into one of three ways, based on the values of the $\cfgnt{R}$ function in each of the states $s_\ell$, $s_\ell^\prime$, $s_s$, and $s_s^\prime$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
 
-Class 1: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f} ) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f} )$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f} ) = \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. In this case, let $h^\prime(l_\ell) = h(l_\ell)$. Since $s_\ell \rightharpoonup_h s_s$, obviously: 
+Class 1: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f} ) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f} )$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f} ) = \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. In this case, let $h^\prime(l_\ell) = h(l_\ell)$. Since $s_\ell \rightharpoonup_h s_s$, we may surmise that: 
 $$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$$
 
 Class 2: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. Notice that since $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$, we may deduce that $ (\phi_b\ \bot)\in \cfgnt{L}_{s}(\cfgnt{R}_{s} (\cfgnt{l}_s,f ))$, and by extension, ${(\phi_a\ \bot)} = \cfgnt{L}_{\ell}(\cfgnt{R}_{\ell} (\cfgnt{l}_\ell,f )) $. In this case, we let $h^\prime(l_\ell) = h(l_\ell)$. Since $(\phi_a\ \bot) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f ))$, and since by rule $ (\phi_b\ \bot)\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$, we can see that in this case:
@@ -218,9 +222,11 @@ If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}\
 
 \end{lemma}
 \begin{proof}
+THIS PROOF IS A WORK IN PROGRESS.
+
 By Lemma \ref{lem:init} we know that if $s_s$ is exact, then the intermediate state $s_x$ such that $s_s \rightarrow_S^* s_x$ is also exact. Thus, for $s_s$ and any state  $s_i$ such that $s_i \sqsubset s_s$ we will assume, without loss of generality, that all relevant fields have been initialized.
 
-First, we show that every state in the feasible set is represented by the $s_s^\prime$. Take some lazy state $s_i$ such that $s_i \sqsubset s_s$. It is easy to see that $s_i^\prime$ is represented by $s_s^\prime$. 
+First, we show that every state in the feasible set is represented by $s_s^\prime$. Take some lazy state $s_i$ such that $s_i \sqsubset s_s$. It is easy to see that $s_i^\prime$ is represented by $s_s^\prime$. 
 
 Next, we show that every state represented by $s_s^\prime$ is in the feasible set. We use the same argument as in the field read proof, that because $s_s^\prime$ represents every state in the feasible set, and since the cardinality of the set of states represented by $s_s^\prime$ is less than or equal to the cardinality of the feasible set, that $s_s^\prime$ can only represent feasible states.
 
@@ -269,16 +275,36 @@ If $\Pi_n^s$ is a feasible summary state sequence, then the final state in $\Pi_
 \begin{proof}
 The proof will proceed inductively.
 
-Base case: For any initial state $s_0$, the feasible state set reduces to $\{s_0\}$:
-$$\mathbb{FS}(\rightarrow_\ell, s_0, \mathbb{CF}(s_0)) = \{s_0\}$$
-It's obvious that a homomorphism from $s_0$ to $s_0$ exists, and that the Heap Constraint is always satisfiable by construction. Thus, $s_0 \in  s_0 \sqsubset s_0$. 
-
+Base case: For any initial state $s_0$, the feasible state set contains a single element, $\{s_0\}$:
+$$\mathbb{FS}(\rightarrow_\ell, (s_0), \mathbb{CF}(s_0)) = \{s_0\}$$
+It's obvious that a homomorphism from $s_0$ to $s_0$ exists, and that the Heap Constraint is always satisfiable by construction. Thus, $s_0 \in {s_0} \Rightarrow s_0 \sqsubset s_0$. 
+Furthermore, since every reference points to a single place, there is only one possible represented heap. Thus, $s_0 \sqsubset s_0 \Rightarrow s_0 \in {s_0}$. We have now shown that $s_0 \cong \mathbb{FS}(\rightarrow_\ell, (s_0), \mathbb{CF}(s_0))$ for an arbitrary initial state $s_0$. Since every feasible state sequence starts with an initial state, we now know that:
+ $$\mathit{last}(\Pi_1^s) \cong \mathbb{FS}(\rightarrow_\ell, \mathit{first}(\Pi_1^s), \mathbb{CF}(\Pi_1^s) ) $$
 
 Inductive step: If summary state $s_s$ is exact, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is also exact. Suppose $s_s $ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_s^\prime$ will also be exact.
-Suppose $s_s$ is accepted by the "new" rule. In this case, the new reference points to the new location on condition true, so it's obvious that $s_s$ represents all of the proper lazy states, and the existence of any infeasible lazy states represented by $s_s^prime$ would imply that $s_s$ is not exact.
-For all the other rules, the L and R functions are unchanged, and the rules for the $\eta$, $e$, and $k$ are exactly the same between the lazy and summary machines, so there is a bijective mapping between the represented states in $s_s$ and $s_s^\prime$. 
+Suppose $s_s$ is accepted by the "new" rule. In this case, the new reference points to the new location on condition true, so it's obvious that $s_s$ represents all of the proper lazy states, and the existence of any infeasible lazy states represented by $s_s^\prime$ would imply that $s_s$ is not exact.
+For all the other rules, the L and R functions and $\phi$ are unchanged, and the rules for  $\eta$, $e$, and $k$ are exactly the same between the lazy and summary machines, so there is a bijective mapping between the represented states in $s_s$ and $s_s^\prime$.
 Thus, in all cases, if $s_s$ is exact, then $s_s^\prime$ is also exact.
 
-Having proved both the base case and the inductive step, the it follows that for any $n$, $s_n$ will be exact. 
+We have now shown that any feasible state sequence $\Pi_n^s$ is exact if the sub-sequence $\Pi_{n-1}^s$ is exact.
+
+Combining the result from the inductive step with the result from the base case, we can now say with certainty that for all $n$,
+
+$$\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rightarrow_\ell, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) ) $$
 
 \end{proof}
+
+\begin{corollary}
+For any given initial state, the set of possible control flow sequences under the lazy transition relation is exactly the set of possible control flow sequences under the summary transition relation.
+\end{corollary}
+
+\begin{corollary}
+For any given initial state, the number of final summary states is exactly the number of possible control flow sequences.
+\end{corollary}
+
+%\begin{corollary}
+%For any given initial state, the set of solutions to the constraints in the final summary states provides an optimal set of concrete test inputs. There is no smaller set that will exercise every possible control flow sequence.
+%\end{corollary}
+
+%proof: the global invariant is a constraint equation over the initial heap. That is to say, when you solve it, it assigns an integer to every variable. Those variables are references. Thus, solving the constraint equation gives you the location that each reference in the initial heap pointed to. 
+%problem: Where the references pointed is only half of the problem. We also need to know which references were stored in which fields of which locations at the beginning of the program. This would not be hard to do - if we kept track of the initial heap as we created it, separate from the active heap, it should work - however, this is unimplemented

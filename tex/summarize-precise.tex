@@ -17,18 +17,18 @@
 \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ]
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rightarrow_S 
-      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}^{\prime}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \cfgnt{r}\ \cfgnt{f}\ \ \cfgnt{C}\rp
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta]\ \cfgnt{R}^{\prime}[ \lp l_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp
 	}
 \and
 	\inferrule[Summarize (end)]{
 	  \Lambda = \{ l \mid \exists \phi\ \lp \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge  \cfgnt{R}\lp l,\cfgnt{f}\rp  = \bot\ \rp\}\\
       \Lambda = \emptyset
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp  \rightarrow_S
-      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_S
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \end{mathpar}
 \end{center}
-\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s\rightarrow_I^*s^\prime$ indicating stepping the machine until the state does not change.}
+\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rightarrow_S^*s^\prime$ indicating stepping the machine until the state does not change.}
 \label{fig:symInit}
 \end{figure*}

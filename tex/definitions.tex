@@ -36,8 +36,14 @@ The set of \textbf{new heap references} $\mathcal{R}_f$ is defined as
 For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \textbf{preimage} $f^\leftarrow$ are defined as
 \begin{align}
  f^\rightarrow &= \{ f(a) \mid a \in A\}\\
- f^\leftarrow &= \{ a \mid f(a) \in B \}§
+ f^\leftarrow &= \{ a \mid f(a) \in B \}
  \end{align}
+ The bracket notation $ f^\rightarrow [C] $ is used to denote that the image is drawn from a specific subset:
+ \begin{align}
+ f^\rightarrow [C] &= \{ f(a) \mid a \in C\}\\
+ f^\leftarrow [D] &= \{ a \mid f(a) \in D \}
+ \end{align}
+ Where $C \subset A$ and $D \subset B$
 \end{definition}
 
 \begin{definition}

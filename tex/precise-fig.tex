@@ -17,11 +17,11 @@
 \forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_x\rp \ \lp l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}\lp \phi \wedge \phi_g\rp \rp  \\\\
       \Psi_x =\{\lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}^\prime\lp \cfgnt{r}_x\rp  \wedge \cfgnt{r}_\mathit{cur} = \cfgnt{R}\lp l,\cfgnt{f}\rp  \}\\\\
       X = \{ \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \mid \exists \phi\ \lp \lp \cfgnt{r}_\mathit{cur}\ \phi\ l\rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r},\phi\rp  \cup \mathbb{ST}\lp \cfgnt{L}^\prime,\cfgnt{r}_\mathit{cur},\neg\phi\rp \rp  \}\\\\
-      \cfgnt{R}^{\prime\prime} = \cfgnt{R}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
-      \cfgnt{L}^{\prime\prime} = \cfgnt{L}^\prime[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \exists \cfgnt{r}_\mathit{targ}\ \lp \cfgnt{r}_\mathit{targ} = \cfgnt{R}^\prime\lp l,\cfgnt{f}\rp \wedge \lp\cfgnt{r}_\mathit{targ} \mapsto \theta\rp  \rp \rp ]
+      \cfgnt{R}^{\prime} = \cfgnt{R}[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
+      \cfgnt{L}^{\prime} = \cfgnt{L}[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \exists \cfgnt{r}_\mathit{targ}\ \lp \cfgnt{r}_\mathit{targ} = \cfgnt{R}\lp l,\cfgnt{f}\rp \wedge \lp\cfgnt{r}_\mathit{targ} \mapsto \theta\rp  \rp \rp ]
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow 
-      \lp \cfgnt{L}^{\prime\prime} \cfgnt{R}^{\prime\prime}\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}^{\prime}\ \cfgnt{R}^{\prime}\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
 	}	
 \and
     \inferrule[Equals (references-true)]{

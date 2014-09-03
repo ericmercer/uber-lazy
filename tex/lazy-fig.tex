@@ -17,13 +17,12 @@
 \and
 	\inferrule[Field Write]{
       \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp\\ 
-      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}_x\rp \\
-      l \neq \cfgnt{l}_\mathit{null}\\\\
+      \theta = \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}_x\rp \\\\
+      l \neq \cfgnt{l}_\mathit{null}\\
       \cfgnt{r}^\prime = \mathrm{fresh}_r\lp\rp\\
-      \theta =  \cfgnt{L}^\prime\lp\cfgnt{r}\rp 
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r} \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g^\prime\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g^\prime\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
 	}	
 \and
     \inferrule[Equals (reference-true)]{

@@ -54,6 +54,7 @@ A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightar
 A \textbf{state sequence} is a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
 \end{definition}
 
+%For 
 \begin{comment}
 \begin{definition}
 A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
@@ -64,15 +65,19 @@ A \textbf{feasible state sequence} is defined as a sequence of states resulting 
 \begin{definition}
 The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
 \begin{align}
-\mathcal{S}_\ell = \{s_\ell \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_\ell)\}
+\mathcal{S}_\ell = \{s_n \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_n)\}
 \end{align}
 \end{definition}
 
 \begin{definition}
 The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
 \begin{align}
-\mathcal{S}_s = \{s_s \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_s)\}
+\mathcal{S}_s = \{s_n \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_n)\}
 \end{align}
+\end{definition}
+
+\begin{definition}
+The sets $\mathcal{FA}$, $\mathcal{FW}$, $\mathcal{RC}$, and  $\mathcal{NW}$ are defined as the sets of states having the forms $ \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$,  $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$, $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$, and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp$ respectively.
 \end{definition}
 
 \begin{definition}
@@ -82,17 +87,6 @@ The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
 
 \begin{definition}
 Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = ( \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
-\end{definition}
-
-\begin{definition}
-Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
- $$
-\begin{array}{l}
-\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
-\ \ \ \ \ \ \{s \mid \exists \Pi_n^\phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s = \mathit{last}(\Pi_n))\} 
-\end{array}
-$$
-where $\mathit{last}(\Pi_n)$ returns the last state on the feasible sequence.
 \end{definition}
 
 %\begin{definition}
@@ -148,11 +142,37 @@ Given homomorphism $s_x \rightharpoonup_{h} s_y$, the \textbf{homomorphism const
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} is defined as follows: given lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$ and summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, $s_\ell \sqsubset s_s $ if and only if $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, and there exists a homomorphism $\ s_\ell \rightharpoonup_{h} s_s $ such that 
+The \textbf{representation relation} is defined as follows: given state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$ and state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$, $s_y \sqsubset s_x $ if and only if $\eta_y = \eta_x ,\ \cfgnt{e}_y = \cfgnt{e}_x ,\ \cfgnt{k}_y = \cfgnt{k}_x$, and there exists a homomorphism $\ s_y \rightharpoonup_{h} s_x $ such that 
 \begin{equation}
 \label{eqn:valid}
- \mathbb{S}( \phi_s \wedge \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s) ) 
+ \mathbb{S}( \phi_x \wedge \mathbb{HC}(s_y \rightharpoonup_{h} s_x) ) 
 \end{equation}
+\end{definition}
+
+\begin{definition}
+\label{bisimulation}
+A state relation $\mathcal{R}$ is a \textbf{bisimulation} if and only if for every state $s_x$ and $s_y$ such that $s_x\ \mathcal{R}\ s_y$, the following two properties hold: 
+\begin{equation}
+\label{eqn:BisimulationForwards}
+\forall s_x^\prime ( s_x \rightarrow_x s_x^\prime \Rightarrow \exists s_y^\prime( (s_y \rightarrow_y s_y^\prime )\wedge (s_x^\prime\ \mathcal{R}\ s_y^\prime ))  )
+\end{equation}
+\begin{equation}
+\label{eqn:BisimulationBackwards}
+\forall s_y^\prime ( s_y \rightarrow_y s_y^\prime\Rightarrow \exists s_x^\prime( (s_x \rightarrow_x s_x^\prime )\wedge (s_x^\prime\ \mathcal{R}\ s_y^\prime ))  )
+\end{equation}
+\end{definition}
+
+Note that in the literature it is customary to define bisimulation in terms of a single labeled transition system, whereas for the purposes of this paper the definition of bisimulation refers to a pair of transition relations $\rightarrow_x$ and $\rightarrow_y$ defined by reduction rules. Since it is possible to create a union of the two rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the transitions in the reduction rules in this paper are labeled, this definition is sufficient for all of the customary properties of bisimulation to apply. For a more detailed treatment on the application of bisimulation to reduction rule systems see \cite{GSE:barbedbisimulation}.
+
+\begin{definition}
+Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
+ $$
+\begin{array}{l}
+\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
+\ \ \ \ \ \ \{s \mid \exists \Pi_n^\Phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s \sqsubset \mathit{last}(\Pi_n^\Phi))\} 
+\end{array}
+$$
+where $\mathit{last}(\Pi_n^\Phi)$ returns the last state on the feasible sequence.
 \end{definition}
 
 \begin{definition}

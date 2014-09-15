@@ -47,34 +47,34 @@ For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \te
 \end{definition}
 
 \begin{definition}
-A \textbf{state transition function} $\rightarrow_{\Phi}$ is a mapping $\rightarrow_{\Phi} : s \mapsto s$, which takes one machine state and transforms it into another machine state. Two important state transition functions are the \textbf{lazy state transition function} $\rightarrow_\ell$ and the \textbf{summary state transition function} $\rightarrow_s$.
+A \textbf{state transition relation} $\rightarrow_{\Phi}$ is a binary relation $\rightarrow_{\Phi}\ \subseteq\ \mathcal{S} \times \mathcal{S} $, which relates machine states with successor states. Two important state transition relations are the \textbf{lazy state transition relation} $\rightarrow_\ell$ and the \textbf{summary state transition relation} $\rightarrow_s$.
 \end{definition}
 
-\begin{definition}
-A \textbf{state sequence} is a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
-\end{definition}
-
-%For 
-\begin{comment}
-\begin{definition}
-A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
-\end{definition}
-\end{comment}
+%\begin{definition}
+%A \textbf{state sequence} is a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
+%\end{definition}
+%
+%%For 
+%\begin{comment}
+%\begin{definition}
+%A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
+%\end{definition}
+%\end{comment}
 
 %For these definitions, we should bring in the notion of 
-\begin{definition}
-The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
-\begin{align}
-\mathcal{S}_\ell = \{s_n \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_n)\}
-\end{align}
-\end{definition}
-
-\begin{definition}
-The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
-\begin{align}
-\mathcal{S}_s = \{s_n \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_n)\}
-\end{align}
-\end{definition}
+%\begin{definition}
+%The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
+%\begin{align}
+%\mathcal{S}_\ell = \{s_n \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_n)\}
+%\end{align}
+%\end{definition}
+%
+%\begin{definition}
+%The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
+%\begin{align}
+%\mathcal{S}_s = \{s_n \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_n)\}
+%\end{align}
+%\end{definition}
 
 \begin{definition}
 The sets $\mathcal{FA}$, $\mathcal{FW}$, $\mathcal{RC}$, and  $\mathcal{NW}$ are defined as the sets of states having the forms $ \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$,  $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$, $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$, and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp$ respectively.
@@ -125,7 +125,7 @@ $$
 \begin{array}{l}
  s_x \rightharpoonup_{h} s_y \Leftrightarrow \\
 \ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha \in \mathcal{L}\ (\forall \cfgnt{l}_\beta \in \mathcal{L}\ ( \forall f \in \mathcal{F}( \exists \phi_\alpha \in \Phi(\exists \phi_\beta \in \Phi( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f ))\ \\
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f ))\ \\
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
 \end{array}
 $$
@@ -136,13 +136,13 @@ $$
 Given homomorphism $s_x \rightharpoonup_{h} s_y$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_x \rightharpoonup_{h} s_y)$ is defined as:
 \begin{align*}
 \mathbb{HC}(s_x \rightharpoonup_{h} s_y) &= \\
- \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}^\rightarrow)\} 
+ \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y^\rightarrow)\} 
 \end{align*}
 \end{definition}
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} is defined as follows: given state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$ and state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$, $s_y \sqsubset s_x $ if and only if $\eta_y = \eta_x ,\ \cfgnt{e}_y = \cfgnt{e}_x ,\ \cfgnt{k}_y = \cfgnt{k}_x$, and there exists a homomorphism $\ s_y \rightharpoonup_{h} s_x $ such that 
+The \textbf{representation relation} $\sqsubset$ is defined as follows: given state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$ and state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$, $s_y \sqsubset s_x $ if and only if $\eta_y = \eta_x ,\ \cfgnt{e}_y = \cfgnt{e}_x ,\ \cfgnt{k}_y = \cfgnt{k}_x$, and there exists a homomorphism $\ s_y \rightharpoonup_{h} s_x $ such that 
 \begin{equation}
 \label{eqn:valid}
  \mathbb{S}( \phi_x \wedge \mathbb{HC}(s_y \rightharpoonup_{h} s_x) ) 
@@ -164,38 +164,39 @@ A state relation $\mathcal{R}$ is a \textbf{bisimulation} if and only if for eve
 
 Note that in the literature it is customary to define bisimulation in terms of a single labeled transition system, whereas for the purposes of this paper the definition of bisimulation refers to a pair of transition relations $\rightarrow_x$ and $\rightarrow_y$ defined by reduction rules. Since it is possible to create a union of the two rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the transitions in the reduction rules in this paper are labeled, this definition is sufficient for all of the customary properties of bisimulation to apply. For a more detailed treatment on the application of bisimulation to reduction rule systems see \cite{GSE:barbedbisimulation}.
 
-\begin{definition}
-Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
- $$
-\begin{array}{l}
-\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
-\ \ \ \ \ \ \{s \mid \exists \Pi_n^\Phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s \sqsubset \mathit{last}(\Pi_n^\Phi))\} 
-\end{array}
-$$
-where $\mathit{last}(\Pi_n^\Phi)$ returns the last state on the feasible sequence.
-\end{definition}
 
-\begin{definition}
-\label{equivalent}
-A summary state $s_s$ is \textbf{equivalent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
-$$s_s \cong P \Leftrightarrow (\forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) )$$
-\end{definition}
-
-\begin{definition}
-\label{sound}
-A state $s_s$ is \textbf{sound} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
-$$ \forall s_\ell \in \mathcal{S}_\ell\ (s_\ell \sqsubset s_s \Rightarrow s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n) ) $$
-\end{definition}
-
-\begin{definition}
-\label{complete}
-A state $s_s$ is \textbf{complete} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
-$$ \forall s_\ell \in \mathcal{S}_\ell\ ( s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)\Rightarrow s_\ell \sqsubset s_s ) $$
-\end{definition}
-
-\begin{definition}
-\label{exact}
-A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if it is both sound and complete:
-$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
-\end{definition}
+%\begin{definition}
+%Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
+% $$
+%\begin{array}{l}
+%\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
+%\ \ \ \ \ \ \{s \mid \exists \Pi_n^\Phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s \sqsubset \mathit{last}(\Pi_n^\Phi))\} 
+%\end{array}
+%$$
+%where $\mathit{last}(\Pi_n^\Phi)$ returns the last state on the feasible sequence.
+%\end{definition}
+%
+%\begin{definition}
+%\label{equivalent}
+%A summary state $s_s$ is \textbf{equivalent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
+%$$s_s \cong P \Leftrightarrow (\forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) )$$
+%\end{definition}
+%
+%\begin{definition}
+%\label{sound}
+%A state $s_s$ is \textbf{sound} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
+%$$ \forall s_\ell \in \mathcal{S}_\ell\ (s_\ell \sqsubset s_s \Rightarrow s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n) ) $$
+%\end{definition}
+%
+%\begin{definition}
+%\label{complete}
+%A state $s_s$ is \textbf{complete} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
+%$$ \forall s_\ell \in \mathcal{S}_\ell\ ( s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)\Rightarrow s_\ell \sqsubset s_s ) $$
+%\end{definition}
+%
+%\begin{definition}
+%\label{exact}
+%A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if it is both sound and complete:
+%$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
+%\end{definition}
 

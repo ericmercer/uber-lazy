@@ -11,7 +11,7 @@
       \{\lp\phi^\prime\ l^\prime\rp\} = \cfgnt{L}^\prime\lp\cfgnt{R}^\prime\lp l,\cfgnt{f}\rp\rp \\
       \cfgnt{r}^\prime = \mathrm{stack}_r\lp\rp \\
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
       \lp \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime\ \phi_g^\prime\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}
 \and
@@ -21,15 +21,15 @@
       l \neq \cfgnt{l}_\mathit{null}\\
       \cfgnt{r}^\prime = \mathrm{fresh}_r\lp\rp\\
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow \\\\
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g^\prime\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
 	}	
 \and
     \inferrule[Equals (reference-true)]{
     \cfgnt{L}\lp \cfgnt{r}_0\rp = \cfgnt{L}\lp \cfgnt{r}_1\rp\\
     \phi_g^\prime = \lp\phi_g \wedge r_0 = r_1\rp
     }{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
     }
 \and
@@ -37,11 +37,11 @@
     \cfgnt{L}\lp \cfgnt{r}_0\rp \neq \cfgnt{L}\lp \cfgnt{r}_1\rp\\
     \phi_g^\prime = \lp\phi_g \wedge r_0 \neq r_1\rp
    }{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
     }
 \end{mathpar}
 \end{center}
-\caption{GSE with lazy initialization.}
+\caption{GSE with lazy initialization indicated by $\rightarrow_\ell$.}
 \label{fig:lazy}
 \end{figure*}

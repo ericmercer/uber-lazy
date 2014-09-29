@@ -47,9 +47,29 @@ For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \te
 \end{definition}
 
 \begin{definition}
-A \textbf{state transition relation} $\rightarrow_{\Phi}$ is a binary relation $\rightarrow_{\Phi}\ \subseteq\ \mathcal{S} \times \mathcal{S} $, which relates machine states with successor states. Two important state transition relations are the \textbf{lazy state transition relation} $\rightarrow_\ell$ and the \textbf{summary state transition relation} $\rightarrow_s$.
+A \textbf{state transition relation} $\rightarrow_{\Phi}$ is a binary relation $\rightarrow_{\Phi}\ \subseteq\ \mathcal{S} \times \mathcal{S} $, which relat
+es machine states with successor states. Two important state transition relations are the \textbf{lazy state transition relation} $\rightarrow_\ell$ and the \textbf{summary state transition relation} $\rightarrow_\varsigma$. Each of these use a separate relation for initialization: $\rightarrow_I$ for initialization the lazy transition relation and $\rightarrow_S$ for initialization the summary transition relation. All of these transition relations are defined in \figref{fig:lazy}, \figref{fig:lazyInit}, \figref{fig:sym}, and \figref{fig:symInit}.
 \end{definition}
 
+\begin{definition}
+A state $s = (\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k})$ is a \textbf{lazy state} if and only if $\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (|\cfgnt{L}(\cfgnt{r})| = 1)$]
+\end{definition}
+
+\begin{definition}
+A state $s = (\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k})$ is a \textbf{summary state} if and only if 
+$\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (|\cfgnt{L}(\cfgnt{r})| \ge 1)$.
+A lazy state is also a summary state by definition.
+\end{definition}
+
+\begin{definition}
+A heap, $(\cfgnt{L}\ \cfgnt{R})$, is \textbf{location mutual exclusive} if and only if 
+\[
+\begin{array}{l}
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi_\alpha\ \cfgnt{l}_\alpha),(\phi_\beta\ \cfgnt{l}_\beta) \in \cfgnt{L}{r}\ (\\
+\ \ \ \ \cfgnt{l}_\alpha \neq \cfgnt{l}_\beta \Rightarrow \phi_\alpha \wedge \phi_\beta = \cfgt{false}))
+\end{array}
+\]
+\end{definition}
 %\begin{definition}
 %A \textbf{state sequence} is a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
 %\end{definition}
@@ -86,7 +106,7 @@ The sets $\mathcal{FA}$, $\mathcal{FW}$, $\mathcal{RC}$, and  $\mathcal{NW}$ are
 \end{definition}
 
 \begin{definition}
-Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = ( \mu_i\ \cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
+Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = (\cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
 \end{definition}
 
 %\begin{definition}
@@ -124,11 +144,21 @@ A \textbf{homomorphism} $s_x \rightharpoonup_{h} s_y$, from state $s_x = ( \cfgn
 $$
 \begin{array}{l}
  s_x \rightharpoonup_{h} s_y \Leftrightarrow \\
-\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha \in \mathcal{L}\ (\forall \cfgnt{l}_\beta \in \mathcal{L}\ ( \forall f \in \mathcal{F}( \exists \phi_\alpha \in \Phi(\exists \phi_\beta \in \Phi( \\ 
+\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
 \ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f ))\ \\
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
 \end{array}
 $$
+\begin{comment}
+$$
+\begin{array}{l}
+s_x \rightharpoonup_{h} s_y \Leftrightarrow \\
+\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathit{fields}(\mathrm{type}(\cfgnt{l}_\beta))\ ( \\
+\ \ \ \ \ \ \ \ \ \ \ \ \forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f ))\ ( \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists \phi_\beta\ ((\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f )))))))\\
+\end{array}
+$$
+\end{comment}
 \end{definition}
 
 \begin{definition}

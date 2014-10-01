@@ -20,9 +20,9 @@ state such that both of those successors are also related in the
 bisimulation: $s_\ell^\prime \sqsubset s_\varsigma^\prime$.
 
 If the $\varsigma$-relation is considered to be a model of the
-$\ell-relation$ (i.e., a representation of that machine), then the
+$\ell$-relation (i.e., a representation of that machine), then the
 representation relation, as a bisimulation, ensures that the
-$\varsigma$-relation is complete in that it any property that can be
+$\varsigma$-relation is complete in that any property that can be
 shown in the $\ell$-relation can also be shown in the
 $\varsigma$-relation; and further, the representation relation as a
 bisimulation ensures that the $\varsigma$-relation is also sound in
@@ -37,17 +37,17 @@ represents in the $\ell$-relation, its successor set is both sound and
 complete relative the $\ell$-relation and subject to the
 representation relation. Intuitively, the $\varsigma$-relation, at a
 given state, has a successor to account for every successor from the
-$\ell$-relation at the corresponding state, and the $ell$-machine has
+$\ell$-relation at the corresponding state, and the $\ell$-machine has
 a successor to account for every successor in the
 $\varsigma$-relation. 
 
 The proof of exactness of each rule relies on the ability to derive
 from the homomorphism in the representation relation in the current
 state, a new homomorphism that is sufficient to use in the
-representation relation that reasons over the successor states. The
-proof is constructive in that it shows how given a valid homomorphism
-for the current state, it is possible to derive a new homomorphism to
-reason about successor states.
+representation relation that includes the successor states. The proof
+is constructive in that it shows how given a valid homomorphism for
+the current state, it is possible to derive a new homomorphism that
+includes successor states.
 
 There are two slight complications in the proof: the field access rule
 relies on the $S$-relation that operates on a different state that
@@ -72,7 +72,7 @@ a given reference at the same time, then the help is
 non-deterministic, and it is not possible to construct a valid
 homomorphism from the existing homomorphism: which location should be
 used in the map? As such, the proof first establishes that
-$\varsigma$-relation preserves location mutual exclusive in the
+the $\varsigma$-relation preserves location mutual exclusive in the
 incoming heap. Once that is shown, the exactness of the equals
 reference rule is given.
 

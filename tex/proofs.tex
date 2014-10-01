@@ -2,179 +2,81 @@
 
 \input{definitions}
 
+
 \subsection{Theorems}
-\begin{lemma}[$\rightarrow^*_S$ preserves location mutual exclusion]
-Given a location mutual exclusive heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
-summary state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
-new heap, $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime)$, from the summary
-initialization machine, $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
-\rightarrow^*_S
-(\cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f})$, after any number of machine steps, is also
-location mutual exclusive.
-\end{lemma}
-\begin{proof}
-Induction over the number of machine steps on the summary initialization machine in \figref{fig:symInit}.
 
-\noindent\textbf{Base Case}. The machine takes one step: $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
-\rightarrow_S
-(\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$. Let $\Lambda = \mathbb{UN}(\cfgnt{L}_0, \cfgnt{R}_0, \cfgnt{r},
-\cfgnt{f})$ be the set of uninitialized locations. If $\Lambda = \emptyset$, then the \texttt{Summarize (end)}
-rule is active and $(\cfgnt{L}_1\ \cfgnt{R}_1) = (\cfgnt{L}_0\ \cfgnt{R}_0)$, which is location mutual exclusive by the initial conditions in the lemma.
+The goal of this section is to prove that the representation relation,
+$\sqsubset$, is a bisimulation as defined in
+\eqref{eqn:BisimulationForwards} and
+\eqref{eqn:BisimulationBackwards}. This proof is accomplished by
+showing that the requisite homomorphism, $\rightharpoonup_h$, used in
+the representation relation exists. A bisimulation is a relation over
+pairs of states such that whenever two states, $s_\ell$ and
+$s_\varsigma$, are related in the bisimulation, $s_\ell \sqsubset
+s_\varsigma$, every successor, from either state, $s_\ell
+\rightarrow_\ell s_\ell^\prime$ or $s_\varsigma \rightarrow_\varsigma
+s_\varsigma^\prime$, has a corresponding mutual successor in the other
+state such that both of those successors are also related in the
+bisimulation: $s_\ell^\prime \sqsubset s_\varsigma^\prime$.
 
-If $\Lambda \neq \emptyset$, then the \texttt{Summarize} rule is
-active, and each new constraint location pair must be considered
-individually. These pairs are partitioned into the sets
-$\theta_\mathit{null}$, $\theta_\mathit{new}$,
-$\theta_\mathit{alias}$, and $\theta_\mathit{orig}$ by the rule. 
-\begin{itemize}
-\item Any member of $\theta_\mathit{null}$, $\theta_\mathit{new}$, and
-  $\theta_\mathit{alias}$ has a constraint of the form $\phi_x \wedge
-  \ldots$ while any member of $\theta_\mathrm{orig}$ has a constraint
-  of the form $\neg \phi_x \wedge \ldots$. As every
-  $(\phi_\mathit{orig}\ \cfgnt{l}_\mathit{orig}) \in
-  \cfgnt{L}_n(\cfgnt{R}_n(\cfgnt{l}_x,\cfgnt{f}))$ is location mutual exclusive
-  by the initial conditions on $(\cfgnt{L}_0\ \cfgnt{R}_0)$ in the lemma statement, members of $\theta_\mathit{orig}$ are location
-  mutual exclusive with each other and with members in $\theta_\mathit{null}$,
-  $\theta_\mathit{new}$, and $\theta_\mathit{alias}$.
-\item Any member of $\theta_\mathit{null}$ has the form $\ldots \wedge
-  \cfgnt{r}_f = \cfgnt{r}_\mathit{null}$ while any member of
-  $\theta_\mathit{new}$ and $\theta_\mathit{alias}$ has the form
-  $\ldots \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge
-  \ldots$. As $\theta_\mathit{null}$ is a singleton set, its location is
-  location mutual exclusive from those in $\theta_\mathit{new}$ and
-  $\theta_\mathit{alias}$.
-\item Any member of $\theta_\mathit{new}$ has a constraint of the form
-  $\ldots \wedge ( \wedge_{(
-  \cfgnt{r}_a,\ \phi_a,\ l_a) \in \rho}
-  \cfgnt{r}_f \ne \cfgnt{r}_a) )$ to assert it does not
-  alias anything while any member of $\theta_\mathit{alias}$ has
-  the form $\ldots \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \ldots$ for
-  some alias $\cfgnt{r}_a$ with both partitions reasoning over the same set of aliases $\rho$.  As $\theta_\mathit{new}$ is a singleton set, its
-  location is location mutual exclusive from any member of
-  $\theta_\mathit{alias}$.
-\item Any member of $\theta_\mathit{alias}$ has the form
-\[\ldots \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge ( \wedge_{( \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a)  \in \rho\ ( \cfgnt{r}^\prime_a \neq \cfgnt{r}_a) } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a)\]
-Each is mutually exclusive over the particular alias it asserts.
-\end{itemize}
-Every member in $\theta = \theta_\mathit{null} \cup
-\theta_\mathit{new} \cup \theta_\mathit{alias} \cup
-\theta_\mathit{orig}$ is thus location mutual exclusive making $(\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$ location mutual exclusive as well.
+If the $\varsigma$-relation is considered to be a model of the
+$\ell-relation$ (i.e., a representation of that machine), then the
+representation relation, as a bisimulation, ensures that the
+$\varsigma$-relation is complete in that it any property that can be
+shown in the $\ell$-relation can also be shown in the
+$\varsigma$-relation; and further, the representation relation as a
+bisimulation ensures that the $\varsigma$-relation is also sound in
+that any property that can be shown to hold in the $\varsigma$-relation
+can also be shown to hold in the $\ell$-relation.
 
-\noindent\textbf{Inductive Step}. The machine takes $n$-steps:
-\[
-(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f}) \rightarrow_S (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f}) \rightarrow_S \ldots \rightarrow_S
-(\cfgnt{L}_n\ \cfgnt{R}_n\ \cfgnt{r}\ \cfgnt{f})
-\]
-By the induction hypothesis, $(\cfgnt{L}_n\ \cfgnt{R}_n)$ is location
-mutual exclusive. This matches the base case, in that the heap on the
-left side of $\rightarrow_S$ is location mutual exclusive, and by the
-same argument as in the base case,
-$(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus location mutual exclusive.
+The proof of the representation relation as a bisimulation reasons
+over individual rules in the $\varsigma$-relation to show that each
+rule preserves exactness. That is to say that whenever the state on
+the left of the $\varsigma$-relation has a corresponding state that it
+represents in the $\ell$-relation, its successor set is both sound and
+complete relative the $\ell$-relation and subject to the
+representation relation. Intuitively, the $\varsigma$-relation, at a
+given state, has a successor to account for every successor from the
+$\ell$-relation at the corresponding state, and the $ell$-machine has
+a successor to account for every successor in the
+$\varsigma$-relation. 
 
-\begin{comment}
-% Initial proof text taken from the theorem
-The Field Access rule uses the Summarize rule to describe the relation between $\cfgnt{L}_{s}$ and $\cfgnt{L}_{s^\prime}$. Because the summarize rule is essentially a fixed-point computation, we can reason about it as a machine that produces a sequence of intermediate states $s_1, s_2, ... , s_n$. We will use an inductive argument to show that the mutual exclusion property holds for any of those intermediate states. First, let state $s_\alpha$ be any state for which the property in Theorem~\ref{thm:mutex} holds, and let $s_\beta$ be the intermediate state where $s_\alpha \rightarrow_S s_\beta$. If all fields are initialized, then $s_\alpha$ and $s_\beta$ are identical, so the mutually exclusive property holds for $s_\beta$. 
-Otherwise, there must be some location $\cfgnt{l}_{un} \in \cfgnt{L}_\alpha(r)$ for which field f contains a reference $r_a$ that could feasibly point to the uninitialized location. In this case, a new reference is created and a single entry is added to $\cfgnt{L}_\beta$. The elements of the set $\theta_{all} = \cfgnt{L}_\beta(\cfgnt{R}_\beta(\cfgnt{l}_{un},\cfgnt{f}))$ can be divided into four distinct subsets, $\theta_{cur}$, $\theta_{null}$, $\theta_{new}$, and $\theta_{alias}$. The set $\theta_{cur}$ contains the pairs containing locations from the reference $r_a$, $\theta_{null}$ contains the pair with the null location, $\theta_{new}$ contains a pair with a new location, and $\theta_{alias}$ contains pairs representing alias locations. Any two constraints in $\theta_{cur}$ are guaranteed to be pairwise mutually exclusive because of the inductive hypothesis, and any single constraint is guaranteed to be pairwise mutually exclusive with any constraint in $\theta_{null}$, $\theta_{new}$, or $\theta_{alias}$ because constraints in $\theta_{cur}$ contain the conjunct $\neg \phi$, while constraints in the other three sets are conjoined with $\phi$. The set $\theta_{null}$ contains only one element, which in turn contains the constraint $r_f = r_{null}$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{new}$, or $\theta_{alias}$ because constraints in those sets contain the conjunct $r_f \neq r_{null}$. The set $\theta_{new}$ contains one element, which in turn contains the constraint containing the conjunct $ \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{alias}$, because each constraint in that set contains the conjunct $r_f = r_a$ for some $(r_a\ \phi_a\ l_a)\in \rho$. Any two elements of the set $\theta_{alias}$ are guaranteed to pairwise mutually exclusive because for each constraint that contains the conjunct $r_f = r_a$, every other constraint contains the conjunct $r_f \ne r_a$. Thus, all constraints from all pairs in $\theta{all}$ are guaranteed to be mutually exclusive, and the property from Theorem~\ref{thm:mutex} holds for intermediate state $s_\beta$. 
+The proof of exactness of each rule relies on the ability to derive
+from the homomorphism in the representation relation in the current
+state, a new homomorphism that is sufficient to use in the
+representation relation that reasons over the successor states. The
+proof is constructive in that it shows how given a valid homomorphism
+for the current state, it is possible to derive a new homomorphism to
+reason about successor states.
 
-We have now shown that whether there are any uninitialized fields or not, the mutual exclusivity property holds for any intermediate state $s_\beta$, so long as $s_\alpha \rightarrow_S s_\beta$ and the property holds for $s_\alpha$. 
-So, since the mutual exclusivity property holds for $s_s$, $s_s \rightarrow_S s_1$, and $s_{i} \rightarrow_S s_{i+1} $ for all $i$ such that $0 < i < n$, we are guaranteed that the mutually exclusive property holds for the final intermediate state $s_n$. This concludes the inductive argument about 
-\end{comment}
-\end{proof}
+There are two slight complications in the proof: the field access rule
+relies on the $S$-relation that operates on a different state that
+then $\varsigma$-relation and constructing the new homomorphism in the
+equals-reference rule relies on the incoming heap being location
+mutual exclusive. The $S$-relation effectively produces an
+intermediary state that is the state where uninitialized references
+are initialized before the field access actually takes place. In
+essence, a state on the left of the $\varsigma$-relation that is a
+field access, undergoes a transition in which its heap is changed to
+initialize fields. Once the fields are initialized, then the actual
+field access takes place. The state with the heap that has the
+initialized fields is the intermediary state between the state on the
+left of the $\varsigma$-relation and the state on the right of the
+$\varsigma$-relation. The proof reasons separately about this
+intermediary state to prove that it too is exact.
 
-%\begin{lemma}
-%\label{lem:lazyrefprops}
-%For any lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$, for any reference $r \in \cfgnt{L}_\ell^\leftarrow$, 
-%$$ | \cfgnt{L}_\ell ( r) | = 1 $$
-%\end{lemma}
-%
-%\begin{proof}
-%In every rule in the Lazy machine that establishes a reference mapping, the value set contains exactly one location, constraint pair. 
-%\end{proof}
+The equals-reference proof must show that any given reference in the
+heap is not able to point to two distinct locations at the same
+time. If the incoming heap is able to point to two valid locations at
+a given reference at the same time, then the help is
+non-deterministic, and it is not possible to construct a valid
+homomorphism from the existing homomorphism: which location should be
+used in the map? As such, the proof first establishes that
+$\varsigma$-relation preserves location mutual exclusive in the
+incoming heap. Once that is shown, the exactness of the equals
+reference rule is given.
 
-\begin{theorem}[$\rightarrow_\varsigma$ preserves location mutual exclusion]
-\label{thm:mutex}
-Given a summary state, $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, such that $s_s \rightarrow_\varsigma s_s^\prime$, where $s_s^\prime = ( \cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime\ \phi_s^\prime\ \eta_s^\prime\ \cfgnt{e}_s^\prime\ \cfgnt{k}_s^\prime )$, if the heap $(\cfgnt{L}_s\ \cfgnt{R}_s)$ is location mutual exclusive then the heap after the transition, $(\cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime)$ is also location mutual exclusive.
-\begin{comment}
-If we have a reachable summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$
-$$ 
-\begin{array}{l}
-\forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_s(\cfgnt{r})\ (\forall (\phi_\beta\ \cfgnt{l}_\beta) \in \cfgnt{L}_s(\cfgnt{r})\ ( \\
-\ \ \ \ (\cfgnt{l}_\alpha \neq \cfgnt{l}_\beta) \Rightarrow ((\phi_\alpha \wedge \phi_\beta) = \cfgt{false})))
-\end{array}
-$$
-\end{comment}
-\end{theorem}
-\begin{proof}
-The proof will proceed inductively. 
-
-Base Case: Let $s_s$ be an initial state. By Definition~\ref{def:initstate}, for every reference $r_i \in \cfgnt{L}_s^\leftarrow$, the set $\cfgnt{L}_s(r_i)$ contains at most one element. Thus, the requirement that $l_\alpha \ne l_\beta$ is never met, and the Theorem is vacuously true.
-
-Inductive Step: Now we will show that if the exclusivity property holds for some state $s_s$, then it holds for any state $s_s^\prime$ where $s_s \rightarrow_s s_s^\prime$. In order to evaluate whether Theorem~\ref{thm:mutex} holds for state any $s_s\prime$, we must consider the rule that applied during the transition from $s_s$ to $s_s\prime$. There are two broad classes of rules: rules where $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$, and rules where $ \cfgnt{L}_s =  \cfgnt{L}_{s^\prime}$. Rules in the $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$ class modify the structure of the heap, and must be considered carefully to to consider the impact of those modifications. Only three rules belong to the class $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$: Field Access, Field Read, and New. 
-
-We begin by considering the Field Access rule. Suppose $s_s$ has the form $\lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. In this case, the relationship between $s_s$ and $s_s^\prime$ is described by the Field Access rule. intermediate state.
-
-We now use this result to show that the mutual exclusion property holds for state $s_s^\prime$. The relation between the L-function from the final intermediate state $\cfgnt{L}^\prime$ and the L-function in $s_s^\prime$ is $ \cfgnt{L}_{s^\prime} = \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}^\prime,\cfgnt{R}^\prime,\cfgnt{r},\cfgnt{f},\phi_g\rp ]$, where a new value set is created based on the $\mathbb{VS}$ function. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha$ and $\phi_\beta$ came from the same value set in $s_s$, and are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since the only new value set in $L_{s^\prime}^\rightarrow$ is generated by the $\mathbb{VS}$ function, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
-
-Suppose we have a field write instruction. This case is nearly identical as the field read. In this instruction, a new value set is created. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha = \neg \phi_\beta$, so $\phi_\alpha$ and $\phi_\beta$ are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since exclusivity holds for the only new value set in $L_{s^\prime}^\rightarrow$, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
-
-Suppose we have a "new" instruction. In this case, only one value set is added to $L_{s^\prime}^\rightarrow$, and that value set contains only one member, so exclusivity holds by default.
-
-Suppose we have any instruction other that a read, write, or new. No machine rule other than those three listed instructions modifies the $L$ function. Therefore, the exclusivity property must hold for $s_s^\prime$ in these cases.
-
-Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
-\end{proof}
-
-\begin{corollary}
-Any state represented by any reachable summary state is a lazy state.
-\end{corollary}
-
-\begin{proof}
-By Theorem \ref{thm:mutex} since the constraints on every reference are mutually exclusive, the heap constraint for any heap with a reference pointing to more than one location will be unsatisfiable, and by Definition \ref{representation} will not be represented by the summary state.
-\end{proof}
-
-
-%\begin{comment}
-%%I'm wondering... do we use this theorem anywhere? I think the place we needed it got re-structured, am I right?
-%\begin{theorem}
-%\label{thm:colex}
-%If we have a summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$, 
-%$$\bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r})\} = \cfgt{true}$$
-%\end{theorem}
-%\begin{proof}
-%The proof will proceed inductively.
-%
-%Base Case: In the initial state $s_0$ there is only one location, and all of it's fields are initialized to contain the uninitiated reference $\cfgnt{r}_{un}$. Since the only reference is the uninitialized reference, for which the desired property holds by construction, the property is true for all references on the heap.
-%
-%Inductive Step: 
-%Suppose we have a summary state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_S s_s^\prime$. If all relevant fields are initialized, then $s_s = s_s^\prime$, and the property holds trivially. If there is some uninitialized fields, then on of those fields will have a new reference $\cfgnt{r}_{new}$ added to it. The disjunction
-%$$ \bigvee \{ \phi \mid (\phi\ \cfgnt{l})\in \cfgnt{L}_s (\cfgnt{r}_{new})\}$$
-%Takes the form
-%\begin{align*}
-% (\phi_0) \vee (\neg \phi_0 \wedge \phi_1) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge \phi_2) \vee ...\\
-% ... \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \phi_n) \vee (\neg \phi_0 \wedge \neg \phi_1 \wedge ... \wedge \neg \phi_n)
-% \end{align*}
-% Which reduces to $\cfgt{true}$. Thus, the collective exhaustion property holds for intermediate states. Because the property holds for intermediate states, for summary machine rules we will assume without loss of generality that all relevant fields are initialized. 
-% Suppose that the rule executed in the transition from $s_s$ to $s_s^\prime$ is the field read rule. 
-%Suppose we have a state $s_s$ for which the property holds, and some state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$. 
-% 
-%\end{proof}
-%\end{comment}
-%\begin{lemma}
-%\label{lem:ref}
-%For any symbolic state $s_s$, constraint $\phi$, and stack reference $\cfgnt{r}$ such that $(\phi\ \ell) \in \cfgnt{L}_s (\cfgnt{r})$, then 
-%\begin{equation}
-%\exists \Gamma_n^s\ ( \phi = \mathbb{PC} (\Gamma_n^s) )
-%\end{equation}
-%\end{lemma}
-%\begin{proof}
-%\end{proof}
-%
-%\begin{lemma}
-%\label{lem:path}
-%If there is some access path $\Gamma_n^s$ in state $s_s$ such that $\mathbb{S}(\phi_s \wedge \mathbb{PC}(\Gamma_n^s))$, then $\Gamma_n^\ell$ is an access path in some lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$
-%\end{lemma}
-%\begin{proof}
-%\end{proof}
+The final statement that $\sqsubset$ is a bisimulation is in \thref{th:bisim}.
 
 \begin{lemma}[Exactness of Summarize Rule]
 \label{lem:init}
@@ -371,6 +273,136 @@ To show that $s_s^\prime$ is sound with respect to the feasible set, we use the 
 
 \end{proof}
 
+
+\begin{lemma}[$\rightarrow^*_S$ preserves location mutual exclusion]
+Given a location mutual exclusive heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
+summary state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
+new heap, $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime)$, from the summary
+initialization machine, $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
+\rightarrow^*_S
+(\cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f})$, after any number of machine steps, is also
+location mutual exclusive.
+\end{lemma}
+\begin{proof}
+Induction over the number of machine steps on the summary initialization machine in \figref{fig:symInit}.
+
+\noindent\textbf{Base Case}. The machine takes one step: $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
+\rightarrow_S
+(\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$. Let $\Lambda = \mathbb{UN}(\cfgnt{L}_0, \cfgnt{R}_0, \cfgnt{r},
+\cfgnt{f})$ be the set of uninitialized locations. If $\Lambda = \emptyset$, then the \texttt{Summarize (end)}
+rule is active and $(\cfgnt{L}_1\ \cfgnt{R}_1) = (\cfgnt{L}_0\ \cfgnt{R}_0)$, which is location mutual exclusive by the initial conditions in the lemma.
+
+If $\Lambda \neq \emptyset$, then the \texttt{Summarize} rule is
+active, and each new constraint location pair must be considered
+individually. These pairs are partitioned into the sets
+$\theta_\mathit{null}$, $\theta_\mathit{new}$,
+$\theta_\mathit{alias}$, and $\theta_\mathit{orig}$ by the rule. 
+\begin{itemize}
+\item Any member of $\theta_\mathit{null}$, $\theta_\mathit{new}$, and
+  $\theta_\mathit{alias}$ has a constraint of the form $\phi_x \wedge
+  \ldots$ while any member of $\theta_\mathrm{orig}$ has a constraint
+  of the form $\neg \phi_x \wedge \ldots$. As every
+  $(\phi_\mathit{orig}\ \cfgnt{l}_\mathit{orig}) \in
+  \cfgnt{L}_n(\cfgnt{R}_n(\cfgnt{l}_x,\cfgnt{f}))$ is location mutual exclusive
+  by the initial conditions on $(\cfgnt{L}_0\ \cfgnt{R}_0)$ in the lemma statement, members of $\theta_\mathit{orig}$ are location
+  mutual exclusive with each other and with members in $\theta_\mathit{null}$,
+  $\theta_\mathit{new}$, and $\theta_\mathit{alias}$.
+\item Any member of $\theta_\mathit{null}$ has the form $\ldots \wedge
+  \cfgnt{r}_f = \cfgnt{r}_\mathit{null}$ while any member of
+  $\theta_\mathit{new}$ and $\theta_\mathit{alias}$ has the form
+  $\ldots \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge
+  \ldots$. As $\theta_\mathit{null}$ is a singleton set, its location is
+  location mutual exclusive from those in $\theta_\mathit{new}$ and
+  $\theta_\mathit{alias}$.
+\item Any member of $\theta_\mathit{new}$ has a constraint of the form
+  $\ldots \wedge ( \wedge_{(
+  \cfgnt{r}_a,\ \phi_a,\ l_a) \in \rho}
+  \cfgnt{r}_f \ne \cfgnt{r}_a) )$ to assert it does not
+  alias anything while any member of $\theta_\mathit{alias}$ has
+  the form $\ldots \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge \ldots$ for
+  some alias $\cfgnt{r}_a$ with both partitions reasoning over the same set of aliases $\rho$.  As $\theta_\mathit{new}$ is a singleton set, its
+  location is location mutual exclusive from any member of
+  $\theta_\mathit{alias}$.
+\item Any member of $\theta_\mathit{alias}$ has the form
+\[\ldots \wedge \cfgnt{r}_f = \cfgnt{r}_a \wedge ( \wedge_{( \cfgnt{r}^{\prime}_a\ \phi^{\prime}_a\ l^{\prime}_a)  \in \rho\ ( \cfgnt{r}^\prime_a \neq \cfgnt{r}_a) } \cfgnt{r}_f \neq \cfgnt{r}^{\prime}_a)\]
+Each is mutually exclusive over the particular alias it asserts.
+\end{itemize}
+Every member in $\theta = \theta_\mathit{null} \cup
+\theta_\mathit{new} \cup \theta_\mathit{alias} \cup
+\theta_\mathit{orig}$ is thus location mutual exclusive making $(\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$ location mutual exclusive as well.
+
+\noindent\textbf{Inductive Step}. The machine takes $n$-steps:
+\[
+(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f}) \rightarrow_S (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f}) \rightarrow_S \ldots \rightarrow_S
+(\cfgnt{L}_n\ \cfgnt{R}_n\ \cfgnt{r}\ \cfgnt{f})
+\]
+By the induction hypothesis, $(\cfgnt{L}_n\ \cfgnt{R}_n)$ is location
+mutual exclusive. This matches the base case, in that the heap on the
+left side of $\rightarrow_S$ is location mutual exclusive, and by the
+same argument as in the base case,
+$(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus location mutual exclusive.
+
+\begin{comment}
+% Initial proof text taken from the theorem
+The Field Access rule uses the Summarize rule to describe the relation between $\cfgnt{L}_{s}$ and $\cfgnt{L}_{s^\prime}$. Because the summarize rule is essentially a fixed-point computation, we can reason about it as a machine that produces a sequence of intermediate states $s_1, s_2, ... , s_n$. We will use an inductive argument to show that the mutual exclusion property holds for any of those intermediate states. First, let state $s_\alpha$ be any state for which the property in Theorem~\ref{thm:mutex} holds, and let $s_\beta$ be the intermediate state where $s_\alpha \rightarrow_S s_\beta$. If all fields are initialized, then $s_\alpha$ and $s_\beta$ are identical, so the mutually exclusive property holds for $s_\beta$. 
+Otherwise, there must be some location $\cfgnt{l}_{un} \in \cfgnt{L}_\alpha(r)$ for which field f contains a reference $r_a$ that could feasibly point to the uninitialized location. In this case, a new reference is created and a single entry is added to $\cfgnt{L}_\beta$. The elements of the set $\theta_{all} = \cfgnt{L}_\beta(\cfgnt{R}_\beta(\cfgnt{l}_{un},\cfgnt{f}))$ can be divided into four distinct subsets, $\theta_{cur}$, $\theta_{null}$, $\theta_{new}$, and $\theta_{alias}$. The set $\theta_{cur}$ contains the pairs containing locations from the reference $r_a$, $\theta_{null}$ contains the pair with the null location, $\theta_{new}$ contains a pair with a new location, and $\theta_{alias}$ contains pairs representing alias locations. Any two constraints in $\theta_{cur}$ are guaranteed to be pairwise mutually exclusive because of the inductive hypothesis, and any single constraint is guaranteed to be pairwise mutually exclusive with any constraint in $\theta_{null}$, $\theta_{new}$, or $\theta_{alias}$ because constraints in $\theta_{cur}$ contain the conjunct $\neg \phi$, while constraints in the other three sets are conjoined with $\phi$. The set $\theta_{null}$ contains only one element, which in turn contains the constraint $r_f = r_{null}$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{new}$, or $\theta_{alias}$ because constraints in those sets contain the conjunct $r_f \neq r_{null}$. The set $\theta_{new}$ contains one element, which in turn contains the constraint containing the conjunct $ \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{alias}$, because each constraint in that set contains the conjunct $r_f = r_a$ for some $(r_a\ \phi_a\ l_a)\in \rho$. Any two elements of the set $\theta_{alias}$ are guaranteed to pairwise mutually exclusive because for each constraint that contains the conjunct $r_f = r_a$, every other constraint contains the conjunct $r_f \ne r_a$. Thus, all constraints from all pairs in $\theta{all}$ are guaranteed to be mutually exclusive, and the property from Theorem~\ref{thm:mutex} holds for intermediate state $s_\beta$. 
+
+We have now shown that whether there are any uninitialized fields or not, the mutual exclusivity property holds for any intermediate state $s_\beta$, so long as $s_\alpha \rightarrow_S s_\beta$ and the property holds for $s_\alpha$. 
+So, since the mutual exclusivity property holds for $s_s$, $s_s \rightarrow_S s_1$, and $s_{i} \rightarrow_S s_{i+1} $ for all $i$ such that $0 < i < n$, we are guaranteed that the mutually exclusive property holds for the final intermediate state $s_n$. This concludes the inductive argument about 
+\end{comment}
+\end{proof}
+
+%\begin{lemma}
+%\label{lem:lazyrefprops}
+%For any lazy state $s_\ell = ( \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta_\ell\ \cfgnt{e}_\ell\ \cfgnt{k}_\ell )$, for any reference $r \in \cfgnt{L}_\ell^\leftarrow$, 
+%$$ | \cfgnt{L}_\ell ( r) | = 1 $$
+%\end{lemma}
+%
+%\begin{proof}
+%In every rule in the Lazy machine that establishes a reference mapping, the value set contains exactly one location, constraint pair. 
+%\end{proof}
+
+\begin{theorem}[$\rightarrow_\varsigma$ preserves location mutual exclusion]
+\label{thm:mutex}
+Given a summary state, $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, such that $s_s \rightarrow_\varsigma s_s^\prime$, where $s_s^\prime = ( \cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime\ \phi_s^\prime\ \eta_s^\prime\ \cfgnt{e}_s^\prime\ \cfgnt{k}_s^\prime )$, if the heap $(\cfgnt{L}_s\ \cfgnt{R}_s)$ is location mutual exclusive then the heap after the transition, $(\cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime)$ is also location mutual exclusive.
+\begin{comment}
+If we have a reachable summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$
+$$ 
+\begin{array}{l}
+\forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_s(\cfgnt{r})\ (\forall (\phi_\beta\ \cfgnt{l}_\beta) \in \cfgnt{L}_s(\cfgnt{r})\ ( \\
+\ \ \ \ (\cfgnt{l}_\alpha \neq \cfgnt{l}_\beta) \Rightarrow ((\phi_\alpha \wedge \phi_\beta) = \cfgt{false})))
+\end{array}
+$$
+\end{comment}
+\end{theorem}
+\begin{proof}
+The proof will proceed inductively. 
+
+Base Case: Let $s_s$ be an initial state. By Definition~\ref{def:initstate}, for every reference $r_i \in \cfgnt{L}_s^\leftarrow$, the set $\cfgnt{L}_s(r_i)$ contains at most one element. Thus, the requirement that $l_\alpha \ne l_\beta$ is never met, and the Theorem is vacuously true.
+
+Inductive Step: Now we will show that if the exclusivity property holds for some state $s_s$, then it holds for any state $s_s^\prime$ where $s_s \rightarrow_s s_s^\prime$. In order to evaluate whether Theorem~\ref{thm:mutex} holds for state any $s_s\prime$, we must consider the rule that applied during the transition from $s_s$ to $s_s\prime$. There are two broad classes of rules: rules where $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$, and rules where $ \cfgnt{L}_s =  \cfgnt{L}_{s^\prime}$. Rules in the $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$ class modify the structure of the heap, and must be considered carefully to to consider the impact of those modifications. Only three rules belong to the class $ \cfgnt{L}_s \neq  \cfgnt{L}_{s^\prime}$: Field Access, Field Read, and New. 
+
+We begin by considering the Field Access rule. Suppose $s_s$ has the form $\lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. In this case, the relationship between $s_s$ and $s_s^\prime$ is described by the Field Access rule. intermediate state.
+
+We now use this result to show that the mutual exclusion property holds for state $s_s^\prime$. The relation between the L-function from the final intermediate state $\cfgnt{L}^\prime$ and the L-function in $s_s^\prime$ is $ \cfgnt{L}_{s^\prime} = \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}^\prime,\cfgnt{R}^\prime,\cfgnt{r},\cfgnt{f},\phi_g\rp ]$, where a new value set is created based on the $\mathbb{VS}$ function. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha$ and $\phi_\beta$ came from the same value set in $s_s$, and are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since the only new value set in $L_{s^\prime}^\rightarrow$ is generated by the $\mathbb{VS}$ function, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
+
+Suppose we have a field write instruction. This case is nearly identical as the field read. In this instruction, a new value set is created. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha = \neg \phi_\beta$, so $\phi_\alpha$ and $\phi_\beta$ are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since exclusivity holds for the only new value set in $L_{s^\prime}^\rightarrow$, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
+
+Suppose we have a "new" instruction. In this case, only one value set is added to $L_{s^\prime}^\rightarrow$, and that value set contains only one member, so exclusivity holds by default.
+
+Suppose we have any instruction other that a read, write, or new. No machine rule other than those three listed instructions modifies the $L$ function. Therefore, the exclusivity property must hold for $s_s^\prime$ in these cases.
+
+Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
+\end{proof}
+
+\begin{corollary}
+Any state represented by any reachable summary state is a lazy state.
+\end{corollary}
+
+\begin{proof}
+By Theorem \ref{thm:mutex} since the constraints on every reference are mutually exclusive, the heap constraint for any heap with a reference pointing to more than one location will be unsatisfiable, and by Definition \ref{representation} will not be represented by the summary state.
+\end{proof}
+
 %proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function
 \begin{lemma}[Exactness of Reference Compare Rule]
 \label{lem:compare}
@@ -493,6 +525,7 @@ The proof is left as an exercise to the reader.
 %\end{proof}
 
 \begin{theorem}
+\label{th:bisim}
 The representation relation $\sqsubset$ is a bisimulation.
 \end{theorem}
 

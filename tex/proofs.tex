@@ -8,10 +8,7 @@
 The goal of this section is to prove that the representation relation,
 $\sqsubset$, is a bisimulation as defined in
 \eqref{eqn:BisimulationForwards} and
-\eqref{eqn:BisimulationBackwards}. This proof is accomplished by
-showing that the requisite homomorphism, $\rightharpoonup_h$, used in
-the representation relation exists. A bisimulation is a relation over
-pairs of states such that whenever two states, $s_\ell$ and
+\eqref{eqn:BisimulationBackwards}.  A bisimulation is a relation over pairs of states such that whenever two states, $s_\ell$ and
 $s_\varsigma$, are related in the bisimulation, $s_\ell \sqsubset
 s_\varsigma$, every successor, from either state, $s_\ell
 \rightarrow_\ell s_\ell^\prime$ or $s_\varsigma \rightarrow_\varsigma
@@ -30,28 +27,33 @@ that any property that can be shown to hold in the $\varsigma$-relation
 can also be shown to hold in the $\ell$-relation.
 
 The proof of the representation relation as a bisimulation reasons
-over individual rules in the $\varsigma$-relation to show that each
-rule preserves exactness. That is to say that whenever the state on
-the left of the $\varsigma$-relation has a corresponding state that it
+over individual rules in the $\varsigma$-relation to show that for
+each rule, the representation relation, $\sqsubset$, exists; thus, the
+representation relation is a bisimulation for the system consisting
+only of the rule in consideration. Whenever the state on the
+left of the $\varsigma$-relation has a corresponding state that it
 represents in the $\ell$-relation, its successor set is both sound and
-complete relative the $\ell$-relation and subject to the
-representation relation. Intuitively, the $\varsigma$-relation, at a
-given state, has a successor to account for every successor from the
-$\ell$-relation at the corresponding state, and the $\ell$-machine has
-a successor to account for every successor in the
-$\varsigma$-relation. 
+complete relative the $\ell$-relation under the new
+representation relation that now includes the successors. 
 
-The proof of exactness of each rule relies on the ability to derive
-from the homomorphism in the representation relation in the current
-state, a new homomorphism that is sufficient to use in the
-representation relation that includes the successor states. The proof
-is constructive in that it shows how given a valid homomorphism for
-the current state, it is possible to derive a new homomorphism that
-includes successor states.
+The heart of the representation relation is the homomorphism that maps
+locations in one heap to locations in the other heap. The proof
+reasons over of each rule and as mentioned previously, and derives
+from the current homomorphism in the representation relation for the
+current states, a new homomorphism that is sufficient to use in the a
+new representation relation that includes the successor states. The
+proof is constructive in that it shows how given a valid homomorphism
+for the current states, it is possible to derive a new homomorphism
+that includes successor states. With such a new homomorphism, it is
+possible to state that for the $\varsigma$-relation, when restricted
+to a specific rule (i.e., that is the only rule available in the
+relation), the representation relation is a bisimulation for that
+restricted $\varsigma$-relation. If such a bisimulation exists for all
+the individual rules, then it exists for the rules collectively.
 
-There are two slight complications in the proof: the field access rule
-relies on the $S$-relation that operates on a different state that
-then $\varsigma$-relation and constructing the new homomorphism in the
+There are two slight complications in the proof: first, the field access rule
+relies on the $S$-relation that operates on a different state 
+than then $\varsigma$-relation; and second, constructing the new homomorphism in the
 equals-reference rule relies on the incoming heap being location
 mutual exclusive. The $S$-relation effectively produces an
 intermediary state that is the state where uninitialized references

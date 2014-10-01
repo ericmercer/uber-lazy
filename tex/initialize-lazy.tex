@@ -8,10 +8,10 @@
       (\phi_x\ \cfgnt{l}_x) = \mathrm{min}_l\lp \Lambda\rp \\\\
       \cfgnt{r}^\prime = \mathrm{fresh}_r\lp \rp\\ 
       \theta_\mathit{null} = \{ \lp \cfgt{true}\ \cfgnt{l}_\mathit{null}\rp \} \\\\
-      \phi_g^\prime = \lp\phi_g \wedge \cfgnt{r}^\prime = \cfgnt{r}_\mathit{null}\rp
+      \phi^\prime = \lp\phi \wedge \cfgnt{r}^\prime = \cfgnt{r}_\mathit{null}\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{null}]\ \cfgnt{R}[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{null}]\ \cfgnt{R}[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
 	\inferrule[Initialize (new)]{
@@ -23,10 +23,10 @@
       \rho = \{ \lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{\leftarrow}[\cfgnt{l}_a]\rp \wedge \mathrm{type}\lp \cfgnt{l}_a\rp  = \cfgnt{C} \}\\\\
       \theta_\mathit{new} = \{\lp \cfgt{true}\ \cfgnt{l}_f\rp \} \\\\
       \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp \cfgnt{l}_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ] \\\\
-      \phi_g^\prime = \lp\phi_g \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho} \cfgnt{r}_f \ne \cfgnt{r}_a\rp\rp
+      \phi^\prime = \lp\phi \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho} \cfgnt{r}_f \ne \cfgnt{r}_a\rp\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
-      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}^\prime[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}^\prime[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
 	\inferrule[Initialize (alias)]{
@@ -37,18 +37,18 @@
       \rho = \{ \lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{\leftarrow}[\cfgnt{l}_a]\rp \wedge \mathrm{type}\lp \cfgnt{l}_a\rp  = \cfgnt{C} \}\\\\
       \lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho \\
       \theta_\mathit{alias} = \{ \lp \cfgt{true}\ \cfgnt{l}_a\rp\}\\\\
-      \phi^\prime_g = \lp\phi_g \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}^\prime = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \cfgnt{l}_a\rp  \in \rho\ \lp \cfgnt{r}^{\prime}_a \neq \cfgnt{r}_a\rp } \cfgnt{r}^\prime \neq \cfgnt{r}^{\prime}_a \rp\rp
+      \phi^\prime = \lp\phi \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}^\prime = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \cfgnt{l}_a\rp  \in \rho\ \lp \cfgnt{r}^{\prime}_a \neq \cfgnt{r}_a\rp } \cfgnt{r}^\prime \neq \cfgnt{r}^{\prime}_a \rp\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{alias}]\ \cfgnt{R}[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi_g^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{alias}]\ \cfgnt{R}[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
 	\inferrule[Initialize (end)]{
 	  \Lambda = \mathbb{UN}\lp \cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}\rp \\
       \Lambda = \emptyset
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \end{mathpar}
 \end{center}

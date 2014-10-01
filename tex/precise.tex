@@ -1,5 +1,7 @@
 \section{GSE with Heap Summaries}
 
+\begin{definition}
+\label{def:VS}
 The function $\mathbb{VS}(L,R,\phi_g,r,f)$ constructs the value-set given a
 heap, reference, and desired field:
 \[
@@ -12,7 +14,10 @@ heap, reference, and desired field:
 \end{array}
 \]
 where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
+\end{definition}
 
+\begin{definition}
+\label{def:ST}
 The strengthen function $\mathbb{ST}(L,r,\phi^\prime)$ strengthens every
 constraint from the reference $r$ with $\phi^\prime$ and keeps only location-constraint
 pairs that are satisfiable after this strengthening:
@@ -22,6 +27,7 @@ pairs that are satisfiable after this strengthening:
 & & \ \ \ \ (\phi^\prime\ l)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime\wedge\phi_g) \}
 \end{array}
 \]
+\end{definition}
 
 \input{summarize-precise}
 \input{precise-fig}

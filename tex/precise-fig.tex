@@ -8,7 +8,7 @@
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rightarrow^*_S \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \\
       \cfgnt{r}^\prime = \mathrm{stack}_r\lp \rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\varsigma
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{FA}
       \lp \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}^\prime,\cfgnt{R}^\prime,\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
 	}
 \and
@@ -20,7 +20,7 @@
       \cfgnt{R}^{\prime} = \cfgnt{R}[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
       \cfgnt{L}^{\prime} = \cfgnt{L}[\forall \lp \cfgnt{r}_\mathit{cur}\ \theta\ l\rp  \in X\ \lp \exists \cfgnt{r}_\mathit{targ}\ \lp \cfgnt{r}_\mathit{targ} = \cfgnt{R}^\prime\lp l,\cfgnt{f}\rp \wedge \lp\cfgnt{r}_\mathit{targ} \mapsto \theta\rp  \rp \rp ]
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow_\varsigma 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow_\mathit{FW}
       \lp \cfgnt{L}^{\prime}\ \cfgnt{R}^{\prime}\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
 	}	
 \and
@@ -28,23 +28,25 @@
     \theta_\alpha = \{\lp\phi_0 \wedge \phi_1\rp \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
     \theta_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
     \theta_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
-    \phi_g^\prime =  \phi_g \wedge \lp \vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \wedge\lp \wedge_{\phi_0 \in \theta_0} \neg \phi_0\rp \wedge\lp \wedge_{\phi_1
-    \in \theta_1} \neg \phi_1\rp \\\\ \mathbb{S}(\phi_g^\prime)}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\varsigma
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
+    \phi^\prime =  \phi \wedge \lp \vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \wedge\lp \wedge_{\phi_0 \in \theta_0} \neg \phi_0\rp \wedge\lp \wedge_{\phi_1
+    \in \theta_1} \neg \phi_1\rp \\\\ 
+    \mathbb{S}(\phi^\prime)}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
     }
 \and
     \inferrule[Equals (references-false)]{
     \theta_\alpha = \{\lp\phi_0 \Rightarrow \neg \phi_1\rp \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
     \theta_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
     \theta_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
-    \phi_g^\prime = \phi_g \wedge \lp \wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \vee\lp \lp \vee_{\phi_0 \in \theta_0} \phi_0\rp   \vee\lp \vee_{\phi_1
-    \in \theta_1} \phi_1\rp \rp  \\\\ \mathbb{S}(\phi_g^\prime)}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\varsigma
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
+    \phi^\prime = \phi \wedge \lp \wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \vee\lp \lp \vee_{\phi_0 \in \theta_0} \phi_0\rp   \vee\lp \vee_{\phi_1
+    \in \theta_1} \phi_1\rp \rp  \\\\ 
+    \mathbb{S}(\phi^\prime)}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
     }
 \end{mathpar}
 \end{center}
-\caption{Precise symbolic heap summaries from symbolic execution indicated by $\rightarrow_\varsigma$.}
+\caption{Precise symbolic heap summaries from symbolic execution indicated by $\rightarrow_\varsigma = \rightarrow_\mathit{FA} \cup \rightarrow_\mathit{FW} \cup \rightarrow_\mathit{EQ}$.}
 \label{fig:sym}
 \end{figure*}

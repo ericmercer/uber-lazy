@@ -108,31 +108,31 @@
    }
 \and
    \inferrule[Begin (argi eval)]{}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_i\ \cfgnt{e}_{i+1}\ ...\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow_J \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}_i\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{i+1}\ ...\rp \rightarrow \cfgnt{k}\rp \rp 
    }
 \and
    \inferrule[Begin (argN eval)]{}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{n}\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{n}\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow_J \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}_n\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp 
    }
 \and
    \inferrule[Begin]{}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp  \rightarrow_J \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \cfgnt{k}\rp 
    }	
 \and
 	\inferrule[NULL]{}{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgt{null}\ \cfgnt{k}\rp \rightarrow \\\\ 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgt{null}\ \cfgnt{k}\rp \rightarrow_J \\\\ 
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_\mathit{null}\ \cfgnt{k}\rp 
 	}
 \and
    \inferrule[Pop]{}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{pop}\ \eta_0\ \cfgnt{k}\rp \rp  \rightarrow \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{pop}\ \eta_0\ \cfgnt{k}\rp \rp  \rightarrow_J \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta_0\  \cfgnt{v}\ \cfgnt{k}\rp 
    }
 \end{mathpar}
 \end{center}
-\caption{Javalite rewrite rules that are common to generalized symbolic execution and precise heap summaries.}
+\caption{Javalite rewrite rules, indicated by $\rightarrow_J$, that are common to generalized symbolic execution and precise heap summaries.}
 \label{fig:javalite-common}
 \end{figure*}

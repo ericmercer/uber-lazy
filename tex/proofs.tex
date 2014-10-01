@@ -3,7 +3,7 @@
 \input{definitions}
 
 \subsection{Theorems}
-\begin{lemma}[Location Mutual Exclusion in $\rightarrow^*_S$]
+\begin{lemma}[$\rightarrow^*_S$ preserves location mutual exclusion]
 Given a location mutual exclusive heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
 summary state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
 new heap, $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime)$, from the summary
@@ -17,9 +17,9 @@ Induction over the number of machine steps on the summary initialization machine
 
 \noindent\textbf{Base Case}. The machine takes one step: $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
 \rightarrow_S
-(\cfgnt{L}_1 \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$. Let $\Lambda = \mathbb{UN}(\cfgnt{L}_0, \cfgnt{R}_0, \cfgnt{r},
+(\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$. Let $\Lambda = \mathbb{UN}(\cfgnt{L}_0, \cfgnt{R}_0, \cfgnt{r},
 \cfgnt{f})$ be the set of uninitialized locations. If $\Lambda = \emptyset$, then the \texttt{Summarize (end)}
-rule is active and $(\cfgnt{L}_1\ \cfgnt{R}_1) = (\cfgnt{L}_0\ \cfgnt{R}_0)$, which is location mutual exclusive by definition.
+rule is active and $(\cfgnt{L}_1\ \cfgnt{R}_1) = (\cfgnt{L}_0\ \cfgnt{R}_0)$, which is location mutual exclusive by the initial conditions in the lemma.
 
 If $\Lambda \neq \emptyset$, then the \texttt{Summarize} rule is
 active, and each new constraint location pair must be considered
@@ -33,7 +33,7 @@ $\theta_\mathit{alias}$, and $\theta_\mathit{orig}$ by the rule.
   of the form $\neg \phi_x \wedge \ldots$. As every
   $(\phi_\mathit{orig}\ \cfgnt{l}_\mathit{orig}) \in
   \cfgnt{L}_n(\cfgnt{R}_n(\cfgnt{l}_x,\cfgnt{f}))$ is location mutual exclusive
-  by definition, members of $\theta_\mathit{orig}$ are location
+  by the initial conditions on $(\cfgnt{L}_0\ \cfgnt{R}_0)$ in the lemma statement, members of $\theta_\mathit{orig}$ are location
   mutual exclusive with each other and with members in $\theta_\mathit{null}$,
   $\theta_\mathit{new}$, and $\theta_\mathit{alias}$.
 \item Any member of $\theta_\mathit{null}$ has the form $\ldots \wedge
@@ -58,7 +58,7 @@ Each is mutually exclusive over the particular alias it asserts.
 \end{itemize}
 Every member in $\theta = \theta_\mathit{null} \cup
 \theta_\mathit{new} \cup \theta_\mathit{alias} \cup
-\theta_\mathit{orig}$ is thus location mutual exclusive making $(\cfgnt{L}_1 \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$ location mutual exclusive as well.
+\theta_\mathit{orig}$ is thus location mutual exclusive making $(\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$ location mutual exclusive as well.
 
 \noindent\textbf{Inductive Step}. The machine takes $n$-steps:
 \[
@@ -67,10 +67,12 @@ Every member in $\theta = \theta_\mathit{null} \cup
 \]
 By the induction hypothesis, $(\cfgnt{L}_n\ \cfgnt{R}_n)$ is location
 mutual exclusive. This matches the base case, in that the heap on the
-left side of the transition is location mutual exclusive, and by the
+left side of $\rightarrow_S$ is location mutual exclusive, and by the
 same argument as in the base case,
 $(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus location mutual exclusive.
+
 \begin{comment}
+% Initial proof text taken from the theorem
 The Field Access rule uses the Summarize rule to describe the relation between $\cfgnt{L}_{s}$ and $\cfgnt{L}_{s^\prime}$. Because the summarize rule is essentially a fixed-point computation, we can reason about it as a machine that produces a sequence of intermediate states $s_1, s_2, ... , s_n$. We will use an inductive argument to show that the mutual exclusion property holds for any of those intermediate states. First, let state $s_\alpha$ be any state for which the property in Theorem~\ref{thm:mutex} holds, and let $s_\beta$ be the intermediate state where $s_\alpha \rightarrow_S s_\beta$. If all fields are initialized, then $s_\alpha$ and $s_\beta$ are identical, so the mutually exclusive property holds for $s_\beta$. 
 Otherwise, there must be some location $\cfgnt{l}_{un} \in \cfgnt{L}_\alpha(r)$ for which field f contains a reference $r_a$ that could feasibly point to the uninitialized location. In this case, a new reference is created and a single entry is added to $\cfgnt{L}_\beta$. The elements of the set $\theta_{all} = \cfgnt{L}_\beta(\cfgnt{R}_\beta(\cfgnt{l}_{un},\cfgnt{f}))$ can be divided into four distinct subsets, $\theta_{cur}$, $\theta_{null}$, $\theta_{new}$, and $\theta_{alias}$. The set $\theta_{cur}$ contains the pairs containing locations from the reference $r_a$, $\theta_{null}$ contains the pair with the null location, $\theta_{new}$ contains a pair with a new location, and $\theta_{alias}$ contains pairs representing alias locations. Any two constraints in $\theta_{cur}$ are guaranteed to be pairwise mutually exclusive because of the inductive hypothesis, and any single constraint is guaranteed to be pairwise mutually exclusive with any constraint in $\theta_{null}$, $\theta_{new}$, or $\theta_{alias}$ because constraints in $\theta_{cur}$ contain the conjunct $\neg \phi$, while constraints in the other three sets are conjoined with $\phi$. The set $\theta_{null}$ contains only one element, which in turn contains the constraint $r_f = r_{null}$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{new}$, or $\theta_{alias}$ because constraints in those sets contain the conjunct $r_f \neq r_{null}$. The set $\theta_{new}$ contains one element, which in turn contains the constraint containing the conjunct $ \wedge_{\lp \cfgnt{r}^\prime_a,\ \phi^\prime_a,\ l^\prime_a\rp  \in \rho} \cfgnt{r}_f \ne \cfgnt{r}^\prime_a$, which is guaranteed to be mutually exclusive with any constraint in $\theta_{alias}$, because each constraint in that set contains the conjunct $r_f = r_a$ for some $(r_a\ \phi_a\ l_a)\in \rho$. Any two elements of the set $\theta_{alias}$ are guaranteed to pairwise mutually exclusive because for each constraint that contains the conjunct $r_f = r_a$, every other constraint contains the conjunct $r_f \ne r_a$. Thus, all constraints from all pairs in $\theta{all}$ are guaranteed to be mutually exclusive, and the property from Theorem~\ref{thm:mutex} holds for intermediate state $s_\beta$. 
 
@@ -89,8 +91,10 @@ So, since the mutual exclusivity property holds for $s_s$, $s_s \rightarrow_S s_
 %In every rule in the Lazy machine that establishes a reference mapping, the value set contains exactly one location, constraint pair. 
 %\end{proof}
 
-\begin{theorem}[Mutual Exclusion]
+\begin{theorem}[$\rightarrow_\varsigma$ preserves location mutual exclusion]
 \label{thm:mutex}
+Given a summary state, $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, such that $s_s \rightarrow_\varsigma s_s^\prime$, where $s_s^\prime = ( \cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime\ \phi_s^\prime\ \eta_s^\prime\ \cfgnt{e}_s^\prime\ \cfgnt{k}_s^\prime )$, if the heap $(\cfgnt{L}_s\ \cfgnt{R}_s)$ is location mutual exclusive then the heap after the transition, $(\cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime)$ is also location mutual exclusive.
+\begin{comment}
 If we have a reachable summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$
 $$ 
 \begin{array}{l}
@@ -98,6 +102,7 @@ $$
 \ \ \ \ (\cfgnt{l}_\alpha \neq \cfgnt{l}_\beta) \Rightarrow ((\phi_\alpha \wedge \phi_\beta) = \cfgt{false})))
 \end{array}
 $$
+\end{comment}
 \end{theorem}
 \begin{proof}
 The proof will proceed inductively. 

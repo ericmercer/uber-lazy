@@ -372,21 +372,22 @@ Proof by definition of $\rightarrow_\mathit{FA}$ in \figref{fig:sym}.
 \lemref{lem:S-mutex} establishes that the heap coming out of the
 $S$-relation is deterministic, so it is only needed to show that
 determinism is preserved by the call to the value function,
-$\mathbb{VS}$, in the rule.
+$\mathbb{VS}$, in the rule. Let $(\cfgnt{L}\ \cfgnt{R})$ be that new
+deterministic heap.
 
 Recall from \defref{def:VS} that each constraint in each member of the value set has the form
-$(\phi\wedge \phi^\prime\ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge
-\phi_\alpha^\prime\ l_\alpha^\prime)$ and $(\phi_\beta \wedge
-\phi_\beta^\prime\ l_\beta^\prime)$.
+$(\phi\wedge \phi^\prime\ \cfgnt{l})$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge
+\phi_\alpha^\prime\ \cfgnt{l}_\alpha^\prime)$ and $(\phi_\beta \wedge
+\phi_\beta^\prime\ \cfgnt{l}_\beta^\prime)$.
 \begin{itemize}
-\item If $\phi_\alpha = \phi_\beta$, then by \defref{lem:S-mutex} 
+\item If $\phi_\alpha = \phi_\beta$, then by \defref{def:VS} 
 \[\begin{array}{l}
 \exists (\phi_\alpha\ \cfgnt{l}) \in \cfgnt{L}(\cfgnt{r})\ (\exists \cfgnt{r}^\prime \in \cfgnt{R}(\cfgnt{l},\cfgnt{f})\ (\\
 \ \ \ \ (\phi_\alpha^\prime\ l_\alpha^\prime) \in \cfgnt{L}(\cfgnt{r}^\prime) \wedge (\phi_\beta^\prime\ l_\beta^\prime) \in \cfgnt{L}(\cfgnt{r}^\prime)))
 \end{array}
 \]
 As $(\phi_\alpha^\prime\ \cfgnt{l}_\alpha^\prime)$ and $(\phi_\beta^\prime\ \cfgnt{l}_\beta^\prime)$ are distinct and connected to the same reference $\cfgnt{r}^\prime$ in a deterministic heap, $\phi_\alpha^\prime \wedge  \phi_\beta^\prime = \cfgt{false}$ by definition.
-\item If $\phi_\alpha \ne \phi_\beta$, then by \defref{lem:S-mutex} 
+\item If $\phi_\alpha \ne \phi_\beta$, then by \defref{def:VS} 
 \[\begin{array}{l}
 \exists \cfgnt{l}\ ((\phi_\alpha\ \cfgnt{l}) \in \cfgnt{L}(\cfgnt{r}) \wedge \exists \cfgnt{l}^\prime \neq \cfgnt{l} \ ((\phi_\beta\ \cfgnt{l}^\prime) \in \cfgnt{L}(\cfgnt{r})))
 \end{array}
@@ -395,10 +396,53 @@ As $(\phi_\alpha\ \cfgnt{l})$ and $(\phi_\beta\ \cfgnt{l}^\prime)$ are distinct 
 \end{itemize}
 The only change to the heap after the $S$-relation is the
 addition of the new reference $\cfgnt{r}^\prime$ to point to the value
-set. As the value set meets the conditions for determinism, the new heap $(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
-\mathrm{heap}(s_\varsigma^\prime)$ is also deterministic.
+set. As the value set meets the conditions for determinism, the new heap, $(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
+\mathrm{heap}(s_\varsigma^\prime)$, is also deterministic.
 \end{proof}
 
+\begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]
+\label{lem:FW-mutex}
+Given a state, $s_\varsigma$, with a deterministic heap,
+$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
+\mathrm{heap}(s_\varsigma)$, the new heap,
+$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
+\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the field
+write rule, $s_\varsigma \rightarrow_\mathit{FW} s_\varsigma^\prime$,
+is also deterministic.
+\end{lemma}
+\begin{proof}
+Proof by definition of $\rightarrow_\mathit{FW}$ in \figref{fig:sym}.
+
+The $\rightarrow_\mathit{FW}$ rule relies on the $\mathbb{ST}$
+function. Recall from \defref{def:ST} that each constraint in each
+member of the strengthened set has the form $(\phi\wedge
+\phi^\prime\ \cfgnt{l}^\prime)$ where every member,
+$(\phi^\prime\ \cfgnt{l}^\prime)$, comes from
+$\cfgnt{L}_\varsigma(\cfgnt{r})$ on the same reference in a
+deterministic heap $(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma)$; thus,
+that set of meets the criteria for determinism by definition. So any
+application of $\mathbb{ST}$ preserves that criteria for determinism.
+
+The $\rightarrow_\mathit{FW}$ makes two uses of the $\mathbb{ST}$
+function, $\theta = \mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g) \cup
+\mathbb{ST}(\cfgnt{L},\cfgnt{r}_\mathit{cur},\neg\phi,\phi_g)$, to
+build individual $\theta$ sets. Choose any two distinct members of $\theta$,
+$(\phi_\alpha \wedge \phi_\alpha^\prime\ \cfgnt{l}_\alpha^\prime)$ and
+$(\phi_\beta \wedge \phi_\beta^\prime\ \cfgnt{l}_\beta^\prime)$.
+\begin{itemize}
+\item If $\phi_\alpha = \phi_\beta$, then the constraints came from the
+  same call to $\mathbb{ST}$ so $\phi_\alpha^\prime \wedge
+  \phi_\beta^\prime = \cfgt{false}$ by definition.
+\item If $\phi_\alpha \ne \phi_\beta$, then the constraints came from
+  the different calls and are distinguished by the phase of $\phi$ in
+  the call so $\phi_\alpha \wedge \phi_\beta = \cfgt{false}$.
+\end{itemize}
+Each $\theta$ is mapped to a new reference from
+$\mathrm{fresh}_r()$. These are added to an already deterministic heap
+$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma)$ and meet the criteria so
+that $(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime)$ is also
+deterministic.
+\end{proof}
 
 \begin{theorem}[$\rightarrow_\varsigma$ preserves location mutual exclusion]
 \label{thm:mutex}

@@ -18,13 +18,13 @@ where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
 
 \begin{definition}
 \label{def:ST}
-The strengthen function $\mathbb{ST}(L,r,\phi^\prime)$ strengthens every
-constraint from the reference $r$ with $\phi^\prime$ and keeps only location-constraint
-pairs that are satisfiable after this strengthening:
+The strengthen function $\mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g)$ strengthens every
+constraint from the reference $\cfgnt{r}$ with $\phi$ and keeps only location-constraint
+pairs that are satisfiable after this strengthening with the inclusion of the global heap constraint $\phi_g$:
 \[
 \begin{array}{rcl} 
-\mathbb{ST}(L,r,\phi,\phi_g) & = & \{ (\phi\wedge\phi^\prime\ l) \mid  \\
-& & \ \ \ \ (\phi^\prime\ l)\in L(r)\wedge\mathbb{S}(\phi\wedge\phi^\prime\wedge\phi_g) \}
+\mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g) & = & \{ (\phi\wedge\phi^\prime\ \cfgnt{l}^\prime) \mid  \\
+& & \ \ \ \ (\phi^\prime\ \cfgnt{l}^\prime)\in \cfgnt{L}(\cfgnt{r})\wedge\mathbb{S}(\phi\wedge\phi^\prime\wedge\phi_g) \}
 \end{array}
 \]
 \end{definition}

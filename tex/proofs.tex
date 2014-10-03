@@ -278,15 +278,15 @@ summary machine, $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
 (\cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f})$, is also deterministic.
 \end{lemma}
 \begin{proof}
-Induction over the number of machine steps on the symbolic initialization machine in \figref{fig:symInit}.
+Induction over the number of steps in $\rsum^*$ in \figref{fig:symInit}.
 
-\noindent\textbf{Base Case}. The machine takes one step: $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
+\noindent\textbf{Base Case}. The relation makes one step: $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
 \rsum
 (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$. Let $\Lambda = \mathbb{UN}(\cfgnt{L}_0, \cfgnt{R}_0, \cfgnt{r},
-\cfgnt{f})$ be the set of uninitialized locations. If $\Lambda = \emptyset$, then the \texttt{Summarize (end)}
+\cfgnt{f})$ be the set of uninitialized locations. If $\Lambda = \emptyset$, then the \textrm{S{\footnotesize UMMARIZE-END}}
 rule is active and $(\cfgnt{L}_1\ \cfgnt{R}_1) = (\cfgnt{L}_0\ \cfgnt{R}_0)$, which is deterministic by the initial conditions in the lemma.
 
-If $\Lambda \neq \emptyset$, then the \texttt{Summarize} rule is
+If $\Lambda \neq \emptyset$, then the \textrm{S{\footnotesize UMMARIZE}} rule is
 active, and each new constraint location pair must be considered
 individually. These pairs are partitioned into the sets
 $\theta_\mathit{null}$, $\theta_\mathit{new}$,
@@ -340,7 +340,7 @@ And thus,
      \end{array}
   \]
 \end{itemize}
-As $\theta$ is mapped to a single reference $r_f$ in an already deterministic heap, the
+As $\theta$ is mapped to a single reference $r_f = \mathit{init}_r()$ in an already deterministic heap, the
 resulting heap $(\cfgnt{L}_1\ \cfgnt{R}_1)$ is likewise deterministic.
 
 \noindent\textbf{Inductive Step}. The machine takes $n$-steps:
@@ -348,31 +348,30 @@ resulting heap $(\cfgnt{L}_1\ \cfgnt{R}_1)$ is likewise deterministic.
 (\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f}) \rsum (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f}) \rsum \ldots \rsum
 (\cfgnt{L}_n\ \cfgnt{R}_n\ \cfgnt{r}\ \cfgnt{f})
 \]
-By the induction hypothesis, $(\cfgnt{L}_n\ \cfgnt{R}_n)$ is location
-mutual exclusive. This matches the base case, in that the heap on the
-left side of $\rsum$ is location mutual exclusive, and by the
+By the induction hypothesis, $(\cfgnt{L}_n\ \cfgnt{R}_n)$ is deterministic. This matches the base case, in that the heap on the
+left side of $\rsum$ is deterministic, and by the
 same argument as in the base case,
-$(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus location mutual exclusive.
+$(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus deterministic.
 \end{proof}
 
 \begin{lemma}[$\rightarrow_\mathit{FA}$ preserves heap determinism]
 \label{lem:FA-determ}
-Given a state, $s_\sym$, with a deterministic heap,
-$(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
-\mathrm{heap}(s_\sym)$, the new heap,
-$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
-\mathrm{heap}(s_\sym^\prime)$, in any state related by the field
-access rule, $s_\sym \rightarrow_\mathit{FA} s_\sym^\prime$,
+Given a state, $s$, with a deterministic heap,
+$(\cfgnt{L}\ \cfgnt{R}) =
+\mathrm{heap}(s)$, the new heap,
+$(\cfgnt{L}^\prime\ \cfgnt{R}^\prime) =
+\mathrm{heap}(s^\prime)$, in any state related by the field
+access rule, $s \rightarrow_\mathit{FA} s^\prime$,
 is also deterministic.
 \end{lemma}
 \begin{proof}
 Proof by definition of $\rightarrow_\mathit{FA}$ in \figref{fig:sym}.
 
-\lemref{lem:S-determ} establishes that the heap coming out of the
-$S$-relation is deterministic, so it is only needed to show that
-determinism is preserved by the call to the value function,
-$\mathbb{VS}$, in the rule. Let $(\cfgnt{L}\ \cfgnt{R})$ be that new
-deterministic heap.
+\lemref{lem:S-determ} establishes that the heap in the state on the right side of
+$\rsum^*$ is deterministic if the heap in the state on the left side
+is deterministic, so it is only needed to show that determinism is
+preserved by the call to the value function, $\mathbb{VS}$, in the
+rule. Let $(\cfgnt{L}\ \cfgnt{R})$ be the new deterministic heap related by $\rsum^*$.
 
 Recall from \defref{def:VS} that each constraint in each member of the value set has the form
 $(\phi\wedge \phi^\prime\ \cfgnt{l})$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge
@@ -397,8 +396,8 @@ The only change to the heap after the $S$-relation is the addition of
 the new reference $\cfgnt{r}^\prime = \mathrm{stack}_\cfgnt{r}()$ to
 point to the value set. As the value set meets the conditions for
 determinism, the new heap with $r^\prime$ and the value set,
-$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
-\mathrm{heap}(s_\sym^\prime)$, is also deterministic.
+$(\cfgnt{L}^\prime\ \cfgnt{R}^\prime) =
+\mathrm{heap}(s^\prime)$, is also deterministic.
 \end{proof}
 
 \begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]

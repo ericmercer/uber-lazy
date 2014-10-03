@@ -10,7 +10,7 @@
       \theta_\mathit{null} = \{ \lp \cfgt{true}\ \cfgnt{l}_\mathit{null}\rp \} \\\\
       \phi^\prime = \lp\phi \wedge \cfgnt{r}^\prime = \cfgnt{r}_\mathit{null}\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rinit
       \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{null}]\ \cfgnt{R}[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
@@ -25,7 +25,7 @@
       \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp \cfgnt{l}_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ] \\\\
       \phi^\prime = \lp\phi \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho} \cfgnt{r}_f \ne \cfgnt{r}_a\rp\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rinit 
       \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}^\prime[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
@@ -39,7 +39,7 @@
       \theta_\mathit{alias} = \{ \lp \cfgt{true}\ \cfgnt{l}_a\rp\}\\\\
       \phi^\prime = \lp\phi \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}^\prime = \cfgnt{r}_a \wedge \lp \wedge_{\lp \cfgnt{r}^{\prime}_a\ \cfgnt{l}_a\rp  \in \rho\ \lp \cfgnt{r}^{\prime}_a \neq \cfgnt{r}_a\rp } \cfgnt{r}^\prime \neq \cfgnt{r}^{\prime}_a \rp\rp
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rinit 
       \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{alias}]\ \cfgnt{R}[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
@@ -47,11 +47,11 @@
 	  \Lambda = \mathbb{UN}\lp \cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}\rp \\
       \Lambda = \emptyset
     }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rightarrow_I 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rinit 
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \end{mathpar}
 \end{center}
-\caption{The initialization machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s \rightarrow_I^* s^\prime$ indicating stepping the machine until the state does not change.}
+\caption{The initialization machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s \rinit^* s^\prime = s \rinit \cdots \rinit s^\prime \rinit s^\prime$.}
 \label{fig:lazyInit}
 \end{figure*}

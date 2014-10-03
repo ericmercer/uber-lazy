@@ -8,26 +8,26 @@
 The goal of this section is to prove that the representation relation,
 $\sqsubset$, is a bisimulation as defined in
 \eqref{eqn:BisimulationForwards} and
-\eqref{eqn:BisimulationBackwards}.  A bisimulation is a relation over pairs of states such that whenever two states, $s_\ell$ and
-$s_\varsigma$, are related in the bisimulation, $s_\ell \sqsubset
-s_\varsigma$, every successor, from either state, $s_\ell
-\rightarrow_\ell s_\ell^\prime$ or $s_\varsigma \rightarrow_\varsigma
-s_\varsigma^\prime$, has a corresponding mutual successor in the other
+\eqref{eqn:BisimulationBackwards}.  A bisimulation is a relation over pairs of states such that whenever two states, $s_\gse$ and
+$s_\sym$, are related in the bisimulation, $s_\gse \sqsubset
+s_\sym$, every successor, from either state, $s_\gse
+\rgse s_\gse^\prime$ or $s_\sym \rsym
+s_\sym^\prime$, has a corresponding mutual successor in the other
 state such that both of those successors are also related in the
-bisimulation: $s_\ell^\prime \sqsubset s_\varsigma^\prime$.
+bisimulation: $s_\gse^\prime \sqsubset s_\sym^\prime$.
 
-If the $\varsigma$-relation is considered to be a model of the
-$\ell$-relation (i.e., a representation of that machine), then the
+If $\rsym$ is considered to be a model of the
+$\rgse$ (i.e., a representation of that machine), then the
 representation relation, as a bisimulation, ensures that the
-$\varsigma$-relation is complete in that any property that can be
-shown in the $\ell$-relation can also be shown in the
-$\varsigma$-relation; and further, the representation relation as a
-bisimulation ensures that the $\varsigma$-relation is also sound in
-that any property that can be shown to hold in the $\varsigma$-relation
-can also be shown to hold in the $\ell$-relation.
+$\rsym$ is complete in that any property that can be
+shown in states related on $\rgse$ can also be shown in the
+$\rsym$; and further, the representation relation as a
+bisimulation ensures that the $\rsym$ is also sound in
+that any property that can be shown to hold in states related by $\rsym$
+can also be shown to hold in the $\rgse$.
 
 The proof of the representation relation as a bisimulation reasons
-over individual rules in the $\varsigma$-relation to show that for
+over individual rules in $\rsym$ to show that for
 each rule, the representation relation, $\sqsubset$, exists. The heart
 of the representation relation is the homomorphism that maps locations
 in one heap to locations in the other heap. The proof reasons over of
@@ -38,26 +38,25 @@ relation that includes the successor states. The proof is constructive
 in that it shows how given a valid homomorphism for the current
 states, it is possible to derive a new homomorphism that includes
 successor states. With such a new homomorphism, it is possible to
-state that for the $\varsigma$-relation, when restricted to a specific
+state that for $\rsym$, when restricted to a specific
 rule (i.e., that is the only rule available in the relation), the
-representation relation is a bisimulation for that restricted
-$\varsigma$-relation. If such a bisimulation exists for all the
+representation relation is a bisimulation for the restricted
+$\rsym$. If such a bisimulation exists for all the
 individual rules, then it exists for the rules collectively.
 
 There are two slight complications in the proof: first, the field
-access rule relies on the $S$-relation that operates on a different
-state than then $\varsigma$-relation; and second, constructing the new
+access rule relies on $\rsum^*$ that operates on a different
+state than $\rsym$; and second, constructing the new
 homomorphism in the equals-reference rule relies on the incoming heap
-being deterministic. The $S$-relation effectively produces
+being deterministic. The relation $\rsum^*$ effectively produces
 an intermediary state that is the state where uninitialized references
 are initialized before the field access actually takes place. In
-essence, a state on the left of the $\varsigma$-relation that is a
+essence, a state on the left of $\rsym$ that is a
 field access, undergoes a transition in which its heap is changed to
 initialize fields. Once the fields are initialized, then the actual
 field access takes place. The state with the heap that has the
 initialized fields is the intermediary state between the state on the
-left of the $\varsigma$-relation and the state on the right of the
-$\varsigma$-relation. The proof reasons separately about this
+left of $\rsym$ and the state on the right of $\rsym$. The proof reasons separately about this
 intermediary state to prove that it too is exact.
 
 The equals-reference proof must show that any given reference in the
@@ -66,8 +65,8 @@ time. If the incoming heap is able to point to two valid locations at
 a given reference at the same time, then the help is
 non-deterministic, and it is not possible to construct a valid
 homomorphism from the existing homomorphism: which location should be
-used in the map? As such, the proof first establishes that the
-$\varsigma$-relation preserves determinism when the incoming heap is
+used in the map? As such, the proof first establishes that
+$\rsym$ preserves determinism when the incoming heap is
 deterministic. Once that is shown, the exactness of the equals
 reference rule is given.
 
@@ -75,44 +74,44 @@ The final statement that $\sqsubset$ is a bisimulation is in \thref{th:bisim}.
 
 \begin{lemma}[Bisimulation for $S$-relation]
 \label{lem:init}
-If $s_s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$ for symbolic state $s_s = \lp \cfgnt{L}_s\ \cfgnt{R}_{s}\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$, initial state $s_0$, and control flow path $\pi_n$, and if there exists some intermediate state state $s_s^\prime$ such that $(\cfgnt{L}_s\ \cfgnt{R}_{s}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C}) \rightarrow_S^* (\cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C})$, then:
- $$s_s^\prime \cong \{\forall s_\ell^\prime | \exists s_\ell (s_\ell \sqsubset s_s \wedge (s_\ell \rightarrow_I^* s_\ell^\prime) ) \}$$
+If $s_\sym \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$ for symbolic state $s_\sym = \lp \cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$, initial state $s_0$, and control flow path $\pi_n$, and if there exists some intermediate state state $s_\sym^\prime$ such that $(\cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C}) \rsum^* (\cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C})$, then:
+ $$s_\sym^\prime \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
 \end{lemma}
 
 \begin{proof}
-In order for a state to be equivalent to a set of lazy states, it must be both sound and complete with respect to the set. We will begin the proof by showing completeness, and then finish by demonstrating soundness.
+In order for a state to be equivalent to a set of GSE states, it must be both sound and complete with respect to the set. We will begin the proof by showing completeness, and then finish by demonstrating soundness.
 
-To show completeness, we must show that any state in the set is represented by $s_s$. The definition of representation requires the both the existence of a homomorphism, and proof that the homomorphism constraint is satisfiable. To show that a homomorphism exits, take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. By Definition~\ref{representation}, we know $s_\ell = \lp \cfgnt{L}_\ell\ \cfgnt{R}_\ell\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Take any state $s_\ell^\prime$ where $s_\ell \rightarrow_I^* s_\ell^\prime$, and state $s_s^\prime$ where $s_s \rightarrow_S^* s_s^\prime$. Note that  state $s_\ell^\prime$ has the form: $s_\ell^\prime = \lp \cfgnt{L}_{\ell^\prime}\ \cfgnt{R}_{\ell^\prime}\ \phi_{\ell^\prime}\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$.Take any location, field pair $\lp l_\ell\  \cfgnt{f}\rp$ such that $\lp l_\ell\  \cfgnt{f}\rp \in \cfgnt{R}_{\ell}^\leftarrow$, and let $l_s = h(l_\ell)$. We may classify $l_\ell$ into one of three ways, based on the values of the $\cfgnt{R}$ function in each of the states $s_\ell$, $s_\ell^\prime$, $s_s$, and $s_s^\prime$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
+To show completeness, we must show that any state in the set is represented by $s_\sym$. The definition of representation requires the both the existence of a homomorphism, and proof that the homomorphism constraint is satisfiable. To show that a homomorphism exits, take any GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$. By Definition~\ref{representation}, we know $s_\gse = \lp \cfgnt{L}_\gse\ \cfgnt{R}_\gse\ \phi_\gse\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Take any state $s_\gse^\prime$ where $s_\gse \rinit^* s_\gse^\prime$, and state $s_\sym^\prime$ where $s_\sym \rsum^* s_\sym^\prime$. Note that  state $s_\gse^\prime$ has the form: $s_\gse^\prime = \lp \cfgnt{L}_{\gse^\prime}\ \cfgnt{R}_{\gse^\prime}\ \phi_{\gse^\prime}\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$.Take any location, field pair $\lp l_\gse\  \cfgnt{f}\rp$ such that $\lp l_\gse\  \cfgnt{f}\rp \in \cfgnt{R}_{\gse}^\leftarrow$, and let $l_\sym = h(l_\gse)$. We may classify $l_\gse$ into one of three ways, based on the values of the $\cfgnt{R}$ function in each of the states $s_\gse$, $s_\gse^\prime$, $s_\sym$, and $s_\sym^\prime$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
 
-Class 1: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f} ) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f} )$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f} ) = \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$.  Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{\ell}(\cfgnt{R}_{\ell} (\cfgnt{l}_\ell,f )) $. In this case, let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $s_\ell \rightharpoonup_h s_s$, we may surmise that: 
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$$
+Class 1: $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f} ) = \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f} )$ and $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f} ) = \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$.  Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{\gse}(\cfgnt{R}_{\gse} (\cfgnt{l}_\gse,f )) $. In this case, let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $s_\gse \rightharpoonup_h s_\sym$, we may surmise that: 
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$$
 
-Class 2: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. Since $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$, the Summarize rule must have altered this reference. A reference created by the Summarize rule has a value set $\theta_{all}$ with four subsets: $\theta_{null}$, $\theta_{new}$, $\theta_{alias}$, and $\theta_{orig}$. Because $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) = \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$, we know that the location we want to map to lies in $\theta_{orig}$. Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{\ell}(\cfgnt{R}_{\ell} (\cfgnt{l}_\ell,f )) $, and let $l_{orig} = h(l_\alpha)$. In this case, we let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $(\phi_a\ l_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f ))$. Let $l_{orig} = h(l_\alpha)$. We can see that by the Summarize rule $ (\phi_b\ l_{orig})\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$, so therefore:
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$$
+Class 2: $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f}) = \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$. Since $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$, the Summarize rule must have altered this reference. A reference created by the Summarize rule has a value set $\theta_{all}$ with four subsets: $\theta_{null}$, $\theta_{new}$, $\theta_{alias}$, and $\theta_{orig}$. Because $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f}) = \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$, we know that the location we want to map to lies in $\theta_{orig}$. Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{\gse}(\cfgnt{R}_{\gse} (\cfgnt{l}_\gse,f )) $, and let $l_{orig} = h(l_\alpha)$. In this case, we let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $(\phi_a\ l_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f ))$. Let $l_{orig} = h(l_\alpha)$. We can see that by the Summarize rule $ (\phi_b\ l_{orig})\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$, so therefore:
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$$
 
-Class 3: $\cfgnt{R}_\ell ( l_\ell,  \cfgnt{f}) \neq \cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_s,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_s,  \cfgnt{f})$. In this case, there are two possibilities: either the new reference $\cfgnt{R}_{\ell^\prime} ( l_\ell,  \cfgnt{f})$ points to some location we've seen before $l_\alpha$, or it points to a previously unobserved location $l_\beta$. By establishing which of these possibilities has happened, we can build $h^\prime$. To construct $h^\prime$, let $l_\alpha$ be any location such that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) $. If there exists $\phi_\alpha$ such that $\lp \phi_\alpha\ l_\alpha \rp \in \cfgnt{L}_{\ell}^\rightarrow $, let $h^\prime(l_\alpha) = h(l_\alpha)$. Otherwise, let $l_\beta$ be the location such that $(\phi_b\ \cfgnt{l}_\beta) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f )) $ and $(\phi_b\ \cfgnt{l}_\beta) \notin \cfgnt{L}_{s}(\cfgnt{R}_{s} (\cfgnt{l}_s,f )) $. Now, let $h^\prime(l_\alpha) = l_\beta$. Observe that either way,
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\ell,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_s,f ))$$
+Class 3: $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f}) \neq \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$. In this case, there are two possibilities: either the new reference $\cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$ points to some location we've seen before $l_\alpha$, or it points to a previously unobserved location $l_\beta$. By establishing which of these possibilities has happened, we can build $h^\prime$. To construct $h^\prime$, let $l_\alpha$ be any location such that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) $. If there exists $\phi_\alpha$ such that $\lp \phi_\alpha\ l_\alpha \rp \in \cfgnt{L}_{\gse}^\rightarrow $, let $h^\prime(l_\alpha) = h(l_\alpha)$. Otherwise, let $l_\beta$ be the location such that $(\phi_b\ \cfgnt{l}_\beta) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f )) $ and $(\phi_b\ \cfgnt{l}_\beta) \notin \cfgnt{L}_{s}(\cfgnt{R}_{s} (\cfgnt{l}_\sym,f )) $. Now, let $h^\prime(l_\alpha) = l_\beta$. Observe that either way,
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$$
 
-Furthemore, since $l_\alpha$ and $l_\beta$ are new locations with uninitialized fields, we know that for any field $f^\prime$, $\{(\phi_p\ \bot)\} = \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\alpha,f^\prime ))$ and $ \{(\phi_p\ \bot)\} = \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\beta,f^\prime ))$ therefore, we know that:
-$$(\phi_p\ \cfgnt{l}_x) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_\alpha,f^\prime )) \Rightarrow (\phi_q\ h^\prime (\cfgnt{l}_x))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} ( h^\prime(\cfgnt{l}_\alpha),f ))$$
+Furthemore, since $l_\alpha$ and $l_\beta$ are new locations with uninitialized fields, we know that for any field $f^\prime$, $\{(\phi_p\ \bot)\} = \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\alpha,f^\prime ))$ and $ \{(\phi_p\ \bot)\} = \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\beta,f^\prime ))$ therefore, we know that:
+$$(\phi_p\ \cfgnt{l}_x) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\alpha,f^\prime )) \Rightarrow (\phi_q\ h^\prime (\cfgnt{l}_x))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} ( h^\prime(\cfgnt{l}_\alpha),f ))$$
 
-We have now shown that there exists a mapping $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ for all $\cfgnt{l}_{\ell^\prime} \in \cfgnt{L}_{\ell^\prime}^\rightarrow$ such that:
-$$ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime} (\cfgnt{l}_{\ell^\prime},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_{\ell^\prime},f )) $$
-By Definition~\ref{def:homomorphism} we know that $s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime$. 
+We have now shown that there exists a mapping $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ for all $\cfgnt{l}_{\gse^\prime} \in \cfgnt{L}_{\gse^\prime}^\rightarrow$ such that:
+$$ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_{\gse^\prime},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_{\gse^\prime},f )) $$
+By Definition~\ref{def:homomorphism} we know that $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$. 
 
-It remains to show that $\mathbb{S}( \phi_s^\prime \wedge \mathbb{HC}(s_\ell^\prime \rightharpoonup_{h} s_s^\prime) )$. For locations in Class 1, no new conjuncts are added to $\mathbb{HC}(s_\ell^\prime \rightharpoonup_{h} s_s^\prime)$, and therefore the satisfiability cannot be changed. For locations in Class 2 or Class 3, the new constraints take either the form $\phi_x \wedge \phi_{orig}$, or $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$. Constraints of the form  $\phi_x \wedge \phi_{orig}$ contain terms $\phi_x$ and $\phi_{orig}$ which were already conjoined to prior heap constraint, so satisfiability is not affected. In constraints of the form $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$, the term $\phi_x$ is conjoined to the prior heap constraint, and all the other terms involve the new variable $r_f$, so satisfiability is not affected. Since the previous heap constraint is satisfiable, and none of the new terms can impact the satisfiability, we know that the new heap constraint must also be satisfiable.
+It remains to show that $\mathbb{S}( \phi_\sym^\prime \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime) )$. For locations in Class 1, no new conjuncts are added to $\mathbb{HC}(s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime)$, and therefore the satisfiability cannot be changed. For locations in Class 2 or Class 3, the new constraints take either the form $\phi_x \wedge \phi_{orig}$, or $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$. Constraints of the form  $\phi_x \wedge \phi_{orig}$ contain terms $\phi_x$ and $\phi_{orig}$ which were already conjoined to prior heap constraint, so satisfiability is not affected. In constraints of the form $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$, the term $\phi_x$ is conjoined to the prior heap constraint, and all the other terms involve the new variable $r_f$, so satisfiability is not affected. Since the previous heap constraint is satisfiable, and none of the new terms can impact the satisfiability, we know that the new heap constraint must also be satisfiable.
 
-Since the heap constraint is satisfiable, we know that $s_\ell^\prime \sqsubset s_s^\prime $. We have therefore shown that for some summary state $s_s$ and an arbitrary lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$ :
+Since the heap constraint is satisfiable, we know that $s_\gse^\prime \sqsubset s_\sym^\prime $. We have therefore shown that for some symbolic state $s_\sym$ and an arbitrary GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$ :
 \begin{equation} 
-(s_\ell \rightarrow_I^* s_\ell^\prime \wedge s_s \rightarrow_S^* s_s^\prime) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime 
+(s_\gse \rinit^* s_\gse^\prime \wedge s_\sym \rsum^* s_\sym^\prime) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime 
 \end{equation}
 
 
 %may take one of four forms: either the field is already initialized, or the uninitialized field is initialized to a new reference, the null reference, or an alias.
 %
-%We now show that the following four cases for $s_\ell^*$ are represented in $s_s^*$. For the following cases, let $\rightharpoonup_{h}$ be the homomorphism such that $s_\ell \rightharpoonup_{h} s_s$, let $\cfgnt{l}_\ell = \cfgnt{L}_\ell(\cfgnt{r})$, and let $\cfgnt{l}_s = h(\cfgnt{l}_\ell) $
+%We now show that the following four cases for $s_\gse^*$ are represented in $s_\sym^*$. For the following cases, let $\rightharpoonup_{h}$ be the homomorphism such that $s_\gse \rightharpoonup_{h} s_\sym$, let $\cfgnt{l}_\gse = \cfgnt{L}_\gse(\cfgnt{r})$, and let $\cfgnt{l}_\sym = h(\cfgnt{l}_\gse) $
 %
-%Case 1: Suppose $\cfgnt{R}_\ell(\cfgnt{l}_\ell) \neq \bot$. In this case, because $s_\ell \rightharpoonup_{h} s_s$, we know that $\cfgnt{R}_s(\cfgnt{l}_s) \neq \bot$. This means that in the Summarize rule, $\cfgnt{l}_s \notin \Lambda$, and therefore, $\cfgnt{R}_s(\cfgnt{l}_s) = \cfgnt{R}_{s^*}(\cfgnt{l}_s) $. By extension, 
+%Case 1: Suppose $\cfgnt{R}_\gse(\cfgnt{l}_\gse) \neq \bot$. In this case, because $s_\gse \rightharpoonup_{h} s_\sym$, we know that $\cfgnt{R}_\sym(\cfgnt{l}_\sym) \neq \bot$. This means that in the Summarize rule, $\cfgnt{l}_\sym \notin \Lambda$, and therefore, $\cfgnt{R}_\sym(\cfgnt{l}_\sym) = \cfgnt{R}_{s^*}(\cfgnt{l}_\sym) $. By extension, 
 %
 %Case 2: Suppose the field is uninitialized, and the "new" rule gets executed. We add a new location, so this case is represented.
 %
@@ -120,169 +119,169 @@ Since the heap constraint is satisfiable, we know that $s_\ell^\prime \sqsubset 
 %
 %Case 4: Suppose the field is uninitialized, and the "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
 %
-%%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because lazy heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary lazy state, any of it's three possible target states is in the feasible set.
+%%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because GSE heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary GSE state, any of it's three possible target states is in the feasible set.
 %
 %Having demonstrated each of these four cases, we now know that 
-%$$s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell \sqsubset s_s (s_\ell \rightarrow_I^* s_\ell^\prime)  \} \Rightarrow  s_\ell^* \sqsubset s_s^*$$
+%$$s_\gse^* \in \{\forall s_\gse^\prime | \exists s_\gse \sqsubset s_\sym (s_\gse \rightarrow_I^* s_\gse^\prime)  \} \Rightarrow  s_\gse^* \sqsubset s_\sym^*$$
 
 %Comment:
 % there is a flaw in the following argument: we claim that "every reference points to the right place at the right time" However, this statement is misleading. The truth is that the way we've defined representation, we can only guarantee that every reference points to the right place at some right time, not every right time like we imply here. The rest of the argument falls apart unless we can first prove that every reference points to the right place at every right time. So, instead of saying A points to B some time when condition X is true, we need to say that A points to B every time condition X is true. In other words, that condition X implies A points to B. This is easy to prove if we don't introduce new variables into the Heap Condition. However, in this case we certainly do introduce a new variable: it's the new reference that we put into the empty field.
 %Flawed argument:
-%We now prove the reverse case, that $s_s^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time (WARNING: though the preceding statement may be true, we haven't actually proved it yet. See the above comment), there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem~\ref{thm:colex}, this implies that the wrong time is no time. 
+%We now prove the reverse case, that $s_\sym^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time (WARNING: though the preceding statement may be true, we haven't actually proved it yet. See the above comment), there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem~\ref{thm:colex}, this implies that the wrong time is no time. 
 
 %okay, here is another crack at proving soundness
-We now prove the reverse case, that $s_s^*$ represents no infeasible states. Suppose that $s_s^\prime$ represents some infeasible state. This means that we represent some lazy state that has some reference r which points somewhere that no place in the feasible set points to. Since we don't change the path condition, all the old references still point exactly to the same places they used to. 
+We now prove the reverse case, that $s_\sym^*$ represents no infeasible states. Suppose that $s_\sym^\prime$ represents some infeasible state. This means that we represent some GSE state that has some reference r which points somewhere that no place in the feasible set points to. Since we don't change the path condition, all the old references still point exactly to the same places they used to. 
 
-So, the problem must be with one of the new references. All of the new references point to either a new location, the null location, the uninitialized location, or some alias. In the Summarize rule, the values and constraints for the new, null, uninitialized, and alias locations are contained in the sets $\theta_{new}$, $\theta_{null}$, $\theta{orig}$, and $\theta_{alias}$. Since the null, and uninitialized locations are already accounted for by the homomorphism $s_\ell \rightharpoonup_h s_s$, and since a new location was created symmetrically for both $s_\ell^\prime$ and $s_s^\prime$, the problem must be with some alias location that is part of $s_s$ but not $s_\ell$. This means that there must be a feasible path to a target location that does not exist for any lazy heap. So, pick an arbitrary lazy heap containing the location and field in question. If said target location does not exist, then there is no reference in the lazy heap pointing to that location. In the summary heap, the path constraint on the path leading to the undesired target contains an aliasing condition that states that the source reference only points to this target location on condition that the parent reference points there. However, since we already know that no other reference in the lazy heap points there, this condition must be infeasible. Therefore, it is not part of the represented state. We have a contradiction. Therefore, there is no alias that points somewhere it's not supposed to.
+So, the problem must be with one of the new references. All of the new references point to either a new location, the null location, the uninitialized location, or some alias. In the Summarize rule, the values and constraints for the new, null, uninitialized, and alias locations are contained in the sets $\theta_{new}$, $\theta_{null}$, $\theta{orig}$, and $\theta_{alias}$. Since the null, and uninitialized locations are already accounted for by the homomorphism $s_\gse \rightharpoonup_h s_\sym$, and since a new location was created symmetrically for both $s_\gse^\prime$ and $s_\sym^\prime$, the problem must be with some alias location that is part of $s_\sym$ but not $s_\gse$. This means that there must be a feasible path to a target location that does not exist for any GSE heap. So, pick an arbitrary GSE heap containing the location and field in question. If said target location does not exist, then there is no reference in the GSE heap pointing to that location. In the symbolic heap, the path constraint on the path leading to the undesired target contains an aliasing condition that states that the source reference only points to this target location on condition that the parent reference points there. However, since we already know that no other reference in the GSE heap points there, this condition must be infeasible. Therefore, it is not part of the represented state. We have a contradiction. Therefore, there is no alias that points somewhere it's not supposed to.
 
 We have now proven that 
-$$ s_\ell^* \sqsubset s_s^*  \Rightarrow  s_\ell^* \in \{\forall s_\ell^\prime | \exists s_\ell (s_\ell \sqsubset s_s \wedge (s_\ell \rightarrow_I^* s_\ell^\prime) ) \}$$
+$$ s_\gse^* \sqsubset s_\sym^*  \Rightarrow  s_\gse^* \in \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
 This fact, combined with our previous result, proves that
-$$s_s^*  \cong \{\forall s_\ell^\prime | \exists s_\ell (s_\ell \sqsubset s_s \wedge (s_\ell \rightarrow_I^* s_\ell^\prime) ) \}$$
+$$s_\sym^*  \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
 
 \end{proof}
 
 %we need to define how r' is arrived at for this one to work...
-\begin{lemma}[Bisumlation for $\rightarrow_{\varsigma|\mathit{FA}}$]
+\begin{lemma}[Bisumlation for $\rightarrow_{\sym|\mathit{FA}}$]
 \label{lem:access}
-%If there are symbolic states $s_s$ and $s_s^\prime$, control sequences $\pi_n$ and $\pi_{n+1}$, initial state $s_0$, and reference $\cfgnt{r}^\prime$ such that the following conditions hold:
+%If there are symbolic states $s_\sym$ and $s_\sym^\prime$, control sequences $\pi_n$ and $\pi_{n+1}$, initial state $s_0$, and reference $\cfgnt{r}^\prime$ such that the following conditions hold:
 %\begin{align}
-%s_s &= \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp \\
-%s_s &\cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp \\
+%s_\sym &= \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp \\
+%s_\sym &\cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp \\
 %\cfgnt{r}^\prime &= \mathrm{fresh}_r\lp \rp \\
 %\pi_{n+1} &=\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp \\
-%s_s &\rightarrow_s s_s^\prime
+%s_\sym &\rsym s_\sym^\prime
 %\end{align}
-%%$$s_s = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$$ 
-%%$$s_s \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp$$ 
+%%$$s_\sym = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$$ 
+%%$$s_\sym \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp$$ 
 %%$$\pi_{n+1} =\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp$$ 
 %
 %then 
-%$$s_s^\prime \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_{n+1} \rp$$
-If there exists states $s_\ell$ and $s_s$ such that $s_s \in \mathcal{FA}$ and $s_\ell \sqsubset s_s$, then:
+%$$s_\sym^\prime \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_{n+1} \rp$$
+If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FA}$ and $s_\gse \sqsubset s_\sym$, then:
 \begin{equation}
-\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 and
 \begin{equation}
-\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 \end{lemma}
 
 \begin{proof}
-Begin by assuming the conditions stated in Lemma~\ref{lem:access}. By Lemma~\ref{lem:init}, the summary intermediate state is equivalent to the set of lazy intermediate states, so we may assume without loss of generality that all of the pertinent fields in $s_s$ are initialized. Take an arbitrary lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$. Since $s_s$ is exact,  $s_\ell = \lp \cfgnt{L}_{\ell}\ \cfgnt{R}_{\ell}\ \phi_\ell\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$, and $s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. If we apply the state transition functions to achieve states $s_\ell^\prime$ and $s_s^\prime$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$ and  $s_s \rightarrow_s s_s^\prime$, we find that according to the Field Access rule:
-$$s_\ell^\prime = \lp \cfgnt{L}_{\ell} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\ell}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
+Begin by assuming the conditions stated in Lemma~\ref{lem:access}. By Lemma~\ref{lem:init}, the symbolic intermediate state is equivalent to the set of GSE intermediate states, so we may assume without loss of generality that all of the pertinent fields in $s_\sym$ are initialized. Take an arbitrary GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$. Since $s_\sym$ is exact,  $s_\gse = \lp \cfgnt{L}_{\gse}\ \cfgnt{R}_{\gse}\ \phi_\gse\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$, and $s_\gse \in \mathbb{FS}(\rgse,s_0,\pi_n)$. If we apply the state transition functions to achieve states $s_\gse^\prime$ and $s_\sym^\prime$ such that $s_\gse \rgse s_\gse^\prime$ and  $s_\sym \rsym s_\sym^\prime$, we find that according to the Field Access rule:
+$$s_\gse^\prime = \lp \cfgnt{L}_{\gse} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\gse}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
  and 
- $$ s_s^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{s}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
+ $$ s_\sym^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{s}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
 
-We now show that $s_\ell^\prime \sqsubset s_s^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_s^\prime$ and $s_\ell^\prime $, the first condition is met by default. Now we construct the function $h^\prime$ such that $h^\prime = h$. Observe that since $s_\ell \rightharpoonup_{h} s_s$, and since $\cfgnt{R}_\ell$ and $\cfgnt{R}_s$ are unchanged from states $s_\ell$ to $s_\ell^\prime$ and $s_s$ to $s_s^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\ell(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_s(h^\prime(l),f)$. Let $\{(\phi_\ell^\prime\ l^\prime)\} =  \cfgnt{L}_\ell(\cfgnt{R}_\ell(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s))$ is valid, we know that:
- $$(\phi_s \wedge \phi_s^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
+We now show that $s_\gse^\prime \sqsubset s_\sym^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_\sym^\prime$ and $s_\gse^\prime $, the first condition is met by default. Now we construct the function $h^\prime$ such that $h^\prime = h$. Observe that since $s_\gse \rightharpoonup_{h} s_\sym$, and since $\cfgnt{R}_\gse$ and $\cfgnt{R}_\sym$ are unchanged from states $s_\gse$ to $s_\gse^\prime$ and $s_\sym$ to $s_\sym^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\gse(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_\sym(h^\prime(l),f)$. Let $\{(\phi_\gse^\prime\ l^\prime)\} =  \cfgnt{L}_\gse(\cfgnt{R}_\gse(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym))$ is valid, we know that:
+ $$(\phi_\sym \wedge \phi_\sym^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
 From this, we may deduce that:
-$$ (\phi_\ell\ l) \in \cfgnt{L}_\ell^\prime(\cfgnt{r}^\prime) \Rightarrow (\phi_s \wedge \phi_s^\prime\ h^\prime(l))\in \cfgnt{L}_s^\prime(\cfgnt{r}^\prime)$$
-Since $\cfgnt{r}^\prime$ is the only new addition to $L_\ell^\prime$ and $L_s^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\ell^\prime \rightharpoonup_{h} s_s^\prime$. Furthermore, since the constraints in $\mathbb{HC}(s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime)$ are constructed using conjuncts already present in $ \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s)$, we are guaranteed that $\mathbb{HC}(s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime) \Leftrightarrow \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s)$, and therefore $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime))$. This fact, and the fact that $\eta_{\ell} = \eta_{s} ,\ \cfgnt{e}_{\ell} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\ell} = \cfgnt{k}_{s}$, means that by Definition~\ref{representation} we know $s_\ell^\prime \sqsubset s_s^\prime$. We have now shown that:
+$$ (\phi_\gse\ l) \in \cfgnt{L}_\gse^\prime(\cfgnt{r}^\prime) \Rightarrow (\phi_\sym \wedge \phi_\sym^\prime\ h^\prime(l))\in \cfgnt{L}_\sym^\prime(\cfgnt{r}^\prime)$$
+Since $\cfgnt{r}^\prime$ is the only new addition to $L_\gse^\prime$ and $L_\sym^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime$. Furthermore, since the constraints in $\mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime)$ are constructed using conjuncts already present in $ \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym)$, we are guaranteed that $\mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) \Leftrightarrow \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym)$, and therefore $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime))$. This fact, and the fact that $\eta_{\gse} = \eta_{s} ,\ \cfgnt{e}_{\gse} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\gse} = \cfgnt{k}_{s}$, means that by Definition~\ref{representation} we know $s_\gse^\prime \sqsubset s_\sym^\prime$. We have now shown that:
 \begin{equation}
-\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 
-%for any lazy state $s_\ell$: 
+%for any GSE state $s_\gse$: 
 %\begin{equation}
 %\label{eqn:slimpliesslprime}
-%s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
+%s_\gse \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
 %\end{equation}
 
-%Since there is only one possible control flow sequence $\pi_{n+1}$, this means that if $s_\ell \rightarrow_\ell s_\ell^\prime$, then 
+%Since there is only one possible control flow sequence $\pi_{n+1}$, this means that if $s_\gse \rgse s_\gse^\prime$, then 
 %\begin{equation}
 %\label{eqn:slimpliesslprime2}
-%s_\ell \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n) \Leftrightarrow s_\ell^\prime\ \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})
+%s_\gse \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n) \Leftrightarrow s_\gse^\prime\ \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})
 %\end{equation}
 %
-%Combining Equations \ref{eqn:slimpliesslprime} and \ref{eqn:slimpliesslprime2}, we may finally conclude that $s_s^\prime$ is complete with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$
+%Combining Equations \ref{eqn:slimpliesslprime} and \ref{eqn:slimpliesslprime2}, we may finally conclude that $s_\sym^\prime$ is complete with respect to $\mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$
 %\begin{equation}
 %\label{eqn:readforwards}
-%s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
+%s_\gse^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1}) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
 %\end{equation}
 
-%Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Lemma~\ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_s^\prime$. Furthermore, by Lemma~\ref{lem:path} we can surmise that $\mathbb{S}(\phi_s^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_s$. Since $s_s$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
+%Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_\sym^\prime$, then by Lemma~\ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_\sym^\prime$. Furthermore, by Lemma~\ref{lem:path} we can surmise that $\mathbb{S}(\phi_\sym^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_\sym$. Since $s_\sym$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$. We have a contradiction.
 
-Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$. Since $s_i^\prime \sqsubset s_s^\prime$, then by Definition~\ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{h^\prime} s_s^\prime$, and that $\mathbb{S}( \phi_i^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{h^\prime} s_s^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
+Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$. Since $s_i^\prime \sqsubset s_\sym^\prime$, then by Definition~\ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$, and that $\mathbb{S}( \phi_i^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
 \begin{align*}
 s_i &= \lp \cfgnt{L}_{i}\ \cfgnt{R}_{i}\ \phi_i\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp\\
 L_i &= L_{i^\prime} \setminus \{\cfgnt{r}^\prime \}\\
 R_i &= R_{i^\prime}\\
 \phi_i &= \phi_i^\prime
 \end{align*}
-Observe that by virtue of the lazy Field Access rule, $s_i \rightarrow_\ell s_i^\prime$. Now, construct function $h_i$ so that $h_i = h^\prime$. Observe that by Definition~\ref{def:homomorphism} $s_i \rightharpoonup_{h_i} s_s$,  and that $\mathbb{S}( \phi_i \wedge \mathbb{HC}(s_i \rightharpoonup_{h_i} s_s) )$, so $s_i \sqsubset s_s$. Therefore:
+Observe that by virtue of the GSE Field Access rule, $s_i \rgse s_i^\prime$. Now, construct function $h_i$ so that $h_i = h^\prime$. Observe that by Definition~\ref{def:homomorphism} $s_i \rightharpoonup_{h_i} s_\sym$,  and that $\mathbb{S}( \phi_i \wedge \mathbb{HC}(s_i \rightharpoonup_{h_i} s_\sym) )$, so $s_i \sqsubset s_\sym$. Therefore:
 \begin{equation}
-\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
  This concludes the proof.
 
-%Since $s_s$ is exact, $s_i \in\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$. Combining this with the fact that $s_i \rightarrow_\ell s_i^\prime$, we conclude that $s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$. We have a contradiction.
+%Since $s_\sym$ is exact, $s_i \in\mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n)$. Combining this with the fact that $s_i \rgse s_i^\prime$, we conclude that $s_i^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$. We have a contradiction.
 %
-% Therefore, $s_s^\prime$ is sound with respect to $\mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})$:
+% Therefore, $s_\sym^\prime$ is sound with respect to $\mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$:
 % \begin{equation}
 % \label{eqn:readbackwards}
-% s_i^\prime \sqsubset s_s^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1})
+% s_i^\prime \sqsubset s_\sym^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})
 % \end{equation}
-%Since $s_s$ is both sound and complete, we may combine Equations \ref{eqn:readforwards} and \ref{eqn:readbackwards} to find that 
-%$$s_\ell^\prime \in \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_{n+1}) \Leftrightarrow s_\ell^\prime \sqsubset s_s^\prime$$
-%By Definition~\ref{equivalent}, $s_s^\prime \cong \mathbb{FS}(\rightarrow_{\ell},s_0,\pi_n)$, and so by Definition~\ref{exact}, $s_s^\prime$ is exact.
+%Since $s_\sym$ is both sound and complete, we may combine Equations \ref{eqn:readforwards} and \ref{eqn:readbackwards} to find that 
+%$$s_\gse^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1}) \Leftrightarrow s_\gse^\prime \sqsubset s_\sym^\prime$$
+%By Definition~\ref{equivalent}, $s_\sym^\prime \cong \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n)$, and so by Definition~\ref{exact}, $s_\sym^\prime$ is exact.
 
-%Case 2: If there are uninitialized fields, then the lazy initialization machine will make an intermediate state $s_t$. By Lemma~\ref{lem:init}, the summary intermediate state is equivalent to the set of lazy intermediate states. Since the summary intermediate state From the intermediate state, the proof is the same as for case 1.
+%Case 2: If there are uninitialized fields, then the GSE initialization machine will make an intermediate state $s_t$. By Lemma~\ref{lem:init}, the symbolic intermediate state is equivalent to the set of GSE intermediate states. Since the symbolic intermediate state From the intermediate state, the proof is the same as for case 1.
 \end{proof}
 
 %proof for field write
 \begin{lemma}[Exactness of Field Write Rule]
 \label{lem:write}
-%If $s_s \cong \mathbb{FS}(\rightarrow_\ell, s_0, \pi_n )$ for some symbolic state $s_s$, initial state $s_0$, and control flow path $\pi_n$, and if $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$, and if $s_s \rightarrow_s s_s^\prime$ for some state $s_s^\prime$, then:
-%$$s_\ell^\prime \sqsubset s_s^\prime \Leftrightarrow s_\ell^\prime \in \mathbb{FS}(\rightarrow_\ell, s_0, \pi_n (\eta\ \cfgnt{k}\ \emptyset) ) $$
-If there exists states $s_\ell$ and $s_s$ such that $s_s \in \mathcal{FW}$ and $s_\ell \sqsubset s_s$, then:
+%If $s_\sym \cong \mathbb{FS}(\rgse, s_0, \pi_n )$ for some symbolic state $s_\sym$, initial state $s_0$, and control flow path $\pi_n$, and if $s_\sym =  \lp \cfgnt{L}_\sym\ \cfgnt{R}_\sym\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$, and if $s_\sym \rsym s_\sym^\prime$ for some state $s_\sym^\prime$, then:
+%$$s_\gse^\prime \sqsubset s_\sym^\prime \Leftrightarrow s_\gse^\prime \in \mathbb{FS}(\rgse, s_0, \pi_n (\eta\ \cfgnt{k}\ \emptyset) ) $$
+If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FW}$ and $s_\gse \sqsubset s_\sym$, then:
 \begin{equation}
-\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 and
 \begin{equation}
-\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 \end{lemma}
 \begin{proof}
 Begin by assuming the conditions from Lemma~\ref{lem:write}.
 
-The first step is to show that there exists a state $s_s^\prime$ that is complete with respect to the feasible set. Take state $s_s$ and compute state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$. Take any lazy state $s_\ell$ such that $s_\ell \sqsubset s_s$, and find state $s_\ell^\prime$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$. Let $l_\ell$ be the location such that $\{(\phi_a\ l_\ell )\} = \cfgnt{L}_\ell(\cfgnt{r}_x) $ for some $\phi_a$. To show that $s_\ell^\prime \sqsubset s_s^\prime$, we need to demonstrate that there exists a function $h^\prime$ such that $s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime$, and that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime) )$. Since $s_h \sqsubset s_s$, we know that there exists a function $h$ such that $s_\ell \rightharpoonup_{h} s_s$. Let $h^\prime = h$. 
+The first step is to show that there exists a state $s_\sym^\prime$ that is complete with respect to the feasible set. Take state $s_\sym$ and compute state $s_\sym^\prime$ such that $s_\sym \rsym s_\sym^\prime$. Take any GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$, and find state $s_\gse^\prime$ such that $s_\gse \rgse s_\gse^\prime$. Let $l_\gse$ be the location such that $\{(\phi_a\ l_\gse )\} = \cfgnt{L}_\gse(\cfgnt{r}_x) $ for some $\phi_a$. To show that $s_\gse^\prime \sqsubset s_\sym^\prime$, we need to demonstrate that there exists a function $h^\prime$ such that $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$, and that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$. Since $s_h \sqsubset s_\sym$, we know that there exists a function $h$ such that $s_\gse \rightharpoonup_{h} s_\sym$. Let $h^\prime = h$. 
 
-First, we consider how $s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime$. Let $l_\alpha$ and $l_\beta$ be arbitrary locations in $\cfgnt{L}_{\ell^\prime}^\rightarrow$ such that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime}(\cfgnt{l}_\beta,f ))$, let $\theta = \cfgnt{L}_s(\cfgnt{R}_s(h(l_\ell),f))$, and let $\theta^\prime =   \cfgnt{L}_s^\prime(\cfgnt{R}_s^\prime(h(l_\ell),f))$. 
+First, we consider how $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$. Let $l_\alpha$ and $l_\beta$ be arbitrary locations in $\cfgnt{L}_{\gse^\prime}^\rightarrow$ such that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime}(\cfgnt{l}_\beta,f ))$, let $\theta = \cfgnt{L}_\sym(\cfgnt{R}_\sym(h(l_\gse),f))$, and let $\theta^\prime =   \cfgnt{L}_\sym^\prime(\cfgnt{R}_\sym^\prime(h(l_\gse),f))$. 
 
-Suppose $l_\beta \neq l_\ell$. In this case either $\theta = \theta^\prime$ or $\theta \neq \theta^\prime$ . In the first case, we are guaranteed that the homomorphism works by default. Otherwise, if $\theta \neq \theta^\prime$.  We can see from the construction of the set $X$ in the summary Field Write rule that any feasible location in the set $\theta$ must also be in the set $\theta^\prime$. Since $s_\ell \sqsubset s_s$, we know that $h(l_\alpha)$ is in $\theta$, and is likewise in $\theta^\prime$. We have now established that in either case where $l_\beta \neq l_\ell$, $(\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$.
+Suppose $l_\beta \neq l_\gse$. In this case either $\theta = \theta^\prime$ or $\theta \neq \theta^\prime$ . In the first case, we are guaranteed that the homomorphism works by default. Otherwise, if $\theta \neq \theta^\prime$.  We can see from the construction of the set $X$ in the symbolic Field Write rule that any feasible location in the set $\theta$ must also be in the set $\theta^\prime$. Since $s_\gse \sqsubset s_\sym$, we know that $h(l_\alpha)$ is in $\theta$, and is likewise in $\theta^\prime$. We have now established that in either case where $l_\beta \neq l_\gse$, $(\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$.
 
-On the other hand, suppose $l_\beta = l_\ell$. In this case we know that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime}(\cfgnt{l}_\ell,f ))$. From the lazy field rule, we can surmise that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell}(\cfgnt{r} )$, and since $s_\ell \sqsubset s_s$, we know that $(\phi_b\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s}(\cfgnt{r})$ for some constraint $\phi_b$. Using this fact, we can apply the summary Field Write rule to infer that $l_\alpha$ must be one of the locations in $\theta^\prime$, and therefore $(\phi_c\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}^\prime(l_\ell,f))$
+On the other hand, suppose $l_\beta = l_\gse$. In this case we know that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime}(\cfgnt{l}_\gse,f ))$. From the GSE field rule, we can surmise that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse}(\cfgnt{r} )$, and since $s_\gse \sqsubset s_\sym$, we know that $(\phi_b\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s}(\cfgnt{r})$ for some constraint $\phi_b$. Using this fact, we can apply the symbolic Field Write rule to infer that $l_\alpha$ must be one of the locations in $\theta^\prime$, and therefore $(\phi_c\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}^\prime(l_\gse,f))$
 
 Thus, for arbitrary $l_\alpha$ and $l_\beta$:
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\ell^\prime}(\cfgnt{R}_{\ell^\prime}(\cfgnt{l}_\beta,f )) \Rightarrow (\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$$
-Therefore, we have shown that $s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime$.
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime}(\cfgnt{l}_\beta,f )) \Rightarrow (\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$$
+Therefore, we have shown that $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$.
 
-Establishing the fact that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(s_\ell^\prime \rightharpoonup_{h^\prime} s_s^\prime) )$ is left as an exercise to the reader (waving hands in the air).
+Establishing the fact that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$ is left as an exercise to the reader (waving hands in the air).
 
-By proving the existence of a valid homomorphism, we have shown that for any state $s_\ell^\prime$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$, then the state $s_s^\prime$ such that $s_s \rightarrow_s s_\ell^\prime$ represents $s_\ell^\prime$. Therefore, $\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )$. This concludes the proof of completeness.
+By proving the existence of a valid homomorphism, we have shown that for any state $s_\gse^\prime$ such that $s_\gse \rgse s_\gse^\prime$, then the state $s_\sym^\prime$ such that $s_\sym \rsym s_\gse^\prime$ represents $s_\gse^\prime$. Therefore, $\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )$. This concludes the proof of completeness.
 
-To show that $s_s^\prime$ is sound with respect to the feasible set, we use the same argument as in the field read proof: that any state $s_\ell^\prime$ represented by $s_s^\prime$ must have a counterpart state $s_\ell$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$ and $s_\ell \sqsubset s_s$. Because $s_s$ is exact, $s_\ell^\prime$ must be a part of the feasible set. Therefore, $\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )$.
+To show that $s_\sym^\prime$ is sound with respect to the feasible set, we use the same argument as in the field read proof: that any state $s_\gse^\prime$ represented by $s_\sym^\prime$ must have a counterpart state $s_\gse$ such that $s_\gse \rgse s_\gse^\prime$ and $s_\gse \sqsubset s_\sym$. Because $s_\sym$ is exact, $s_\gse^\prime$ must be a part of the feasible set. Therefore, $\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )$.
 
 \end{proof}
 
 
-\begin{lemma}[$\rightarrow^*_S$ preserves heap determinism]
+\begin{lemma}[$\rsum^*$ preserves heap determinism]
 \label{lem:S-determ}
 Given a deterministic heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
-summary state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
-new heap, $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime)$, from the summary
-initialization machine, $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
-\rightarrow^*_S
-(\cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f})$, after any number of machine steps, is also deterministic.
+state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
+new heap, $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime)$, from the 
+summary machine, $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
+\rsum^*
+(\cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f})$, is also deterministic.
 \end{lemma}
 \begin{proof}
-Induction over the number of machine steps on the summary initialization machine in \figref{fig:symInit}.
+Induction over the number of machine steps on the symbolic initialization machine in \figref{fig:symInit}.
 
 \noindent\textbf{Base Case}. The machine takes one step: $(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f})
-\rightarrow_S
+\rsum
 (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f})$. Let $\Lambda = \mathbb{UN}(\cfgnt{L}_0, \cfgnt{R}_0, \cfgnt{r},
 \cfgnt{f})$ be the set of uninitialized locations. If $\Lambda = \emptyset$, then the \texttt{Summarize (end)}
 rule is active and $(\cfgnt{L}_1\ \cfgnt{R}_1) = (\cfgnt{L}_0\ \cfgnt{R}_0)$, which is deterministic by the initial conditions in the lemma.
@@ -346,24 +345,24 @@ resulting heap $(\cfgnt{L}_1\ \cfgnt{R}_1)$ is likewise deterministic.
 
 \noindent\textbf{Inductive Step}. The machine takes $n$-steps:
 \[
-(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f}) \rightarrow_S (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f}) \rightarrow_S \ldots \rightarrow_S
+(\cfgnt{L}_0\ \cfgnt{R}_0\ \cfgnt{r}\ \cfgnt{f}) \rsum (\cfgnt{L}_1\ \cfgnt{R}_1\ \cfgnt{r}\ \cfgnt{f}) \rsum \ldots \rsum
 (\cfgnt{L}_n\ \cfgnt{R}_n\ \cfgnt{r}\ \cfgnt{f})
 \]
 By the induction hypothesis, $(\cfgnt{L}_n\ \cfgnt{R}_n)$ is location
 mutual exclusive. This matches the base case, in that the heap on the
-left side of $\rightarrow_S$ is location mutual exclusive, and by the
+left side of $\rsum$ is location mutual exclusive, and by the
 same argument as in the base case,
 $(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus location mutual exclusive.
 \end{proof}
 
 \begin{lemma}[$\rightarrow_\mathit{FA}$ preserves heap determinism]
 \label{lem:FA-determ}
-Given a state, $s_\varsigma$, with a deterministic heap,
-$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
-\mathrm{heap}(s_\varsigma)$, the new heap,
-$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
-\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the field
-access rule, $s_\varsigma \rightarrow_\mathit{FA} s_\varsigma^\prime$,
+Given a state, $s_\sym$, with a deterministic heap,
+$(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
+\mathrm{heap}(s_\sym)$, the new heap,
+$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
+\mathrm{heap}(s_\sym^\prime)$, in any state related by the field
+access rule, $s_\sym \rightarrow_\mathit{FA} s_\sym^\prime$,
 is also deterministic.
 \end{lemma}
 \begin{proof}
@@ -398,18 +397,18 @@ The only change to the heap after the $S$-relation is the addition of
 the new reference $\cfgnt{r}^\prime = \mathrm{stack}_\cfgnt{r}()$ to
 point to the value set. As the value set meets the conditions for
 determinism, the new heap with $r^\prime$ and the value set,
-$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
-\mathrm{heap}(s_\varsigma^\prime)$, is also deterministic.
+$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
+\mathrm{heap}(s_\sym^\prime)$, is also deterministic.
 \end{proof}
 
 \begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]
 \label{lem:FW-determ}
-Given a state, $s_\varsigma$, with a deterministic heap,
-$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
-\mathrm{heap}(s_\varsigma)$, the new heap,
-$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
-\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the field
-write rule, $s_\varsigma \rightarrow_\mathit{FW} s_\varsigma^\prime$,
+Given a state, $s_\sym$, with a deterministic heap,
+$(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
+\mathrm{heap}(s_\sym)$, the new heap,
+$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
+\mathrm{heap}(s_\sym^\prime)$, in any state related by the field
+write rule, $s_\sym \rightarrow_\mathit{FW} s_\sym^\prime$,
 is also deterministic.
 \end{lemma}
 \begin{proof}
@@ -420,8 +419,8 @@ function. Recall from \defref{def:ST} that each constraint in each
 member of the strengthened set has the form $(\phi\wedge
 \phi^\prime\ \cfgnt{l}^\prime)$ where every member,
 $(\phi^\prime\ \cfgnt{l}^\prime)$, comes from
-$\cfgnt{L}_\varsigma(\cfgnt{r})$ on the same reference in a
-deterministic heap $(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma)$; thus,
+$\cfgnt{L}_\sym(\cfgnt{r})$ on the same reference in a
+deterministic heap $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym)$; thus,
 that set of meets the criteria for determinism by definition. So any
 application of $\mathbb{ST}$ preserves that criteria for determinism.
 
@@ -441,128 +440,128 @@ $(\phi_\beta \wedge \phi_\beta^\prime\ \cfgnt{l}_\beta^\prime)$.
 \end{itemize}
 Each $\theta$ is mapped to a new reference from
 $\mathrm{fresh}_r()$. These are added to an already deterministic heap
-$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma)$ and meet the criteria so
-that $(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime)$ is also
+$(\cfgnt{L}_\sym\ \cfgnt{R}_\sym)$ and meet the criteria so
+that $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime)$ is also
 deterministic.
 \end{proof}
 
-\begin{lemma}[$\rightarrow_J$ preserves heap determinism]
+\begin{lemma}[$\rcom$ preserves heap determinism]
 \label{lem:J-determ}
-Given a state, $s_\varsigma$, with a deterministic heap,
-$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
-\mathrm{heap}(s_\varsigma)$, the new heap,
-$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
-\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the
-Javalite relation, $s_\varsigma \rightarrow_J s_\varsigma^\prime$, is
+Given a state, $s_\sym$, with a deterministic heap,
+$(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
+\mathrm{heap}(s_\sym)$, the new heap,
+$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
+\mathrm{heap}(s_\sym^\prime)$, in any state related by the
+Javalite relation, $s_\sym \rcom s_\sym^\prime$, is
 also deterministic.
 \end{lemma}
 \begin{proof}
-Proof by definition of $\rightarrow_J$ in \figref{fig:javalite-common}.
+Proof by definition of $\rcom$ in \figref{fig:javalite-common}.
 
-Every rule in $\rightarrow_J$ except \texttt{New} leaves the heap
+Every rule in $\rcom$ except \texttt{New} leaves the heap
 unmodified. The rule for \texttt{New} adds a single new location
 ($\mathrm{fresh}_\cfgnt{l}(\cfgnt{C})$) to the heap on a single new
 reference ($\mathrm{stack}_r()$). The rule also points every field in
 the new location to $\cfgnt{r}_\mathit{null}$. As none of these
 mutations alter the determinism of the heap, the new heap
-$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime)$ is also
+$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime)$ is also
 deterministic.
 \end{proof}
 
-\begin{theorem}[$\rightarrow_\varsigma$ preserves heap determinism]
+\begin{theorem}[$\rsym$ preserves heap determinism]
 \label{thm:determ}
-Given a state, $s_\varsigma$, with a deterministic heap,
-$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
-\mathrm{heap}(s_\varsigma)$, the new heap,
-$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
-\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the
-symbolic relation, $s_\varsigma \rightarrow_\varsigma s_\varsigma^\prime$, is
+Given a state, $s_\sym$, with a deterministic heap,
+$(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
+\mathrm{heap}(s_\sym)$, the new heap,
+$(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
+\mathrm{heap}(s_\sym^\prime)$, in any state related by the
+symbolic relation, $s_\sym \rsym s_\sym^\prime$, is
 also deterministic.
 \end{theorem}
 \begin{proof}
 Proof by \lemref{FA-determ}, \lemref{FW-determ}, and \lemref{J-determ}
 which represent all the rules that relate states in
-$\rightarrow_\varsigma$.
+$\rsym$.
 \end{proof}
 
 %proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function
 \begin{lemma}[Exactness of Reference Compare Rule]
 \label{lem:compare}
-%If symbolic state $s_s =  \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, and if $s_s \rightarrow_s s_s^\prime$ for some state $s_s^\prime$, then $s_s^\prime$ is equal to $ \lp \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_{s^\prime}\ \eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k})$.
-If there exists states $s_\ell$ and $s_s$ such that $s_s \in \mathcal{RC}$ and $s_\ell \sqsubset s_s$, then:
+%If symbolic state $s_\sym =  \lp \cfgnt{L}_\sym\ \cfgnt{R}_\sym\ \phi_\sym\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, and if $s_\sym \rsym s_\sym^\prime$ for some state $s_\sym^\prime$, then $s_\sym^\prime$ is equal to $ \lp \cfgnt{L}_\sym\ \cfgnt{R}_\sym\ \phi_{s^\prime}\ \eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k})$.
+If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$, then:
 \begin{equation}
-\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 and
 \begin{equation}
-\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 \end{lemma}
-There are two rules that apply to state $s_s$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for brevity we will only show the proofs for the case for the $\cfgt{true}$ branch. 
+There are two rules that apply to state $s_\sym$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for brevity we will only show the proofs for the case for the $\cfgt{true}$ branch. 
 \begin{proof}
-Assume there exists states $s_\ell$ and $s_s$ such that $s_s \in \mathcal{RC}$ and $s_\ell \sqsubset s_s$. Let $s_s^\prime$ be any state such that $s_s \rightarrow_s s_s$ and let $\zeta_T = \forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime )$. Since $s_\ell \sqsubset s_s$, we know that $s_\ell \in \mathcal{RC}$, and that there exists a homomorphism $s_\ell \rightharpoonup_{h} s_s$ such that $\mathbb{S}( \phi_s \wedge \mathbb{HC}(s_\ell \rightharpoonup_{h} s_s) ) $. We partition $\zeta_T$ based on the values of $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$ as follows: Let
-$$\zeta_t = \zeta_T \setminus \{ s_f | (s_f= \lp \cfgnt{L}_f\ \cfgnt{R}_f\ \phi_\ell\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp) \wedge (\cfgnt{L}_f \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_f \lp \cfgnt{r}_1 \rp ) \}$$
+Assume there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$. Let $s_\sym^\prime$ be any state such that $s_\sym \rsym s_\sym$ and let $\zeta_T = \forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime )$. Since $s_\gse \sqsubset s_\sym$, we know that $s_\gse \in \mathcal{RC}$, and that there exists a homomorphism $s_\gse \rightharpoonup_{h} s_\sym$ such that $\mathbb{S}( \phi_\sym \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym) ) $. We partition $\zeta_T$ based on the values of $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$ as follows: Let
+$$\zeta_t = \zeta_T \setminus \{ s_f | (s_f= \lp \cfgnt{L}_f\ \cfgnt{R}_f\ \phi_\gse\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp) \wedge (\cfgnt{L}_f \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_f \lp \cfgnt{r}_1 \rp ) \}$$
 and let
 $$\zeta_f = \zeta_T \setminus \zeta_t$$ 
 
-Furthermore, there are two possible configurations for $s_s^\prime$: $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $ and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $. We now consider the partitions of $\zeta_T$ and configurations of $s_s^\prime$ in separate cases.
+Furthermore, there are two possible configurations for $s_\sym^\prime$: $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $ and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $. We now consider the partitions of $\zeta_T$ and configurations of $s_\sym^\prime$ in separate cases.
 
-Case 1: Assume that $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp = \cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$. 
-Compute state $s_\ell^\prime$ such that $s_\ell \rightarrow_\ell s_\ell^\prime$. In this case, the lazy ``equals - references true" rule applied, therefore $s_\ell^\prime$ is in $\zeta_t$. Observe that by applying Theorem~\ref{thm:mutex}, $\phi_s^\prime \wedge \phi_0 \wedge \phi_1$ reduces to $\phi_s$. Therefore, $\mathbb{S}( \phi_s^\prime \wedge \mathbb{HC}(s_\ell^\prime \rightharpoonup_{h} s_s^\prime) ) $ is true, and by extension, $s_\ell^\prime \sqsubset s_s^\prime$. Since this relation holds for arbitrary $s_\ell^\prime \in \zeta_t$, we now know that 
+Case 1: Assume that $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$. 
+Compute state $s_\gse^\prime$ such that $s_\gse \rgse s_\gse^\prime$. In this case, the GSE ``equals - references true" rule applied, therefore $s_\gse^\prime$ is in $\zeta_t$. Observe that by applying Theorem~\ref{thm:mutex}, $\phi_\sym^\prime \wedge \phi_0 \wedge \phi_1$ reduces to $\phi_\sym$. Therefore, $\mathbb{S}( \phi_\sym^\prime \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime) ) $ is true, and by extension, $s_\gse^\prime \sqsubset s_\sym^\prime$. Since this relation holds for arbitrary $s_\gse^\prime \in \zeta_t$, we now know that 
 \begin{equation}
 \label{eqn:RCForwardsTrue}
-((\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp = \cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp) \wedge (s_\ell^\prime \in \zeta_t)) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
+((\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp) \wedge (s_\gse^\prime \in \zeta_t)) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
 \end{equation}
 
-Case 2:  Assume that $s_s^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $, and define $\theta_\alpha$, $\theta_0$ and $\theta_1$ as in the ``equals (references-true) rule''. Since $\cfgnt{L}_s$ and $\cfgnt{R}_s$ are unchanged from $s_s$, and $\phi_s^\prime$ is only a strengthened version of $\phi_s$,  we know that
+Case 2:  Assume that $s_\sym^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $, and define $\theta_\alpha$, $\theta_0$ and $\theta_1$ as in the ``equals (references-true) rule''. Since $\cfgnt{L}_\sym$ and $\cfgnt{R}_\sym$ are unchanged from $s_\sym$, and $\phi_\sym^\prime$ is only a strengthened version of $\phi_\sym$,  we know that
 \begin{equation}
 \label{eqn:RCSubset}
-\{s_\ell^\prime | s_\ell^\prime \sqsubset s_s^\prime \} \subseteq \{s_\ell^\prime | \exists s_\ell \lp s_\ell \sqsubset s_s \rp \wedge s_\ell \rightarrow_s s_\ell^\prime\}
+\{s_\gse^\prime | s_\gse^\prime \sqsubset s_\sym^\prime \} \subseteq \{s_\gse^\prime | \exists s_\gse \lp s_\gse \sqsubset s_\sym \rp \wedge s_\gse \rsym s_\gse^\prime\}
 \end{equation}
-Suppose that there exists state $s_i^\prime$ such that $s_i^\prime \sqsubset s_s^\prime$ and $s_i^\prime \notin \zeta_t$. Because of Equation \ref{eqn:RCSubset}, we know that 
-$$s_i^\prime \in \{s_\ell^\prime | \exists s_\ell \lp s_\ell \sqsubset s_s\rp \wedge s_\ell \rightarrow_s s_\ell^\prime\}$$ 
-Combining this with the assumption that $s_i^\prime \notin \zeta_t$, we must conclude that $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp \neq  \cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$. Because of this, and because of Theorem~\ref{thm:mutex}, we know that either all constraints in the set
+Suppose that there exists state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$ and $s_i^\prime \notin \zeta_t$. Because of Equation \ref{eqn:RCSubset}, we know that 
+$$s_i^\prime \in \{s_\gse^\prime | \exists s_\gse \lp s_\gse \sqsubset s_\sym\rp \wedge s_\gse \rsym s_\gse^\prime\}$$ 
+Combining this with the assumption that $s_i^\prime \notin \zeta_t$, we must conclude that $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp \neq  \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$. Because of this, and because of Theorem~\ref{thm:mutex}, we know that either all constraints in the set
 $$\{\phi_i \mid \exists \phi_\alpha (\phi_\alpha \in \theta_\alpha)\wedge \phi_i = \lp\phi_\alpha \wedge \phi_0 \wedge \phi_1\rp\}$$ are unsatisfiable, or that at least one constraint in the set
 $$\{\phi_i \mid \exists \phi_\alpha (\phi_\alpha \in \lp \theta_0 \cup \theta_1 \rp)\wedge \lp \phi_i = \phi_\alpha \wedge \phi_0 \wedge \phi_1 \rp\}$$ 
-is valid. Either way, $\mathbb{S}\lp\phi_i^\prime \wedge\phi_0\wedge \phi_1\rp$ is false and $s_s^\prime$ does not represent $s_i^\prime$. We have a contradiction. Therefore: 
+is valid. Either way, $\mathbb{S}\lp\phi_i^\prime \wedge\phi_0\wedge \phi_1\rp$ is false and $s_\sym^\prime$ does not represent $s_i^\prime$. We have a contradiction. Therefore: 
 \begin{equation}
 \label{eqn:RCBackwardsTrue}
-((s_s^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp) \wedge (s_\ell^\prime \sqsubset s_s^\prime)) \Rightarrow s_\ell^\prime \in \zeta_t
+((s_\sym^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp) \wedge (s_\gse^\prime \sqsubset s_\sym^\prime)) \Rightarrow s_\gse^\prime \in \zeta_t
 \end{equation}
 
-Case 3: Assume that $\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp$.
-This means that the lazy ``equals - references false" rule applies. The proof for the ``equals - references false" rule is highly similar to the proof for Case 1, so we omit it for the sake of brevity. The result for this case is:
+Case 3: Assume that $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$.
+This means that the GSE ``equals - references false" rule applies. The proof for the ``equals - references false" rule is highly similar to the proof for Case 1, so we omit it for the sake of brevity. The result for this case is:
 \begin{equation}
 \label{eqn:RCForwardsFalse}
-((\cfgnt{L}_\ell \lp \cfgnt{r}_0\rp = \cfgnt{L}_\ell \lp \cfgnt{r}_1 \rp) \wedge (s_\ell^\prime \in \zeta_t)) \Rightarrow s_\ell^\prime \sqsubset s_s^\prime
+((\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp) \wedge (s_\gse^\prime \in \zeta_t)) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
 \end{equation}
 
-Case 4: Assume that $s_s^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $.
+Case 4: Assume that $s_\sym^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $.
 The proof for this case is highly similar to the proof for Case 2, so we omit it for the sake of brevity. The result for this case is:
 \begin{equation}
 \label{eqn:RCBackwardsFalse}
-s_s^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp \wedge s_\ell^\prime \sqsubset s_s^\prime \Rightarrow s_\ell^\prime \in \zeta_f
+s_\sym^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp \wedge s_\gse^\prime \sqsubset s_\sym^\prime \Rightarrow s_\gse^\prime \in \zeta_f
 \end{equation}
 
 Since $\zeta_T = \zeta_t \cup \zeta_f$, we can combine Equation \ref{eqn:RCForwardsTrue} with \ref{eqn:RCForwardsFalse} to find that 
 \begin{equation}
-\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 Likewise, we can combine Equation \ref{eqn:RCBackwardsTrue} with Equation \ref{eqn:RCBackwardsFalse} to find that
 \begin{equation}
-\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 \end{proof}
 
 \begin{lemma}[Exactness of New Rule]
 \label{lem:new}
-If there exists states $s_\ell$ and $s_s$ such that $s_s \in \mathcal{NW}$ and $s_\ell \sqsubset s_s$, then:
+If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{NW}$ and $s_\gse \sqsubset s_\sym$, then:
 \begin{equation}
-\forall s_\ell^\prime ( s_\ell \rightarrow_\ell s_\ell^\prime \Rightarrow \exists s_s^\prime( (s_s \rightarrow_s s_s^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 and
 \begin{equation}
-\forall s_s^\prime ( s_s \rightarrow_s s_s^\prime\Rightarrow \exists s_\ell^\prime( (s_\ell \rightarrow_\ell s_\ell^\prime )\wedge (s_\ell^\prime\ \sqsubset\ s_s^\prime ))  )
+\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
 
 \begin{proof}
@@ -572,37 +571,37 @@ The proof is left as an exercise to the reader.
 \end{lemma}
 
 %\begin{theorem}[Exactness of Summary Machine States]
-%If $\Pi_n^s$ is a feasible summary state sequence, then the final state in $\Pi_n^s$ is equivalent to the feasible set of lazy states sharing the same control flow sequence:
+%If $\Pi_n^s$ is a feasible summary state sequence, then the final state in $\Pi_n^s$ is equivalent to the feasible set of GSE states sharing the same control flow sequence:
 %\begin{equation}
-%\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rightarrow_\ell, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) )
+%\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rgse, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) )
 %\end{equation}
 %\end{theorem}
 %\begin{proof}
 %The proof will proceed inductively.
 %
 %Base case: For any initial state $s_0$, the feasible state set contains a single element, $\{s_0\}$:
-%$$\mathbb{FS}(\rightarrow_\ell, (s_0), \mathbb{CF}(s_0)) = \{s_0\}$$
+%$$\mathbb{FS}(\rgse, (s_0), \mathbb{CF}(s_0)) = \{s_0\}$$
 %We can define a homomorphism from $s_0$ to $s_0$ using the identity function: 
 %$$\forall a \in \cfgnt{L}_0^\rightarrow ( h(a) = a )$$ 
 %Because the only constraints in the heap are $\mathit{true}$, the heap constraint evaluates to $\mathit{true}$. Since $phi_0$ also evaluates to $\mathit{true}$, the expression $\mathbb{S}(\phi_0 \wedge \mathbb{HC}(s_0 \rightarrow_h s_0 ) ) $ must evaluate to true. Thus, any state in the feasible set must be represented by $s_0$: :
-%$$s_0 \in \mathbb{FS}(\rightarrow_\ell,s_0, (\eta_0\ e_0\ k_0) ) \Rightarrow s_0 \sqsubset s_0$$
+%$$s_0 \in \mathbb{FS}(\rgse,s_0, (\eta_0\ e_0\ k_0) ) \Rightarrow s_0 \sqsubset s_0$$
 %Furthermore, since every reference points to a single place, there is only one possible represented heap. Thus:
-%$$ \{s_0\} = \mathbb{FS}(\rightarrow_\ell,s_0, (\eta_0\ e_0\ k_0) )$$
+%$$ \{s_0\} = \mathbb{FS}(\rgse,s_0, (\eta_0\ e_0\ k_0) )$$
 %Since $s_0$ is the only represented heap, and since we know $s_0$ is in the feasible set, 
 %$$s_0 \sqsubset s_0 \Leftrightarrow s_0 \in \{s_0\}$$
-%We have now shown that $s_0 \cong \mathbb{FS}(\rightarrow_\ell, (s_0), \mathbb{CF}(s_0))$ for an arbitrary initial state $s_0$. Since every feasible state sequence starts with an initial state, we now know that:
-% $$\mathit{last}(\Pi_1^s) \cong \mathbb{FS}(\rightarrow_\ell, \mathit{first}(\Pi_1^s), \mathbb{CF}(\Pi_1^s) ) $$
+%We have now shown that $s_0 \cong \mathbb{FS}(\rgse, (s_0), \mathbb{CF}(s_0))$ for an arbitrary initial state $s_0$. Since every feasible state sequence starts with an initial state, we now know that:
+% $$\mathit{last}(\Pi_1^s) \cong \mathbb{FS}(\rgse, \mathit{first}(\Pi_1^s), \mathbb{CF}(\Pi_1^s) ) $$
 %
-%Inductive step: If summary state $s_s$ is exact, then any state $s_s^\prime$ such that $s_s \rightarrow_s s_s^\prime$ is also exact. Suppose $s_s$ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_s^\prime$ will also be exact.
-%Suppose $s_s$ is accepted by the "new" rule. In this case, the new reference points to the new location on condition true, so it's obvious that $s_s$ represents all of the proper lazy states, and the existence of any infeasible lazy states represented by $s_s^\prime$ would imply that $s_s$ is not exact.
-%For all the other rules, the L and R functions and $\phi$ are unchanged, and the rules for  $\eta$, $e$, and $k$ are exactly the same between the lazy and summary machines, so there is a bijective mapping between the represented states in $s_s$ and $s_s^\prime$.
-%Thus, in all cases, if $s_s$ is exact, then $s_s^\prime$ is also exact.
+%Inductive step: If summary state $s_\sym$ is exact, then any state $s_\sym^\prime$ such that $s_\sym \rsym s_\sym^\prime$ is also exact. Suppose $s_\sym$ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_\sym^\prime$ will also be exact.
+%Suppose $s_\sym$ is accepted by the "new" rule. In this case, the new reference points to the new location on condition true, so it's obvious that $s_\sym$ represents all of the proper GSE states, and the existence of any infeasible GSE states represented by $s_\sym^\prime$ would imply that $s_\sym$ is not exact.
+%For all the other rules, the L and R functions and $\phi$ are unchanged, and the rules for  $\eta$, $e$, and $k$ are exactly the same between the GSE and summary machines, so there is a bijective mapping between the represented states in $s_\sym$ and $s_\sym^\prime$.
+%Thus, in all cases, if $s_\sym$ is exact, then $s_\sym^\prime$ is also exact.
 %
 %We have now shown that any feasible state sequence $\Pi_n^s$ is exact if the sub-sequence $\Pi_{n-1}^s$ is exact.
 %
 %Combining the result from the inductive step with the result from the base case, we can now say with certainty that for all $n$,
 %
-%$$\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rightarrow_\ell, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) ) $$
+%$$\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rgse, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) ) $$
 %
 %\end{proof}
 
@@ -612,21 +611,21 @@ The representation relation $\sqsubset$ is a bisimulation.
 \end{theorem}
 
 \begin{proof}
-Take any two states $s_\ell$ and $s_s$ such that $s_\ell \sqsubset s_s$. If $s_s \in \mathcal{FA} \cup \mathcal{FW} \cup \mathcal{RC} \cup \mathcal{NW}$, then by Lemmas \ref{lem:access}, \ref{lem:write}, \ref{lem:compare}, and \ref{lem:new} we know Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold. If $s_s$ has any other form, the heap is not modified for $s_\ell^\prime$ or $s_s^\prime$, so then Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold by default. Thus, Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold for all  $s_\ell$ and $s_s$ such that $s_\ell \sqsubset s_s$. By Definition \ref{bisimulation}, $\sqsubset$ is a bisimulation.
+Take any two states $s_\gse$ and $s_\sym$ such that $s_\gse \sqsubset s_\sym$. If $s_\sym \in \mathcal{FA} \cup \mathcal{FW} \cup \mathcal{RC} \cup \mathcal{NW}$, then by Lemmas \ref{lem:access}, \ref{lem:write}, \ref{lem:compare}, and \ref{lem:new} we know Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold. If $s_\sym$ has any other form, the heap is not modified for $s_\gse^\prime$ or $s_\sym^\prime$, so then Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold by default. Thus, Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold for all  $s_\gse$ and $s_\sym$ such that $s_\gse \sqsubset s_\sym$. By Definition \ref{bisimulation}, $\sqsubset$ is a bisimulation.
 
 \end{proof}
 
 \begin{corollary}
-For any given initial state, the set of possible control flow sequences under the lazy transition relation is exactly the set of possible control flow sequences under the summary transition relation.
+For any given initial state, the set of possible control flow sequences under the GSE transition relation is exactly the set of possible control flow sequences under the symbolic transition relation.
 \end{corollary}
 
 \begin{corollary}
-For any given initial state, the number of final summary states is exactly the number of possible control flow sequences.
+For any given initial state, the number of final symbolic states is exactly the number of possible control flow sequences.
 \end{corollary}
 
 
 %\begin{corollary}
-%For any given initial state, the set of solutions to the constraints in the final summary states provides an optimal set of concrete test inputs. There is no smaller set that will exercise every possible control flow sequence.
+%For any given initial state, the set of solutions to the constraints in the final symbolic states provides an optimal set of concrete test inputs. There is no smaller set that will exercise every possible control flow sequence.
 %\end{corollary}
 
 %proof: the global invariant is a constraint equation over the initial heap. That is to say, when you solve it, it assigns an integer to every variable. Those variables are references. Thus, solving the constraint equation gives you the location that each reference in the initial heap pointed to. 

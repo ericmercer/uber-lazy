@@ -270,7 +270,7 @@ To show that $s_s^\prime$ is sound with respect to the feasible set, we use the 
 
 
 \begin{lemma}[$\rightarrow^*_S$ preserves heap determinism]
-\label{lem:S-mutex}
+\label{lem:S-determ}
 Given a deterministic heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
 summary state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
 new heap, $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime)$, from the summary
@@ -357,7 +357,7 @@ $(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus location mutual exclusive.
 \end{proof}
 
 \begin{lemma}[$\rightarrow_\mathit{FA}$ preserves heap determinism]
-\label{lem:FA-mutex}
+\label{lem:FA-determ}
 Given a state, $s_\varsigma$, with a deterministic heap,
 $(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
 \mathrm{heap}(s_\varsigma)$, the new heap,
@@ -369,7 +369,7 @@ is also deterministic.
 \begin{proof}
 Proof by definition of $\rightarrow_\mathit{FA}$ in \figref{fig:sym}.
 
-\lemref{lem:S-mutex} establishes that the heap coming out of the
+\lemref{lem:S-determ} establishes that the heap coming out of the
 $S$-relation is deterministic, so it is only needed to show that
 determinism is preserved by the call to the value function,
 $\mathbb{VS}$, in the rule. Let $(\cfgnt{L}\ \cfgnt{R})$ be that new
@@ -394,14 +394,16 @@ As $(\phi_\alpha^\prime\ \cfgnt{l}_\alpha^\prime)$ and $(\phi_\beta^\prime\ \cfg
 \]
 As $(\phi_\alpha\ \cfgnt{l})$ and $(\phi_\beta\ \cfgnt{l}^\prime)$ are distinct and connected to the same reference $\cfgnt{r}$ in a deterministic heap, $\phi_\alpha \wedge  \phi_\beta = \cfgt{false}$ by definition.
 \end{itemize}
-The only change to the heap after the $S$-relation is the
-addition of the new reference $\cfgnt{r}^\prime$ to point to the value
-set. As the value set meets the conditions for determinism, the new heap, $(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
+The only change to the heap after the $S$-relation is the addition of
+the new reference $\cfgnt{r}^\prime = \mathrm{stack}_\cfgnt{r}()$ to
+point to the value set. As the value set meets the conditions for
+determinism, the new heap with $r^\prime$ and the value set,
+$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
 \mathrm{heap}(s_\varsigma^\prime)$, is also deterministic.
 \end{proof}
 
 \begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]
-\label{lem:FW-mutex}
+\label{lem:FW-determ}
 Given a state, $s_\varsigma$, with a deterministic heap,
 $(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
 \mathrm{heap}(s_\varsigma)$, the new heap,
@@ -444,43 +446,43 @@ that $(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime)$ is also
 deterministic.
 \end{proof}
 
-\begin{theorem}[$\rightarrow_\varsigma$ preserves location mutual exclusion]
-\label{thm:mutex}
-Given a summary state, $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, such that $s_s \rightarrow_\varsigma s_s^\prime$, where $s_s^\prime = ( \cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime\ \phi_s^\prime\ \eta_s^\prime\ \cfgnt{e}_s^\prime\ \cfgnt{k}_s^\prime )$, if the heap $(\cfgnt{L}_s\ \cfgnt{R}_s)$ is location mutual exclusive then the heap after the transition, $(\cfgnt{L}_s^\prime\ \cfgnt{R}_s^\prime)$ is also location mutual exclusive.
-\begin{comment}
-If we have a reachable summary state $s_s = ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, then for any reference $r \in \cfgnt{L}_s^\leftarrow$
-$$ 
-\begin{array}{l}
-\forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_s(\cfgnt{r})\ (\forall (\phi_\beta\ \cfgnt{l}_\beta) \in \cfgnt{L}_s(\cfgnt{r})\ ( \\
-\ \ \ \ (\cfgnt{l}_\alpha \neq \cfgnt{l}_\beta) \Rightarrow ((\phi_\alpha \wedge \phi_\beta) = \cfgt{false})))
-\end{array}
-$$
-\end{comment}
-\end{theorem}
+\begin{lemma}[$\rightarrow_J$ preserves heap determinism]
+\label{lem:J-determ}
+Given a state, $s_\varsigma$, with a deterministic heap,
+$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
+\mathrm{heap}(s_\varsigma)$, the new heap,
+$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
+\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the
+Javalite relation, $s_\varsigma \rightarrow_J s_\varsigma^\prime$, is
+also deterministic.
+\end{lemma}
 \begin{proof}
-The proof will proceed inductively. 
+Proof by definition of $\rightarrow_J$ in \figref{fig:javalite-common}.
 
-(MUST SHOW IN THE FINAL THEOREM with statement that NO OTHER RULES MODIFY THE HEAP) Base Case: Let $s_s$ be an initial state. By Definition~\ref{def:initstate}, for every reference $r_i \in \cfgnt{L}_s^\leftarrow$, the set $\cfgnt{L}_s(r_i)$ contains at most one element. Thus, the requirement that $l_\alpha \ne l_\beta$ is never met, and the Theorem is vacuously true.
-
-
-We now use this result to show that the mutual exclusion property holds for state $s_s^\prime$. The relation between the L-function from the final intermediate state $\cfgnt{L}^\prime$ and the L-function in $s_s^\prime$ is $ \cfgnt{L}_{s^\prime} = \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}^\prime,\cfgnt{R}^\prime,\cfgnt{r},\cfgnt{f},\phi_g\rp ]$, where a new value set is created based on the $\mathbb{VS}$ function. 
-
-
-Suppose we have a field write instruction. This case is nearly identical as the field read. In this instruction, a new value set is created. The members of the value set have the form $(\phi\wedge \phi^\prime\ \ l)$. Choose any two distinct members of the value set, $(\phi_\alpha \wedge \phi_\alpha^\prime\ \ l_\alpha)$ and $(\phi_\beta \wedge \phi_\beta^\prime\ \ l_\beta)$. If $\phi_\alpha \ne \phi_\beta$, we know that exclusivity holds because $\phi_\alpha = \neg \phi_\beta$, so $\phi_\alpha$ and $\phi_\beta$ are therefore exclusive. If $\phi_\alpha = \phi_\beta$, we know that exclusivity holds because $\phi_\alpha^\prime$ and $\phi_\beta^\prime$ came from the same value set in $s_s$ and are therefore exclusive. Thus, the exclusivity property holds for any pair of constraints in the value set. Since exclusivity holds for the only new value set in $L_{s^\prime}^\rightarrow$, we are guaranteed that if exclusivity holds for $s_s$, then exclusivity holds for $s_s^\prime$.
-
-Suppose we have a "new" instruction. In this case, only one value set is added to $L_{s^\prime}^\rightarrow$, and that value set contains only one member, so exclusivity holds by default.
-
-Suppose we have any instruction other that a read, write, or new. No machine rule other than those three listed instructions modifies the $L$ function. Therefore, the exclusivity property must hold for $s_s^\prime$ in these cases.
-
-Since the exclusivity property holds for any initial state, and since it holds for any "next" state if the property holds for the previous state, we have proven the property for every symbolic state.
+Every rule in $\rightarrow_J$ except \texttt{New} leaves the heap
+unmodified. The rule for \texttt{New} adds a single new location
+($\mathrm{fresh}_\cfgnt{l}(\cfgnt{C})$) to the heap on a single new
+reference ($\mathrm{stack}_r()$). The rule also points every field in
+the new location to $\cfgnt{r}_\mathit{null}$. As none of these
+mutations alter the determinism of the heap, the new heap
+$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime)$ is also
+deterministic.
 \end{proof}
 
-\begin{corollary}
-Any state represented by any reachable summary state is a lazy state.
-\end{corollary}
-
+\begin{theorem}[$\rightarrow_\varsigma$ preserves heap determinism]
+\label{thm:determ}
+Given a state, $s_\varsigma$, with a deterministic heap,
+$(\cfgnt{L}_\varsigma\ \cfgnt{R}_\varsigma) =
+\mathrm{heap}(s_\varsigma)$, the new heap,
+$(\cfgnt{L}_\varsigma^\prime\ \cfgnt{R}_\varsigma^\prime) =
+\mathrm{heap}(s_\varsigma^\prime)$, in any state related by the
+symbolic relation, $s_\varsigma \rightarrow_\varsigma s_\varsigma^\prime$, is
+also deterministic.
+\end{theorem}
 \begin{proof}
-By Theorem \ref{thm:mutex} since the constraints on every reference are mutually exclusive, the heap constraint for any heap with a reference pointing to more than one location will be unsatisfiable, and by Definition \ref{representation} will not be represented by the summary state.
+Proof by \lemref{FA-determ}, \lemref{FW-determ}, and \lemref{J-determ}
+which represent all the rules that relate states in
+$\rightarrow_\varsigma$.
 \end{proof}
 
 %proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function

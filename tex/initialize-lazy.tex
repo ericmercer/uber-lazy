@@ -18,15 +18,15 @@
 	  \Lambda = \mathbb{UN}\lp \cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}\rp \\
       \Lambda \neq \emptyset\\
       \lp\phi_x\ \cfgnt{l}_x\rp = \mathrm{min}_l\lp \Lambda\rp\\\\
-      \cfgnt{r}_f = \mathrm{init}_r\lp \rp\\
-      \cfgnt{l}_f = \mathrm{fresh}_l\lp \cfgnt{C}\rp \\\\
+      \cfgnt{r}^\prime = \mathrm{init}_r\lp \rp\\
+      \cfgnt{l}^\prime = \mathrm{fresh}_l\lp \cfgnt{C}\rp \\\\
       \rho = \{ \lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{\leftarrow}[\cfgnt{l}_a]\rp \wedge \mathrm{type}\lp \cfgnt{l}_a\rp  = \cfgnt{C} \}\\\\
-      \theta_\mathit{new} = \{\lp \cfgt{true}\ \cfgnt{l}_f\rp \} \\\\
-      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp \cfgnt{l}_f\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ] \\\\
-      \phi^\prime = \lp\phi \wedge \cfgnt{r}_f \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho} \cfgnt{r}_f \ne \cfgnt{r}_a\rp\rp
+      \theta_\mathit{new} = \{\lp \cfgt{true}\ \cfgnt{l}^\prime\rp \} \\\\
+      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp \cfgnt{l}^\prime\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ] \\\\
+      \phi^\prime = \lp\phi \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho} \cfgnt{r}^\prime \ne \cfgnt{r}_a\rp\rp
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rinit 
-      \lp \cfgnt{L}[\cfgnt{r}_f \mapsto \theta_\mathit{new}]\ \cfgnt{R}^\prime[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}_f ]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta_\mathit{new}]\ \cfgnt{R}^\prime[ \lp \cfgnt{l}_x,\cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime ]\ \phi^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
 \and
 	\inferrule[Initialize (alias)]{

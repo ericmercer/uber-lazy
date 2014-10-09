@@ -1,17 +1,27 @@
-\section{GSE with Lazy Initialization}
+\section{Initialization of Symbolic References}
 
-A special reference, $\cfgnt{r}_\mathit{un}$, and location,
-$\cfgnt{l}_\mathit{un}$, is introduced to support lazy initialization
-in GSE. The '$\mathit{un}$' is to indicate the reference or location
-is uninitialized at the point of execution. The initial state of the
-machine maps $\cfgnt{r}_\mathit{null}$ as before and adds
-$\cfgnt{L}(\cfgnt{r}_\mathit{un}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$
+In this section we present the Javalite rewrite rules for the concrete
+as well as summary initialization of symbolic references. The
+initialization rules are defined on the bi-partite graph consisting of
+references and locations. The lazy initialization of symbolic
+references consists of three key points of non-determinism where each
+symbolic reference can be initialized non-deterministically to null, a
+new instance of the symbolic reference, or aliases to symbolic
+references of the same type previously initialized. The initialization
+in GSE consists of creating branches in the execution tree for all the
+non-deterministic choices. On the other hand, the heap summarization
+approach creates a single branch that contains the summarization for
+all the initialization in a single bi-partitate graph.
 
-A field in an object is symbolic, meaning it is uninitialized, if the
-location for the field is $\cfgnt{l}_\mathit{un}$ on some constraint. The function
-$\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
-\{\cfgnt{l}\ ...\}$ returns constraint-location pairs in which the field $\cfgnt{f}$
-is uninitialized:
+\input{initialize-lazy}
+\input{summarize-precise}
+
+
+The initialization rules are invoked when an uninitialized field in a
+symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},
+\cfgnt{R}, \cfgnt{r}, \cfgnt{f}) = \{\cfgnt{l}\ ...\}$ returns
+constraint-location pairs in which the field $\cfgnt{f}$ is
+uninitialized:
 \[
 \begin{array}{rcl}
 \mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
@@ -19,50 +29,28 @@ is uninitialized:
 & & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
 \end{array}
 \]
-where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable. The
-cardinality of the set is never greater than one in GSE and the
-constraint is always satisfiable because all constraints are
-constant. This property is relaxed in GSE with heap summaries.
+where $\mathbb{S}(\phi)$ returns true if $\phi$ is
+satisfiable. Intutively, for the reference, $\cfgnt{r}$, it constructs
+the set, $\theta$, that contains all contraint-location pairs that
+point to the field $\cfgnt{f}$ and $\cfgnt{f}$ points to
+$\cfgnt{l}_\mathit{un}$. The cardinality of the set, $\theta$ is never
+greater than one in GSE and the constraint is always satisfiable
+because all constraints are constant. This property is relaxed in GSE
+with heap summaries.
 
-\input{initialize-lazy}
+The rules in~\figref{fig:lazyInit} present the rewrite rules for the
+concrete initialization of symbolic heap objects.  These rules are
+invoked until a fix pointed is reached. 
+
+The initialize (null) rewrite rule in~\figref{fig:lazyInit} first
+checks that the field, $\cfgnt{r}$ is uninitialized. The fresh method
+returns a new input heap reference from the partition 
+
+
+\section{Accessing and Writing to Field References}
+
+\section{Equality and InEquality of References}
+
 \input{lazy-fig}
 
-\begin{comment}
-NOT SURE THIS NEEDS TO BE HERE ANYMORE
-Generalized symbolic execution with lazy initialization is a technique
-to apply symbolic execution to non-primitive data types (i.e.,
-objects) \cite{GSE03}. The approach initializes each symbolic object
-to be either null, a new instance of the object, or an alias to an
-object previously created as part of lazy initialization. Each of
-these outcomes is a possible choice, and a model checker is able to
-exhaustively enumerates these choices effectively creating all
-possible concrete heaps under the choice sets. The approach is first
-formalized in this section and then extended to describe the precise
-heap summaries.
 
-
-Many of these concrete
-heaps explore redundant control flow paths in the program under test,
-but since symbolic model checking is stateless, subject to a bound to
-terminate the search, the model checker needlessly explores many
-redundant state leading to severe state explosion.
-
-A reference is a node that gathers the possible store locations for an
-object during symbolic execution. Each store location is guarded by a
-constraint that sets the conditions under which the edge is valid. Intuitively, the
-reference is a level of indirection between a variable and the store,
-and the reference is used to group a set of possible store locations
-each predicated on the possible aliasing in the associated constraint.
-For a variable (or field) to access any particular store location
-associated with its reference, the corresponding constraint must be
-satisfied.
-
-Locations are boxes in the graphical representation and indicated with
-the letter $l$ in the math. References are circles in the graphical
-representation and indicated with the letter $\cfgnt{r}$ in the
-math. The special symbol $\bot$ is an uninitialized reference. Edges
-from locations are labeled with field names $\cfgnt{f}$. Edges from
-the references are labeled with constraints $\phi \in \Phi$ (it is
-assumed that $\Phi$ is a power set over individual constraints and
-$\phi$ is a set of constraints for the edge).
-\end{comment}

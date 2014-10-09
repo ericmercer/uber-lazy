@@ -1,4 +1,5 @@
-\section{Javalite}
+\section{Preliminaries}
+
 \figref{fig:surface-syntax} defines the surface syntax for the
 Javalite language \cite{saints-MS}. \figref{fig:machine-syntax} is the
 machine syntax. Javalite is syntactic machine defined as rewrites on a
@@ -8,8 +9,8 @@ local variables, a (K)ontinuation for what is to be executed next, and
 a (S)tore for the heap.
 
 \input{surface-syntax}
-\input{machine-syntax}
 
+\subsection{Environment}
 The environment, $\eta$, associates a variable $\cfgnt{x}$ with a
 value $\cfgnt{v}$. The value can be a reference, $\cfgnt{r}$ or one of
 the special values $\cfgt{null}$, $\cfgt{true}$, or
@@ -22,36 +23,5 @@ in the environment. The notation $\eta^\prime = \eta[\cfgnt{x} \mapsto
 just like $\eta$ only the variable $\cfgnt{x}$ now maps to
 $\cfgnt{v}$.
 
-The heap is a labeled bipartite graph consisting of references,
-$\cfgnt{r}$, and locations, $\cfgnt{l}$. The machine syntax in
-\figref{fig:machine-syntax} defines that graph in $\cfgnt{L}$, the
-location map, and $\cfgnt{R}$, the reference map. As done with the
-environment, $\cfgnt{L}$ and $\cfgnt{R}$ are treated as partial
-functions where $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set
-of location-constraint pairs in the heap associated with the given
-reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
-reference associated with the given location-field pair in the
-heap. 
 
-As the updates to $\cfgnt{L}$ and $\cfgnt{R}$ are complex in the
-machine semantics, predicate calculus is used to describe updates to
-the functions. Consider the following example where $\cfgnt{l}$ is
-some location and$\rho$ is a set of references.
-\[
-\cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \cfgt{true}\ l\rp \}][\forall \cfgnt{r}^\prime \in \rho\ \lp \cfgnt{r}^\prime \mapsto \lp \cfgt{true}\ l_\mathit{null}\rp \rp ]
-\]
-The new partial function $\cfgnt{L}^\prime$ is just like $\cfgnt{L}$ only it
-remaps $\cfgnt{r}$, and it remaps all the references in $\rho$. 
-
-The location $\cfgnt{l}_\mathit{null}$ is a special location in the heap
-to represent null. It has a companion reference
-$\cfgnt{r}_\mathit{null}$. The initial heap for the machine is defined
-such that $\cfgnt{L}(\cfgnt{r}_\mathit{null}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$
-
-The initial state of the machine needs to be defined.
-
-\input{javalite-common}
-
-The rewrite rules that define the Javalite semantics are in
-\figref{fig:javalite-common}.
 

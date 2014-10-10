@@ -1,45 +1,60 @@
-\section{Background and Motivation}
-\label{motivations}
+\section{Overview}
+\label{sec:overview}
 
-In this section we present the background on state of the art
-techniques that have been developed to handle data non-determinism
-arising from complex data structures. We present an overview of lazy
-initialization and lazier\# initialization. We also present a brief
-description of the two bounding strategies used in symbolic execution
-in heap manipulating programs. Next we present a motivating examples
-where current concrete initialization of the heap structures struggle
-to scale to medium sized program due to non-determinism introduced in
-the symbolic execution tree. We use this example to motivate the need
-for a more truly symbolic and compact representation of the heap in a
-manner similar to that of primitive types.
+In this section we present an overview of the methodology for
+computing heap summaries lazily for generalized symbolic execution
+and illustrate its application to a small example. We begin with
+a brief explanation of the two supporting technologies.
 
-Generalized symbolic execution technique generates a concrete
-representation of connected memory structures using only the implicit
-information from the program itself.  In the original lazy
-initialization algorithm, symbolic execution explores different heap
-shapes by concretizing the heap at the first memory access (read) to
-an un-initialized symbolic object. At this point, a non-deterministic
-choice point of concreate heap locations is created that includes: (a)
-null, (b) an access to a new instance of the object, and (c) aliases
-to other type-compatible symbolic objects that have been concretized
-along the same execution path~\cite{GSE:TACAS2003}.  The number of
-choices explored in lazy initialization greatly increases the
-non-determinism and often makes the exploration of the program state
-space intractable.
+\subsection{Generalized Symbolic Execution}
 
-%Various improvements have been proposed to reduce the amount of
-%nondeterminism from lazy initialization. One such optimization,
-%introduced in \cite{Kiasan06} , is called lazier\#
-%initialization.
-The Lazier\# algorithm is an improvement of the lazy initialization
-and it pushes the non-deterministic choices further into the execution
-tree. In the case of a memory access to an uninitialized reference
-location, by default, no choice point is created. Instead, the read
-returns a unique symbolic reference representing the contents of the
-location. The reference may assume any one of three states:
-uninitialized, non-null, or initialized. The reference is returned in
-an uninitialized state, and only in a subsequent memory access is the
-reference concretely initialized.
+The traditional notion of symbolic 
+execution~\cite{clarke76TSE,King:76} was developed in the
+context of sequential programs with a fixed number of program
+variables having primitive types, e.g., integer, Boolean.
+\emph{Generalized symbolic execution (GSE)}~\cite{GSE03} extends
+traditional symbolic execution to enable analysis of heap
+manipulating software written in commonly used imperative
+languages such as Java and C++. 
+GSE enables context and flow sensitive analysis of complex
+and potentially unbounded data structures by
+constructing the heap ``lazily'' during symbolic execution,
+generating potential heap structures based on program semantics.
+The original GSE algorithm uses lazy initialization in which
+symbolic execution explores different heap structures
+by materializing the heap at the first memory access (read) of
+an uninitialized symbolic object. At this point, a non-deterministic
+choice point of heap locations is created that includes three cases:
+(1) a null
+object, (2) a new instance of the object, and (3) aliases
+to other type-compatible symbolic objects that have been materialized
+along the same execution path~\cite{GSE03}.  
+Improvements to the original lazy initializtion algorithm include the 
+\emph{lazier} and \emph{lazier\#} algorithms, implemented as part of the 
+\emph{Bogor$/$Kiasan} framework~\cite{Kiasan06,Kiasan07}, which
+reduce the amount of nondeterminism in the lazy algorithm by
+delaying initialization, sometimes indefinitely. 
+Although the lazy initialization algorithms extend symbolic
+analysis to heap manipulating software through partially initialized
+structures created on-the-fly, the materialization process
+exacerbates the state space explosion problem and may generate
+heap structures which, because of size their, exceed the capabilities
+of the materialization technique.
+
+\subsection{Heap Summarization Techniques}
+
+\subsection{Our Approach}
+
+Our approach is inspired by two state-of-the-art techniques: Generalized 
+Symbolic Execution (GSE) and heap summarization techniques. Like GSE,
+our approach constructs the heap lazily, i.e., materializing the heap
+on-the-fly during symbolic execution. However, unlike GSE, we create
+a compact representation of the heap, i.e., a heap summary, which eliminates
+isomorphic heap shapes without losing precision. The heap summaries computed
+by our approach have two important advantages: 1) they are capable of 
+handling arbitrary data structures, including recursive data structures,
+and, 2) because of lazy initialization, dynamic bounding can be use to
+bound input data structures.
 
 \begin{figure}
 \begin{tabular}[c]{l}

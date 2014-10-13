@@ -38,8 +38,60 @@ pairs that are satisfiable after this strengthening with the inclusion of the gl
 \input{lazy-fig}
 \input{precise-fig}
 
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}[c]{c}
+\scalebox{0.91}{\input{faYHeap.pdf_t}} \\
+\end{tabular}
+\end{center}
+\caption{field access for this.y}
+\label{fig:faHeap}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}[c]{c}
+\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\
+\end{tabular}
+\end{center}
+\caption{field write for this.x = this.y}
+\label{fig:faHeap}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}[c]{l}
+$\Psi_x = \{ (true, l_0, r_1^i) \}$\\
+$ST (L, r_3^s, \phi, \phi_g)$ \\
+$\theta = \{ (\phi_{2a}\; l_\mathit{null} ) (\phi_{2b}\; l_2) (\phi_{2c}\; l_1) \}$\\
+$ST(L, r_0, \phi, \phi_g)$\\
+$\theta = \{ \}$\\
+\end{tabular}
+\end{center}
+\caption{field write for this.x = this.y sets}
+\label{fig:faHeapSets}
+\end{figure}
+
 \subsection{Equality and InEquality of References}
 
 \input{lazy-eq}
+
+\begin{figure}
+\begin{tabular}[c]{l}
+$L(r_1^i) = \{ (\phi_{1a}\; l_\mathit{null})\; (\phi_{1b}\; l_1) \}$ \\
+$L(r_2^i) = \{ (\phi_{2a}\; l_\mathit{null}),\; (\phi_{2b}\; l_2),\; (\phi_{2c}\; l_1) \} $\\
+  $\theta_0 = \{ \} $\\
+$\theta_1 = \{ \phi_{2b}\} $\\ \hline
+Equals true \\
+$\theta_\alpha = \{ (\phi_{1a}\; \wedge\; \phi_{2a} ) (\phi_{1b}\; \wedge\; \phi_{2c} ) \}$\\
+$\phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} $\\ \hline
+Equals false \\
+$\theta_\alpha = \{ (\phi_{1a}\; \implies\; \neg\phi_{2a} ) (\phi_{1b}\; \implies\; \neg\phi_{2c} ) \}$\\
+$\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wedge (\phi_{1b}\; \implies\; \neg\phi_{2c} )  \wedge \phi_{2b} $\\ \hline
+\end{tabular}
+\caption{equals true for this.x == this.y}
+\label{fig:eqs-true}
+\end{figure}
 
 \input{precise-eq}

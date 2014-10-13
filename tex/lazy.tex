@@ -18,6 +18,59 @@ all the initialization in a single bi-partitate graph.
 \input{initialize-lazy}
 \input{summarize-precise}
 
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}[c]{c|c|c|c}
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{origHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{l}
+$\rho := \{ (r_1^i, r_1^i \neq r_\mathit{null}, l_1 \}$ \\
+$\theta_\mathit{null} := \{ ( r_2^i = r_\mathit{null}, l_\mathit{null}) \}$\\
+$\theta_\mathit{new} := \{ ( r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i, l_2) \}$\\
+$\theta_\mathit{alias} := \{ ( r_1^i \neq r_\mathit{null} \wedge r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i, l_1) \}$\\
+$\theta_\mathit{orig} := \{ \}$ \\
+$\phi_{\mathit{1a}} := r_1^i = r_\mathit{null} $ \\
+$\phi_{\mathit{1b}} := r_1^i \neq r_\mathit{null} $  \\
+$\phi_{\mathit{2a}} := r_2^i = r_\mathit{null}$ \\
+$\phi_{\mathit{2b}} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i$ \\
+$\phi_{\mathit{2c}} :=  r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i $ \\
+\end{tabular} \\
+\end{tabular}
+\end{center}
+\caption{initialize this.x and this.y}
+\label{fig:initHeap}
+\end{figure*}
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}[c]{c}
+\scalebox{0.91}{\input{faYHeap.pdf_t}} \\
+\end{tabular}
+\end{center}
+\caption{field access for this.y}
+\label{fig:faHeap}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}[c]{c}
+\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\
+\end{tabular}
+\end{center}
+\caption{field write for this.x = this.y}
+\label{fig:faHeap}
+\end{figure}
+
+
+
+%\resizebox{3.4}{3.3}{\input{../figs/examples/origHeap.pdf_t}}
 
 The initialization rules are invoked when an uninitialized field in a
 symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},

@@ -1,81 +1,10 @@
-\subsection{Heap: A Bi-partiate Graph} 
 
-\input{machine-syntax}
 
-The heap in this work is a labeled bipartite graph consisting of
-references, $\cfgnt{r}$, and locations, $\cfgnt{l}$. The machine
-syntax in \figref{fig:machine-syntax} defines that graph in
-$\cfgnt{L}$, the location map, and $\cfgnt{R}$, the reference map. As
-done with the environment, $\cfgnt{L}$ and $\cfgnt{R}$ are treated as
-partial functions where $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is
-the set of location-constraint pairs in the heap associated with the
-given reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is
-the reference associated with the given location-field pair in the
-heap.
-
-As the updates to $\cfgnt{L}$ and $\cfgnt{R}$ are complex in the
-machine semantics, predicate calculus is used to describe updates to
-the functions. Consider the following example where $\cfgnt{l}$ is
-some location and$\rho$ is a set of references.
-\[
-\cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \cfgt{true}\ l\rp \}][\forall \cfgnt{r}^\prime \in \rho\ \lp \cfgnt{r}^\prime \mapsto \lp \cfgt{true}\ l_\mathit{null}\rp \rp ]
-\]
-The new partial function $\cfgnt{L}^\prime$ is just like $\cfgnt{L}$ only it
-remaps $\cfgnt{r}$, and it remaps all the references in $\rho$. 
-
-The location $\cfgnt{l}_\mathit{null}$ is a special location in the heap
-to represent null. It has a companion reference
-$\cfgnt{r}_\mathit{null}$. The initial heap for the machine is defined
-such that $\cfgnt{L}(\cfgnt{r}_\mathit{null}) = \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$
-
-You can think references as a pointers to sets of locations. More concretely, a reference is an integer that the $R$ function maps to a set of constraint, location pairs that define where it points to. Within a machine state, references are string encodings of integers.
-
-\begin{definition}
-The set of \textbf{references} $\mathcal{R}$ is defined as the set of natural numbers
- $$\mathcal{R} = \mathbb{N}$$
-\end{definition}
-
-In order to make the distinction between different types of references, we partition the set of references using modular arithmetic. Stack references are those references which are created as a result of a field read. The total number of references in a representing state and a represented state are generally not the same. However, the number of references on the stack in either state is always the same. 
-
-\begin{definition}
-The set of \textbf{stack references} $\mathcal{R}_t$ is defined as
- $$\mathcal{R}_t =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 0\}$$. 
-\end{definition}
-
-Input heap references are references that exist prior to program execution in the symbolic input heap. While this set of references may be infinite, they are discovered one at a time via lazy initialization.
-
-\begin{definition}
-The set of \textbf{input heap references} $\mathcal{R}_h$ is defined as
- $$\mathcal{R}_h =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 1\}$$. 
-\end{definition}
-
-\begin{definition}
-The set of \textbf{new heap references} $\mathcal{R}_f$ is defined as
- $$\mathcal{R}_f =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 2\}$$. 
-\end{definition}
-
-\begin{definition}
-For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \textbf{preimage} $f^\leftarrow$ are defined as
-\begin{align}
- f^\rightarrow &= \{ f(a) \mid a \in A\}\\
- f^\leftarrow &= \{ a \mid f(a) \in B \}
- \end{align}
- The bracket notation $ f^\rightarrow [C] $ is used to denote that the image is drawn from a specific subset:
- \begin{align}
- f^\rightarrow [C] &= \{ f(a) \mid a \in C\}\\
- f^\leftarrow [D] &= \{ a \mid f(a) \in D \}
- \end{align}
- Where $C \subset A$ and $D \subset B$
-\end{definition}
-
-A special reference, $\cfgnt{r}_\mathit{un}$, and location,
-$\cfgnt{l}_\mathit{un}$, is introduced to support lazy
-initialization. The '$\mathit{un}$' is to indicate the reference or
-location is uninitialized at the point of execution.
-
-\subsection{Common Execution Semantics}
+\subsection{Transition System}
 
 In Javalite, states are strings that match a certain pattern. 
+
+\input{machine-syntax}
 
 \begin{definition}
 \label{def:state}

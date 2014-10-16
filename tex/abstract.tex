@@ -1,16 +1,21 @@
 A fundamental challenge of using symbolic execution for software
 analysis has been the treatment of dynamically allocated data.
-State-of-the-art techniques have addressed this challenge
-through the use of heap summaries and by constructing the concrete
-heap ``lazily.'' In this work, we present a novel heap analysis technique
-which takes inspiration from both approaches and builds exact heap summaries
-lazily during symbolic execution. Our technique enables
-exact analysis of program properties and
-analysis of arbitrary recursive data structures. It also supports
-dynamic bounds for linked data structure inputs, and
-efficient sub-division of the underlying constraint problem.
-We demonstrate the precision and scalability of our approach
-in the Symbolic PathFinder framework for analyzing Java programs.
+State-of-the-art techniques have addressed this challenge through
+either (a) the use of summaries that over-approximate possible heaps, or
+(b) by materializing a concrete heap lazily during generalized
+symbolic execution. In this work, we present a novel heap
+initialization and analysis technique which takes inspiration from
+both approaches and constructs precise heap summaries lazily during
+symbolic execution.  Our approach is 1) \emph{scalable}: it reduces the
+points of non-determinism compared to generalized symbolic execution
+and explores each control-flow path only once for any given set of
+isomorphic heaps, 2) \emph{precise}: at any given point during symbolic
+execution, the symbolic heap represents the exact set of feasible
+concrete heap structures for the program under analysis, and 3)
+\emph{expressive}: the symbolic heap can represent recursive data
+structures. We demonstrate the precision and scalability of our
+approach by implementing it as an extension to the Symbolic PathFinder
+framework for analyzing Java programs.
 
 %and by using 
 %materializing objects on the concrete heap ``as needed'' and

@@ -1,16 +1,6 @@
 \subsection{Heap Properties}
 
 
-%\begin{definition}
-%A state $s = (\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k})$ is a \textbf{lazy state} if and only if $\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (|\cfgnt{L}(\cfgnt{r})| = 1)$]
-%\end{definition}
-%
-%\begin{definition}
-%A state $s = (\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k})$ is a \textbf{summary state} if and only if 
-%$\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (|\cfgnt{L}(\cfgnt{r})| \ge 1)$.
-%A lazy state is also a summary state by definition.
-%\end{definition}
-
 \begin{definition}
 A heap, $(\cfgnt{L}\ \cfgnt{R})$, is \textbf{deterministic} if and only if 
 \[
@@ -21,96 +11,54 @@ A heap, $(\cfgnt{L}\ \cfgnt{R})$, is \textbf{deterministic} if and only if
 \]
 \end{definition}
 
-%\begin{definition}
-%A \textbf{state sequence} is a sequence of states denoted as $\Pi_n = s_0,s_1,...,s_n$. A \textbf{feasible state sequence}, $\Pi_n^\phi = s_0,s_1,...,s_n$ is consistent with the transition: $\forall i\ (0 \leq i < n \Rightarrow s_i \rightarrow_{\Phi} s_{i+1})$, where $s_0\in \mathcal{S}_0$.
-%\end{definition}
-%
-%%For 
-%\begin{comment}
-%\begin{definition}
-%A \textbf{feasible state sequence} is defined as a sequence of states resulting from repeated application of the state transition relation to some initial state $s_0\in \mathcal{S}_0$: $$\Pi_n = s_0,s_1,...,s_n$$ where the relation $s_i \rightarrow_{\Phi} s_{i+1}$ holds for all $i \in \{ i | 0 \leq i < n \}$
-%\end{definition}
-%\end{comment}
-
-%For these definitions, we should bring in the notion of 
-%\begin{definition}
-%The set of \textbf{lazy states} $\mathcal{S}_\ell$ is defined as
-%\begin{align}
-%\mathcal{S}_\ell = \{s_n \mid \exists \Pi_n^\ell\ (\Pi_n^\ell = s_0, \ldots, s_n)\}
-%\end{align}
-%\end{definition}
-%
-%\begin{definition}
-%The set of \textbf{summary states} $\mathcal{S}_s$ is defined as
-%\begin{align}
-%\mathcal{S}_s = \{s_n \mid \exists \Pi_n^s\ (\Pi_n^s = s_0, \ldots, s_n)\}
-%\end{align}
-%\end{definition}
-
 At times, it is useful to classify states in terms of patterns that the state strings match. In concrete terms, this is similar to asking what will be the next instruction to execute. For example, we know that left-hand states matching the pattern $ \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ only appear in the Field Access rule.
 
 \begin{definition}
-The sets $\mathcal{FA}$, $\mathcal{FW}$, $\mathcal{RC}$, and  $\mathcal{NW}$ are defined as the sets of states having the forms $ \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$,  $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$, $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$, and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp$ respectively.
+The universe of reachable states is $S$. The universe is further partitioned into states that activate different rules.
+\begin{itemize}
+\item Field Access, $S_\mathit{FA} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}_0\rp) \}$
+\item Field Write,  $S_\mathit{FW} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{x},\cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}_0\rp) \}$
+\item Equals, $S_\mathit{EQ} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}_0 (\cfgnt{e} = \cfgnt{r}_0) \wedge \exists r_1, k_1(\cfgnt{k} = \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}_1\rp \}$
+\item New, $S_\mathit{N} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{C}\ (\cfgnt{e} = \lp \cfgt{new}\ \cfgnt{C}\rp) \}$
+\end{itemize} 
 \end{definition}
 
-%\begin{definition}
-%\label{def:interstate}
-%\textbf{Intermediate states} are imaginary placeholder states used when reasoning about complex transition rules in terms of simpler sub-rules. For example, the transition $s_x \rightarrow_\phi s_y$ may be equivalent to a sequence of simpler transitions $s_x \rightarrow_\alpha s_a \rightarrow_\beta s_b \rightarrow_\gamma s_y$.  When reasoning about this equivalent transition sequence, it can be useful to discuss the notional intermediate states $s_a$ and $s_b$. However, it is important to remember that $s_a$ and $s_b$ are not technically involved in the transition $s_x \rightarrow_\phi s_y$, and indeed may not be part of any feasible state sequence under transition relation $\rightarrow_\phi$.
-%\end{definition}
 
 \begin{definition}
 Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = (\cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
 \end{definition}
 
-%\begin{definition}
-%A \textbf{field access descriptor} $\gamma_i$ is a tuple 
-%$$ \gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$$
-%\end{definition}
-%
-%\begin{definition}
-%An \textbf{access path} $\Gamma_n$ is a sequence of field access descriptors
-%$ \Gamma_n = \gamma_0,\gamma_1,...,\gamma_n $.
-%\end{definition}
-%
-%\begin{definition}
-%For a given access path $\Gamma_n$ the \textbf{access path constraint} $\mathbb{PC}(\Gamma_n)$ is defined as
-%$$\mathbb{PC}(\Gamma_n) =  \bigwedge \{\phi \mid \exists \gamma \in \Gamma_n \ (\gamma = (\cfgnt{r}\ \phi\ \cfgnt{e}\ \cfgnt{f}))\}$$  
-%\end{definition}
-%
-%\begin{definition}
-%For a given state $s= ( \cfgnt{L}_s\ \cfgnt{R}_s\ \phi_s\ \eta_s\ \cfgnt{e}_s\ \cfgnt{k}_s )$, a \textbf{valid access path} $\Gamma_n^s = \gamma_0,\gamma_1,...,\gamma_n$ satisfies the properties
-%\begin{align*}
-%\cfgnt{r}_0 &\in \mathit{refs}(\eta_s) \\
-%\mathbb{S}(&\phi_s \wedge \mathbb{PC}(\Gamma_n^s)) \\
-%\forall i & \in \mathbb{N}\ ( 0 \leq i < n \Leftrightarrow \gamma_i \in \Gamma_n^s\  \wedge\\
-%&\ \ \ \  \gamma_{i+1} \in \Gamma_n^s\  \wedge\\
-%&\ \ \ \  (\phi_i\ \cfgnt{l}_i)\in \cfgnt{L}_s(\cfgnt{r}_i)\ \wedge \\
-%&\ \ \ \  \cfgnt{r}_{i+1} = \cfgnt{R}_s(\cfgnt{l}_i,\cfgnt{f}_i)\ \wedge\\
-%&\ \ \ \ (\phi_{i+1}\ \cfgnt{l}_{i+1}) = \cfgnt{L}_s(\cfgnt{r}_{i+1}) )
-%\end{align*}
-%where $\gamma_i = (\cfgnt{r}_i\ \phi_i\ \cfgnt{l}_i\ \cfgnt{f}_i)$
-%\end{definition}
 
-We will later be concerned with establishing whether one state represents another state. We want to say that one state represents another state if equivalent paths lead out from each state. This path-centric notion of equivalence is known as functional equivalence. In establishing functional equivalence between states, it is important to determine whether the heaps within the states are themselves functionally equivalent. Two heaps are functionally equivalent if the same sequence of field accesses in each heap produces equivalent results. We define heap functional equivalence using a co-inductive definition of homomorphism over the access paths in the heaps.
+We will later be concerned with establishing whether one state
+represents another state. We want to say that one state represents
+another state if equivalent paths lead out from each state. This
+path-centric notion of equivalence is known as functional
+equivalence. In establishing functional equivalence between states, it
+is important to determine whether the heaps within the states are
+themselves functionally equivalent. Two heaps are functionally
+equivalent if the same sequence of field accesses in each heap
+produces equivalent results. We define heap functional equivalence
+using a co-inductive definition of homomorphism over the access paths
+in the heaps.
 
 \begin{definition}
 \label{def:homomorphism}
-A \textbf{homomorphism} $s_x \rightharpoonup_{h} s_y$, from state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$ to state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$, is defined as follows: 
+A \textbf{homomorphism} $s_p \rightharpoonup_{h} s_q$, from state $s_p = ( \cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$ to state $s_q = ( \cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$, is defined as follows: 
 $$
 \begin{array}{l}
- s_x \rightharpoonup_{h} s_y \Leftrightarrow \\
+ s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
 \ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f ))\ \\
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ \\
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
 \end{array}
 $$
 \begin{comment}
 $$
 \begin{array}{l}
-s_x \rightharpoonup_{h} s_y \Leftrightarrow \\
+s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
 \ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathit{fields}(\mathrm{type}(\cfgnt{l}_\beta))\ ( \\
-\ \ \ \ \ \ \ \ \ \ \ \ \forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_x(\cfgnt{R}_x (\cfgnt{l}_\beta,f ))\ ( \\
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists \phi_\beta\ ((\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_y(\cfgnt{R}_y (h(\cfgnt{l}_\beta),f )))))))\\
+\ \ \ \ \ \ \ \ \ \ \ \ \forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f ))\ ( \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists \phi_\beta\ ((\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f )))))))\\
 \end{array}
 $$
 \end{comment}
@@ -120,10 +68,10 @@ Since the access paths in any given heap are bound by certain constraints, to pr
 
 \begin{definition}
 \label{def:hc}
-Given homomorphism $s_x \rightharpoonup_{h} s_y$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_x \rightharpoonup_{h} s_y)$ is defined as:
+Given homomorphism $s_p \rightharpoonup_{h} s_q$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_p \rightharpoonup_{h} s_q)$ is defined as:
 \begin{align*}
-\mathbb{HC}(s_x \rightharpoonup_{h} s_y) &= \\
- \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_x^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_y^\rightarrow)\} 
+\mathbb{HC}(s_p \rightharpoonup_{h} s_q) &= \\
+ \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\} 
 \end{align*}
 \end{definition}
 
@@ -131,61 +79,37 @@ The representation relation combines the previously established notions of heap 
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} $\sqsubset$ is defined as follows: given state $s_y = ( \cfgnt{L}_y\ \cfgnt{R}_y\ \phi_y\ \eta_y\ \cfgnt{e}_y\ \cfgnt{k}_y )$ and state $s_x = ( \cfgnt{L}_x\ \cfgnt{R}_x\ \phi_x\ \eta_x\ \cfgnt{e}_x\ \cfgnt{k}_x )$, $s_y \sqsubset s_x $ if and only if $\eta_y = \eta_x ,\ \cfgnt{e}_y = \cfgnt{e}_x ,\ \cfgnt{k}_y = \cfgnt{k}_x$, and there exists a homomorphism $\ s_y \rightharpoonup_{h} s_x $ such that 
+The \textbf{representation relation} $\sqsubset$ is defined as follows: given state $s_p = ( \cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$ and state $s_q = ( \cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$, $s_p \sqsubset s_q $ if and only if $\eta_p = \eta_q ,\ \cfgnt{e}_p = \cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, and there exists a homomorphism $\ s_p \rightharpoonup_{h} s_q $ such that 
 \begin{equation}
 \label{eqn:valid}
- \mathbb{S}( \phi_x \wedge \mathbb{HC}(s_y \rightharpoonup_{h} s_x) ) 
+ \mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) ) 
 \end{equation}
 \end{definition}
 
 \begin{definition}
 \label{bisimulation}
-A state relation $\mathcal{R}$ is a \textbf{bisimulation} if and only if for every state $s_x$ and $s_y$ such that $s_x\ \mathcal{R}\ s_y$, the following two properties hold: 
+The functional associated to bisimulation,  $F_\sim(\sqsubset)$, is the set of all pairs of states
+$(p\ q)$ such that
 \begin{equation}
 \label{eqn:BisimulationForwards}
-\forall s_x^\prime ( s_x \rightarrow_x s_x^\prime \Rightarrow \exists s_y^\prime( (s_y \rightarrow_y s_y^\prime )\wedge (s_x^\prime\ \mathcal{R}\ s_y^\prime ))  )
+\forall p^\prime ( p \rgse p^\prime \Rightarrow \exists q^\prime( (q \rsym q^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))  )
 \end{equation}
 \begin{equation}
 \label{eqn:BisimulationBackwards}
-\forall s_y^\prime ( s_y \rightarrow_y s_y^\prime\Rightarrow \exists s_x^\prime( (s_x \rightarrow_x s_x^\prime )\wedge (s_x^\prime\ \mathcal{R}\ s_y^\prime ))  )
+\forall q^\prime ( q \rsym q^\prime\Rightarrow \exists p^\prime( (p \rgse p^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))  )
 \end{equation}
+The bisimularity relation is the greatest fixed point of the functional.
 \end{definition}
 
-Note that in the literature it is customary to define bisimulation in terms of a single labeled transition system, whereas for the purposes of this paper the definition of bisimulation refers to a pair of transition relations $\rightarrow_x$ and $\rightarrow_y$ defined by reduction rules. Since it is possible to create a union of the two rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the transitions in the reduction rules in this paper are labeled, this definition is sufficient for all of the customary properties of bisimulation to apply. For a more detailed treatment on the application of bisimulation to reduction rule systems see \cite{GSE:barbedbisimulation}.
-
-
-%\begin{definition}
-%Given a state transition function $\rightarrow_{\Phi}$, an initial state $s_0$ and a control flow sequence $\pi_n$, the \textbf{feasible state set}, $\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n)$, is defined as
-% $$
-%\begin{array}{l}
-%\mathbb{FS}(\rightarrow_{\Phi},s_0,\pi_n) = \\
-%\ \ \ \ \ \ \{s \mid \exists \Pi_n^\Phi\ (\pi_n = \mathbb{CF}(\Pi_n^\Phi) \wedge s \sqsubset \mathit{last}(\Pi_n^\Phi))\} 
-%\end{array}
-%$$
-%where $\mathit{last}(\Pi_n^\Phi)$ returns the last state on the feasible sequence.
-%\end{definition}
-%
-%\begin{definition}
-%\label{equivalent}
-%A summary state $s_s$ is \textbf{equivalent} to a set of lazy states $P$ if and only if $s_s$ represents every state in $P$ and represents no other state: 
-%$$s_s \cong P \Leftrightarrow (\forall s_i \in \mathcal{S}\ (s_i \in P \Leftrightarrow s_i \sqsubset s_s) )$$
-%\end{definition}
-%
-%\begin{definition}
-%\label{sound}
-%A state $s_s$ is \textbf{sound} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
-%$$ \forall s_\ell \in \mathcal{S}_\ell\ (s_\ell \sqsubset s_s \Rightarrow s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n) ) $$
-%\end{definition}
-%
-%\begin{definition}
-%\label{complete}
-%A state $s_s$ is \textbf{complete} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if 
-%$$ \forall s_\ell \in \mathcal{S}_\ell\ ( s_\ell \in \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)\Rightarrow s_\ell \sqsubset s_s ) $$
-%\end{definition}
-%
-%\begin{definition}
-%\label{exact}
-%A state $s$ is \textbf{exact} with respect to a transition relation, $\rightarrow_\phi$, initial state, $s_0$, and control flow path, $\pi_n$, if and only if it is both sound and complete:
-%$$ s \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$$
-%\end{definition}
+Note that in the literature it is customary to define bisimulation in
+terms of a single labeled transition system, whereas for the purposes
+of this paper the definition of bisimulation refers to a pair of
+transition relations $\rightarrow_x$ and $\rightarrow_y$ defined by
+reduction rules. Since it is possible to create a union of the two
+rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the
+transitions in the reduction rules in this paper are labeled, this
+definition is sufficient for all of the customary properties of
+bisimulation to apply. For a more detailed treatment on the
+application of bisimulation to reduction rule systems see
+\cite{GSE:barbedbisimulation}.
 

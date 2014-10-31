@@ -1,1 +1,29 @@
-\section{Experimental Results}
+\section{Empirical Evaluation}
+GSESH creates fewer execution paths than GSE, but it does so with increased path constraint complexity. Determining the impact of this tradeoff in real-world applications is an important research question. 
+
+Hypothesis
+
+\subsection{Implementation}
+
+\subsection{Bounding}
+In order to perform a practical evaluation of programs involving recursive data structures, it is generally necessary to impose some sort of bounding to eliminate the number of lazy initializations to a manageable level. While these bounds may be asserted as invariants within the program in-situ, it is more practical to apply bounding via external means. There are several bounding techniques that may be applied to both GSE and GSESH, including execution path length bounding, k-bounding and n-bounding. k-bounding and n-bounding both operate by imposing limits on the size of the symbolic input heap, but differ in how such bounds are defined. n-bounding limits the number of objects created by lazy initialization, while k-bounding limits the length of initialized reference chains. k-bounding has the property of exhaustively exploring the full breadth of a given data structure, while n-bounding tends to explore deeper heap shapes while being somewhat less thorough in breadth. In addition, k-bounding and n-bounding may be combined to adjust the desired level of approximation between depth and breadth. 
+
+While k-bounding and n-bounding are applicable to both GSE and GSESH, they are not both equally suited for comparing the two methods. The main reason for this lies in how how each bounding technique impacts the functional equivalence of the respective methods.  k-bounding preserves the functional equivalence of GSE and GSESH, a fact which can be established by induction over the length of reference chains from a given initial state. In contrast, GSE and GSESH are not generally functionally equivalent under n-bounding. The reason is that since a GSESH state must represent all possible GSE states on an execution path, it generally includes more locations than any single GSE state it represents. This difference in state counts makes it difficult to externally assert n-bounding in a manner that preserves functional equivalence between GSE and GSESH. Functional equivalence may be preserved in the case where n-bounds are asserted via in-situ invariants, but the significant increase in constraint complexity makes this approach impractical. For this reason, n-bounding is was not selected for comparing GSE to GSESH in the tests performed in this paper.
+
+In contrast to the heap-based bounds provided by k-bounding and n-bounding, execution path-length bounding works by limiting the number along any given execution path. As with other bounding techniques, the usefulness of path-length bounding hinges on whether it preserves functional equivalence. While path-length bounding preserves functional equivalence for GSE and GSESH as formulated in this paper, it does not preserve it for the algorithms as they are implemented in JPF. The reason for the discrepancy lies in how states are defined in JPF. In JPF, the notion of states is closely tied to the concept of nondeterminism. New states are created in JPF only when a nondeterministic choice is made, meaning the number of states on an execution path is tied to the number of nondeterministic choices. A discrepancy in the length of the respective execution paths may be caused by any difference in nondeterminism between the two methods. This is significant, since the nondeterminism in GSESH and GSE differs in both field reads and in reference compares. Field reads in GSESH are deterministic, whereas in GSE they may initiate a nondeterministic lazy initialization. Conversely, in GSE address compares are deterministic, but in GSESH address compares require a nondeterministic assertion over the truth of the branch condition. For this reason, path-length bounding was not used for this experimental evaluation. For future tests, we are considering inserting artificial points of nondeterminism in order to establish functional equivalence of path-length bounds between GSE and GSESH. 
+
+\subsection{Evaluation} 
+Experimental set-up
+
+Test Cases
+
+In order to evaluate the performance of GSESH, the implementation was tested against three examples: LinkedList, BinarySearchTree, TreeMap.
+The LinkedList example tests performance on linked list data structures. The test program begins by assuming an object invariant before initiating a sequence of contains() method calls. This is a challenging example for GSE because each call to the contains() method contains a new lazy initialization, which in turn creates an exponential path expansion throughout program execution. While the constraints for each path are easily solved, the sheer number of paths quickly becomes overwhelming.
+
+The BinarySearchTree example test program consists simply of asserting the object invariant for a binary search tree. This example is interesting because it demonstrates nondeterminism from both aliasing constraints created during lazy initialization, and linear constraints from evaluating conditionals over numeric symbols. 
+
+Like the BinarySearchTree test, the TreeMap test is simply an assertion of an object invariant, in this case for a red/black tree. This example serves as a stress test for GSESH, since most of the nondeterminism comes from linear constraints over the shape of the tree, rather than aliasing constraints created during lazy initialization. In this case, the path advantage for GSESH is minimized.
+
+For all tests, program complexity was adjusted via k-bounding. For the LinkedList test, the number of contains() method calls was added as an additional parameter. After the conclusion of each test, the test run-time, state count, and path counts were recorded. 
+
+Analysis

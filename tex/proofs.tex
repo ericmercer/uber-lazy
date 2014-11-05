@@ -164,15 +164,17 @@ the homomorphism after initialization on the heap in $p$ with
 $\rightarrow_I^*$ (\figref{fig:lazyInit}) and the heap in $q$ with
 $\rightarrow_S^*$ (\figref{fig:symInit}).
 
-After initialization, \textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} for $\rgse$ creates a new heap
-$(\cfgnt{L}^\prime_p [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime_p$
+After initialization, \textrm{F{\footnotesize IELD}}
+\textrm{A{\footnotesize CCESS}} for $\rgse$ relates a new heap in any
+successor state as $(\cfgnt{L}^\prime_p [\cfgnt{r}^\prime \mapsto
+  \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime_p)$, and for $\rsym$ it
+relates the heap in the only successor state as $(\cfgnt{L}^\prime_q[\cfgnt{r}^\prime \mapsto
+  \mathbb{VS}\lp
+  \cfgnt{L}^\prime_q,\cfgnt{R}^\prime_q,\cfgnt{r},\cfgnt{f},\phi_g\rp
+]\ \cfgnt{R}^\prime_q)$; each version adding in the constraint-location pair or
+value set respectively on the same reference $\cfgnt{r}^\prime$.
 
-and for $\rsym$ it relates the state 
-$$ 
-s_\sym^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{s}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
-$$
-
-The functional in \defref{} requires and forward
+The functional in \defref{bisimulation} requires and forward
 \eqref{eqn:BisimulationForwards} and backward
 \eqref{eqn:BisimulationBackwards} relationship between successor
 heaps.

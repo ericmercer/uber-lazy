@@ -6,9 +6,7 @@
 \subsection{Theorems}
 
 The goal of this section is to prove that the representation relation,
-$\sqsubset$, is a bisimulation as defined in
-\eqref{eqn:BisimulationForwards} and
-\eqref{eqn:BisimulationBackwards}.  A bisimulation is a relation over pairs of states such that whenever two states, $s_\gse$ and
+$\sqsubset$, is a bisimulation.  A bisimulation is a relation over pairs of states such that whenever two states, $s_\gse$ and
 $s_\sym$, are related in the bisimulation, $s_\gse \sqsubset
 s_\sym$, every successor, from either state, $s_\gse
 \rgse s_\gse^\prime$ or $s_\sym \rsym
@@ -106,30 +104,6 @@ Since the heap constraint is satisfiable, we know that $s_\gse^\prime \sqsubset 
 (s_\gse \rinit^* s_\gse^\prime \wedge s_\sym \rsum^* s_\sym^\prime) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime 
 \end{equation}
 
-
-%may take one of four forms: either the field is already initialized, or the uninitialized field is initialized to a new reference, the null reference, or an alias.
-%
-%We now show that the following four cases for $s_\gse^*$ are represented in $s_\sym^*$. For the following cases, let $\rightharpoonup_{h}$ be the homomorphism such that $s_\gse \rightharpoonup_{h} s_\sym$, let $\cfgnt{l}_\gse = \cfgnt{L}_\gse(\cfgnt{r})$, and let $\cfgnt{l}_\sym = h(\cfgnt{l}_\gse) $
-%
-%Case 1: Suppose $\cfgnt{R}_\gse(\cfgnt{l}_\gse) \neq \bot$. In this case, because $s_\gse \rightharpoonup_{h} s_\sym$, we know that $\cfgnt{R}_\sym(\cfgnt{l}_\sym) \neq \bot$. This means that in the Summarize rule, $\cfgnt{l}_\sym \notin \Lambda$, and therefore, $\cfgnt{R}_\sym(\cfgnt{l}_\sym) = \cfgnt{R}_{s^*}(\cfgnt{l}_\sym) $. By extension, 
-%
-%Case 2: Suppose the field is uninitialized, and the "new" rule gets executed. We add a new location, so this case is represented.
-%
-%Case 3: Suppose the field is uninitialized, and the "null" rule gets executed. We add a link to the null location, so this case is represented.
-%
-%Case 4: Suppose the field is uninitialized, and the "alias" rule gets executed. We add links to all possible aliases, so this case is also represented. In fact, we add more links than we really need, but the extra ones are infeasible for the case in question so it's not a problem. 
-%
-%%for the next case, we need to show that the constraints in the symbolic heap don't allow any infeasible heaps. The key to this will be in showing that the constraints are mutually exclusive and collectively exhaustive. Mutually exclusive constraints are required because GSE heaps only point to one place at at time. Collectively exhaustive constraints are required to eliminate any other possible heaps. We could start by explicitly enumerating the members of the product feasible set, and working from there to show that the symbolic heap is equivalent to that set. Or, we might do this on a case-by-case basis to show that for an arbitrary GSE state, any of it's three possible target states is in the feasible set.
-%
-%Having demonstrated each of these four cases, we now know that 
-%$$s_\gse^* \in \{\forall s_\gse^\prime | \exists s_\gse \sqsubset s_\sym (s_\gse \rightarrow_I^* s_\gse^\prime)  \} \Rightarrow  s_\gse^* \sqsubset s_\sym^*$$
-
-%Comment:
-% there is a flaw in the following argument: we claim that "every reference points to the right place at the right time" However, this statement is misleading. The truth is that the way we've defined representation, we can only guarantee that every reference points to the right place at some right time, not every right time like we imply here. The rest of the argument falls apart unless we can first prove that every reference points to the right place at every right time. So, instead of saying A points to B some time when condition X is true, we need to say that A points to B every time condition X is true. In other words, that condition X implies A points to B. This is easy to prove if we don't introduce new variables into the Heap Condition. However, in this case we certainly do introduce a new variable: it's the new reference that we put into the empty field.
-%Flawed argument:
-%We now prove the reverse case, that $s_\sym^*$ represents no infeasible states. We modified no references from the previous heap, and did not alter the global invariant. This means that every old reference points to the right place at the right time, and that no old reference points to the wrong place at the wrong time.  Thus, if there is a problem with a reference, it must be with one of the new references we created. Since we have already proved that every reference points to the right place at the right time (WARNING: though the preceding statement may be true, we haven't actually proved it yet. See the above comment), there must be some field that points to the wrong place at the wrong time. Since we know that every field points to the right place at the right time, and since we know that the constraints are mutually exclusive, we know that the "wrong time" can never be at the same time as the "right time". Since the right time is every time due to Theorem~\ref{thm:colex}, this implies that the wrong time is no time. 
-
-%okay, here is another crack at proving soundness
 We now prove the reverse case, that $s_\sym^*$ represents no infeasible states. Suppose that $s_\sym^\prime$ represents some infeasible state. This means that we represent some GSE state that has some reference r which points somewhere that no place in the feasible set points to. Since we don't change the path condition, all the old references still point exactly to the same places they used to. 
 
 So, the problem must be with one of the new references. All of the new references point to either a new location, the null location, the uninitialized location, or some alias. In the Summarize rule, the values and constraints for the new, null, uninitialized, and alias locations are contained in the sets $\theta_{new}$, $\theta_{null}$, $\theta_\mathit{orig}$, and $\theta_{alias}$. Since the null, and uninitialized locations are already accounted for by the homomorphism $s_\gse \rightharpoonup_h s_\sym$, and since a new location was created symmetrically for both $s_\gse^\prime$ and $s_\sym^\prime$, the problem must be with some alias location that is part of $s_\sym$ but not $s_\gse$. This means that there must be a feasible path to a target location that does not exist for any GSE heap. So, pick an arbitrary GSE heap containing the location and field in question. If said target location does not exist, then there is no reference in the GSE heap pointing to that location. In the symbolic heap, the path constraint on the path leading to the undesired target contains an aliasing condition that states that the source reference only points to this target location on condition that the parent reference points there. However, since we already know that no other reference in the GSE heap points there, this condition must be infeasible. Therefore, it is not part of the represented state. We have a contradiction. Therefore, there is no alias that points somewhere it's not supposed to.
@@ -142,37 +116,74 @@ $$s_\sym^*  \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\
 \end{proof}
 
 %we need to define how r' is arrived at for this one to work...
-\begin{lemma}[Bisumlation for $\rightarrow_{\sym|\mathit{FA}}$]
+\begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
+If two field access states are related in the represented by relation,
+then they are also related in the functional associated to bisumlation.
 \label{lem:access}
-%If there are symbolic states $s_\sym$ and $s_\sym^\prime$, control sequences $\pi_n$ and $\pi_{n+1}$, initial state $s_0$, and reference $\cfgnt{r}^\prime$ such that the following conditions hold:
-%\begin{align}
-%s_\sym &= \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp \\
-%s_\sym &\cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp \\
-%\cfgnt{r}^\prime &= \mathrm{fresh}_r\lp \rp \\
-%\pi_{n+1} &=\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp \\
-%s_\sym &\rsym s_\sym^\prime
-%\end{align}
-%%$$s_\sym = \lp \cfgnt{L}_{\mathcal{S}}\ \cfgnt{R}_{\mathcal{S}}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$$ 
-%%$$s_\sym \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_n\rp$$ 
-%%$$\pi_{n+1} =\pi_n\ \lp \eta\ \cfgnt{r}^\prime\ \cfgnt{k} \rp$$ 
-%
-%then 
-%$$s_\sym^\prime \cong \mathbb{FS}\lp \rightarrow_{\phi},s_0,\pi_{n+1} \rp$$
-If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FA}$ and $s_\gse \sqsubset s_\sym$, then:
-\begin{equation}
-\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
-and
-\begin{equation}
-\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
+$$
+\forall p \in S_\mathit{FA}\ (\forall q \in S_\mathit{FA}\ (p \sqsubset q \Rightarrow (p\ q) \in F_\sim(\sqsubset)))
+$$
 \end{lemma}
 
 \begin{proof}
-Begin by assuming the conditions stated in Lemma~\ref{lem:access}. By Lemma~\ref{lem:init}, the symbolic intermediate state is equivalent to the set of GSE intermediate states, so we may assume without loss of generality that all of the pertinent fields in $s_\sym$ are initialized. Take an arbitrary GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$. Since $s_\sym$ is exact,  $s_\gse = \lp \cfgnt{L}_{\gse}\ \cfgnt{R}_{\gse}\ \phi_\gse\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k} \rp \rp$, and $s_\gse \in \mathbb{FS}(\rgse,s_0,\pi_n)$. If we apply the state transition functions to achieve states $s_\gse^\prime$ and $s_\sym^\prime$ such that $s_\gse \rgse s_\gse^\prime$ and  $s_\sym \rsym s_\sym^\prime$, we find that according to the Field Access rule:
-$$s_\gse^\prime = \lp \cfgnt{L}_{\gse} [\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}_{\gse}\ \phi_L\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
- and 
- $$ s_\sym^\prime = \lp \cfgnt{L}_{s}[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}_{s}\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp $$
+Proof by contradiction: assume $p \sqsubset q \wedge (p\ q) \not\in F_\sim(\sqsubset)$. 
+
+The case where neither $p$ nor $q$ have successors is trivially satisfied by
+\defref{bisimulation} since the conditions for inclusion in
+$F_\sim(\sqsubset)$ are vacuously met. That is a contradiction.
+
+Consider now the case where $p$ and $q$ have successor states. The
+statement $p \sqsubset q$ (\defref{representation}) means that $p$ and
+$q$ are only differentiated by their heaps and global constraints
+since the environment ($\eta$), expression ($e$), and continuation
+($k$) are the same in both states.
+
+Ignoring the heaps, and given that $p$ and $q$ currently have
+the same environment, expression, and continuation, all successors
+of $p$ related by \textrm{F{\footnotesize IELD}}
+\textrm{A{\footnotesize CCESS}} in $\rgse$ (\figref{fig:lazy}) have
+the same unchanged environment from $p$, $\eta$, new expression
+$r^\prime = \mathrm{stack}_\cfgnt{r}()$, and continuation $\cfgnt{k}$
+from the old continuation in $p$ having completed the field
+access. Similarly, the one successor of $q$ related by $\rsym$
+(\figref{fig:symfield}), has that same $\eta$, $r^\prime =
+\mathrm{stack}_\cfgnt{r}()$, and $\cfgnt{k}$. As such, every successor
+of $p$/$q$ has a matching successor of $q$/$p$ that agrees on the
+environment, expression, and continuation meeting the first condition
+necessary to relate the successors in $\sqsubset$.
+
+Turning now to the heaps, \textrm{F{\footnotesize IELD}}
+\textrm{A{\footnotesize CCESS}}, in $\rgse$ and $\rsym$, initializes
+uninitialized locations in the heap on reference $\cfgnt{r}$ for field
+$\cfgnt{f}$. The heaps in $p$ and $q$ are still homomorphic after
+initialization, and the heap constraint in the homomorphism is still
+valid by \lemref{lem:init}. Let
+$(\cfgnt{L}^\prime_p\ \cfgnt{R}^\prime_p) \rightharpoonup_h
+(\cfgnt{L}^\prime_q\ \cfgnt{R}^\prime_q)$ be those new heaps and
+the homomorphism after initialization on the heap in $p$ with
+$\rightarrow_I^*$ (\figref{fig:lazyInit}) and the heap in $q$ with
+$\rightarrow_S^*$ (\figref{fig:symInit}).
+
+After initialization, \textrm{F{\footnotesize IELD}}
+\textrm{A{\footnotesize CCESS}} for $\rgse$ relates a new heap in any
+successor state as $(\cfgnt{L}^\prime_p [\cfgnt{r}^\prime \mapsto
+  \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime_p)$, and for $\rsym$ it
+relates the heap in the only successor state as $(\cfgnt{L}^\prime_q[\cfgnt{r}^\prime \mapsto
+  \mathbb{VS}\lp
+  \cfgnt{L}^\prime_q,\cfgnt{R}^\prime_q,\cfgnt{r},\cfgnt{f},\phi_g\rp
+]\ \cfgnt{R}^\prime_q)$; each version adding in the constraint-location pair or
+value set respectively on the same reference $\cfgnt{r}^\prime$.
+
+The functional in \defref{bisimulation} requires and forward
+\eqref{eqn:BisimulationForwards} and backward
+\eqref{eqn:BisimulationBackwards} relationship between successor
+heaps.
+
+
+
+\eqref{eqn:BisimulationForwards}
+\eqref{eqn:BisimulationBackwards}
+
 
 We now show that $s_\gse^\prime \sqsubset s_\sym^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_\sym^\prime$ and $s_\gse^\prime $, the first condition is met by default. Now we construct the function $h^\prime$ such that $h^\prime = h$. Observe that since $s_\gse \rightharpoonup_{h} s_\sym$, and since $\cfgnt{R}_\gse$ and $\cfgnt{R}_\sym$ are unchanged from states $s_\gse$ to $s_\gse^\prime$ and $s_\sym$ to $s_\sym^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\gse(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_\sym(h^\prime(l),f)$. Let $\{(\phi_\gse^\prime\ l^\prime)\} =  \cfgnt{L}_\gse(\cfgnt{R}_\gse(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym))$ is valid, we know that:
  $$(\phi_\sym \wedge \phi_\sym^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
@@ -182,26 +193,6 @@ Since $\cfgnt{r}^\prime$ is the only new addition to $L_\gse^\prime$ and $L_\sym
 \begin{equation}
 \forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
-
-%for any GSE state $s_\gse$: 
-%\begin{equation}
-%\label{eqn:slimpliesslprime}
-%s_\gse \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
-%\end{equation}
-
-%Since there is only one possible control flow sequence $\pi_{n+1}$, this means that if $s_\gse \rgse s_\gse^\prime$, then 
-%\begin{equation}
-%\label{eqn:slimpliesslprime2}
-%s_\gse \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n) \Leftrightarrow s_\gse^\prime\ \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})
-%\end{equation}
-%
-%Combining Equations \ref{eqn:slimpliesslprime} and \ref{eqn:slimpliesslprime2}, we may finally conclude that $s_\sym^\prime$ is complete with respect to $\mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$
-%\begin{equation}
-%\label{eqn:readforwards}
-%s_\gse^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1}) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
-%\end{equation}
-
-%Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$, but $s_i^\prime \notin \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$. Since $s_i^\prime \sqsubset s_\sym^\prime$, then by Lemma~\ref{lem:ref}, $\cfgnt{r}^\prime$ represents a valid path $\Gamma_{n+1}^{s\prime}$, in states $s_i^\prime$ and $s_\sym^\prime$. Furthermore, by Lemma~\ref{lem:path} we can surmise that $\mathbb{S}(\phi_\sym^\prime \wedge \mathbb{PC}(\Gamma_{n+1}^{s\prime}))$. By construction, $\Gamma_{n+1}^{s\prime}$ is an extension of the valid access path $\Gamma_{n}^{s}$ represented by reference $\cfgnt{r}$ in state $s_\sym$. Since $s_\sym$ is exact, there exists state $s_i$ such that $s_i \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n})$. and by our previous result, $s_i^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$. We have a contradiction.
 
 Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$. Since $s_i^\prime \sqsubset s_\sym^\prime$, then by Definition~\ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$, and that $\mathbb{S}( \phi_i^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
 \begin{align*}
@@ -215,26 +206,11 @@ Observe that by virtue of the GSE Field Access rule, $s_i \rgse s_i^\prime$. Now
 \forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
 \end{equation}
  This concludes the proof.
-
-%Since $s_\sym$ is exact, $s_i \in\mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n)$. Combining this with the fact that $s_i \rgse s_i^\prime$, we conclude that $s_i^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$. We have a contradiction.
-%
-% Therefore, $s_\sym^\prime$ is sound with respect to $\mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})$:
-% \begin{equation}
-% \label{eqn:readbackwards}
-% s_i^\prime \sqsubset s_\sym^\prime \Rightarrow s_i^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1})
-% \end{equation}
-%Since $s_\sym$ is both sound and complete, we may combine Equations \ref{eqn:readforwards} and \ref{eqn:readbackwards} to find that 
-%$$s_\gse^\prime \in \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_{n+1}) \Leftrightarrow s_\gse^\prime \sqsubset s_\sym^\prime$$
-%By Definition~\ref{equivalent}, $s_\sym^\prime \cong \mathbb{FS}(\rightarrow_{\gse},s_0,\pi_n)$, and so by Definition~\ref{exact}, $s_\sym^\prime$ is exact.
-
-%Case 2: If there are uninitialized fields, then the GSE initialization machine will make an intermediate state $s_t$. By Lemma~\ref{lem:init}, the symbolic intermediate state is equivalent to the set of GSE intermediate states. Since the symbolic intermediate state From the intermediate state, the proof is the same as for case 1.
 \end{proof}
 
 %proof for field write
 \begin{lemma}[Exactness of Field Write Rule]
 \label{lem:write}
-%If $s_\sym \cong \mathbb{FS}(\rgse, s_0, \pi_n )$ for some symbolic state $s_\sym$, initial state $s_0$, and control flow path $\pi_n$, and if $s_\sym =  \lp \cfgnt{L}_\sym\ \cfgnt{R}_\sym\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp$, and if $s_\sym \rsym s_\sym^\prime$ for some state $s_\sym^\prime$, then:
-%$$s_\gse^\prime \sqsubset s_\sym^\prime \Leftrightarrow s_\gse^\prime \in \mathbb{FS}(\rgse, s_0, \pi_n (\eta\ \cfgnt{k}\ \emptyset) ) $$
 If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FW}$ and $s_\gse \sqsubset s_\sym$, then:
 \begin{equation}
 \forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
@@ -483,10 +459,8 @@ which represent all the rules that relate states in
 $\rsym$.
 \end{proof}
 
-%proof for reference compares. Here we will rely on the fact that since the L and R functions don't change, and since the phi function
 \begin{lemma}[Exactness of Reference Compare Rule]
 \label{lem:compare}
-%If symbolic state $s_\sym =  \lp \cfgnt{L}_\sym\ \cfgnt{R}_\sym\ \phi_\sym\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp$ is exact with respect to some initial state $s_0$ and control flow path $\pi_n$, and if $s_\sym \rsym s_\sym^\prime$ for some state $s_\sym^\prime$, then $s_\sym^\prime$ is equal to $ \lp \cfgnt{L}_\sym\ \cfgnt{R}_\sym\ \phi_{s^\prime}\ \eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k}\rp$ and is exact with respect to $s_0$ and $\pi_n \ (\eta\ \cfgnt{v}_{s^\prime}\ \cfgnt{k})$.
 If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$, then:
 \begin{equation}
 \forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
@@ -569,40 +543,6 @@ The proof is left as an exercise to the reader.
 
 \end{lemma}
 
-%\begin{theorem}[Exactness of Summary Machine States]
-%If $\Pi_n^s$ is a feasible summary state sequence, then the final state in $\Pi_n^s$ is equivalent to the feasible set of GSE states sharing the same control flow sequence:
-%\begin{equation}
-%\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rgse, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) )
-%\end{equation}
-%\end{theorem}
-%\begin{proof}
-%The proof will proceed inductively.
-%
-%Base case: For any initial state $s_0$, the feasible state set contains a single element, $\{s_0\}$:
-%$$\mathbb{FS}(\rgse, (s_0), \mathbb{CF}(s_0)) = \{s_0\}$$
-%We can define a homomorphism from $s_0$ to $s_0$ using the identity function: 
-%$$\forall a \in \cfgnt{L}_0^\rightarrow ( h(a) = a )$$ 
-%Because the only constraints in the heap are $\mathit{true}$, the heap constraint evaluates to $\mathit{true}$. Since $phi_0$ also evaluates to $\mathit{true}$, the expression $\mathbb{S}(\phi_0 \wedge \mathbb{HC}(s_0 \rightarrow_h s_0 ) ) $ must evaluate to true. Thus, any state in the feasible set must be represented by $s_0$: :
-%$$s_0 \in \mathbb{FS}(\rgse,s_0, (\eta_0\ e_0\ k_0) ) \Rightarrow s_0 \sqsubset s_0$$
-%Furthermore, since every reference points to a single place, there is only one possible represented heap. Thus:
-%$$ \{s_0\} = \mathbb{FS}(\rgse,s_0, (\eta_0\ e_0\ k_0) )$$
-%Since $s_0$ is the only represented heap, and since we know $s_0$ is in the feasible set, 
-%$$s_0 \sqsubset s_0 \Leftrightarrow s_0 \in \{s_0\}$$
-%We have now shown that $s_0 \cong \mathbb{FS}(\rgse, (s_0), \mathbb{CF}(s_0))$ for an arbitrary initial state $s_0$. Since every feasible state sequence starts with an initial state, we now know that:
-% $$\mathit{last}(\Pi_1^s) \cong \mathbb{FS}(\rgse, \mathit{first}(\Pi_1^s), \mathbb{CF}(\Pi_1^s) ) $$
-%
-%Inductive step: If summary state $s_\sym$ is exact, then any state $s_\sym^\prime$ such that $s_\sym \rsym s_\sym^\prime$ is also exact. Suppose $s_\sym$ has the form for a field read, field write, or reference compare rule. By Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare}, $s_\sym^\prime$ will also be exact.
-%Suppose $s_\sym$ is accepted by the "new" rule. In this case, the new reference points to the new location on condition true, so it's obvious that $s_\sym$ represents all of the proper GSE states, and the existence of any infeasible GSE states represented by $s_\sym^\prime$ would imply that $s_\sym$ is not exact.
-%For all the other rules, the L and R functions and $\phi$ are unchanged, and the rules for  $\eta$, $e$, and $k$ are exactly the same between the GSE and summary machines, so there is a bijective mapping between the represented states in $s_\sym$ and $s_\sym^\prime$.
-%Thus, in all cases, if $s_\sym$ is exact, then $s_\sym^\prime$ is also exact.
-%
-%We have now shown that any feasible state sequence $\Pi_n^s$ is exact if the sub-sequence $\Pi_{n-1}^s$ is exact.
-%
-%Combining the result from the inductive step with the result from the base case, we can now say with certainty that for all $n$,
-%
-%$$\mathit{last}(\Pi_n^s) \cong \mathbb{FS}(\rgse, \mathit{first}(\Pi_n^s), \mathbb{CF}(\Pi_n^s) ) $$
-%
-%\end{proof}
 
 \begin{theorem}
 \label{th:bisim}
@@ -621,11 +561,3 @@ For any given initial state, the set of possible control flow sequences under th
 \begin{corollary}
 For any given initial state, the number of final symbolic states is exactly the number of possible control flow sequences.
 \end{corollary}
-
-
-%\begin{corollary}
-%For any given initial state, the set of solutions to the constraints in the final symbolic states provides an optimal set of concrete test inputs. There is no smaller set that will exercise every possible control flow sequence.
-%\end{corollary}
-
-%proof: the global invariant is a constraint equation over the initial heap. That is to say, when you solve it, it assigns an integer to every variable. Those variables are references. Thus, solving the constraint equation gives you the location that each reference in the initial heap pointed to. 
-%problem: Where the references pointed is only half of the problem. We also need to know which references were stored in which fields of which locations at the beginning of the program. This would not be hard to do - if we kept track of the initial heap as we created it, separate from the active heap, it should work - however, this is unimplemented

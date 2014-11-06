@@ -2,21 +2,54 @@
 
 \subsection{Initialization of Symbolic References}
 
-In this section we present the Javalite rewrite rules for the concrete
-as well as summary initialization of symbolic references. The
-initialization rules are defined on the bi-partite graph consisting of
-references and locations. The lazy initialization of symbolic
-references consists of three key points of non-determinism where each
-symbolic reference can be initialized non-deterministically to null, a
-new instance of the symbolic reference, or aliases to symbolic
-references of the same type previously initialized. The initialization
-in GSE consists of creating branches in the execution tree for all the
-non-deterministic choices. On the other hand, the heap summarization
-approach creates a single branch that contains the summarization for
-all the initialization in a single bi-partitate graph.
+In this section we present the Javalite rewrite rules for the summary
+initialization of symbolic references. The initialization rules are
+defined on the bi-partite graph consisting of references and
+locations. Recall that in generalized symbolic execution (GSE) for
+lazy initialization of symbolic references consists of three key
+points of non-determinism where each symbolic reference can be
+initialized non-deterministically to null, a new instance of the
+symbolic reference, or aliases to symbolic references of the same type
+previously initialized. The initialization in GSE consists of creating
+branches in the execution tree for all the non-deterministic
+choices. In contrast, the heap summarization approach creates a
+single branch that contains the summarization for all the
+initialization in a single bi-partitate graph.
 
-\input{initialize-lazy}
+
 \input{summarize-precise}
+
+The initialization rules are invoked when an uninitialized field in a
+symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},
+\cfgnt{R}, \cfgnt{r}, \cfgnt{f}) = \{\cfgnt{l}\ ...\}$ returns
+constraint-location pairs in which the field $\cfgnt{f}$ is
+uninitialized:
+\[
+\begin{array}{rcl}
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
+& & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
+& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
+\end{array}
+\]
+where $\mathbb{S}(\phi)$ returns true if $\phi$ is
+satisfiable. Intutively, for the reference, $\cfgnt{r}$, it constructs
+the set, $\theta$, that contains all contraint-location pairs that
+point to the field $\cfgnt{f}$ and $\cfgnt{f}$ points to
+$\cfgnt{l}_\mathit{un}$.
+
+% The cardinality of the set, $\theta$ is never
+%greater than one in GSE and the constraint is always satisfiable
+%because all constraints are constant. This property is relaxed in GSE
+%with heap summaries.
+
+The rewrite rule to initialize a heap in the symbolic summarization
+technique is shown in~\figref{fig:initHeap}. The set $\mathbb{UN}$
+
+ There are three
+constraint-location pair sets $\theta_\mathit{null}$,
+$\theta_\mathit{new}$, and $\theta_\mathit{alias}$ that correspond to
+the non-deterministic choices in GSE. The $\theta_\mathit{null}$ creates
+a constraint location pair where the constraint under which the field is read $\phi_x$ $l_\mathit{null}$ 
 
 \begin{figure*}[t]
 \begin{center}
@@ -42,69 +75,47 @@ $\phi_{\mathit{2a}} := r_2^i = r_\mathit{null}$ \\
 $\phi_{\mathit{2b}} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i$ \\
 $\phi_{\mathit{2c}} :=  r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i $ \\
 \end{tabular} \\
+(a) & (b) & (c) & (d) \\
 \end{tabular}
 \end{center}
 \caption{initialize this.x and this.y}
 \label{fig:initHeap}
 \end{figure*}
 
-\begin{figure*}[t]
-\begin{center}
-\begin{tabular}[c]{c|c|c|c|c}
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{origHeap.pdf_t}} \\
-\end{tabular} &
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{GSEHeap0.pdf_t}} \\
-\end{tabular} &
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{GSEHeap1.pdf_t}} \\
-\end{tabular} &
-\begin{tabular}[c]{l}
-\scalebox{0.81}{\input{GSEHeap10.pdf_t}} \\
-\end{tabular} \\
-\begin{tabular}[c]{l}
-\scalebox{0.81}{\input{GSEHeap2.pdf_t}} \\
-\end{tabular} \\
-\end{tabular}
-\end{center}
-\caption{initialize this.x and this.y}
-\label{fig:initHeap}
-\end{figure*}
+We visualize the initialization process in the symbolic summarization
+technique in~\figref{fig:initHeap}. The heap
+in~\figref{fig:initHeap}(a) represents the initial heap. The
+references with the superscript $s$ indicates that it is a local
+reference. In~\figref{fig:initHeap} $r_0^s$ represents the reference
+for the $\mathit{this}$ instance which has two fields $x$ and $y$ of
+the same type. The reference $r_0^s$ points to the location
+$l_0$. Note that when no constraint is specified, then there is a
+implicit $\mathit{true}$ constraint. In~\figref{fig:initHeap} $r_0^s$
+points to $l_0$ on $\mathit{true}$. The fields $x$ and $y$ point to
+the uninitialized reference $r_\mathit{un}$. The reference
+$r_\mathit{un}$ points to the uninitialized location $l_\mathit{un}$
+on the $\mathit{true}$ constraint.
+
+The graph in~\figref{fig:initHeap}(b) represents the summary heap
+after the initialization of the $\mathit{this}.x$ field while the
+graph in~\figref{fig:initHeap}(c) represents the summary heap after
+the initialization of the $\mathit{this}.y$ field following the
+initialization of $\mathit{this}.x$. The list
+in~\figref{fig:initHeap}(d) represents the various sets constructed in
+the rewrite system when the initialization takes places. We also
+define the constraints of references to their corresponding labels in
+the graph.
+
+The access on $l_0.x$ creates a new input reference $r_1^i$ in the
+summary heap shown in~\figref{fig:initHeap}(b). The reference $r_1^1$
+points to the $l_\mathit{null}$ location under the constraint that
+$r_1^i$ is null: $\phi_{1a} := r_1^i = r_\mathit{null}$. The reference
+$r_1^i$ points to the location $l_1$ under the constraint that $r_1^i$
+is not null $\phi_{1b} :=r_1^i \neq r_\mathit{null}$. The location
+$l_1$ represents a fresh location of type $C$ is created on the heap
+such that $C$ is type of $\mathit{this}.x$.
 
 
-
-
-%\resizebox{3.4}{3.3}{\input{../figs/examples/origHeap.pdf_t}}
-
-The initialization rules are invoked when an uninitialized field in a
-symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},
-\cfgnt{R}, \cfgnt{r}, \cfgnt{f}) = \{\cfgnt{l}\ ...\}$ returns
-constraint-location pairs in which the field $\cfgnt{f}$ is
-uninitialized:
-\[
-\begin{array}{rcl}
-\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
-& & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
-& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
-\end{array}
-\]
-where $\mathbb{S}(\phi)$ returns true if $\phi$ is
-satisfiable. Intutively, for the reference, $\cfgnt{r}$, it constructs
-the set, $\theta$, that contains all contraint-location pairs that
-point to the field $\cfgnt{f}$ and $\cfgnt{f}$ points to
-$\cfgnt{l}_\mathit{un}$. The cardinality of the set, $\theta$ is never
-greater than one in GSE and the constraint is always satisfiable
-because all constraints are constant. This property is relaxed in GSE
-with heap summaries.
-
-The rules in~\figref{fig:lazyInit} present the rewrite rules for the
-concrete initialization of symbolic heap objects.  These rules are
-invoked until a fix pointed is reached. 
-
-The initialize (null) rewrite rule in~\figref{fig:lazyInit} first
-checks that the field, $\cfgnt{r}$ is uninitialized. The fresh method
-returns a new input heap reference from the partition 
 
 
 

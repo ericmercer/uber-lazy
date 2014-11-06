@@ -3,10 +3,12 @@
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Field Access]{
-      \forall \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp \ \lp l = l_{\mathit{null}} \rightarrow \neg \mathbb{S}\lp \phi \wedge \phi_g\rp \rp  \\\\
+      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp \\\\
+      \theta = \{ \phi \mid \lp \phi\ l_\mathit{null} \rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
       \{\cfgnt{C}\} = \{\cfgnt{C} \mid \exists \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp\cfgnt{C} = \mathrm{type}\lp \cfgnt{l},\cfgnt{f}\rp\rp\} \\\\
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rsum^* \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \\
-      \cfgnt{r}^\prime = \mathrm{stack}_r\lp \rp
+      \cfgnt{r}^\prime = \mathrm{stack}_r\lp \rp \\\\
+      \phi_g^\prime = \phi_g \wedge (\wedge_{\phi \in \theta} \neg \phi)
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{FA}
       \lp \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp \cfgnt{L}^\prime,\cfgnt{R}^\prime,\cfgnt{r},\cfgnt{f},\phi_g\rp ]\ \cfgnt{R}^\prime\ \phi_g\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 

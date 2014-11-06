@@ -68,9 +68,9 @@ Since the access paths in any given heap are bound by certain constraints, to pr
 
 \begin{definition}
 \label{def:hc}
-Given homomorphism $s_p \rightharpoonup_{h} s_q$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_p \rightharpoonup_{h} s_q)$ is defined as:
+Given the homomorphism $(\cfgnt{L}_p\ \cfgnt{R}_p) \rightharpoonup_{h} (\cfgnt{L}_q\ \cfgnt{R}_q)$, the \textbf{homomorphism constraint} $\mathbb{HC}((\cfgnt{L}_p\ \cfgnt{R}_p) \rightharpoonup_{h} (\cfgnt{L}_q\ \cfgnt{R}_q))$ is defined as:
 \begin{align*}
-\mathbb{HC}(s_p \rightharpoonup_{h} s_q) &= \\
+\mathbb{HC}((\cfgnt{L}_p\ \cfgnt{R}_p) \rightharpoonup_{h} (\cfgnt{L}_q\ \cfgnt{R}_q)) &= \\
  \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\} 
 \end{align*}
 \end{definition}
@@ -79,24 +79,44 @@ The representation relation combines the previously established notions of heap 
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} $\sqsubset$ is defined as follows: given state $s_p = ( \cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$ and state $s_q = ( \cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$, $s_p \sqsubset s_q $ if and only if $\eta_p = \eta_q ,\ \cfgnt{e}_p = \cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, and there exists a homomorphism $\ s_p \rightharpoonup_{h} s_q $ such that 
+The \textbf{representation relation} $\sqsubset$ is defined as
+follows: given state $s_p = (
+\cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$
+and state $s_q = (
+\cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$,
+$s_p \sqsubset s_q $ if and only if $\eta_p = \eta_q ,\ \cfgnt{e}_p =
+\cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, and there exists a
+homomorphism $(\cfgnt{L}_p\ \cfgnt{R}_p) \rightharpoonup_{h}
+(\cfgnt{L}_q\ \cfgnt{R}_q)$ such that
 \begin{equation}
 \label{eqn:valid}
  \mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) ) 
 \end{equation}
+The represented relation is extended to sets of states $P$ and $Q$ as
+$$
+P \sqsubset Q \Longleftrightarrow \forall q \in Q\ (\forall p \in S\ (p \sqsubset q \Rightarrow p \in P))
+$$
+\end{definition}
+
+\begin{definition}
+A state relation $p \rightarrow_x q$ is extended to sets of states $P \hookrightarrow_x Q$ as
+$$
+P \hookrightarrow_x Q \Longleftrightarrow \forall q \in S\ (p \rightarrow_x q \Rightarrow q \in Q)
+$$
+The $\rgse$ relations over sets of states is The $\rsym$ relation extended to sets of states
 \end{definition}
 
 \begin{definition}
 \label{bisimulation}
-The functional associated to bisimulation,  $F_\sim(\sqsubset)$, is the set of all pairs of states
-$(p\ q)$ such that
+The functional associated to bisimulation,  $F_\sim(\sqsubset)$, is the set of all pairs of sets of states
+$(P\ Q)$ such that
 \begin{equation}
 \label{eqn:BisimulationForwards}
-\forall p^\prime ( p \rgse p^\prime \Rightarrow \exists q^\prime( (q \rsym q^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))  )
+\forall p \in P\ (\forall p^\prime\ ( p \rgse p^\prime \Rightarrow \exists q^\prime\ ( (q \rsym q^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))))
 \end{equation}
 \begin{equation}
 \label{eqn:BisimulationBackwards}
-\forall q^\prime ( q \rsym q^\prime\Rightarrow \exists p^\prime( (p \rgse p^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))  )
+\forall q \in Q\ (\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists p^\prime\ ( (p \rgse p^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))))
 \end{equation}
 The bisimularity relation is the greatest fixed point of the functional.
 \end{definition}

@@ -1,11 +1,13 @@
 \section{Empirical Evaluation}
 GSESH creates fewer execution paths than GSE, but it does so with increased path constraint complexity. Determining the impact of this tradeoff in real-world applications is an important research question. 
 
-\subsection{Implementation}
-THIS SECTION TO BE ADDED.
+Since the number of paths in GSE is exponential in the number of lazy initializations, it is expected that programs for which the number of lazy initializations is proportional to program complexity will evaluate more quickly using GSESH. On the other hand, since GSESH places a greater burden on the constraint solver, it is expected that programs where the lazy initialization count is constant or slowly increasing with respect to program complexity will evaluate more quickly using GSESH.
+
+\subsection{JPF Implementation}
+The Java Pathfinder (JPF) symbolic execution engine contains an implementation of GSE, which we extended with our own implementation of GSESH. 
 
 \subsection{Bounding}
-In order to perform a practical evaluation of programs involving recursive data structures, it is generally necessary to impose some sort of bounding to eliminate the number of lazy initializations to a manageable level. While these bounds may be asserted as invariants within the program in-situ, it is more practical to apply bounding via external means. There are several bounding techniques that may be applied to both GSE and GSESH, including execution path length bounding, k-bounding and n-bounding. k-bounding and n-bounding both operate by imposing limits on the size of the symbolic input heap, but differ in how such bounds are defined. n-bounding limits the number of objects created by lazy initialization, while k-bounding limits the length of initialized reference chains. k-bounding has the property of exhaustively exploring the full breadth of a given data structure, while n-bounding tends to explore deeper heap shapes while being somewhat less thorough in breadth. In addition, k-bounding and n-bounding may be combined to adjust the desired level of approximation between depth and breadth. 
+In order to perform a practical evaluation of programs involving recursive data structures, it is generally necessary to impose some sort of bounding to eliminate the number of lazy initializations to a manageable level. While these bounds may be asserted as invariants within the program in-situ, it is more practical to apply bounding via external means. There are several bounding techniques that may be applied to both GSE and GSESH, including execution path length bounding, k-bounding and n-bounding. k-bounding and n-bounding both operate by imposing limits on the size of the symbolic input heap, but differ in how such bounds are defined. n-bounding limits the number of objects created by lazy initialization, while k-bounding limits the length of initialized reference chains. k-bounding has the property of exhaustively exploring the full breadth of a given data structure, while n-bounding tends to explore deeper heap shapes while being somewhat less thorough in breadth. In addition, k-bounding and n-bounding may be combined to adjust the desired level of approximation between depth and breadth.
 
 While k-bounding and n-bounding are applicable to both GSE and GSESH, they are not both equally suited for comparing the two methods. The main reason for this lies in how how each bounding technique impacts the functional equivalence of the respective methods.  k-bounding preserves the functional equivalence of GSE and GSESH, a fact which can be established by induction over the length of reference chains from a given initial state. In contrast, GSE and GSESH are not generally functionally equivalent under n-bounding. The reason is that since a GSESH state must represent all possible GSE states on an execution path, it generally includes more locations than any single GSE state it represents. This difference in state counts makes it difficult to externally assert n-bounding in a manner that preserves functional equivalence between GSE and GSESH. Functional equivalence may be preserved in the case where n-bounds are asserted via in-situ invariants, but the significant increase in constraint complexity makes this approach impractical. For this reason, n-bounding is was not selected for comparing GSE to GSESH in the tests performed in this paper.
 
@@ -25,4 +27,42 @@ Like the BinarySearchTree test, the TreeMap test is simply an assertion of an ob
 
 For all tests, program complexity was adjusted via k-bounding. For the LinkedList test, the number of contains() method calls was added as an additional parameter. After the conclusion of each test, the test run-time, state count, and path counts were recorded. 
 
-Analysis: TO BE ADDED
+The results of the experiments are shown in table \ref{tab:results}.
+
+\begin{table} [h]
+  \centering
+  \begin{tabular}{| c | c | c | c | c | c | c | c |}
+  \hline
+   \multirow{2}{*}{Method }&\multirow{2}{*}{ $k$ }
+   &\multicolumn{2}{|c|}{Time} &\multicolumn{2}{|c|}{ Paths }\\
+								&	&GSE	&SH	&GSE & SH\\
+   \hline
+    \multirow{3}{*}{LinkedList }&3	& 1 & 1  &1656 & 25		 \\
+   		 				& 4	& 3 & 2	&17485  & 39 \\
+   						& 5	& 20 & 3	&232743 & 56\\
+						& 6	& 338 & 8		&3731094 & 76\\
+    \hline
+    \multirow{3}{*}{BinarySearchTree }&1	& 0 & 1	& 4	 & 4\\
+   		 				& 2	& 1 & 1 	& 26 & 17\\
+   						& 3	& 12 & 7	& 305 & 118\\
+    \hline
+      \multirow{3}{*}{TreeMap}&1	& 0 & 1 	&9 & 9 \\
+   		 				&2	& 1 & 3		& 100 & 46 \\
+   						&3	&21 & 206	& 3026 & 547 \\
+						
+    \hline
+  \end{tabular}
+  \caption{test results}
+  \label{tab:results}
+\end{table}
+
+\subsection{Analysis}
+
+LinkedList
+As expected, the repeated use of lazy initialization throughout the program causes an exponential increase in the number of paths explored by GSE. By combining many of the GSE paths, SH avoids the exponential path explosion, demonstrating dramatically reduced, though still exponential, execution time growth. Remarkably, path growth in the k-bound appears to be sub-linear.
+
+BST
+The BinarySearchTree example is somewhat of a mixed bag. 
+
+TreeMap
+

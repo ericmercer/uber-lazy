@@ -1,6 +1,9 @@
-\begin{figure}[t]
-\begin{center}
+\newsavebox{\boxPEQ}
+\savebox{\boxPEQ}{
+%\begin{figure}[t]
+%\begin{center}
 \mprset{flushleft}
+\begin{tabular}[c]{c}
 \begin{mathpar}
     \inferrule[Equals (references-true)]{
     \theta_\alpha = \{\lp\phi_0 \wedge \phi_1\rp \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
@@ -24,7 +27,8 @@
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
     }
 \end{mathpar}
-\end{center}
-\caption{FIX THIS CAPTION AND MOVE $\rsym$ DEFINITION (MAY NOT BE NEEDED BECAUSE OF \defref{def:meta}: Precise symbolic heap summaries from symbolic execution indicated by $\rsym = \rightarrow_\mathit{FA} \cup \rightarrow_\mathit{FW} \cup \rightarrow_\mathit{EQ}^T \cup \rightarrow_\mathit{EQ}^F \cup \rcom$.}
-\label{fig:symeq}
-\end{figure}
+\end{tabular}}
+%\end{center}
+%\caption{FIX THIS CAPTION AND MOVE $\rsym$ DEFINITION (MAY NOT BE NEEDED BECAUSE OF \defref{def:meta}: Precise symbolic heap summaries from symbolic execution indicated by $\rsym = \rightarrow_\mathit{FA} \cup \rightarrow_\mathit{FW} \cup \rightarrow_\mathit{EQ}^T \cup \rightarrow_\mathit{EQ}^F \cup \rcom$.}
+%\label{fig:symeq}
+%\end{figure}

@@ -38,7 +38,7 @@ pairs that are satisfiable after this strengthening with the inclusion of the gl
 \begin{tabular}[c]{cc}
 \usebox{\boxPFAFW} & 
 %\scalebox{0.91}{\input{faYHeap.pdf_t}} &
-\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\
+\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\ \\
 (a) & (b)
 \end{tabular}
 \end{center}
@@ -63,9 +63,10 @@ $\theta = \{ \}$\\
 
 \subsection{Equality and InEquality of References}
 
+\input{precise-eq}
 
-
-\begin{figure}
+\newsavebox{\boxPEX}
+\savebox{\boxPEX}{
 \begin{tabular}[c]{l}
 $L(r_1^i) = \{ (\phi_{1a}\; l_\mathit{null})\; (\phi_{1b}\; l_1) \}$ \\
 $L(r_2^i) = \{ (\phi_{2a}\; l_\mathit{null}),\; (\phi_{2b}\; l_2),\; (\phi_{2c}\; l_1) \} $\\
@@ -77,9 +78,15 @@ $\phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\ph
 Equals false \\
 $\theta_\alpha = \{ (\phi_{1a}\; \implies\; \neg\phi_{2a} ) (\phi_{1b}\; \implies\; \neg\phi_{2c} ) \}$\\
 $\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wedge (\phi_{1b}\; \implies\; \neg\phi_{2c} )  \wedge \phi_{2b} $\\ \hline
+\end{tabular}}
+
+\begin{figure*}
+\begin{tabular}[c]{cl}
+\usebox{\boxPEQ} & \usebox{\boxPEX} \\ \\
+(a) & (b) \\
 \end{tabular}
 \caption{equals true for this.x == this.y}
 \label{fig:eqs-true}
-\end{figure}
+\end{figure*}
 
-\input{precise-eq}
+

@@ -81,9 +81,10 @@
    }
 \and
    \inferrule[Method Invocation]{
-    \lp\cfgnt{T}\ \cfgnt{m}\ \lb\cfgnt{T}\ \cfgnt{x}\rb\ \ \cfgnt{e}_m\rp = \mathrm{lookup}\lp \cfgnt{m}\rp\\\\
-    \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{v}_0][\cfgnt{x} \mapsto \cfgnt{v}_1]}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}_1\ \lp \cfgnt{v}_0\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}\rp \rp  \rcom \\\\
+    \cfgnt{C} = \mathrm{type}\lp\cfgnt{r}\rp \\\\
+    \lp\cfgnt{T}_o\ \cfgnt{m}\ \lb\cfgnt{T}_1\ \cfgnt{x}\rb\ \ \cfgnt{e}_m\rp = \mathrm{lookup}\lp \cfgnt{C},\cfgnt{m}\rp\\\\
+    \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{r}][\cfgnt{x} \mapsto \cfgnt{v}]}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgnt{r}\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}\rp \rp  \rcom \\\\
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta_m\ \cfgnt{e}_m\ \lp \cfgt{pop}\ \eta\ \cfgnt{k}\rp \rp 
    }
 \and
@@ -114,13 +115,8 @@
 \and
    \inferrule[Begin (argN eval)]{}{
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\cfgnt{e}_{n}\rp \rightarrow \cfgnt{k}\rp \rp  \rcom \\\\
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}_n\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp 
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}_n\ \cfgnt{k}\rp 
    }
-\and
-   \inferrule[Begin]{}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgt{begin}\ \cfgt{*}\ \lp\rp \rightarrow \cfgnt{k}\rp \rp  \rcom \\\\
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \cfgnt{k}\rp 
-   }	
 \and
 	\inferrule[NULL]{}{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgt{null}\ \cfgnt{k}\rp \rcom \\\\ 

@@ -32,18 +32,19 @@ pairs that are satisfiable after this strengthening with the inclusion of the gl
 \input{precise-fig}
 
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \begin{center}
-\begin{tabular}[c]{c}
-\begin{tabular}[c]{c}
+\setlength{\tabcolsep}{50pt}
+\begin{tabular}[c]{cc}
+\usebox{\boxPFAFW} & 
 %\scalebox{0.91}{\input{faYHeap.pdf_t}} &
 \scalebox{0.91}{\input{fwXHeap.pdf_t}} \\
-\end{tabular}\\
+(a) & (b)
 \end{tabular}
 \end{center}
 \caption{field access for this.y and field write for this.x = this.y}
 \label{fig:fHeap}
-\end{figure}
+\end{figure*}
 
 
 \begin{figure}[t]

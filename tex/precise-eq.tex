@@ -9,7 +9,7 @@
     \phi^\prime =  \phi \wedge \lp \vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \wedge\lp \wedge_{\phi_0 \in \theta_0} \neg \phi_0\rp \wedge\lp \wedge_{\phi_1
     \in \theta_1} \neg \phi_1\rp \\\\ 
     \mathbb{S}(\phi^\prime)}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}^T
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
     }
 \and
@@ -20,11 +20,11 @@
     \phi^\prime = \phi \wedge \lp \wedge_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \vee\lp \lp \vee_{\phi_0 \in \theta_0} \phi_0\rp   \vee\lp \vee_{\phi_1
     \in \theta_1} \phi_1\rp \rp  \\\\ 
     \mathbb{S}(\phi^\prime)}{
-    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}^F
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
     }
 \end{mathpar}
 \end{center}
-\caption{Precise symbolic heap summaries from symbolic execution indicated by $\rsym = \rightarrow_\mathit{FA} \cup \rightarrow_\mathit{FW} \cup \rightarrow_\mathit{EQ} \cup \rcom$.}
+\caption{FIX THIS CAPTION AND MOVE $\rsym$ DEFINITION (MAY NOT BE NEEDED BECAUSE OF \defref{def:meta}: Precise symbolic heap summaries from symbolic execution indicated by $\rsym = \rightarrow_\mathit{FA} \cup \rightarrow_\mathit{FW} \cup \rightarrow_\mathit{EQ}^T \cup \rightarrow_\mathit{EQ}^F \cup \rcom$.}
 \label{fig:symeq}
 \end{figure*}

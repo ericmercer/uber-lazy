@@ -99,11 +99,16 @@ $$
 \end{definition}
 
 \begin{definition}
+\label{def:meta}
 A state relation $p \rightarrow_x q$ is extended to sets of states $P \hookrightarrow_x Q$ as
 $$
 P \hookrightarrow_x Q \Longleftrightarrow \forall q \in S\ (p \rightarrow_x q \Rightarrow q \in Q)
 $$
-The $\rgse$ relations over sets of states is The $\rsym$ relation extended to sets of states
+The $\rgse$ relation over sets of states is $\rsgse = \hookrightarrow_\ell \wedge \hookrightarrow_\com$, and 
+the $\rsym$ relation extended to sets of states is 
+$$
+\rssym = \hookrightarrow_\mathit{FA} \cup \hookrightarrow_\mathit{FW} \cup \hookrightarrow_\mathit{EQ}^T \cup \hookrightarrow_\mathit{EQ}^F \cup \hookrightarrow_\com
+$$
 \end{definition}
 
 \begin{definition}
@@ -112,11 +117,11 @@ The functional associated to bisimulation,  $F_\sim(\sqsubset)$, is the set of a
 $(P\ Q)$ such that
 \begin{equation}
 \label{eqn:BisimulationForwards}
-\forall p \in P\ (\forall p^\prime\ ( p \rgse p^\prime \Rightarrow \exists q^\prime\ ( (q \rsym q^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))))
+\forall P^\prime\ ( P \rsgse P^\prime \Rightarrow \exists Q^\prime\ ( (Q \rssym Q^\prime )\wedge (P^\prime\ \sqsubset\ Q^\prime )))
 \end{equation}
 \begin{equation}
 \label{eqn:BisimulationBackwards}
-\forall q \in Q\ (\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists p^\prime\ ( (p \rgse p^\prime )\wedge (p^\prime\ \sqsubset\ q^\prime ))))
+\forall Q^\prime\ ( Q \rssym Q^\prime\Rightarrow \exists P^\prime\ ( (P \rsgse P^\prime )\wedge (P^\prime\ \sqsubset\ P^\prime )))
 \end{equation}
 The bisimularity relation is the greatest fixed point of the functional.
 \end{definition}

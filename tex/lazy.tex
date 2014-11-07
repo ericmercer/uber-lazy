@@ -43,13 +43,41 @@ $\cfgnt{l}_\mathit{un}$.
 %with heap summaries.
 
 The rewrite rule to initialize a heap in the symbolic summarization
-technique is shown in~\figref{fig:initHeap}. The set $\mathbb{UN}$
+technique is shown in~\figref{fig:symInit}. Given the unitialized set
+$\mathbb{UN}$ for field $f$, the $\mathit{min}_l$ function returns the
+constraint location pair based on a lexical ordering of locations. The
+init$_r$ method returns a new input reference $r_f$ while the
+fresh$_f$ returns a new location of type $C$. The set $\rho$ contains
+the set of reference location, $(r_a, l_a)$, pairs that the current
+field may alias. The pair $(r_a, l_a)$ is contained in the set $ \rho
+$ if $r_a$ is part of the input references initialized in the summary
+heap, $r_a$ is in the pre-image of $l_a$, and the type of $l_a$ is the
+same as the type of the field being initialized then the pair $(r_a,
+l_a)$ is added to the $\rho$ set.
 
- There are three
-constraint-location pair sets $\theta_\mathit{null}$,
-$\theta_\mathit{new}$, and $\theta_\mathit{alias}$ that correspond to
-the non-deterministic choices in GSE. The $\theta_\mathit{null}$ creates
-a constraint location pair where the constraint under which the field is read $\phi_x$ $l_\mathit{null}$ 
+There are three constraint-location pair sets that correspond to
+non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ that
+creates a constraint that states $r_f$ is null under which it points
+to $l_\mathit{null}$, (b) $\theta_\mathit{new}$ the constraint that
+$r_f$ is not null and it does not alias another reference in set
+$\rho$ under which it points to the newly created location $l_f$, (c)
+and $\theta_\mathit{alias}$ where for each element in the set $(r_a,
+l_a) \in \rho$ it creates a constraints that $r_f$ is not null, points
+to $r_a$, and does not point to any reference contained in
+$(r_a^\prime, l_a^\prime) \in \rho$ such that $r_a \neq
+r_a^\prime$. Additionally $\theta_\mathit{orig}$ allows for the
+possibility that the field continues to remain uninitialized since the
+heap is symbolic. We refer to this initialization in the summary
+machine as conditional initialization. Finally, the fields of the
+reference $r_f$ are marked as uninitialized.
+
+In the post condition of the rule the reference $r_f$ points to
+$\theta$ which contains the union of all the constraint location pairs
+sets, and the field $f$ points to the new reference $r_f$ in the
+summary heap.  Note that the summarize rule invoked repeatedly until
+the set of unitialized constraint location pairs for field $f$ is
+empty. In other words the set $\lambda$ is empty. This consititutes
+the summarize end rule in~\figref{fig:symInit}.
 
 \begin{figure*}[t]
 \begin{center}
@@ -111,9 +139,24 @@ summary heap shown in~\figref{fig:initHeap}(b). The reference $r_1^1$
 points to the $l_\mathit{null}$ location under the constraint that
 $r_1^i$ is null: $\phi_{1a} := r_1^i = r_\mathit{null}$. The reference
 $r_1^i$ points to the location $l_1$ under the constraint that $r_1^i$
-is not null $\phi_{1b} :=r_1^i \neq r_\mathit{null}$. The location
-$l_1$ represents a fresh location of type $C$ is created on the heap
-such that $C$ is type of $\mathit{this}.x$.
+is not $\mathit{null}$ $\phi_{1b} :=r_1^i \neq r_\mathit{null}$. The
+location $l_1$ represents a fresh location of type $C$ is created on
+the heap such that $C$ is type of $\mathit{this}.x$.
+
+Following the initialization to the $\mathit{this}.x$, when we
+initialize $\mathit{this}.y$ the resulting summary heap is shown
+in~\figref{fig:initHeap}(c). The set $\rho$ shown
+in~\figref{fig:initHeap}(d) contains the potential aliases for
+$\mathit{this}.y$ which is location $l_1$ ($\mathit{this}.x$). The
+constraint location $\theta$ sets represents the initialization
+choices for $\mathit{this}.y$. The new input reference $r_2^i$ for
+$this.y$ points to (a) location $l_\mathit{null}$ under the constraint
+$\phi_{2a} := r_2^i = r_\mathit{null}$, (b) location $l_2$ under the
+constraint $\phi_{2b} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq
+r_1^i$ that states that $r_2^i$ is not null and does not alias
+$r_1^i$, and (c) location $l_1$ under the constraint $\phi_{2c} :=
+r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i$ that states $r_2^i$
+is not null and \emph{does} alias $r_1^i$.
 
 
 

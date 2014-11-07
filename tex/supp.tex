@@ -19,6 +19,7 @@
 
 \section{Complete Rules for GSE}
 
+\subsection{Initialization}
 \input{initialize-lazy}
 
 \begin{figure*}[t]
@@ -52,5 +53,11 @@ invoked until a fix pointed is reached.
 The initialize (null) rewrite rule in~\figref{fig:lazyInit} first
 checks that the field, $\cfgnt{r}$ is uninitialized. The fresh method
 returns a new input heap reference from the partition 
+
+\subsection{Field Access and Field Write}
+
+\input{lazy-fig}
+
+\input{lazy-eq}
 
 \end{document}  

@@ -1,18 +1,26 @@
-\section{Generating Heap Summaries}
+\section{Generalized Symbolic Execution}
 
-\subsection{Initialization of Symbolic References}
-
-In this section we present the Javalite rewrite rules for the summary
-initialization of symbolic references. The initialization rules are
-defined on the bi-partite graph consisting of references and
-locations. Recall that in generalized symbolic execution (GSE) for
+Recall that in generalized symbolic execution (GSE) for
 lazy initialization of symbolic references consists of three key
 points of non-determinism where each symbolic reference can be
 initialized non-deterministically to null, a new instance of the
 symbolic reference, or aliases to symbolic references of the same type
 previously initialized. The initialization in GSE consists of creating
 branches in the execution tree for all the non-deterministic
-choices. In contrast, the heap summarization approach creates a
+choices. 
+
+\input{initialize-lazy}
+
+\input{lazy-eq}
+
+\section{Generating Symbolic Heap Summaries}
+
+\subsection{Initialization of Symbolic References}
+
+In this section we present the Javalite rewrite rules for the summary
+initialization of symbolic references. The initialization rules are
+defined on the bi-partite graph consisting of references and
+locations. In contrast, the heap summarization approach creates a
 single branch that contains the summarization for all the
 initialization in a single bi-partitate graph.
 

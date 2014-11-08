@@ -23,7 +23,23 @@
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
       \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
-	}	
+	}
+\and
+  \inferrule[Equals (reference-true)]{
+    \cfgnt{L}\lp \cfgnt{r}_0\rp = \cfgnt{L}\lp \cfgnt{r}_1\rp\\
+    \phi^\prime = \lp\phi \wedge r_0 = r_1\rp
+    }{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
+    }
+\and
+    \inferrule[Equals (reference-false)]{
+    \cfgnt{L}\lp \cfgnt{r}_0\rp \neq \cfgnt{L}\lp \cfgnt{r}_1\rp\\
+    \phi^\prime = \lp\phi \wedge r_0 \neq r_1\rp
+   }{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
+    }	
 \end{mathpar}
 \end{center}
 \caption{GSE with lazy initialization indicated by $\rgse = \rightarrow_\ell \cup \rcom$.}

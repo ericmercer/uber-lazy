@@ -50,29 +50,6 @@
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp  \rinit 
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp 
 	}
-\and
-	\inferrule[Field Access]{
-      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}\rp\\
-      l \neq \cfgnt{l}_\mathit{null}\\
-      \cfgnt{C} = \mathrm{type}\lp\cfgnt{l},\cfgnt{f}\rp\\\\
-      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rinit^*
-      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\  \cfgnt{C}\rp \\\\ 
-      \{\lp\phi^\prime\ l^\prime\rp\} = \cfgnt{L}^\prime\lp\cfgnt{R}^\prime\lp l,\cfgnt{f}\rp\rp \\
-      \cfgnt{r}^\prime = \mathrm{stack}_r\lp\rp \\
-    }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
-      \lp \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime\ \phi_g^\prime\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
-	}
-\and
-	\inferrule[Field Write]{
-      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp\\ 
-      \theta = \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}_x\rp \\\\
-      l \neq \cfgnt{l}_\mathit{null}\\
-      \cfgnt{r}^\prime = \mathrm{fresh}_r\lp\rp\\
-    }{
-      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow_\ell \\\\
-      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
-	}	
 \end{mathpar}
 \end{center}
 \caption{The initialization machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s \rinit^* s^\prime = s \rinit \cdots \rinit s^\prime \rinit s^\prime$.}

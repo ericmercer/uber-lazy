@@ -81,7 +81,7 @@
    }
 \and
    \inferrule[Method Invocation]{
-    \cfgnt{C} = \mathrm{type}\lp\cfgnt{r}\rp \\\\
+    \{\cfgnt{C}\} = \{\cfgnt{C} \mid \exists \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp\cfgnt{C} = \mathrm{type}\lp \cfgnt{l}\rp\rp\} \\\\
     \lp\cfgnt{T}_o\ \cfgnt{m}\ \lb\cfgnt{T}_1\ \cfgnt{x}\rb\ \ \cfgnt{e}_m\rp = \mathrm{lookup}\lp \cfgnt{C},\cfgnt{m}\rp\\\\
     \eta_m = \eta[\cfgt{this} \mapsto \cfgnt{r}][\cfgnt{x} \mapsto \cfgnt{v}]}{
     \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{v}\ \lp \cfgnt{r}\ \cfgt{@}\ \cfgnt{m}\ \cfgt{*}\ \rightarrow \cfgnt{k}\rp \rp  \rcom \\\\

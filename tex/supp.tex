@@ -23,23 +23,13 @@
 \author{The Author}
 %\date{}                                           % Activate to display a given date or no date
 
-\begin{document}
-\maketitle
-%\section{}
-%\subsection{}
-\section{Common Rules for Javalite}
-
-\input{javalite-common}
-
-\section{Complete Rules for GSE}
-
-\input{cfg-commands}
 \newcommand{\figref}[1]{Figure~\ref{#1}}
 \newcommand{\secref}[1]{Section~\ref{#1}}
 \newcommand{\thref}[1]{Theorem~\ref{#1}}
 \newcommand{\lemref}[1]{Lemma~\ref{#1}}
 \newcommand{\defref}[1]{Definition~\ref{#1}}
 
+\input{cfg-commands}
 \newcommand{\sym}{\ensuremath{\varsigma}}
 \newcommand{\gse}{\ensuremath{g}}
 \newcommand{\rsym}{\ensuremath{\rightarrow_\sym}}
@@ -50,6 +40,16 @@
 \newcommand{\rinit}{\ensuremath{\rightarrow_I}}
 \newcommand{\com}{\ensuremath{J}}
 \newcommand{\rcom}{\ensuremath{\rightarrow_\com}}
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+\section{Common Rules for Javalite}
+
+\input{javalite-common}
+
+\section{Complete Rules for GSE}
 
 \subsection{Initialization}
 \begin{figure*}[t]

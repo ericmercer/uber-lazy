@@ -6,6 +6,17 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
+\usepackage{mathpartir}
+\usepackage{amsmath}
+\usepackage{comment}
+\usepackage{mathpartir}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[T1]{fontenc}
+
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{Supplementary Material}
@@ -18,6 +29,24 @@
 %\subsection{}
 
 \section{Complete Rules for GSE}
+
+\input{cfg-commands}
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\thref}[1]{Theorem~\ref{#1}}
+\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+\newcommand{\defref}[1]{Definition~\ref{#1}}
+
+\newcommand{\sym}{\ensuremath{\varsigma}}
+\newcommand{\gse}{\ensuremath{g}}
+\newcommand{\rsym}{\ensuremath{\rightarrow_\sym}}
+\newcommand{\rssym}{\ensuremath{\leadsto_\sym}}
+\newcommand{\rgse}{\ensuremath{\rightarrow_\gse}}
+\newcommand{\rsgse}{\ensuremath{\leadsto_\gse}}
+\newcommand{\rsum}{\ensuremath{\rightarrow_S}}
+\newcommand{\rinit}{\ensuremath{\rightarrow_I}}
+\newcommand{\com}{\ensuremath{J}}
+\newcommand{\rcom}{\ensuremath{\rightarrow_\com}}
 
 \subsection{Initialization}
 \input{initialize-lazy}

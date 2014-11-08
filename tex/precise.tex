@@ -72,9 +72,21 @@ reference that is returned during the access of the field, however, is
 $r_3^s$. The reference $r_3^s$ points to the value set of $r_2^i$
 which are: $(\phi_{2a}, l_\mathit{null})$, $(\phi_{2b}, l_2)$, and
 $(\phi_{2c}, l_1)$. The values of the constraints $\phi_{2a}$,
-$\phi{2b}$, and $\phi_{2c}$ are defined in~\figref{fig:initHeap}(d).
+$\phi_{2b}$, and $\phi_{2c}$ are defined in~\figref{fig:initHeap}(d).
 
 \subsection{Writing to a Field}
+
+The reference $r_x$ is the base pointer whose field is being written
+to while $r$ is the target reference. We look up the value of the base
+reference in the environment $\eta(x)$. The set $\Psi_x$ is the set of
+tuples of constraints, locations, and references which provide the
+reference chains leading from $r_x$ to the reference of the field,
+$r_\mathit{curr}$, being written to through $\phi$ and $l$.The goal is
+to overwrite the $r_\mathit{curr}$ references with the target
+references. Since the target of the write is $r$, we first check that the
+location constraint pairs of $L(r)$ are satisfiable when accessed
+through the $r_x$ chain. This is accomplished by the strengthing
+function.
 
 \begin{definition}
 \label{def:ST}
@@ -89,6 +101,7 @@ pairs that are satisfiable after this strengthening with the inclusion of the gl
 \]
 \end{definition}
 
+Additionally, we also check for conditions where the write is not possible 
 
 \begin{comment}
 \begin{figure}[t]
@@ -131,7 +144,16 @@ $\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wed
 (a) & (b) \\
 \end{tabular}
 \caption{equals true for this.x == this.y}
-\label{fig:eqs-true}
+\label{fig:eqs}
 \end{figure*}
 
 
+The rewrite rules for check the equals true and equals false when
+comparing two references in the symbolic summary heap is shown
+in~\figref{fig:eqs}(a). First the equals reference true rewrite rule
+returns true if two references $r_0$ and $r_1$ are equal. In GSE this
+is a simple comparision of object refrences. In the symbolic summary
+heap, however, there we campare sets of constraint location pairs for
+each reference. We construct three sets of constraints (i)
+$\Phi_\alpha$ constains combinations of constraints ($\phi_0 \wedge
+\phi_1$) from $r_0$ and $r_1$

@@ -50,10 +50,10 @@ init$_r$ method returns a new input reference $r_f$ while the
 fresh$_f$ returns a new location of type $C$. The set $\rho$ contains
 the set of reference location, $(r_a, l_a)$, pairs that the current
 field may alias. The pair $(r_a, l_a)$ is contained in the set $ \rho
-$ if $r_a$ is part of the input references initialized in the summary
-heap, $r_a$ is in the pre-image of $l_a$, and the type of $l_a$ is the
-same as the type of the field being initialized then the pair $(r_a,
-l_a)$ is added to the $\rho$ set.
+$ if the following conditions hold: (i) $r_a$ is part of the input
+references initialized in the summary heap, (ii) $r_a$ is in the
+pre-image of $l_a$, (iii) and the type of $l_a$ is the same as the
+type of the field being initialized.
 
 There are three constraint-location pair sets that correspond to
 non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ that

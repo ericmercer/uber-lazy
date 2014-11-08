@@ -1,33 +1,6 @@
-\subsection{Accessing and Writing to Field References}
+\subsection{Accessing a Field Reference}
 
-\begin{definition}
-\label{def:VS}
-The function $\mathbb{VS}(L,R,\phi_g,r,f)$ constructs the value-set given a
-heap, reference, and desired field:
-\[
-\begin{array}{rcl}
-  \mathbb{VS}(\cfgnt{L},\cfgnt{R},\phi_g,\cfgnt{r},\cfgnt{f}) & = & \{(\phi\wedge\phi^\prime\ \cfgnt{l}^\prime) \mid \\
-  & & \ \ \ \ \exists \cfgnt{l}\ ((\phi\ l) \in L(r)\ \wedge \\
-  & & \ \ \ \ \ \ \ \ \exists \cfgnt{r}^\prime ( \cfgnt{r}^\prime = R(\cfgnt{l},\cfgnt{f})\ \wedge \\
-  & & \ \ \ \ \ \ \ \ \ \ \ \ (\phi^\prime\ l^\prime) \in \cfgnt{L}(\cfgnt{r}^\prime)\ \wedge\\
-  & & \ \ \ \ \ \ \ \ \ \ \ \ \mathbb{S}(\phi\wedge\phi^\prime\wedge \phi_g)))\}
-\end{array}
-\]
-where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
-\end{definition}
 
-\begin{definition}
-\label{def:ST}
-The strengthen function $\mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g)$ strengthens every
-constraint from the reference $\cfgnt{r}$ with $\phi$ and keeps only location-constraint
-pairs that are satisfiable after this strengthening with the inclusion of the global heap constraint $\phi_g$:
-\[
-\begin{array}{rcl} 
-\mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g) & = & \{ (\phi\wedge\phi^\prime\ \cfgnt{l}^\prime) \mid  \\
-& & \ \ \ \ (\phi^\prime\ \cfgnt{l}^\prime)\in \cfgnt{L}(\cfgnt{r})\wedge\mathbb{S}(\phi\wedge\phi^\prime\wedge\phi_g) \}
-\end{array}
-\]
-\end{definition}
 
 \input{precise-fig}
 
@@ -46,7 +19,78 @@ pairs that are satisfiable after this strengthening with the inclusion of the gl
 \label{fig:fHeap}
 \end{figure*}
 
+There are two rewrite rules in~\figref{fig:fHeap}(a), one for field
+access and the other for field write. Let us consider the rewrite rule
+for field access. The first check we perform is whether there exists a
+constraint location pair for the $r$ being accessed such that the
+location is not null and the constraint when conjuncted with the
+global constraint is satisfiable. Next we extract all possible
+constraints under which $r$ points to a null location such that the
+constraint is satisfiable under the current global constraint,
+$\phi_g$. The negation of these constraints are added to the global
+constraint to create a new global constraint $\phi_g^\prime$. The
+update to the global constraint ensures that access of the field $f$
+happens only on non-null locations. The type $C$ of the field is
+extracted and passed to rewrite rule that performs the initialization
+of the symbolic heap. The initialization rules are described earlier
+in this section. 
 
+Recall that during the initialization the rewrite rules
+in~\figref{fig:symHeap} add input references that map to fields being
+initialized.  Once the initialization is complete, however, we create
+a new local reference $r^\prime$. An important property of the
+references in the bi-partiate graph is that they are
+\emph{immutable}. Hence we de-reference the initialized input
+reference, assign its value to the the new local reference, and return
+the local reference. In order to de-reference a field $r.f$ we define
+a helper function which is called the value set.
+
+\begin{definition}
+\label{def:VS}
+The function $\mathbb{VS}(L,R,\phi_g,r,f)$ constructs the value-set given a
+heap, reference, and desired field:
+\[
+\begin{array}{rcl}
+  \mathbb{VS}(\cfgnt{L},\cfgnt{R},\phi_g,\cfgnt{r},\cfgnt{f}) & = & \{(\phi\wedge\phi^\prime\ \cfgnt{l}^\prime) \mid \\
+  & & \ \ \ \ \exists \cfgnt{l}\ ((\phi\ l) \in L(r)\ \wedge \\
+  & & \ \ \ \ \ \ \ \ \exists \cfgnt{r}^\prime ( \cfgnt{r}^\prime = R(\cfgnt{l},\cfgnt{f})\ \wedge \\
+  & & \ \ \ \ \ \ \ \ \ \ \ \ (\phi^\prime\ l^\prime) \in \cfgnt{L}(\cfgnt{r}^\prime)\ \wedge\\
+  & & \ \ \ \ \ \ \ \ \ \ \ \ \mathbb{S}(\phi\wedge\phi^\prime\wedge \phi_g)))\}
+\end{array}
+\]
+where $\mathbb{S}(\phi)$ returns true if $\phi$ is satisfiable.
+\end{definition}
+
+
+In the post-condition of the rewrite rule we assign
+the value set of input reference $r$ to the local reference $r^\prime$
+and return the local reference $r^\prime$ in the next state.
+
+Consider the graph shown in~\figref{fig:fHeap}(b) the reference
+$r_2^i$ is created during the initialization of $\mathit{this}.y$. The
+reference that is returned during the access of the field, however, is
+$r_3^s$. The reference $r_3^s$ points to the value set of $r_2^i$
+which are: $(\phi_{2a}, l_\mathit{null})$, $(\phi_{2b}, l_2)$, and
+$(\phi_{2c}, l_1)$. The values of the constraints $\phi_{2a}$,
+$\phi{2b}$, and $\phi_{2c}$ are defined in~\figref{fig:initHeap}(d).
+
+\subsection{Writing to a Field}
+
+\begin{definition}
+\label{def:ST}
+The strengthen function $\mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g)$ strengthens every
+constraint from the reference $\cfgnt{r}$ with $\phi$ and keeps only location-constraint
+pairs that are satisfiable after this strengthening with the inclusion of the global heap constraint $\phi_g$:
+\[
+\begin{array}{rcl} 
+\mathbb{ST}(\cfgnt{L},\cfgnt{r},\phi,\phi_g) & = & \{ (\phi\wedge\phi^\prime\ \cfgnt{l}^\prime) \mid  \\
+& & \ \ \ \ (\phi^\prime\ \cfgnt{l}^\prime)\in \cfgnt{L}(\cfgnt{r})\wedge\mathbb{S}(\phi\wedge\phi^\prime\wedge\phi_g) \}
+\end{array}
+\]
+\end{definition}
+
+
+\begin{comment}
 \begin{figure}[t]
 \begin{center}
 \begin{tabular}[c]{l}
@@ -60,6 +104,7 @@ $\theta = \{ \}$\\
 \caption{field write for this.x = this.y sets}
 \label{fig:faHeapSets}
 \end{figure}
+\end{comment}
 
 \subsection{Equality and InEquality of References}
 

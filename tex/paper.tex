@@ -37,6 +37,14 @@
 
 \newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\Hurl{#1}}}   % print a hyperlinked DOI
 
+\definecolor{sjpcolor}{rgb}{1.0,0.0,0.722}
+\newcommand*{\sjp}[1]%
+{\textcolor{sjpcolor}{\noindent\textbf{[sjp:~}\textit{#1}]}}
+
+\definecolor{nsrcolor}{rgb}{0.7,0.0,1.0}
+\newcommand*{\nsr}[1]%
+{\textcolor{nsrcolor}{\noindent\textbf{[nsr:~}\textit{#1}]}}
+
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -143,7 +151,7 @@
 
 
 \input{intro}
-\input{motivation}
+%\input{motivation}
 \input{javalite}
 \input{preliminaries}
 \input{heap}

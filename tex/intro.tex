@@ -1,19 +1,19 @@
 \section{Introduction}
 
-In recent years symbolic execution --
-a program analysis technique for systematic exploration of
-program execution paths using symbolic input values -- has provided
-the basis for various software testing and analysis techniques.
-For each execution path explored during symbolic execution, constraints
-on the symbolic inputs are collected to create a \emph{path
-condition}. The set of path conditions computed by symbolic execution
-characterize the observed program execution behaviours and can
-be used as an enabling technology for various applications, e.g., 
-regression 
-analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12}, 
-data structure repair~\cite{KhurshidETAL05RepairingStructurally}, dynamic
-discovery of invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, 
-and debugging\cite{Ma:2011}. 
+In recent years symbolic execution -- a program analysis technique for
+systematic exploration of program execution paths using symbolic input
+values -- has provided the basis for various software testing and
+analysis techniques.  For each execution path explored during symbolic
+execution, constraints on the symbolic inputs are collected to create
+a \emph{path condition}. The set of path conditions computed by
+symbolic execution characterize the observed program execution
+behaviours and can be used as an enabling technology for various
+applications, e.g., regression
+analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12},
+data structure repair~\cite{KhurshidETAL05RepairingStructurally},
+dynamic discovery of
+invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
+debugging\cite{Ma:2011}.
 
 Initial work on symbolic execution largely focused on checking 
 properties of programs with primitive types, such as integers and 
@@ -26,25 +26,27 @@ primitive types, remains challenging
 because of the large number of execution paths generated
 during symbolic analysis. 
 
-With the advent of object-oriented
-languages that manipulate dynamically allocated data,
- .g., Java and C$++$, recent work has generalized the core ideas of 
-symbolic execution to enable analysis of programs containing
-complex data structures with unbounded domains, i.e., data stored
-on the heap~\cite{Kiasan06,Kiasan07,GSE03}.
-These techniques onstruct the heap in a lazy manner, 
-deferring materialization of objects on the concrete heap until
-they are needed for the analysis to proceed.
-%, i.e., until execution of a statement with a  dereference expression 
-%($x = r.f$).
-Treatment of
-heap allocated data then follows concrete program semantics 
-once a heap location is materialized, resulting in a large number
-of feasible concrete heap configurations, and as a result, a large
-number of points of 
-non-determinism to be analyzed, further exacerbating 
-the state space explosion problem.
+With the advent of object-oriented languages that manipulate
+dynamically allocated data, .g., Java and C$++$, recent work has
+generalized the core ideas of symbolic execution to enable analysis of
+programs containing complex data structures with unbounded domains,
+i.e., data stored on the heap~\cite{Kiasan06,Kiasan07,GSE03}.  These
+techniques construct the heap in a lazy manner, deferring
+materialization of objects on the concrete heap until they are needed
+for the analysis to proceed. The materilization accounts for various
+heap configurations and creates non-deterministic choices for the
+symbolic object to be initialized as (a) null, (b) instance of a new
+reference of a compatible class, and (c) alias an previously
+initialized symbolic reference. Treatment of heap allocated data then
+follows concrete program semantics once a heap location is
+materialized, resulting in a large number of feasible concrete heap
+configurations, and as a result, a large number of points of
+non-determinism to be analyzed, further exacerbating the state space
+explosion problem.
 
+\nsr{need a paragraph on heap summarization techniques}
+
+\begin{comment}
 THIS PARA IS NOT QUITE RIGHT BUT THE IDEA IS STARTING TO COME OUT.
 Although lazy symbolic execution techniques have been instrumental 
 in enabling analysis of heap manipulating programs, they miss an
@@ -59,6 +61,40 @@ is used
 produces considerably fewer path conditions -- a valuable benefit
 for client analyses that use the results of symbolic execution,
 e.g., regression analyses.
+\end{comment}
+
+In this work, we present a novel heap initialization and analysis
+technique which takes inspiration from both approaches and constructs
+precise heap summaries lazily during symbolic execution. \nsr{needs
+  some text on the fact we use java lite to formalize the heap
+  summary, some key characteristicss of the heap such as the fact it
+  is a bipartiate graph with locations and referneces, properties of
+  the heap such as the determinism and immutability}
+
+Our symbolic heap representation is expressive and can represent
+recursive data structures.  \nsr{Is any part of the formalism borrowed
+  from the dilligs? Which part are unique?}  \nsr{end on a couple
+  sentences about the various rules that will be talked about in the
+  paper}\nsr{The reader should be convinced about our expressiveness
+  claim here}
+
+We prove that our technique is precise, at any given point during
+symbolic execution, the symbolic heap represents the exact set of
+feasible concrete heap structures for the program under analysis, and
+\nsr{a paragraph that provides intution on how we are a bisumulation
+  with the GSE..reader should be convinced about the precision claim}
+
+
+Our demonstrate the scalability of our approach. Our technique reduces
+the points of non-determinism compared to generalized symbolic
+execution and explores each control-flow path only once for any given
+set of isomorphic heaps \nsr{a paragraph that provides a breif summary
+  of the results.. would be nice if we have numbers for lazier and
+  lazier Sharp as well.}
+
+
+
+\begin{comment}
 
 The key advantages of our approach to lazy symbolic execution
 using a fully symbolic heap include:
@@ -75,6 +111,7 @@ concrete heap structures for the program under analysis}
 data structures  and heap structures resulting from loops and recursive control 
 structures in the analyzed code. }
  \end{itemize}
+\end{comment}
 
 This paper makes the following contributions:
 

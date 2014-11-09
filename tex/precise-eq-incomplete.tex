@@ -1,0 +1,23 @@
+\newsavebox{\boxPEQ}
+\savebox{\boxPEQ}{
+%\begin{figure}[t]
+%\begin{center}
+\mprset{flushleft}
+\begin{tabular}[c]{c}
+\begin{mathpar}
+    \inferrule[Equals (references-true)]{
+    \Phi_\alpha = \{\lp\phi_0 \wedge \phi_1\rp \mid \exists l\ \lp \lp \phi_0\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \lp \phi_1\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \rp \} \\\\
+    \Phi_0 = \{\phi_0 \mid \exists l_0\ \lp \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp  \wedge \forall \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
+    \Phi_1 = \{\phi_1 \mid \exists l_1\ \lp \lp \phi_1\ l_1\rp  \in \cfgnt{L}\lp \cfgnt{r}_1\rp  \wedge \forall \lp \phi_0\ l_0\rp  \in \cfgnt{L}\lp \cfgnt{r}_0\rp \ \lp l_0 \neq l_1\rp \rp \} \\\\
+    \phi^\prime =  \phi \wedge \lp \vee_{\phi_\alpha\in\theta_\alpha}\phi_\alpha\rp \wedge\lp \wedge_{\phi_0 \in \theta_0} \neg \phi_0\rp \wedge\lp \wedge_{\phi_1
+    \in \theta_1} \neg \phi_1\rp \\\\ 
+    \mathbb{S}(\phi^\prime)}{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rightarrow_\mathit{EQ}^T
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
+    }
+\end{mathpar}
+\end{tabular}}
+%\end{center}
+%\caption{FIX THIS CAPTION AND MOVE $\rsym$ DEFINITION (MAY NOT BE NEEDED BECAUSE OF \defref{def:meta}: Precise symbolic heap summaries from symbolic execution indicated by $\rsym = \rightarrow_\mathit{FA} \cup \rightarrow_\mathit{FW} \cup \rightarrow_\mathit{EQ}^T \cup \rightarrow_\mathit{EQ}^F \cup \rcom$.}
+%\label{fig:symeq}
+%\end{figure}

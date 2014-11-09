@@ -10,7 +10,15 @@ creates a single branch that contains the summarization for all the
 initialization in a single bi-partitate graph.
 
 
-\input{summarize-precise}
+\input{summarize-precise-incomplete}
+
+\begin{figure*}
+\begin{tabular}[c]{l}
+\scalebox{0.81}{\usebox{\boxPI}} \\
+\end{tabular}
+\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+\label{fig:symInit}
+\end{figure*}
 
 The initialization rules are invoked when an uninitialized field in a
 symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},
@@ -153,13 +161,13 @@ is not null and \emph{does} alias $r_1^i$.
 
 
 \subsection{Accessing a Field Reference}
-\input{precise-fig}
+\input{precise-fig-incomplete}
 
 \begin{figure*}[t]
 \begin{center}
 \setlength{\tabcolsep}{50pt}
 \begin{tabular}[c]{cc}
-\usebox{\boxPFAFW} & 
+\scalebox{0.81}{\usebox{\boxPFAFW}} & 
 %\scalebox{0.91}{\input{faYHeap.pdf_t}} &
 \scalebox{0.91}{\input{fwXHeap.pdf_t}} \\ \\
 (a) & (b)
@@ -245,7 +253,7 @@ $\theta = \{ \}$\\
 
 \subsection{Equality and InEquality of References}
 
-\input{precise-eq}
+\input{precise-eq-incomplete}
 
 \newsavebox{\boxPEX}
 \savebox{\boxPEX}{
@@ -262,14 +270,15 @@ $\theta_\alpha = \{ (\phi_{1a}\; \implies\; \neg\phi_{2a} ) (\phi_{1b}\; \implie
 $\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wedge (\phi_{1b}\; \implies\; \neg\phi_{2c} )  \wedge \phi_{2b} $\\ \hline
 \end{tabular}}
 
-\begin{figure*}
-\begin{tabular}[c]{cl}
-\usebox{\boxPEQ} & \usebox{\boxPEX} \\ \\
-(a) & (b) \\
+\begin{figure}
+\begin{tabular}[c]{l}
+\scalebox{0.81}{\usebox{\boxPEQ}} \\
+% & \usebox{\boxPEX} \\ \\
+%(a) & (b) \\
 \end{tabular}
 \caption{equals true for this.x == this.y}
 \label{fig:eqs}
-\end{figure*}
+\end{figure}
 
 
 The rewrite rules for check the equals true and equals false when

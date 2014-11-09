@@ -115,77 +115,102 @@ $$s_\sym^*  \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\
 
 \end{proof}
 
-%we need to define how r' is arrived at for this one to work...
+\begin{comment}
+Choose any P and Q such that P is represented by Q on field access. Choose some P' that P transitions too.
+Pick some p' in P'. By definition, it is related to a p in P. Use that p. Show how that p is related to p'. Then relate to q'.
+
+Arbitrary P' such that P transitions to P'. Reason over each possible P' (how every many choices might exist--Only one for FA). Pick arbitrary p' in one of the sucessor. Do the forward proof. Show connection in q'. Connect to P' since it holds for arbitrary. 
+
+Repeat process for each possible successor P'
+
+For backward, for each q', there must exists a p'. All we need is one p and then that implies there exists a P. Must do for all Q'. 
+\end{comment}
+
 \begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
-If two sets of field access states are related in the represented by relation,
-then they are also related in the functional associated to bisumlation.
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
 \label{lem:access}
 $$
-\forall p \in S_\mathit{FA}\ (\forall q \in S_\mathit{FA}\ (p \sqsubset q \Rightarrow (p\ q) \in F_\sim(\sqsubset)))
+\forall P \in 2^{S_\mathit{FA}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
 $$
 \end{lemma}
 
 \begin{proof}
-Proof by contradiction: assume $p \sqsubset q \wedge (p\ q) \not\in F_\sim(\sqsubset)$. 
+Proof by contradiction: assume $P \sqsubset q \wedge (P\ q) \not\in F_\sim(\sqsubset)$.
 
-The case where neither $p$ nor $q$ have successors is trivially satisfied by
-\defref{bisimulation} since the conditions for inclusion in
-$F_\sim(\sqsubset)$ are vacuously met. That is a contradiction.
+\lemref{lem:succ} ensures at least one successor of $P$ and $q$. Let $p^\prime \in P^\prime$ be any
+state in any successor set and $p \rgse p^\prime$ that state's
+predecessor. Let $q^\prime$ be similarly defined relative to $q$.  The states $p$ and $q$, by virtue of the
+representation relation, are only differentiated by their heaps and
+global constraints since the environment ($\eta$), expression ($r$),
+and continuation ($\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow
+\cfgnt{k}\rp$) are the same in all states 
+(\defref{representation}). 
 
-Consider now the case where $p$ and $q$ have successor states. The
-statement $p \sqsubset q$ (\defref{representation}) means that $p$ and
-$q$ are only differentiated by their heaps and global constraints
-since the environment ($\eta$), expression ($e$), and continuation
-($k$) are the same in both states.
+There are two relations defined for field access in both $\rsgse$ and
+$\rsym$ for a null and non-null pointing reference (\figref{fig:lazy}
+and \figref{fig:fHeap}). In each relation, the environment is
+unchanged. For a null pointing reference, in both relations, the
+expression is $\cfgt{error}$ and the continuation is $\cfgt{end}$. For
+the non-null pointing reference, some care is needed. First each does
+use the same continuation $\cfgnt{k}$ (it is the same for $p$ and $q$
+by $\sqsubset$. As the environment and continuations are the same,
+$r^\prime = \mathrm{stack}_\cfgnt{r}()$, returns the same next largest
+number of current stake references from the partition. The first
+condition for inclusion in $\sqsubset$, equality between environments,
+expressions, and continuations, is met.
 
-Ignoring the heaps, and given that $p$ and $q$ currently have
-the same environment, expression, and continuation, all successors
-of $p$ related by \textrm{F{\footnotesize IELD}}
-\textrm{A{\footnotesize CCESS}} in $\rgse$ (\figref{fig:lazy}) have
-the same unchanged environment from $p$, $\eta$, new expression
-$r^\prime = \mathrm{stack}_\cfgnt{r}()$, and continuation $\cfgnt{k}$
-from the old continuation in $p$ having completed the field
-access. Similarly, the one successor of $q$ related by $\rsym$
-(\figref{fig:symfield}), has that same $\eta$, $r^\prime =
-\mathrm{stack}_\cfgnt{r}()$, and $\cfgnt{k}$. As such, every successor
-of $p$/$q$ has a matching successor of $q$/$p$ that agrees on the
-environment, expression, and continuation meeting the first condition
-necessary to relate the successors in $\sqsubset$.
+Now consider the heaps.  The functional in \defref{bisimulation} requires a forward
+\eqref{eqn:BisimulationForwards} and backward
+\eqref{eqn:BisimulationBackwards} relationship between successor
+heaps. First the forward direction.
 
-Turning now to the heaps, \textrm{F{\footnotesize IELD}}
-\textrm{A{\footnotesize CCESS}}, in $\rgse$ and $\rsym$, initializes
+\noindent{\textrm{F{\footnotesize IELD}}
+\textrm{A{\footnotesize CCESS (NULL)}}}: $p \rightarrow^\ell_\mathit{FA(N)}
+p^\prime$ because $l = l_\mathit{null}$ (\figref{fig:lazy}). As $p$
+is represented in $q$, $\exists q^\prime\ (q
+\rightarrow^\sym_\mathit{FA{N}} q^\prime$ since $l_{\mathit{null}}$
+must be feasible on the reference (\figref{fig:fHeap}). 
+
+The successors $p^\prime$ and $q^\prime$ are only differentiated by
+their heap and global constraint as mentioned previously. Since each heap in each successor is unchanged
+from the predecessor state, the same homomorphism from $p \sqsubset q$
+establishes that $p^\prime \sqsubset q^\prime$ holds in the forward direction.
+
+\noindent\textrm{F{\footnotesize IELD}}
+\textrm{A{\footnotesize CCESS}}: $p \rightarrow^\ell_\mathit{FA}
+p^\prime $ because $\cfgnt{l} \neq \cfgnt{l}_\mathit{null}$. As $p$ is represented in $q$ there must be a feasible non-null location: $\exists q^\prime\ (q
+\rightarrow^\sym_\mathit{FA} q^\prime)$. The non-null pointing field access relations initialize
 uninitialized locations in the heap on reference $\cfgnt{r}$ for field
 $\cfgnt{f}$. The heaps in $p$ and $q$ are still homomorphic after
 initialization, and the heap constraint in the homomorphism is still
-valid by \lemref{lem:init}. Let
-$(\cfgnt{L}^\prime_p\ \cfgnt{R}^\prime_p) \rightharpoonup_h
-(\cfgnt{L}^\prime_q\ \cfgnt{R}^\prime_q)$ be those new heaps and
+valid by \lemref{lem:init}. Let $(\cfgnt{L}^\prime_p\ \cfgnt{R}^\prime_p)$ and  
+$(\cfgnt{L}^\prime_q\ \cfgnt{R}^\prime_q)$ be those new heaps and $\rightharpoonup_h$
 the homomorphism after initialization on the heap in $p$ with
 $\rightarrow_I^*$ (\figref{fig:lazyInit}) and the heap in $q$ with
 $\rightarrow_S^*$ (\figref{fig:symInit}).
 
-After initialization, \textrm{F{\footnotesize IELD}}
-\textrm{A{\footnotesize CCESS}} for $\rgse$ relates a new heap in any
-successor state as $(\cfgnt{L}^\prime_p [\cfgnt{r}^\prime \mapsto
-  \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime_p)$, and for $\rsym$ it
-relates the heap in the only successor state as $(\cfgnt{L}^\prime_q[\cfgnt{r}^\prime \mapsto
-  \mathbb{VS}\lp
-  \cfgnt{L}^\prime_q,\cfgnt{R}^\prime_q,\cfgnt{r},\cfgnt{f},\phi_g\rp
-]\ \cfgnt{R}^\prime_q)$; each version adding in the constraint-location pair or
-value set respectively on the same reference $\cfgnt{r}^\prime$.
-
-The functional in \defref{bisimulation} requires and forward
-\eqref{eqn:BisimulationForwards} and backward
-\eqref{eqn:BisimulationBackwards} relationship between successor
-heaps.
+The final heap in the successor state $p^\prime$ is
+$(\cfgnt{L}^\prime_p [\cfgnt{r}^\prime \mapsto
+  \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime_p)$, and for $q^\prime$
+the final heap in the successor state is
+$(\cfgnt{L}^\prime_q[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp
+  \cfgnt{L}^\prime_q,\cfgnt{R}^\prime_q,\cfgnt{r},\cfgnt{f},\phi^\prime_g\rp
+]\ \cfgnt{R}^\prime_q)$; each version adding in the
+constraint-location pair or value set respectively on the same
+reference $\cfgnt{r}^\prime$. As $r^\prime$ is a stack reference, and
+identical in both $p^\prime$ and $q^\prime$, and no new locations are
+added to either heap, the existing homomorphism after initialization
+still holds: $p^\prime \rightharpoonup_h q^\prime$.
 
 
+ To relate $p^\prime$ and $q^\prime$ on
+$\sqsubset$, it is necessary to create a new homomorphism:
+$(\cfgnt{L}^\prime_p\ \cfgnt{R}^\prime_p) \rightharpoonup_{h^\prime}
+(\cfgnt{L}^\prime_q\ \cfgnt{R}^\prime_q)$. To that end, construct the
+function $h^\prime$ such that $h^\prime = h$.
 
-\eqref{eqn:BisimulationForwards}
-\eqref{eqn:BisimulationBackwards}
 
-
-We now show that $s_\gse^\prime \sqsubset s_\sym^\prime$. Since $\eta$, $e$, and $k$ are identical between $s_\sym^\prime$ and $s_\gse^\prime $, the first condition is met by default. Now we construct the function $h^\prime$ such that $h^\prime = h$. Observe that since $s_\gse \rightharpoonup_{h} s_\sym$, and since $\cfgnt{R}_\gse$ and $\cfgnt{R}_\sym$ are unchanged from states $s_\gse$ to $s_\gse^\prime$ and $s_\sym$ to $s_\sym^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\gse(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_\sym(h^\prime(l),f)$. Let $\{(\phi_\gse^\prime\ l^\prime)\} =  \cfgnt{L}_\gse(\cfgnt{R}_\gse(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym))$ is valid, we know that:
+Observe that since $s_\gse \rightharpoonup_{h} s_\sym$, and since $\cfgnt{R}_\gse$ and $\cfgnt{R}_\sym$ are unchanged from states $s_\gse$ to $s_\gse^\prime$ and $s_\sym$ to $s_\sym^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\gse(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_\sym(h^\prime(l),f)$. Let $\{(\phi_\gse^\prime\ l^\prime)\} =  \cfgnt{L}_\gse(\cfgnt{R}_\gse(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym))$ is valid, we know that:
  $$(\phi_\sym \wedge \phi_\sym^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
 From this, we may deduce that:
 $$ (\phi_\gse\ l) \in \cfgnt{L}_\gse^\prime(\cfgnt{r}^\prime) \Rightarrow (\phi_\sym \wedge \phi_\sym^\prime\ h^\prime(l))\in \cfgnt{L}_\sym^\prime(\cfgnt{r}^\prime)$$
@@ -244,7 +269,7 @@ To show that $s_\sym^\prime$ is sound with respect to the feasible set, we use t
 \end{proof}
 
 
-\begin{lemma}[$\rsum^*$ preserves heap determinism]
+\begin{lemma}[$\rsum^*$ produces well-formed heaps]
 \label{lem:S-determ}
 Given a deterministic heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
 state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
@@ -330,7 +355,7 @@ same argument as in the base case,
 $(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus deterministic.
 \end{proof}
 
-\begin{lemma}[$\rightarrow_\mathit{FA}$ preserves heap determinism]
+\begin{lemma}[$\rightarrow_\mathit{FA}$ produces well-formed heaps]
 \label{lem:FA-determ}
 Given a state, $s$, with a deterministic heap,
 $(\cfgnt{L}\ \cfgnt{R}) =
@@ -376,7 +401,7 @@ $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime) =
 \mathrm{heap}(s^\prime)$, is also deterministic.
 \end{proof}
 
-\begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]
+\begin{lemma}[$\rightarrow_\mathit{FW}$ produces well-formed heaps]
 \label{lem:FW-determ}
 Given a state, $s_\sym$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
@@ -420,7 +445,7 @@ that $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime)$ is also
 deterministic.
 \end{proof}
 
-\begin{lemma}[$\rcom$ preserves heap determinism]
+\begin{lemma}[$\rcom$ produces well-formed heaps]
 \label{lem:J-determ}
 Given a state, $s_\sym$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
@@ -443,7 +468,7 @@ $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime)$ is also
 deterministic.
 \end{proof}
 
-\begin{theorem}[$\rsym$ preserves heap determinism]
+\begin{theorem}[$\rsym$ preserves heap well-formedness]
 \label{thm:determ}
 Given a state, $s_\sym$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =

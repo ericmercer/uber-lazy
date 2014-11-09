@@ -154,7 +154,11 @@ in~\figref{fig:eqs}(a). First the equals reference true rewrite rule
 returns true if two references $r_0$ and $r_1$ are equal. In GSE this
 is a simple comparision of object refrences. In the symbolic summary
 heap, however, there we campare sets of constraint location pairs for
-each reference. We construct three sets of constraints (i) In order to check whether 
-there are locations, $l$ in the heap such that under some constraints $\phi_0$ references $r_0$ and $r_1$
-$\Phi_\alpha$ constains combinations of constraints ($\phi_0 \wedge
-\phi_1$) from $r_0$ and $r_1$
+each reference. We construct three sets of constraints. The first set,
+$\Phi_\alpha$, we check whether under some constraints $\phi_0$ and
+$\phi_1$ whether references $r_0$ and $r_1$ respectively point to the
+same location $l$.  For all such constraints we create conjunctions of
+the constraints $\phi_0 \wedge \phi_1$ and add them to set
+$\Phi_\alpha$. The next set of constraints si $\Phi_0$ which contains
+the set of constraints from $r_0$ that lead to $l$ such that there is
+no constraints under which $r_1$ can point to that $l$.

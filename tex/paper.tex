@@ -1,33 +1,5 @@
-%-----------------------------------------------------------------------------
-%
-%               Template for sigplanconf LaTeX Class
-%
-% Name:         sigplanconf-template.tex
-%
-% Purpose:      A template for sigplanconf.cls, which is a LaTeX 2e class
-%               file for SIGPLAN conference proceedings.
-%
-% Guide:        Refer to "Author's Guide to the ACM SIGPLAN Class,"
-%               sigplanconf-guide.pdf
-%
-% Author:       Paul C. Anagnostopoulos
-%               Windfall Software
-%               978 371-2316
-%               paul@windfall.com
-%
-% Created:      15 February 2005
-%
-%-----------------------------------------------------------------------------
 
-
-\documentclass{sigplanconf}
-
-% The following \documentclass options may be useful:
-
-% preprint      Remove this option only once the paper is in final form.
-% 10pt          To set in 10-point type instead of 9-point.
-% 11pt          To set in 11-point type instead of 9-point.
-% authoryear    To obtain author/year citation style instead of numeric.
+\documentclass[pldi]{sigplanconf-pldi15}
 
 \usepackage{amsmath}
 \usepackage{comment}
@@ -59,6 +31,11 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage[T1]{fontenc}
+%\usepackage{SIunits}            % typset units correctly
+\usepackage{courier}            % standard fixed width font
+\usepackage[scaled]{helvet} % see www.ctan.org/get/macros/latex/required/psnfss/psnfss2e.pdf
+
+\newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\Hurl{#1}}}   % print a hyperlinked DOI
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -140,29 +117,12 @@
 
 \gdef\SetFigFont#1#2#3#4#5{}
 
+
+
+
 \begin{document}
 
-\special{papersize=8.5in,11in}
-\setlength{\pdfpageheight}{\paperheight}
-\setlength{\pdfpagewidth}{\paperwidth}
 
-\conferenceinfo{CONF 'yy}{Month d--d, 20yy, City, ST, Country} 
-\copyrightyear{20yy} 
-\copyrightdata{978-1-nnnn-nnnn-n/yy/mm} 
-\doi{nnnnnnn.nnnnnnn}
-
-% Uncomment one of the following two, if you are not going for the 
-% traditional copyright transfer agreement.
-
-%\exclusivelicense                % ACM gets exclusive license to publish, 
-                                  % you retain copyright
-
-%\permissiontopublish             % ACM gets nonexclusive license to publish
-                                  % (paid open-access papers, 
-                                  % short abstracts)
-
-%\titlebanner{banner above paper title}        % These are ignored unless
-%\preprintfooter{short description of paper}   % 'preprint' option specified.
 
 %\title{Contraints-based Reasoning of Heaps in Symbolic Execution}
 
@@ -174,14 +134,6 @@
 
 \title{Exact Heap Summaries from Symbolic Execution}
 
-%\subtitle{Subtitle Text, if any}
-
-\authorinfo{Anonymous}
-          {}
-    %       {Email1}
-%\authorinfo{Name2\and Name3}
- %         {Affiliation2/3}
-  %       {Email2/3}
 
 \maketitle
 
@@ -189,15 +141,6 @@
 \input{abstract}
 \end{abstract}
 
-\category{CR-number}{subcategory}{third-level}
-
-% general terms are not compulsory anymore, 
-% you may leave them out
-\terms
-term1, term2
-
-\keywords
-keyword1, keyword2
 
 \input{intro}
 \input{motivation}
@@ -223,17 +166,10 @@ keyword1, keyword2
 Acknowledgments, if needed.
 
 % We recommend abbrvnat bibliography style.
-
 \bibliographystyle{abbrvnat}
+
 \bibliography{../bib/paper}
 
 
 \end{document}
-
-%                       Revision History
-%                       -------- -------
-%  Date         Person  Ver.    Change
-%  ----         ------  ----    ------
-
-%  2013.06.29   TU      0.1--4  comments on permission/copyright notices
 

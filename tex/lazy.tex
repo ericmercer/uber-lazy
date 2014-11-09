@@ -1,171 +1,18 @@
 \section{Generalized Symbolic Execution}
 
-Recall that in generalized symbolic execution (GSE) for
-lazy initialization of symbolic references consists of three key
-points of non-determinism where each symbolic reference can be
-initialized non-deterministically to null, a new instance of the
-symbolic reference, or aliases to symbolic references of the same type
+Recall that in generalized symbolic execution (GSE) for lazy
+initialization of symbolic references consists of three key points of
+non-determinism where each symbolic reference can be initialized
+non-deterministically to null, a new instance of the symbolic
+reference, or aliases to symbolic references of the same type
 previously initialized. The initialization in GSE consists of creating
-branches in the execution tree for all the non-deterministic
-choices. 
+branches in the execution tree for all the non-deterministic choices.
 
 \input{initialize-lazy}
 \input{lazy-fig}
 
 \input{lazy-eq}
 
-\section{Generating Symbolic Heap Summaries}
-
-\subsection{Initialization of Symbolic References}
-
-In this section we present the Javalite rewrite rules for the summary
-initialization of symbolic references. The initialization rules are
-defined on the bi-partite graph consisting of references and
-locations. In contrast, the heap summarization approach creates a
-single branch that contains the summarization for all the
-initialization in a single bi-partitate graph.
-
-
-\input{summarize-precise}
-
-The initialization rules are invoked when an uninitialized field in a
-symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},
-\cfgnt{R}, \cfgnt{r}, \cfgnt{f}) = \{\cfgnt{l}\ ...\}$ returns
-constraint-location pairs in which the field $\cfgnt{f}$ is
-uninitialized:
-\[
-\begin{array}{rcl}
-\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
-& & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
-& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
-\end{array}
-\]
-where $\mathbb{S}(\phi)$ returns true if $\phi$ is
-satisfiable. Intutively, for the reference, $\cfgnt{r}$, it constructs
-the set, $\theta$, that contains all contraint-location pairs that
-point to the field $\cfgnt{f}$ and $\cfgnt{f}$ points to
-$\cfgnt{l}_\mathit{un}$.
-
-% The cardinality of the set, $\theta$ is never
-%greater than one in GSE and the constraint is always satisfiable
-%because all constraints are constant. This property is relaxed in GSE
-%with heap summaries.
-
-The rewrite rule to initialize a heap in the symbolic summarization
-technique is shown in~\figref{fig:symInit}. Given the unitialized set
-$\mathbb{UN}$ for field $f$, the $\mathit{min}_l$ function returns the
-constraint location pair based on a lexical ordering of locations. The
-init$_r$ method returns a new input reference $r_f$ while the
-fresh$_f$ returns a new location of type $C$. The set $\rho$ contains
-the set of reference location, $(r_a, l_a)$, pairs that the current
-field may alias. The pair $(r_a, l_a)$ is contained in the set $ \rho
-$ if the following conditions hold: (i) $r_a$ is part of the input
-references initialized in the summary heap, (ii) $r_a$ is in the
-pre-image of $l_a$, (iii) and the type of $l_a$ is the same as the
-type of the field being initialized.
-
-There are three constraint-location pair sets that correspond to
-non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ that
-creates a constraint that states $r_f$ is null under which it points
-to $l_\mathit{null}$, (b) $\theta_\mathit{new}$ the constraint that
-$r_f$ is not null and it does not alias another reference in set
-$\rho$ under which it points to the newly created location $l_f$, (c)
-and $\theta_\mathit{alias}$ where for each element in the set $(r_a,
-l_a) \in \rho$ it creates a constraints that $r_f$ is not null, points
-to $r_a$, and does not point to any reference contained in
-$(r_a^\prime, l_a^\prime) \in \rho$ such that $r_a \neq
-r_a^\prime$. Additionally $\theta_\mathit{orig}$ allows for the
-possibility that the field continues to remain uninitialized since the
-heap is symbolic. We refer to this initialization in the summary
-machine as conditional initialization. Finally, the fields of the
-reference $r_f$ are marked as uninitialized.
-
-In the post condition of the rule the reference $r_f$ points to
-$\theta$ which contains the union of all the constraint location pairs
-sets, and the field $f$ points to the new reference $r_f$ in the
-summary heap.  Note that the summarize rule invoked repeatedly until
-the set of unitialized constraint location pairs for field $f$ is
-empty. In other words the set $\lambda$ is empty. This consititutes
-the summarize end rule in~\figref{fig:symInit}.
-
-\begin{figure*}[t]
-\begin{center}
-\begin{tabular}[c]{c|c|c|c}
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{origHeap.pdf_t}} \\
-\end{tabular} &
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
-\end{tabular} &
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
-\end{tabular} &
-\begin{tabular}[c]{l}
-$\rho := \{ (r_1^i, r_1^i \neq r_\mathit{null}, l_1 \}$ \\
-$\theta_\mathit{null} := \{ ( r_2^i = r_\mathit{null}, l_\mathit{null}) \}$\\
-$\theta_\mathit{new} := \{ ( r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i, l_2) \}$\\
-$\theta_\mathit{alias} := \{ ( r_1^i \neq r_\mathit{null} \wedge r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i, l_1) \}$\\
-$\theta_\mathit{orig} := \{ \}$ \\
-$\phi_{\mathit{1a}} := r_1^i = r_\mathit{null} $ \\
-$\phi_{\mathit{1b}} := r_1^i \neq r_\mathit{null} $  \\
-$\phi_{\mathit{2a}} := r_2^i = r_\mathit{null}$ \\
-$\phi_{\mathit{2b}} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i$ \\
-$\phi_{\mathit{2c}} :=  r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i $ \\
-\end{tabular} \\
-(a) & (b) & (c) & (d) \\
-\end{tabular}
-\end{center}
-\caption{initialize this.x and this.y}
-\label{fig:initHeap}
-\end{figure*}
-
-We visualize the initialization process in the symbolic summarization
-technique in~\figref{fig:initHeap}. The heap
-in~\figref{fig:initHeap}(a) represents the initial heap. The
-references with the superscript $s$ indicates that it is a local
-reference. In~\figref{fig:initHeap} $r_0^s$ represents the reference
-for the $\mathit{this}$ instance which has two fields $x$ and $y$ of
-the same type. The reference $r_0^s$ points to the location
-$l_0$. Note that when no constraint is specified, then there is a
-implicit $\mathit{true}$ constraint. In~\figref{fig:initHeap} $r_0^s$
-points to $l_0$ on $\mathit{true}$. The fields $x$ and $y$ point to
-the uninitialized reference $r_\mathit{un}$. The reference
-$r_\mathit{un}$ points to the uninitialized location $l_\mathit{un}$
-on the $\mathit{true}$ constraint.
-
-The graph in~\figref{fig:initHeap}(b) represents the summary heap
-after the initialization of the $\mathit{this}.x$ field while the
-graph in~\figref{fig:initHeap}(c) represents the summary heap after
-the initialization of the $\mathit{this}.y$ field following the
-initialization of $\mathit{this}.x$. The list
-in~\figref{fig:initHeap}(d) represents the various sets constructed in
-the rewrite system when the initialization takes places. We also
-define the constraints of references to their corresponding labels in
-the graph.
-
-The access on $l_0.x$ creates a new input reference $r_1^i$ in the
-summary heap shown in~\figref{fig:initHeap}(b). The reference $r_1^1$
-points to the $l_\mathit{null}$ location under the constraint that
-$r_1^i$ is null: $\phi_{1a} := r_1^i = r_\mathit{null}$. The reference
-$r_1^i$ points to the location $l_1$ under the constraint that $r_1^i$
-is not $\mathit{null}$ $\phi_{1b} :=r_1^i \neq r_\mathit{null}$. The
-location $l_1$ represents a fresh location of type $C$ is created on
-the heap such that $C$ is type of $\mathit{this}.x$.
-
-Following the initialization to the $\mathit{this}.x$, when we
-initialize $\mathit{this}.y$ the resulting summary heap is shown
-in~\figref{fig:initHeap}(c). The set $\rho$ shown
-in~\figref{fig:initHeap}(d) contains the potential aliases for
-$\mathit{this}.y$ which is location $l_1$ ($\mathit{this}.x$). The
-constraint location $\theta$ sets represents the initialization
-choices for $\mathit{this}.y$. The new input reference $r_2^i$ for
-$this.y$ points to (a) location $l_\mathit{null}$ under the constraint
-$\phi_{2a} := r_2^i = r_\mathit{null}$, (b) location $l_2$ under the
-constraint $\phi_{2b} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq
-r_1^i$ that states that $r_2^i$ is not null and does not alias
-$r_1^i$, and (c) location $l_1$ under the constraint $\phi_{2c} :=
-r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i$ that states $r_2^i$
-is not null and \emph{does} alias $r_1^i$.
 
 
 

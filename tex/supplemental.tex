@@ -132,43 +132,50 @@
 
 %\title{Precise Heap Summaries from Symbolic Execution}
 
-\title{Exact Heap Summaries from Symbolic Execution}
+\title{Supplemental Document}
 
 
 \maketitle
 
-\begin{abstract}
-\input{abstract}
-\end{abstract}
+\input{proofs}
+\section{Machine Syntax}
+\input{machine-syntax}
+
+\section{Common Rules for Javalite}
+
+\input{javalite-common}
+
+\input{lazy}	
+
+\section{Summary Machine Rules}
+
+\input{value-set-def}
+\input{st-def}
 
 
-\input{intro}
-\input{motivation}
-\input{javalite}
-\input{preliminaries}
-\input{heap}
-%\input{lazy}
-\input{precise}
-%\input{proofs}
-\input{results}
-\input{related}
+\input{summarize-precise}
+\input{precise-fig}
+\begin{figure*}[t]
+\begin{center}
+\setlength{\tabcolsep}{50pt}
+\begin{tabular}[c]{c}
+\usebox{\boxPFAFW} \\
+\end{tabular}
+\end{center}
+\caption{FIXME: Write the caption}
+\label{fig:fHeap}
+\end{figure*}
 
+\input{precise-eq}
 
-%\input{stateDescriptions}
-%\input{state}
-%\input{execution}
-%\input{examples}
-%\input{bytecode}
-%\section{Conclusion}
+\begin{figure*}
+\begin{tabular}[c]{c}
+\usebox{\boxPEQ} \\
+\end{tabular}
+\caption{equals true for this.x == this.y}
+\label{fig:eqs}
+\end{figure*}
 
-\acks
-
-Acknowledgments, if needed.
-
-% We recommend abbrvnat bibliography style.
-\bibliographystyle{abbrvnat}
-
-\bibliography{../bib/paper}
 
 
 \end{document}

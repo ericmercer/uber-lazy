@@ -16,12 +16,11 @@ The set of \textbf{states} $\mathcal{S}$ is defined as the set of strings matchi
 $\mathcal{S}_0$ is defined as the set of \textbf{initial states}. An initial state is a state meeting the following conditions:  The range of L has exactly three locations: $l_{null}$, $l_{un}$, and $l_0$, the function R is defined only for location $l_0$, and for any field $f$, $R(l_0,f)$ returns $r_{un}$. 
 \end{definition}
 
-
-
-The rewrite rules that define the Javalite semantics are in
-\figref{fig:javalite-common}.
+The rewrite rules that define the Javalite semantics are presented in
+the supplemental document accompanying the paper.
 
 
 \begin{definition}
 A \textbf{state transition relation} $\rightarrow_{\Phi}$ is a binary relation $\rightarrow_{\Phi}\ \subseteq\ \mathcal{S} \times \mathcal{S} $, which relates machine states with successor states. Two important state transition relations are \textbf{GSE} $\rgse$ and \textbf{symbolic} $\rsym$. Each of these use a separate relation for initialization: $\rinit$ for GSE and $\rsum$ for symbolic. All of these transition relations are defined in \figref{fig:lazy}, \figref{fig:lazyInit}, \figref{fig:sym}, and \figref{fig:symInit}.
 \end{definition}
+

@@ -1,1 +1,123 @@
-\section{Bisimulation Relation}
+\section{Bisimularity Relation}
+Let $p \rgse p^\prime$ be the binary relation over the universe of states, $S$,
+according to generalized symbolic execution with lazy initialization
+(see the supplemental text for a precise definition of that
+relation). Similarly, let $q \rsym q^\prime$ be the relation for the GSESH
+algorithm in this paper. The principle theoretical result is the
+existence of a bisimularity relation between states related on $p \rgse p^\prime$
+and the states related on $q \rsym ^\prime$. A corollary is that $\rsym$ is
+both sound and complete with respect to $\rgse$. Only a summary of the
+proof is given due to space.
+
+The inspiration for $\rsym$ came from a desire to create
+a new way to initialize heap objects that avoided initializing heaps
+that traverse redundant paths. The thought was to group together heaps
+into equivalence classes: all the heaps that followed the same control
+flow path to a given point of execution would be in the same
+equivalence class at that point of execution. An equivalence class
+splits at branches, where the program actually differentiates heaps.
+
+The proof only reasons about well-formed states: heaps are
+deterministic, type consistent, with no dangling references, and it
+knows about any references in the environment, expression, or
+continuation. Well-formed states always have a successor unless it is
+the end of the program execution.
+
+Let $p \rgse p^\prime$ be defined as a union over state relations:
+$$
+\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A\cdot} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W\cdot} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E\cdot} \cup \rgse^\com
+$$
+where \emph{A} is a field access $\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
+\rightarrow \cfgnt{k}\rp$, \emph{W} is a field write $\lp
+\cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*} \rightarrow
+\cfgnt{k}\rp$, \emph{E} is a reference compare $\lp
+\cfgnt{v}\ \cfgt{=}\ \cfgnt{*} \rightarrow \cfgnt{k}\rp$, $\cdot$
+indicates a null reference in the operation or a false outcome, and
+\emph{\com} is everything else in the language. A state relation is trivially extended to sets of states as
+$$
+P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
+$$
+Let $\rgse$ be the extension of $\rgse$ to sets of states.
+$$
+\rsgse = \rgse^\mathit{A}
+\cup \rgse^\mathit{A\cdot} \cup \rgse^\mathit{W} \cup
+\rgse^\mathit{W\cdot} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E\cdot}
+\cup \rgse^\com
+$$
+The definition embodies the notion of splitting equivalence classes at
+certain operations. The set $P$ at a field access for example has two
+potential successors: a non-null and null reference. Respectively, the
+set $P \rgse^\com$ only has a single successor since those expressions
+are not related to control flow.
+
+The functional equivalence between heaps in states $p$
+and $q$ requires both a mapping to relate the two heaps and a
+constraint on the feasibility of that mapping in the presence of a
+path constraint from symbolic execution. Subscripts indicates state
+members as in $p = (
+\cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$.
+\begin{definition}
+\label{def:homomorphism}
+A \textbf{homomorphism} given the universe of field names $\mathcal{F}$ is 
+$$
+\begin{array}{l}
+ s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
+\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}\ ( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
+\end{array}
+$$
+\end{definition}
+
+\begin{definition}
+\label{def:hc}
+The \textbf{homomorphism constraint} is
+\begin{align*}
+\mathbb{HC}(p \rightharpoonup_{h} q) &= \\
+ \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\} 
+\end{align*}
+\end{definition}
+The functional equivalence between heaps on a homomorphism and
+constraint asserts a common structures in the two heaps under certain
+conditions. The equivalence is used to related states in $p \rgse
+p^\prime$ to states in $q \rsym q^\prime$.
+\begin{definition}
+\label{representation}
+States $(p\ q)$ are in the \textbf{representation relation}, $p \sqsubset q$, if and only if, $\eta_p = \eta_q ,\ \cfgnt{e}_p =
+\cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, and there exists a
+homomorphism $p \rightharpoonup_{h}
+q$ such that
+\begin{equation}
+\label{eqn:valid}
+ \mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) ) 
+\end{equation}
+The represented relation is extended to sets of states $P$ and a single state $q$ as\footnote{The full proof argues $P \sqsubset Q$ but that $Q$ is
+  always a singleton set containing $q$.}
+$$
+P \sqsubset q \Longleftrightarrow \forall p\ (p \sqsubset q \Rightarrow p \in P)
+$$
+\end{definition}
+The statement $p \sqsubset q$ ensures that a functionally equivalent
+heap to the one in $p$ is present, by the homomorphism, and valid, by
+the heap constraint and path constraint, in $q$. As the states in $P$
+are only differentiated by heaps and those states are only
+differentiated from $q$ by both the heap and path constraint in $q$,
+$P \sqsubset q$ implies that $q$ is representative of all the states
+in $P$ up to the given point of execution expressed in $\phi_q$.
+\begin{definition}
+\label{bisimulation}
+The \textbf{functional associated to bisimulation} applied to $\sqsubset$, denoted as $F_\sim(\sqsubset)$, is the set of all pairs
+$(P\ q)$ such that
+\begin{equation}
+\label{eqn:BisimulationForwards}
+\forall P^\prime\ ( P \rsgse P^\prime \Rightarrow \exists q^\prime\ ( (q \rsym q^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
+\end{equation}
+\begin{equation}
+\label{eqn:BisimulationBackwards}
+\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( (P \rsgse P^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
+\end{equation}
+\end{definition}
+As is typical, the functional reasons over a forward and backward
+simulation, while the application to dissimilar states using a
+meta-relation, $\rsgse$ is somewhat non-standard; though 

@@ -24,10 +24,10 @@
 	}
 \and
 	\inferrule[Field Write]{
-      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp \\\\
+      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp \\
+      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}_x\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp \\\\
       \theta = \{ \phi \mid \lp \phi\ l_\mathit{null} \rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
       \phi_g^\prime = \phi_g \wedge (\wedge_{\phi \in \theta} \neg \phi) \\\\
-      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp \\
       \Psi_x =\{\lp \phi\ l\ \cfgnt{r}_\mathit{cur} \rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}_x\rp  \wedge \cfgnt{r}_\mathit{cur} = \cfgnt{R}\lp l,\cfgnt{f}\rp  \}\\\\
       X = \{ \lp l\ \theta \rp  \mid \exists \phi\ \lp \lp \phi\ l\ \cfgnt{r}_\mathit{cur} \rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L},\cfgnt{r},\phi,\phi_g^\prime\rp  \cup \mathbb{ST}\lp \cfgnt{L},\cfgnt{r}_\mathit{cur},\neg\phi,\phi_g^\prime\rp \rp  \}\\\\
       \cfgnt{R}^{\prime} = \cfgnt{R}[\forall \lp l\ \theta \rp  \in X\ \lp \lp l\ \cfgnt{f}\rp  \mapsto \mathrm{fresh}_r\lp \rp \rp ]\\\\
@@ -38,7 +38,8 @@
 	}	
 \and
 	\inferrule[Field Write (NULL)]{
-      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp
+      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp \\
+      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}_x\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp
     }{
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rightarrow_\mathit{FW}
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{error}\ \cfgt{end}\rp

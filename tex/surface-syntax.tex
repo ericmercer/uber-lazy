@@ -6,21 +6,21 @@
 \cfgrule{T}{\cfgt{bool} \cfgor \cfgnt{C}}
 \cfgrule{CL}{\lp\cfgt{class} \cfgnt{C} \lp\lb\cfgnt{T} \cfgnt{f}\rb ...\rp \lp\cfgnt{M} ...\rp}
 \cfgrule{M}{\lp\cfgnt{T} \cfgnt{m} \lb\cfgnt{T} \cfgnt{x}\rb\  e\rp}
-\cfgrule{e}{\cfgnt{x}}
-\cfgorline{\lp\cfgt{new} \cfgnt{C}\rp}
-\cfgorline{\lp\cfgnt{e} \cfgt{\$} \cfgnt{f}\rp}
-\cfgorline{\lp\cfgnt{x} \cfgt{\$} \cfgnt{f} \cfgt{:=} \cfgnt{e}\rp}
-\cfgorline{\lp\cfgnt{e} \cfgt{=} \cfgnt{e}\rp}
-\cfgorline{\lp\cfgt{if} \cfgnt{e} \cfgnt{e} \cfgt{else} \cfgnt{e}\rp}
-\cfgorline{\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{e} \cfgt{in} \cfgnt{e}\rp}
-\cfgorline{\lp\cfgnt{e} \cfgt{@} \cfgnt{m} \cfgnt{e} \rp}
-\cfgorline{\lp\cfgnt{x} \cfgt{:=} \cfgnt{e}\rp}
-\cfgorline{\lp\cfgt{begin} \cfgnt{e} ...\rp}
-\cfgorline{\cfgnt{v}}
+\cfgrule{e}{\cfgnt{x}
+\cfgor{\lp\cfgt{new} \cfgnt{C}\rp}
+\cfgor{\lp\cfgnt{e} \cfgt{\$} \cfgnt{f}\rp}
+\cfgor{\lp\cfgnt{x} \cfgt{\$} \cfgnt{f} \cfgt{:=} \cfgnt{e}\rp}
+\cfgor{\lp\cfgnt{e} \cfgt{=} \cfgnt{e}\rp}}
+\cfgorline{\lp\cfgt{if} \cfgnt{e} \cfgnt{e} \cfgt{else} \cfgnt{e}\rp 
+\cfgor {\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{e} \cfgt{in} \cfgnt{e}\rp}
+\cfgor {\lp\cfgnt{e} \cfgt{@} \cfgnt{m} \cfgnt{e} \rp}}
+\cfgorline{\lp\cfgnt{x} \cfgt{:=} \cfgnt{e}\rp
+\cfgor{\lp\cfgt{begin} \cfgnt{e} ...\rp}
+\cfgor{\cfgnt{v}}}
 \cfgrule{x}{\cfgt{this} \cfgor \cfgnt{id}}
-\cfgrule{f}{\cfgnt{id}}
-\cfgrule{m}{\cfgnt{id}}
-\cfgrule{C}{\cfgnt{id}}
+\cfgrule{f,m,C}{\cfgnt{id}}
+%\cfgrule{m}{\cfgnt{id}}
+%\cfgrule{C}{\cfgnt{id}}
 \cfgrule{v}{\cfgnt{r} \cfgor \cfgt{null} \cfgor \cfgt{true} \cfgor \cfgt{false} \cfgor \cfgt{error}}
 \cfgrule{r}{\cfgt{number}}
 \cfgrule{id}{\cfgt{variable-not-otherwise-mentioned}}

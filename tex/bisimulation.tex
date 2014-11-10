@@ -117,7 +117,77 @@ $(P\ q)$ such that
 \label{eqn:BisimulationBackwards}
 \forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( (P \rsgse P^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
 \end{equation}
+If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsubset)$ is the bisimilarity relation.
 \end{definition}
 As is typical, the functional reasons over a forward and backward
 simulation, while the application to dissimilar states using a
-meta-relation, $\rsgse$ is somewhat non-standard; though 
+meta-relation, $\rsgse$, is somewhat non-standard; though convenient
+in this instance since it captures the notion of $q$ as a set of
+states \cite{GSE:barbedbisimulation}. 
+
+\begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
+\label{lem:access}
+$$
+\forall P \in 2^{S_\mathit{FA}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
+$$
+\end{lemma}
+
+\begin{proof}
+Proof by contradiction: assume $P \sqsubset q \wedge (P\ q) \not\in F_\sim(\sqsubset)$.
+
+\noindent\textbf{Sketch}: Choose any $P$ and $q$ at the field access continuation such
+that $P \sqsubset q$. In the forward simulation
+\eqref{eqn:BisimulationForwards}, for each $P^\prime$ such that $P
+\rsgse P^\prime$, pick some $p^\prime \in P^\prime$. By definition $p \rgse
+p^\prime$, $p \in P$, and $p \sqsubset q$. The proof shows the
+existence of $q^\prime$ such that $q \rsym q^\prime$ and $p^\prime
+\sqsubset q^\prime$ using the existing homomorphism in $p \sqsubset q$.
+
+In the backward simulation \eqref{eqn:BisimulationBackwards}, for each
+$q^\prime$ such that $q \rsym q^\prime$, the proof posits the
+existences of some $p^\prime \sqsubset q^\prime$ and uses the
+homomorphism in $p^\prime \sqsubset q^\prime$ to derive a $p$ such
+that $p \rgse p^\prime$ and $p \in P$.
+
+As the forward and backward simulations hold for any $p \in P$, $P
+\sqsubset q$ must be in the functional, $F_\sim(\sqsubset)$, which is
+a contradiction.
+\end{proof}
+Similar lemmas are proved for field write and equals reference.
+
+\begin{theorem}
+\label{th:bisim}
+The relation $\sqsubset$ is a bisimulation.
+\end{theorem}
+\begin{proof}
+By definition of the bisimilarity relation. All of the common rules
+make no changes to the heap, so $P \subset q$ is included in the
+functional. The other transition relations are supported by lemmas
+such as \lemref{lem:access}.
+\end{proof}
+
+The notion $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$ is
+the $n$-step successor of $p$, if it exists, and $q
+\stackrel{n}{\rsym} q^\prime$ is similarly defined. Completeness and
+soundness are readily established by \thref{th:bisim} and inducting
+over $n$.
+
+\begin{corollary}[$\rsym$ is complete]
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then
+$$
+\forall p^\prime\ (p \stackrel{n}{\rgse} p^\prime \Rightarrow \exists q^\prime\ (q \stackrel{n}{\rsym} q^\prime \wedge p^\prime \sqsubset q^\prime))
+$$
+\end{corollary}
+
+\begin{corollary}[$\rsym$ is sound]
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then
+$$
+\forall q^\prime\ (q \stackrel{n}{\rsym} q^\prime \Rightarrow \exists p^\prime\ (p \stackrel{n}{\rgse} p^\prime \wedge p^\prime \sqsubset q^\prime))
+$$
+\end{corollary}
+
+The relation, $P \sqsubset q$, is readily established in the initial
+state of a given program, as there is single initial state, $P_o =
+\{p_o\}$, in any valid Javalite program. The initial state $\rsym$ is
+then defined as $q_o = p_o$; $P_o \sqsubset q_o$ is trivially shown.

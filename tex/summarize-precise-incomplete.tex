@@ -1,6 +1,15 @@
+\begin{comment}
+NOTE: It may be required to add back into the constraint on new the
+conditions under which the original location was created. In other
+words, look at the preimage on the location used for new, find the
+least reference (the one that attached to the first creation), pull
+the constraint off of that reference, and add it to the constraint for
+nw. This is required for the isClone() to work on the example that
+tests equivalence.
+\end{comment}
+
 \newsavebox{\boxPI}
 \savebox{\boxPI}{
-%\begin{center}
 \mprset{flushleft}
 \begin{mathpar}
 	\inferrule[Summarize]{

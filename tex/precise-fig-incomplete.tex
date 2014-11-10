@@ -17,7 +17,7 @@
 	}
 \and
 	\inferrule[Field Write]{
-      \cfgnt{r}_x = \eta (\cfgnt{x}) \\
+      \cfgnt{r}_x = \eta\lp\cfgnt{x}\rp \\
       \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}_x\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp \\\\
       \theta = \{ \phi \mid \lp \phi\ l_\mathit{null} \rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
       \phi_g^\prime = \phi_g \wedge (\wedge_{\phi \in \theta} \neg \phi) \\\\

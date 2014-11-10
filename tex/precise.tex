@@ -285,42 +285,44 @@ $\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wed
 \end{tabular}}
 
 
-
-
 The rewrite rules to compare two references in the symbolic summary
 heap are shown in~\figref{fig:eqs}. The equals references-true rewrite
-rule returns true when two references $r_0$ and $r_1$ are equal. In
-GSE this is a simple comparision of two concrete object references. In
-the symbolic summary heap, however, we compare sets of constraint
-location pairs pointed to by each reference. Let us consider the
-equals reference-true rewrite rule. Here, we construct three sets of
-constraints. To construct the first set, $\Phi_\alpha$, we check if
-there exist constraint location pairs $(\phi_0, l_0) \in L(r_0)$ and
-$(\phi_1, l_1) \in L(r_1)$ such that $l_0$ and $l_1$ are the same.
-For all such constraints we create conjunctions of the constraints
-$\phi_0 \wedge \phi_1$ and add them to set $\Phi_\alpha$. Intutively
-these represent the constraints under which $r_0$ and $r_1$ point to
-the same location in the heap. The next set of constraints is $\Phi_0$
-which contains a constraints under which $r_0$ points to a
-corresponding location $l_i$ such that $r_1$ \emph{does not} point to
-$l_i$ under any constraint. Inversely, the set of constraints $\Phi_1$
-contains the set of constraints under which $r_1$ points to a
-corresponding location $l_j$ and $r_0$ \emph{does not} point to $l_j$
-under any constraint.
+rule returns true when two references $r_0$ and $r_1$ \emph{can} be
+equal. In GSE semantics checking equality of references is a simple
+comparision of two concrete object references. In the symbolic summary
+heap, however, we compare sets of constraint location pairs pointed to
+by each reference to determine if they could be equal. 
 
-To the global constraint we add the disjunction of the constraints in
-$\Phi_\alpha$ to indicate that if any of the constraints are
-satisfiable, then references $r_0$ and $r_1$ can be true. Furthermore,
-we had to the global heap constraint, $\phi_g^\prime$, the
-conjunctions of negations to the constraints in $\Phi_0$ and
-$\Phi_1$. This indicates for locations that are not common to the
-references, the negations of their constraints are satisfiable. Before
-the rewrite rule returns true the satisfiability of the updated global
-heap constraint is checked.
+Consider the equals reference-true rewrite rule
+in~\figref{fig:eqs}. In order to check equality we construct three
+sets of constraints. For all constraint location pairs $(\phi_0, l_0)
+\in L(r_0)$ and $(\phi_1, l_1) \in L(r_1)$ such that $l_0$ and $l_1$
+are the same ($l_0 = l_1$) we create conjunctions of the constraints
+$\phi_0 \wedge \phi_1$ and add them to set $\Phi_\alpha$. Intutively,
+$\Phi_\alpha$ contains all constraints under which $r_0$ and $r_1$ may
+point to the same location in the symbolic summary heap. The second
+set, $\Phi_0$, contains constraints under which the reference $r_0$
+points corresponding locations such that the reference $r_1$
+\emph{does not} point to those locations under any
+constraint. Finally, the set, $\Phi_1$, contains constraints under
+which $r_1$ points to corresponding locations and $r_0$ \emph{does
+  not} point to those locations under any constraint.
 
-Consider the example in~\figref{fig:initHeap}(c), where we would like
-to check if $r_1^i$ and $r_2^i$ are equal. The set of constraint locations 
-pairs of the two references are: 
+We use the three sets of constraints to update the current global heap
+constraint $\phi_g$ and create a new global heap constraint
+$\phi_g^\prime$. We add to $\phi_g$ the disjunction of the constraints
+in $\Phi_\alpha$ to indicate that if any of the constraints are
+satisfiable, then references $r_0$ and $r_1$ can be
+equal. Furthermore, we had to the global heap constraint,
+$\phi_g^\prime$, the conjunctions of negations to the constraints in
+$\Phi_0$ and $\Phi_1$. This indicates for locations that are not
+common to the references, the negations of their constraints are
+satisfiable. Before the rewrite rule returns true we check the
+satisfiability of the updated global heap constraint.
+
+Consider the example in~\figref{fig:initHeap}(c). In order to to check
+if $r_1^i$ and $r_2^i$ are equal we first get the constraint location
+pairs associated with each of the references:
 
 \[
 L(r_1^i) = \{ (\phi_{1a}\; l_\mathit{null})\; (\phi_{1b}\; l_1) \} 
@@ -338,5 +340,9 @@ L(r_2^i) = \{ (\phi_{2a}\; l_\mathit{null}),\; (\phi_{2b}\; l_2),\; (\phi_{2c}\;
 
 \noindent{Finally the global constraint is} 
 \[
-\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wedge (\phi_{1b}\; \implies\; \neg\phi_{2c} )  \wedge \phi_{2b}
+\phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
 \]
+
+\noindent{The equals references-false is the logical dual of the
+  reference-true rewrite rule. The references-false is shown
+  in~\figref{fig:eqs}.}

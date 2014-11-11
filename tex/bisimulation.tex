@@ -4,7 +4,7 @@ according to generalized symbolic execution with lazy initialization
 (see the supplemental text for a precise definition of that
 relation). Similarly, let $q \rsym q^\prime$ be the relation for the GSESH
 algorithm in this paper. The principle theoretical result is the
-existence of a bisimularity relation between states related on $p \rgse p^\prime$
+existence of a bisimilarity relation between states related on $p \rgse p^\prime$
 and the states related on $q \rsym q^\prime$. A corollary is that $\rsym$ is
 both sound and complete with respect to $\rgse$. Only a summary of the
 proof is given due to space.
@@ -189,5 +189,5 @@ $$
 
 The relation, $P \sqsubset q$, is readily established in the initial
 state of a given program, as there is single initial state, $P_o =
-\{p_o\}$, in any valid Javalite program. The initial state $\rsym$ is
+\{p_o\}$, in any valid Javalite program. The initial state for $\rsym$ is
 then defined as $q_o = p_o$; $P_o \sqsubset q_o$ is trivially shown.

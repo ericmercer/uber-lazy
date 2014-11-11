@@ -162,19 +162,19 @@ The relation $\sqsubset$ is a bisimulation: $\sqsubset\ \subseteq\ \sim$
 \end{theorem}
 \begin{proof}
 By definition of the bisimilarity relation. All of the common rules
-make no changes to the heap, so $P \subset q$ is included in the
+make no changes to the heap, so $P \sqsubset q$ is included in the
 functional. The other transition relations are supported by lemmas
 such as \lemref{lem:access}.
 \end{proof}
 
-The notion $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$ is
+The notation $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$ is
 the $n$-step successor of $p$, if it exists, and $q
 \stackrel{n}{\rsym} q^\prime$ is similarly defined. Completeness and
 soundness are readily established by \thref{th:bisim} and inducting
 over $n$.
 
 \begin{corollary}[$\rsym$ is complete]
-If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then for any $p \in P$
 $$
 \forall p^\prime\ (p \stackrel{n}{\rgse} p^\prime \Rightarrow \exists q^\prime\ (q \stackrel{n}{\rsym} q^\prime \wedge p^\prime \sqsubset q^\prime))
 $$
@@ -183,7 +183,7 @@ $$
 \begin{corollary}[$\rsym$ is sound]
 If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then
 $$
-\forall q^\prime\ (q \stackrel{n}{\rsym} q^\prime \Rightarrow \exists p^\prime\ (p \stackrel{n}{\rgse} p^\prime \wedge p^\prime \sqsubset q^\prime))
+\forall q^\prime\ (q \stackrel{n}{\rsym} q^\prime \Rightarrow \exists p \in P\ (\exists p^\prime\ (p \stackrel{n}{\rgse} p^\prime \wedge p^\prime \sqsubset q^\prime)))
 $$
 \end{corollary}
 

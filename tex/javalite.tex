@@ -35,18 +35,20 @@ $\cfgnt{r}$, or any of the special values. It is assumed that only
 type correct programs are given as input to the machine.
 
 The state of the Javalite machine (\figref{fig:machine-syntax}),
-$\cfgnt{s}$, includes the program registry, a pair of functions
-defining the heap $\lp\cfgnt{L}\ \cfgnt{R}\rp$, which is the store, a
-constraint, $\phi$, defined over references in the heap, the
-environment, $\eta$, for local variables, and the continuation
-$\cfgnt{k}$. The more complex structures such as the environment are
-defined as lists which start with empty, \cfgnt{mt}. The rewrite rules
-that define the semantics treat these lists as partial
-functions. As such, $\eta(\cfgnt{x}) = \cfgnt{r}$ is the
-reference mapped to the variable $\cfgnt{x}$. The notation
-$\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
-partial function $\eta^\prime$ that is just like $\eta$ only the
-variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. 
+$\cfgnt{s}$, includes the program registry\footnote{The registry $\mu$
+  is implied in the rewrite rules rather that states for
+  compactness.}, a pair of functions defining the heap
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$, which is the store, a constraint,
+$\phi$, defined over references in the heap, the environment, $\eta$,
+for local variables, and the continuation $\cfgnt{k}$. The more
+complex structures such as the environment are defined as lists which
+start with empty, \cfgnt{mt}. The rewrite rules that define the
+semantics treat these lists as partial functions. As such,
+$\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference mapped to the variable
+$\cfgnt{x}$. The notation $\eta^\prime = \eta[\cfgnt{x} \mapsto
+  \cfgnt{v}]$ defines a new partial function $\eta^\prime$ that is
+just like $\eta$ only the variable $\cfgnt{x}$ now maps to
+$\cfgnt{v}$.
 
 The continuation $\cfgnt{k}$ helps accomplish the small-step semantics
 by indicating where the hole, $\cfgt{*}$, is located, by storing

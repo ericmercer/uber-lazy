@@ -25,13 +25,13 @@ the end of the program execution.
 
 Let $p \rgse p^\prime$ be defined as a union over state relations:
 $$
-\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E\cdot} \cup \rgse^\com
+\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E^\prime} \cup \rgse^\com
 $$
 where \emph{A} is a field access $\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
 \rightarrow \cfgnt{k}\rp$, \emph{W} is a field write $\lp
 \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*} \rightarrow
 \cfgnt{k}\rp$, \emph{E} is a reference compare $\lp
-\cfgnt{v}\ \cfgt{=}\ \cfgnt{*} \rightarrow \cfgnt{k}\rp$, $\cdot$
+\cfgnt{v}\ \cfgt{=}\ \cfgnt{*} \rightarrow \cfgnt{k}\rp$, the prime symbol
 indicates a null reference in the operation or a false outcome, and
 \emph{\com} is everything else in the language. Any state relation, say $\rightarrow_x$, is trivially extended to sets of states as
 $$
@@ -40,8 +40,8 @@ $$
 Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of states.
 $$
 \rsgse = \hookrightarrow_\gse^\mathit{A}
-\cup \hookrightarrow_\gse^\mathit{A\cdot} \cup \hookrightarrow_\gse^\mathit{W} \cup
-\hookrightarrow_\gse^\mathit{W\cdot} \cup \hookrightarrow_\gse^\mathit{E} \cup \hookrightarrow_\gse^\mathit{E\cdot}
+\cup \hookrightarrow_\gse^\mathit{A^\prime} \cup \hookrightarrow_\gse^\mathit{W} \cup
+\hookrightarrow_\gse^\mathit{W^\prime} \cup \hookrightarrow_\gse^\mathit{E} \cup \hookrightarrow_\gse^\mathit{E^\prime}
 \cup \hookrightarrow_\gse^\com
 $$
 The definition embodies the notion of splitting equivalence classes at

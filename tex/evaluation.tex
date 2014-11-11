@@ -1,0 +1,37 @@
+
+\begin{table} [h]
+  \centering
+  \begin{tabular}{| c | c | c | c | c | c | c | c |}
+  \hline
+   \multirow{2}{*}{Method }&\multirow{2}{*}{ $k$ }
+   &\multicolumn{2}{|c|}{Time} &\multicolumn{2}{|c|}{ Paths }\\
+								&	&\gsetxt{}	&SH	&\gsetxt{} & SH\\
+   \hline
+    \multirow{3}{*}{LinkedList }&3	& 1 & 1  &1656 & 25		 \\
+   		 				& 4	& 3 & 2	&17485  & 39 \\
+   						& 5	& 20 & 3	&232743 & 56\\
+						& 6	& 338 & 8		&3731094 & 76\\
+    \hline
+    \multirow{3}{*}{BinarySearchTree }&1	& 0 & 1	& 4	 & 4\\
+   		 				& 2	& 1 & 1 	& 26 & 17\\
+   						& 3	& 12 & 7	& 305 & 118\\
+    \hline
+      \multirow{3}{*}{TreeMap}&1	& 0 & 1 	&9 & 9 \\
+   		 				&2	& 1 & 3		& 100 & 46 \\
+   						&3	&21 & 206	& 3026 & 547 \\
+						
+    \hline
+  \end{tabular}
+  \caption{test results}
+  \label{tab:results}
+\end{table}
+
+\subsection{Analysis}
+
+LinkedList
+As expected, the repeated use of lazy initialization throughout the program causes an exponential increase in the number of paths explored by \gsetxt{}. By combining many of the \gsetxt{} paths, SH avoids the exponential path explosion, demonstrating dramatically reduced, though still exponential, execution time growth. Remarkably, path growth in the k-bound appears to be sub-linear.
+
+The BinarySearchTree example is somewhat of a mixed bag. 
+
+TreeMap
+

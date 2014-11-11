@@ -1,15 +1,17 @@
-\section{Heap: A Bi-partiate Graph}
+\subsection{Heaps as Bipartite Graphs}
+ADD REFERENCES ARE IMMUTABLE.
+DEFINE $\rsym$ and $\rgse$.
 
-The heap in this work is a labeled bipartite graph consisting of
-references, $\cfgnt{r}$, and locations, $\cfgnt{l}$. The machine
-syntax in \figref{fig:machine-syntax} defines that graph in
-$\cfgnt{L}$, the location map, and $\cfgnt{R}$, the reference map. As
-done with the environment, $\cfgnt{L}$ and $\cfgnt{R}$ are treated as
-partial functions where $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is
-the set of location-constraint pairs in the heap associated with the
-given reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is
-the reference associated with the given location-field pair in the
-heap.
+A novel contribution is the representation of the heap with a labeled
+bipartite graph consisting of references, $\cfgnt{r}$, and locations,
+$\cfgnt{l}$. The machine syntax in \figref{fig:machine-syntax} defines
+that graph in $\cfgnt{L}$, the location map, and $\cfgnt{R}$, the
+reference map. As done with the environment, $\cfgnt{L}$ and
+$\cfgnt{R}$ are treated as partial functions where $\cfgnt{L}(r) =
+\{(\phi\ \cfgnt{l})\ ...\}$ is the set of location-constraint pairs in
+the heap associated with the given reference, and
+$\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the reference
+associated with the given location-field pair in the heap.
 
 As the updates to $\cfgnt{L}$ and $\cfgnt{R}$ are complex in the
 machine semantics, predicate calculus is used to describe updates to
@@ -77,3 +79,20 @@ $\cfgnt{l}_\mathit{un}$, is introduced to support lazy
 initialization. The '$\mathit{un}$' is to indicate the reference or
 location is uninitialized at the point of execution.
 
+
+\begin{definition}
+\label{def:state}
+The set of \textbf{states} $\mathcal{S}$ is defined as the set of strings matching the pattern $s$ in \ref{fig:machine-syntax}.
+\end{definition}
+
+\begin{definition}
+\label{def:initstate}
+$\mathcal{S}_0$ is defined as the set of \textbf{initial states}. An initial state is a state meeting the following conditions:  The range of L has exactly three locations: $l_{null}$, $l_{un}$, and $l_0$, the function R is defined only for location $l_0$, and for any field $f$, $R(l_0,f)$ returns $r_{un}$. 
+\end{definition}
+
+The rewrite rules that define the Javalite semantics are presented in
+the supplemental document accompanying the paper.
+
+\begin{definition}
+A \textbf{state transition relation} $\rightarrow_{\Phi}$ is a binary relation $\rightarrow_{\Phi}\ \subseteq\ \mathcal{S} \times \mathcal{S} $, which relates machine states with successor states. Two important state transition relations are \textbf{GSE} $\rgse$ and \textbf{symbolic} $\rsym$. Each of these use a separate relation for initialization: $\rinit$ for GSE and $\rsum$ for symbolic. All of these transition relations are defined in \figref{fig:lazy}, \figref{fig:lazyInit}, \figref{fig:sym}, and \figref{fig:symInit}.
+\end{definition}

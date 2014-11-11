@@ -1,27 +1,65 @@
-\section{Preliminaries}
+\section{Javalite}
+The algorithm for generalized symbolic execution with symbolic heaps
+is presented using Javalite. Javalite is a syntactic machine defined
+as rewrites on a string \cite{saints-MS}. The semantics are small-step
+using a CESK model with a (C)ontrol string representing the expression
+being evaluated, an (E)nvironment for local variables, a (S)tore for
+the heap, and a (K)ontinuation for what is to be executed next. The
+semantics of the original Javalite machine, and its machine syntax,
+are changed to reflect generalized symbolic execution and then
+generalized execution with symbolic heaps.
 
-\figref{fig:surface-syntax} defines the surface syntax for the
-Javalite language \cite{saints-MS}. \figref{fig:machine-syntax} is the
-machine syntax. Javalite is syntactic machine defined as rewrites on a
-string. The semantics use a CEKS model with a (C)ontrol string
-representing the expression being evaluated, an (E)nvironment for
-local variables, a (K)ontinuation for what is to be executed next, and
-a (S)tore for the heap.
+The surface syntax (input) for Javalite is in
+\figref{fig:surface-syntax} with the machine syntax (state) in
+\figref{fig:machine-syntax}. Terminals are in bold face while
+non-terminals are italicized. Ellipses indicate zero or more
+repetitions. Tuples omit the commas for compactness. The language
+itself uses s-expressions for convenience.
 
 \input{surface-syntax}
+\input{machine-syntax}
 
-\subsection{Environment}
-The environment, $\eta$, associates a variable $\cfgnt{x}$ with a
-value $\cfgnt{v}$. The value can be a reference, $\cfgnt{r}$ or one of
-the special values $\cfgt{null}$, $\cfgt{true}$, or
-$\cfgt{false}$. Although the Javalite machine is purely syntactic, for
-clarity and brevity in the presentation, the more complex structures
-such as the environment are treated as partial functions. As such,
-$\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference mapped to the variable
-in the environment. The notation $\eta^\prime = \eta[\cfgnt{x} \mapsto
-  \cfgnt{v}]$ defines a new partial function $\eta^\prime$ that is
-just like $\eta$ only the variable $\cfgnt{x}$ now maps to
-$\cfgnt{v}$.
+A Javalite program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
+a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
+where execution starts. The only primitive type in Javalite is
+Boolean. Classes have fields, $([\cfgnt{T}\ \cfgnt{f}]\ ...)$, and
+methods, $(\cfgnt{M}\ ...)$. Methods only take a single
+parameter. Expressions, $\cfgnt{e}$, are somewhat typical with
+$\cfgt{:=}$ indicating assignment, $\cfgt{=}$ indicating comparison,
+$\cfgt{\$}$ as the dot-operator for field access, and $\cfgt{@}$ as
+the dot-operator for method invocation. There is no explicit return
+statement in Javalite; rather, the value of the last expression is
+used as a return value. A variable is always indicated by \cfgnt{x}
+and a value by \cfgnt{v}. A value can be a reference in the heap,
+$\cfgnt{r}$, or any of the special values. It is assumed that only
+type correct programs are given as input to the machine.
+
+The state of the Javalite machine (\figref{fig:machine-syntax}),
+$\cfgnt{s}$, includes the program registry, a pair of functions
+defining the heap $\lp\cfgnt{L}\ \cfgnt{R}\rp$, which is the store, a
+constraint, $\phi$, defined over references in the heap, the
+environment, $\eta$, for local variables, and the continuation
+$\cfgnt{k}$. The more complex structures such as the environment are
+defined as lists which start with empty, \cfgnt{mt}. The rewrite rules
+that define the semantics treat these lists as partial
+functions. As such, $\eta(\cfgnt{x}) = \cfgnt{r}$ is the
+reference mapped to the variable $\cfgnt{x}$. The notation
+$\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
+partial function $\eta^\prime$ that is just like $\eta$ only the
+variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. 
+
+The continuation $\cfgnt{k}$ helps accomplish the small-step semantics
+by indicating where the hole, $\cfgt{*}$, is located, by storing
+temporary computations, and by keeping track of the next
+computation. For example, the continuation
+$\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp$ indicates
+that the machine is currently computing the expression for the object
+reference on which the field $\cfgnt{f}$ is going to be accessed. Once
+the field access is complete, the machine continues with $\cfgnt{k}$.
+
+\input{heap}
+
+
 
 
 

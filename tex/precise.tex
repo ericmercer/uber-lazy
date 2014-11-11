@@ -1,13 +1,22 @@
 \section{Generating Symbolic Heap Summaries}
 
+In this section we present the rules for the $\rsym$ relation. The are
+three sets of rewrite rules: the initialization of symbolic
+references, the field access and write rules, and finally checking the
+equality and inequality of references. Here we describe each of the
+rules. They consist the core of the symbolic heap summary approach.
+
 \subsection{Initialization of Symbolic References}
 
-In this section we present the Javalite rewrite rules for the
-initialization of references in the symbolic heap summary. The
+In this section we present the rewrite rules for the initialization of
+references in the $\rsym$ relation for a symbolic heap summary. The
 initialization rules are defined on the bi-partite graph consisting of
-references and locations. In contrast, the heap summarization approach
-creates a single branch that contains the summarization for all the
-initialization in a single bi-partitate graph.
+references and locations. In the $\rgse$ relation during
+initialization of a symbolic references, it is non-deterministically
+assigned to null, new instance of the object, and alias any previously
+initialized symbolic reference. In contrast, the heap summarization
+approach creates a single branch that contains the summarization for
+all the initialization in a single bi-partitate graph.
 
 
 \input{summarize-precise-incomplete}
@@ -45,40 +54,43 @@ $\cfgnt{l}_\mathit{un}$.
 
 The rewrite rule to initialize a heap in the symbolic summarization
 technique is shown in~\figref{fig:symInit}. Given the unitialized set
-$\mathbb{UN}$ for field $f$, the $\mathit{min}_l$ function returns the
-constraint location pair based on a lexical ordering of locations. The
-init$_r$ method returns a new input reference $r_f$ while the
-fresh$_f$ returns a new location of type $C$. The set $\rho$ contains
-the set of reference location, $(r_a, l_a)$, pairs that the current
-field may alias. The pair $(r_a, l_a)$ is contained in the set $ \rho
-$ if the following conditions hold: (i) $r_a$ is part of the input
-references initialized in the summary heap, (ii) $r_a$ is in the
-pre-image of $l_a$, (iii) and the type of $l_a$ is the same as the
-type of the field being initialized.
+$\mathbb{UN}$ for field $f$, the $\mathit{min}_l$ function returns
+$(\phi_x, l_x)$ based on a lexical ordering of uninitialized locations
+in $\Lambda$. The init$_r$ method returns a new input reference $r_f$
+while the fresh$_f$ returns a new location of type $C$. The set $\rho$
+contains the set of reference location pairs, $(r_a, l_a)$, that the
+field being initialized may alias. The pair $(r_a, l_a)$ is contained
+in the set $ \rho $ if the following conditions hold: (i) $r_a$ is
+part of the input references initialized in the summary heap, (ii)
+$r_a$ is in the pre-image of $l_a$, (iii) and the type of $l_a$ is the
+same as the type of the field being initialized.
 
 There are three constraint-location pair sets that correspond to
-non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ that
-creates a constraint that states $r_f$ is null under which it points
-to $l_\mathit{null}$, (b) $\theta_\mathit{new}$ the constraint that
-$r_f$ is not null and it does not alias another reference in set
-$\rho$ under which it points to the newly created location $l_f$, (c)
-and $\theta_\mathit{alias}$ where for each element in the set $(r_a,
-l_a) \in \rho$ it creates a constraints that $r_f$ is not null, points
-to $r_a$, and does not point to any reference contained in
-$(r_a^\prime, l_a^\prime) \in \rho$ such that $r_a \neq
-r_a^\prime$. Additionally $\theta_\mathit{orig}$ allows for the
-possibility that the field continues to remain uninitialized since the
-heap is symbolic. We refer to this initialization in the summary
-machine as conditional initialization. Finally, the fields of the
-reference $r_f$ are marked as uninitialized.
+non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ contains
+a constraint $r_f = r_\mathit{null}$ paired with the location
+$l_\mathit{null}$, (b) $\theta_\mathit{new}$ creates a pair with the
+constraint $r_f$ is not null and it does not alias any reference in
+set $\rho$ under and a newly created location $l_f$, (c) and
+$\theta_\mathit{alias}$ where for each element in the set $(r_a, l_a)
+\in \rho$ it creates a constraints that $r_f$ is not null, points to
+$r_a$, and does not point to any reference contained in $(r_a^\prime,
+l_a^\prime) \in \rho$ such that $r_a < r_a^\prime$ based on a lexical
+ordering of initialized references. Additionally
+$\theta_\mathit{orig}$ allows for the possibility that the field
+continues to remain uninitialized since the heap is symbolic. We refer
+to this initialization in the summary machine as conditional
+initialization. Finally, the fields of the reference $r_f$ are marked
+as uninitialized. In the post condition of the rule the reference
+$r_f$ points to $\theta$ which contains the union of all the
+constraint location pairs sets, and the field $f$ points to the new
+reference $r_f$ in the summary heap.
 
-In the post condition of the rule the reference $r_f$ points to
-$\theta$ which contains the union of all the constraint location pairs
-sets, and the field $f$ points to the new reference $r_f$ in the
-summary heap.  Note that the summarize rule invoked repeatedly until
+\begin{comment}
+ Note that the summarize rule invoked repeatedly until
 the set of unitialized constraint location pairs for field $f$ is
-empty. In other words the set $\lambda$ is empty. This consititutes
+empty. In other words the set $\Lambda$ is empty. This consititutes
 the summarize end rule in~\figref{fig:symInit}.
+\end{comment}
 
 \begin{figure*}[t]
 \begin{center}
@@ -93,7 +105,7 @@ the summarize end rule in~\figref{fig:symInit}.
 \scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
 \end{tabular} &
 \begin{tabular}[c]{l}
-$\rho := \{ (r_1^i, r_1^i \neq r_\mathit{null}, l_1 \}$ \\
+$\rho := \{ (r_1^i, l_1 \}$ \\
 $\theta_\mathit{null} := \{ ( r_2^i = r_\mathit{null}, l_\mathit{null}) \}$\\
 $\theta_\mathit{new} := \{ ( r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i, l_2) \}$\\
 $\theta_\mathit{alias} := \{ ( r_1^i \neq r_\mathit{null} \wedge r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i, l_1) \}$\\
@@ -111,29 +123,28 @@ $\phi_{\mathit{2c}} :=  r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i $ \\
 \label{fig:initHeap}
 \end{figure*}
 
-We visualize the initialization process in the symbolic summarization
-technique in~\figref{fig:initHeap}. The heap
-in~\figref{fig:initHeap}(a) represents the initial heap. The
+We visualize the initialization process in~\figref{fig:initHeap}. The
+graph in~\figref{fig:initHeap}(a) represents the initial heap. The
 references with the superscript $s$ indicates that it is a local
-reference. In~\figref{fig:initHeap} $r_0^s$ represents the reference
-for the $\mathit{this}$ instance which has two fields $x$ and $y$ of
-the same type. The reference $r_0^s$ points to the location
-$l_0$. Note that when no constraint is specified, then there is a
-implicit $\mathit{true}$ constraint. In~\figref{fig:initHeap} $r_0^s$
-points to $l_0$ on $\mathit{true}$. The fields $x$ and $y$ point to
-the uninitialized reference $r_\mathit{un}$. The reference
-$r_\mathit{un}$ points to the uninitialized location $l_\mathit{un}$
-on the $\mathit{true}$ constraint.
+reference. In~\figref{fig:initHeap} $r_0^s$ represents a local
+reference for the $\mathit{this}$ reference which has two fields $x$
+and $y$ of the same type; reference $r_0^s$ points to location
+$l_0$. Note that when no constraint is specified in the graphs, then
+there is a implicit $\mathit{true}$ constraint, for example, $r_0^s$
+points to $l_0$ on the constraint $\mathit{true}$. The fields $x$ and
+$y$ point to the uninitialized reference $r_\mathit{un}$.
 
-The graph in~\figref{fig:initHeap}(b) represents the summary heap
-after the initialization of the $\mathit{this}.x$ field while the
-graph in~\figref{fig:initHeap}(c) represents the summary heap after
-the initialization of the $\mathit{this}.y$ field following the
-initialization of $\mathit{this}.x$. The list
+% The reference $r_\mathit{un}$ points to the uninitialized location
+%$l_\mathit{un}$ on the $\mathit{true}$ constraint.
+
+The graph in~\figref{fig:initHeap}(b) represents the symbolic heap
+summary after the initialization of the $\mathit{this}.x$ field while
+the graph in~\figref{fig:initHeap}(c) represents the symbolic heap
+summary after the initialization of the $\mathit{this}.y$ field
+following the initialization of $\mathit{this}.x$. The list
 in~\figref{fig:initHeap}(d) represents the various sets constructed in
-the rewrite system when the initialization takes places. We also
-define the constraints of references to their corresponding labels in
-the graph.
+the summarize rule during the initialization of $\mathit{this}.y$. We
+also define values of constraints used as labels in the graph.
 
 The access on $l_0.x$ creates a new input reference $r_1^i$ in the
 summary heap shown in~\figref{fig:initHeap}(b). The reference $r_1^1$
@@ -160,7 +171,7 @@ r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i$ that states $r_2^i$
 is not null and \emph{does} alias $r_1^i$.
 
 
-\subsection{Accessing a Field Reference}
+\subsection{Reading and Writing References}
 \input{precise-fig-incomplete}
 
 \begin{figure*}[t]
@@ -178,31 +189,34 @@ is not null and \emph{does} alias $r_1^i$.
 \label{fig:fHeap}
 \end{figure*}
 
-There are two rewrite rules in~\figref{fig:fHeap}(a), one for field
-access and the other for field write. Let us consider the rewrite rule
-for field access. The first check we perform is whether there exists a
-constraint location pair for the $r$ being accessed such that the
-location is not null and the constraint when conjuncted with the
-global constraint is satisfiable. Next we extract all possible
-constraints under which $r$ points to a null location such that the
-constraint is satisfiable under the current global constraint,
-$\phi_g$. The negation of these constraints are added to the global
-constraint to create a new global constraint $\phi_g^\prime$. The
-update to the global constraint ensures that access of the field $f$
-happens only on non-null locations. The type $C$ of the field is
-extracted and passed to rewrite rule that performs the initialization
-of the symbolic heap. The initialization rules are described earlier
-in this section. 
+There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
+the value of a field (field-access) and the other when we write to a
+field (field-write). In both the field rewrite rules we first check we
+perform is whether there exists a constraint location pair for the $r$
+being accessed such that the location is not null and the constraint
+when conjuncted with the global constraint is satisfiable. Next we
+extract all possible constraints under which $r$ points to a null
+location such that the constraint is satisfiable under the current
+global constraint, $\phi_g$. The negation of these constraints are
+added to the global constraint to create a new global constraint
+$\phi_g^\prime$. The update to the global constraint ensures that
+access or write of the field $f$ happens only on non-null
+locations. There are rewrite rules for accessing and writing to fields
+on null locations where it leads the current program execution state
+to an error state. The rewrite rules for the accessing and writing to
+null locations are presented in the supplemental document.
 
-Recall that during the initialization the rewrite rules
-in~\figref{fig:symHeap} add input references that map to fields being
-initialized.  Once the initialization is complete, however, we create
-a new local reference $r^\prime$. An important property of the
-references in the bi-partiate graph is that they are
-\emph{immutable}. Hence we de-reference the initialized input
-reference, assign its value to the the new local reference, and return
-the local reference. In order to de-reference a field $r.f$ we define
-a helper function which is called the value set.
+In the field-access rewrite rule in~\figref{fig:fHeap}(a) after the
+non-nullness check we extract the The type $C$ of the field is
+extracted and invoke the summarize rewrite rule
+in~\figref{fig:symInit} that performs the initialization of the field
+if it points to uninitialized locations. Once the initialization is
+complete, we create a new local reference $r^\prime$. An important
+property of the references in the bi-partiate graph is that they are
+\emph{immutable}. Hence we create a new local reference and assign it
+to the initialized reference, and return the local reference. In order
+to de-reference a field $r.f$ we define a helper function which is
+called the value set.
 
 \input{value-set-def}
 
@@ -218,23 +232,37 @@ which are: $(\phi_{2a}, l_\mathit{null})$, $(\phi_{2b}, l_2)$, and
 $(\phi_{2c}, l_1)$. The values of the constraints $\phi_{2a}$,
 $\phi_{2b}$, and $\phi_{2c}$ are defined in~\figref{fig:initHeap}(d).
 
-\subsection{Writing to a Field}
-
-The reference $r_x$ is the base pointer whose field is being written
-to while $r$ is the target reference. We look up the value of the base
-reference in the environment $\eta(x)$. The set $\Psi_x$ is the set of
-tuples of constraints, locations, and references which provide the
-reference chains leading from $r_x$ to the reference of the field,
-$r_\mathit{curr}$, being written to through $\phi$ and $l$.The goal is
-to overwrite the $r_\mathit{curr}$ references with the target
-references. Since the target of the write is $r$, we first check that the
-location constraint pairs of $L(r)$ are satisfiable when accessed
-through the $r_x$ chain. This is accomplished by the strengthing
+The field-write rewrite rule in~\figref{fig:fHeap}(a) after the
+non-nullness check we We look up the value of the base reference in
+the environment $\eta(x)$.  The reference $r_x$ is the base pointer
+whose field, $r_\mathit{curr}$ is being written to to while the
+reference $r$ is the target reference. The set $\Psi_x$ contains
+tuples $(\phi l r_\mathit{curr})$ of constraints, locations, and
+references. These tuples represent access chains leading from $r_x$ to
+the reference of the field, $r_\mathit{curr}$. The goal is to
+overwrite the $r_\mathit{curr}$ references with the target
+references. Since the target of the write is $r$, we first check that
+the location constraint pairs of $L(r)$ are satisfiable when accessed
+through the $r_x$ chain. This is accomplished by the strengthening
 function.
 
 \input{st-def}
 
-Additionally, we also check for conditions where the write is not possible 
+Note that the write is conditional. In the case that $\phi$ is true
+then $r_\mathit{curr}$ will point to the constraint location pairs of
+$L(r)$ while if $\phi$ is false then $r_\mathit{curr}$ will continue
+to point to the constraint location pair it is currently pointing to.
+Again since the references are immutable we create a new reference for
+each $r_\mathit{curr}$ and point them to the target constraint
+location pairs.
+
+Consider the example shown in~\figref{fig:fHeap}(b) where we assign
+$\mathit{this}.x := \mathit{this}.y$. Note that
+in~\figref{fig:initHeap}(c) $\mathit{this}.x$ is represented by
+$r_1^i$. After applying the field-write rule the reference $r_1^i$ is
+replaced by the fresh reference $r_4$ which now points to target
+$\mathit{this}.y$ represented by $L(r_2^i)$.
+
 
 \begin{comment}
 \begin{figure}[t]
@@ -247,10 +275,12 @@ $ST(L, r_0, \phi, \phi_g)$\\
 $\theta = \{ \}$\\
 \end{tabular}
 \end{center}
-\caption{field write for this.x = this.y sets}
+\caption{FIXME: When will I get a caption}
 \label{fig:faHeapSets}
 \end{figure}
 \end{comment}
+
+
 
 \subsection{Equality and InEquality of References}
 \input{precise-eq}

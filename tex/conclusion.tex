@@ -1,0 +1,8 @@
+\section{Conclusion}
+
+\subsection{Future Work}
+While our representation reduces paths significantly compared to \gsetxt{}, there remains room for improvement. Another way to reduce path explosion is through state merging. We are investigating ways of merging states at join points in the program, perhaps involving a combination of heap merging and / or heap equivalence testing.
+
+A key advantage of many symbolic execution techniques is the ability to generate test inputs to exercise every possible control flow path. Our technique could be adapted for test input generation by maintaining an explicit input heap in addition to the actual heap which is mutated as the program progresses. 
+
+We are also contemplating a variety of performance optimizations. Due to the structure of the constraints used in the heap representation, our representation is amenable to sophisticated results-caching schemes such as Green. Likewise, a considerable amount of solver time is spent calculating object invariants during program initialization. In order to improve responsiveness during debugging operations, it should be possible to cache object invariants between test runs in to obtain a substantial speed-up.

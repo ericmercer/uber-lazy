@@ -5,13 +5,13 @@ according to generalized symbolic execution with lazy initialization
 relation). Similarly, let $q \rsym q^\prime$ be the relation for the GSESH
 algorithm in this paper. The principle theoretical result is the
 existence of a bisimularity relation between states related on $p \rgse p^\prime$
-and the states related on $q \rsym ^\prime$. A corollary is that $\rsym$ is
+and the states related on $q \rsym q^\prime$. A corollary is that $\rsym$ is
 both sound and complete with respect to $\rgse$. Only a summary of the
 proof is given due to space.
 
 The inspiration for $\rsym$ came from a desire to create
 a new way to initialize heap objects that avoided initializing heaps
-that traverse redundant paths. The thought was to group together heaps
+that traverse the same control flow paths. The thought was to group together heaps
 into equivalence classes: all the heaps that followed the same control
 flow path to a given point of execution would be in the same
 equivalence class at that point of execution. An equivalence class
@@ -33,16 +33,16 @@ where \emph{A} is a field access $\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
 \cfgnt{k}\rp$, \emph{E} is a reference compare $\lp
 \cfgnt{v}\ \cfgt{=}\ \cfgnt{*} \rightarrow \cfgnt{k}\rp$, $\cdot$
 indicates a null reference in the operation or a false outcome, and
-\emph{\com} is everything else in the language. A state relation is trivially extended to sets of states as
+\emph{\com} is everything else in the language. Any state relation, say $\rightarrow_x$, is trivially extended to sets of states as
 $$
 P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
 $$
 Let $\rgse$ be the extension of $\rgse$ to sets of states.
 $$
-\rsgse = \rgse^\mathit{A}
-\cup \rgse^\mathit{A\cdot} \cup \rgse^\mathit{W} \cup
-\rgse^\mathit{W\cdot} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E\cdot}
-\cup \rgse^\com
+\rsgse = \hookrightarrow_\gse^\mathit{A}
+\cup \hookrightarrow_\gse^\mathit{A\cdot} \cup \hookrightarrow_\gse^\mathit{W} \cup
+\hookrightarrow_\gse^\mathit{W\cdot} \cup \hookrightarrow_\gse^\mathit{E} \cup \hookrightarrow_\gse^\mathit{E\cdot}
+\cup \hookrightarrow_\gse^\com
 $$
 The definition embodies the notion of splitting equivalence classes at
 certain operations. The set $P$ at a field access for example has two

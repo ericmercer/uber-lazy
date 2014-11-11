@@ -25,7 +25,7 @@ the end of the program execution.
 
 Let $p \rgse p^\prime$ be defined as a union over state relations:
 $$
-\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A\cdot} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W\cdot} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E\cdot} \cup \rgse^\com
+\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E\cdot} \cup \rgse^\com
 $$
 where \emph{A} is a field access $\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
 \rightarrow \cfgnt{k}\rp$, \emph{W} is a field write $\lp
@@ -37,7 +37,7 @@ indicates a null reference in the operation or a false outcome, and
 $$
 P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
 $$
-Let $\rgse$ be the extension of $\rgse$ to sets of states.
+Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of states.
 $$
 \rsgse = \hookrightarrow_\gse^\mathit{A}
 \cup \hookrightarrow_\gse^\mathit{A\cdot} \cup \hookrightarrow_\gse^\mathit{W} \cup
@@ -47,7 +47,7 @@ $$
 The definition embodies the notion of splitting equivalence classes at
 certain operations. The set $P$ at a field access for example has two
 potential successors: a non-null and null reference. Respectively, the
-set $P \rgse^\com$ only has a single successor since those expressions
+set $P \rgse^\com P^\prime$ only has a single successor since those expressions
 are not related to control flow.
 
 The functional equivalence between heaps in states $p$
@@ -79,7 +79,7 @@ The \textbf{homomorphism constraint} is
 \end{align*}
 \end{definition}
 The functional equivalence between heaps on a homomorphism and
-constraint asserts a common structures in the two heaps under certain
+a homomorphism constraint asserts a common structures in the two heaps under certain
 conditions. The equivalence is used to related states in $p \rgse
 p^\prime$ to states in $q \rsym q^\prime$.
 \begin{definition}
@@ -111,13 +111,13 @@ The \textbf{functional associated to bisimulation} applied to $\sqsubset$, denot
 $(P\ q)$ such that
 \begin{equation}
 \label{eqn:BisimulationForwards}
-\forall P^\prime\ ( P \rsgse P^\prime \Rightarrow \exists q^\prime\ ( (q \rsym q^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
+\forall P^\prime\ ( P \rsgse P^\prime \Rightarrow \exists q^\prime\ ( q \rsym q^\prime \wedge P^\prime\ \sqsubset\ q^\prime))
 \end{equation}
 \begin{equation}
 \label{eqn:BisimulationBackwards}
-\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( (P \rsgse P^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
+\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( P \rsgse P^\prime \wedge P^\prime\ \sqsubset\ q^\prime))
 \end{equation}
-If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsubset)$ is the bisimilarity relation.
+If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsubset)$ is the bisimilarity relation denoted by $\sim$.
 \end{definition}
 As is typical, the functional reasons over a forward and backward
 simulation, while the application to dissimilar states using a
@@ -158,7 +158,7 @@ Similar lemmas are proved for field write and equals reference.
 
 \begin{theorem}
 \label{th:bisim}
-The relation $\sqsubset$ is a bisimulation.
+The relation $\sqsubset$ is a bisimulation: $\sqsubset\ \subseteq\ \sim$
 \end{theorem}
 \begin{proof}
 By definition of the bisimilarity relation. All of the common rules

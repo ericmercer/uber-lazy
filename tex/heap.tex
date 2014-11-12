@@ -1,14 +1,11 @@
 \subsection{Summary Heaps as Bipartite Graphs}
-An important part and novel contribution of summary heaps for symbolic
-execution is the labeled bipartite graph representation of the heap
-which enables a summary heap to group heaps together that follow the
-same control flow to a given point of execution. The group of heaps
-split depending on control flow branches: heaps in the original group
-that follow a true outcome form a new group while heaps from that same
-original group that follow a false outcome form a different
-group. State explosion in symbolic execution is thus mitigated by
-storing a group of heaps in the state and only branching when that
-group splits.
+A novel contribution of summary heaps for symbolic execution is the
+labeled bipartite graph representation of the heap which enables a
+summary heap to group heaps together that follow the same control flow
+to a given point of execution. The graph structure is able to capture
+group membership and compute value sets using entirely non-recursive
+local look up. Additionally, updates on the heap do not require
+rewriting the path condition or any constraints in the heap.
 
 The bipartite graph itself consists of references, $\cfgnt{r}$, and
 constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is

@@ -1,13 +1,19 @@
 \subsection{Heaps as Bipartite Graphs}
-An important aspect, and a novel contribution, of a symbolic heap is its
-representation as a labeled bipartite graph consisting of
+An important aspect, and a novel contribution, of a symbolic heap is
+its representation as a labeled bipartite graph consisting of
 references, $\cfgnt{r}$, and constraint location pairs,
-$\lp\phi\ \cfgnt{l}\rp$. The heap structure itself captures that the actual
-location pointed to by a reference is conditional on aliasing
-relationships within the heap. In this way, the graph represents sets
-of heaps with the conditions under which those heaps exist.
+$\lp\phi\ \cfgnt{l}\rp$. The bipartite graph separates the constraint
+problem from the morphology problem, that is to say, the shape of the
+heap. Being bipartite also makes it so it is not needed to rewrite the
+path condition every time the heap is updated. Without these two
+properties, it would not be possible to lazily initialize heap
+locations along a program path. The heap structure itself captures
+that the actual location pointed to by a reference is conditional on
+aliasing relationships within the heap. In this way, the graph
+represents sets of heaps with the conditions under which those heaps
+exist.
 
-The graph is expressed in in $\cfgnt{L}$, the location map, and
+The graph is expressed in $\cfgnt{L}$, the location map, and
 $\cfgnt{R}$, the reference map. As done with the environment,
 $\cfgnt{L}$ and $\cfgnt{R}$ are treated as partial functions where
 $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set of
@@ -18,16 +24,21 @@ heap. Predicate calculus is used to describe the more complex updates
 to the heap in the semantics.
 
 There are several properties of the heap that are invariant and
-important to the correctness.
+important to the correctness proofs on the algorithm.
 \begin{compactitem}
 \item \textbf{Immutable references}: a reference does not change in
   the location map; it always points to the same set of constraint
-  location pairs.
+  location pairs. The property ensures that constraints never need to
+  be rewritten as the program evolves its state.
 \item \textbf{Reference partitions}: new references are drawn from
-  three distinct partitions $\mathrm{init}_r()$, $\mathrm{fresh}_r()$,
-  and $\mathrm{stack}_r()$. The references strictly increase in value
-  on each call, and modular arithmetic is used to determine the
-  partition to which a reference belongs.
+  three distinct partitions $\mathrm{init}_r()$ for initialization,
+  $\mathrm{fresh}_r()$ for the input heap, and $\mathrm{stack}_r()$
+  for references in the expressions and continuations. The references
+  strictly increase in value on each call, and modular arithmetic is
+  used to determine the partition to which a reference belongs. The
+  partitions are a critical piece to the existence proof of a
+  bisimulation that relates states with a concrete heap to states with
+  heap summaries.
 \item \textbf{Determinism}: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point to two locations at the same time.
 \[
 \begin{array}{l}
@@ -36,18 +47,91 @@ important to the correctness.
 \end{array}
 \]
 $\cfgnt{L}^\leftarrow$ is the pre-image of the location map.
-\item \textbf{Type consistent}: every location associated to a reference has the same type.
+\item \textbf{Type consistency}: every location associated to a reference has the same type.
 \[
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
 \ \ \ \ (\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))
 \end{array}
 \]
-\item \textbf{Null and Uninitialized}: The location $\cfgnt{l}_\mathit{null}$ is a special location in the
-heap to represent null. It has a companion reference
-$\cfgnt{r}_\mathit{null}$. The initial heap for the machine is defined
-such that $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
-\{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$
+\item \textbf{Null and Uninitialized}: every heap contains special
+  locations for null ($\cfgnt{l}_\mathit{null}$) and uninitialized
+  ($\cfgnt{l}_\mathit{un}$) with corresponding references
+  $\cfgnt{r}_\mathit{null}$ and
+  $\cfgnt{r}_\mathit{un}$. $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
+  $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$.
 \end{compactitem}
+The Javalite semantics are modified to operate on this new heap
+structure so that a heap summary represents an equivalence class of
+concrete heaps. All the concrete heaps that follow the same control
+flow to a point of execution are in the equivalence class represented
+by the summary. That equivalence class splits depending control flow
+branches, partitioning the heaps depending on the produced outcome.
 
-DEFINE $\rsym$ and $\rgse$.
+\subsection{State Transition Relation}
+
+The initial state of a Javalite program is constructed from its
+surface syntax on the $\cfgnt{P}$ production:
+$\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$. Assuming that
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$ is an empty heap with no references
+or locations and $\eta$ is an empty environment with no
+variables, the initial state is
+$$
+\begin{array}{l}
+\lp\mu 
+\ \cfgnt{L}[\cfgnt{r}_\mathit{null} \mapsto \{\lp\cfgt{true}\ \cfgnt{l}_\mathit{null})\}\rp] 
+           [\cfgnt{r}_\mathit{un} \mapsto \{\lp\cfgt{true}\ \cfgnt{l}_\mathit{un}\rp\}] \\
+\ \cfgnt{R}
+\ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
+\end{array}
+$$
+The first expression in the initial state is a call to a constructor
+to create an instance of the class $\cfgnt{C}$. Once an instance of
+$\cfgnt{C}$ is exists, the methods $\cfgnt{m}$ of the class is
+invoked.
+
+The common portion of Javalite for the new heap summary is defined
+elsewhere, but in general, the semantics of Javalite are expressed as
+rewrites on strings using pattern matching. Consider the rewrite rule
+for the beginning of a field access instruction:
+$$
+\mprset{flushleft}
+	\inferrule[Field Access(eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgnt{e}\ \cfgt{\$}\ \cfgnt{f}\rp \ \cfgnt{k}\rp  \rcom 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp 
+	}
+$$
+If the string representing the state matches the left side, then it
+creates the new string on the right. In this example, the new string
+on the right is now evaluating the expression $\cfgnt{e}$ in the field
+access, and it includes the continuation indicating that it still
+needs to complete the actual field access once the expression is
+evaluated.
+
+Other more complex rules such as the one to create a new instance of a
+class define constraints on the rewrites and more complex
+transformations on the heap.
+$$
+\mprset{flushleft}
+	\inferrule[New]{
+      \cfgnt{r} = \mathrm{stack}_r\lp \rp\\
+      l = \mathrm{fresh}_l\lp \cfgnt{C}\rp\\\\
+      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{null} \rp ] \\\\
+      \cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \cfgt{true}\ l\rp \}]
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp  \rcom
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+	}
+$$
+Here when the string matches the new-expression, it is written to use
+a new heap where all the fields for the new object point to null and
+the location map points a new stack reference to that new object.
+
+The full operational semantics for generalized symbolic execution with
+lazy initialization for Javalite are in the supplemental
+document. From here forward, that machine is referred to by the
+relation $\rgse$ or $p \rgse p^\prime$. The new algorithm for symbolic
+execution with summary heaps is indicated by $\rsym$ or $q \rsym
+q^\prime$, and it is defined in the next section.

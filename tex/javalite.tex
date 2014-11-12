@@ -1,13 +1,17 @@
 \section{Javalite}
 The algorithm for generalized symbolic execution with symbolic heaps
-is presented using Javalite. Javalite is a syntactic machine defined
-as rewrites on a string \cite{saints-MS}. The semantics are small-step
-using a CESK model with a (C)ontrol string representing the expression
-being evaluated, an (E)nvironment for local variables, a (S)tore for
-the heap, and a (K)ontinuation for what is to be executed next. The
-semantics of the original Javalite machine, and its machine syntax,
-are changed to reflect generalized symbolic execution and then
-generalized execution with symbolic heaps.
+is presented using Javalite. Javalite retains the essence of Java and
+other object oriented languages with formalization in both PLT
+Redex and Coq so the outcome of any program has a precise
+deterministic meaning \cite{saints-MS}.
+
+Javalite, is a syntactic machine defined as rewrites on a string.  The
+semantics are small-step using the CESK model with a (C)ontrol string
+representing the expression being evaluated, an (E)nvironment for
+local variables, a (S)tore for the heap, and a (K)ontinuation for what
+is to be executed next.  The semantics of the original Javalite
+machine, and its machine syntax, are changed to reflect generalized
+symbolic execution and then generalized execution with symbolic heaps.
 
 The surface syntax (input) for Javalite is in
 \figref{fig:surface-syntax} with the machine syntax (state) in
@@ -36,8 +40,7 @@ type correct programs are given as input to the machine.
 
 The state of the Javalite machine (\figref{fig:machine-syntax}),
 $\cfgnt{s}$, includes the program registry\footnote{The registry $\mu$
-  is implied in the rewrite rules rather that states for
-  compactness.}, a pair of functions defining the heap
+  is implied in the rewrite rules and note included in the state tuples.}, a pair of functions defining the heap
 $\lp\cfgnt{L}\ \cfgnt{R}\rp$, which is the store, a constraint,
 $\phi$, defined over references in the heap, the environment, $\eta$,
 for local variables, and the continuation $\cfgnt{k}$. The more

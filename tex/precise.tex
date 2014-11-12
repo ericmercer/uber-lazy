@@ -1,24 +1,23 @@
-\section{Generating Symbolic Heap Summaries}
+\section{Generating Summary Heaps}
 \label{sec:precise}
 
-In this section we present the rules for the $\rsym$ relation. The are
-three sets of rewrite rules: the initialization of symbolic
-references, the field access and write rules, and finally checking the
-equality and inequality of references. Here we describe each of the
-rules. They consist the core of the symbolic heap summary approach.
+In this section we present the rewrite rules for the $\rsym$ relation. 
+There are three sets of rewrite rules specific to the summary
+heap algorithm: (i) rules to initialize symbolic
+references, (ii) field access and write rules, and (iii) rules
+to check equality and inequality of references. These rules
+form the core of the summary heap algorithm.
 
 \subsection{Initialization of Symbolic References}
 
-In this section we present the rewrite rules for the initialization of
-references in the $\rsym$ relation for a symbolic heap summary. The
-initialization rules are defined on the bi-partite graph consisting of
-references and locations. In the $\rgse$ relation during
-initialization of a symbolic references, it is non-deterministically
-assigned to null, new instance of the object, and alias any previously
-initialized symbolic reference. In contrast, the heap summarization
-approach creates a single branch that contains the summarization for
-all the initialization in a single bi-partitate graph.
-
+During initialization of symbolic references in the $\rgse$ relation,
+non-determinitic choices are introduced into the search to
+account for initiaization of the reference to $\mathit{null}$, a new instance of the 
+object, and to any type compatible object previously
+initialized. In contrast, initialization rules for the $\rsym$ relation are 
+defined on the bipartite graph consisting of references and locations,
+and create a single branch containing a summarization of
+all the initializations in a single graph.
 
 \input{summarize-precise-incomplete}
 
@@ -30,10 +29,10 @@ all the initialization in a single bi-partitate graph.
 \label{fig:symInit}
 \end{figure*}
 
-The initialization rules are invoked when an uninitialized field in a
+The initialization rules are invoked whenever an uninitialized field in a
 symbolic reference is accessed. The function $\mathbb{UN}(\cfgnt{L},
 \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) = \{\cfgnt{l}\ ...\}$ returns
-constraint-location pairs in which the field $\cfgnt{f}$ is
+constraint-location pairs in which field $\cfgnt{f}$ is
 uninitialized:
 \[
 \begin{array}{rcl}
@@ -43,9 +42,9 @@ uninitialized:
 \end{array}
 \]
 where $\mathbb{S}(\phi)$ returns true if $\phi$ is
-satisfiable. Intutively, for the reference, $\cfgnt{r}$, it constructs
-the set, $\theta$, that contains all contraint-location pairs that
-point to the field $\cfgnt{f}$ and $\cfgnt{f}$ points to
+satisfiable. Intutively, for reference $\cfgnt{r}$, this function constructs
+the set, $\theta$ containing all contraint-location pairs that
+point to field $\cfgnt{f}$ and $\cfgnt{f}$ points to
 $\cfgnt{l}_\mathit{un}$.
 
 % The cardinality of the set, $\theta$ is never
@@ -53,35 +52,40 @@ $\cfgnt{l}_\mathit{un}$.
 %because all constraints are constant. This property is relaxed in GSE
 %with heap summaries.
 
-The rewrite rule to initialize a heap in the symbolic summarization
-technique is shown in~\figref{fig:symInit}. Given the unitialized set
+The rewrite rule to initialize a heap in the summary heap algorithm
+is shown in~\figref{fig:symInit}. Given the unitialized set
 $\mathbb{UN}$ for field $f$, the $\mathit{min}_l$ function returns
 $(\phi_x\ \cfgnt{l}_x)$ based on a lexical ordering of uninitialized locations
-in $\Lambda$. The init$_r$ method returns a new input reference $\cfgnt{r}_f$
+in $\Lambda$. The init$_r$ method returns a new input reference $\cfgnt{r}_f$,
 while the fresh$_f$ returns a new location of type $C$. The set $\rho$
-contains the set of reference location pairs, $(\cfgnt{r}_a\ \cfgnt{l}_a)$, that the
-field being initialized may alias. The pair $(\cfgnt{r}_a\ \cfgnt{l}_a)$ is contained
+contains the set of reference-location pairs, $(\cfgnt{r}_a\ \cfgnt{l}_a)$, the
+field being initialized may alias. A pair $(\cfgnt{r}_a\ \cfgnt{l}_a)$ is contained
 in the set $ \rho $ if the following conditions hold: (i) $\cfgnt{r}_a$ is
 part of the input references initialized in the summary heap, (ii)
-$\cfgnt{r}_a$ is in the pre-image of $\cfgnt{l}_a$, (iii) and the type of $\cfgnt{l}_a$ is the
-same as the type of the field being initialized.
+$\cfgnt{r}_a$ is in the pre-image of $\cfgnt{l}_a$, and (iii) the type 
+of $\cfgnt{l}_a$ is the same as the type of the field being initialized.
 
-There are three constraint-location pair sets that correspond to
+There are three constraint-location pair sets that correspond to the
 non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ contains
 a constraint $\cfgnt{r}_f = \cfgnt{r}_\mathit{null}$ paired with the location
-$\cfgnt{l}_\mathit{null}$, (b) $\theta_\mathit{new}$ creates a pair with the
-constraint $\cfgnt{r}_f$ is not null and it does not alias any reference in
-set $\rho$ under and a newly created location $\cfgnt{l}_f$, (c) and
+$\cfgnt{l}_\mathit{null}$, (b) \sjp{something is not right in this choice}
+$\theta_\mathit{new}$ creates a pair with a
+constraint representing the fact that $\cfgnt{r}_f$ is not null and it does 
+not alias any reference in set $\rho$ under and a newly created location 
+$\cfgnt{l}_f$, and (c) 
 $\theta_\mathit{alias}$ where for each element in the set $(\cfgnt{r}_a\ \cfgnt{l}_a)
-\in \rho$ it creates a constraints that $\cfgnt{r}_f$ is not null, points to
+\in \rho$ it creates a constraint stating that $\cfgnt{r}_f$ is not null, points to
 $\cfgnt{r}_a$, and does not point to any reference contained in $(\cfgnt{r}_a^\prime\ 
 \cfgnt{l}_a^\prime) \in \rho$ such that $\cfgnt{r}_a < \cfgnt{r}_a^\prime$ based on a lexical
-ordering of initialized references. Additionally
+ordering of initialized references. Additionally,
 $\theta_\mathit{orig}$ allows for the possibility that the field
-continues to remain uninitialized since the heap is symbolic. We refer
-to this initialization in the summary machine as conditional
-initialization. Finally, the fields of the reference $\cfgnt{r}_f$ are marked
-as uninitialized. In the post condition of the rule the reference
+continues to remain uninitialized since the heap is symbolic.
+\sjp{The last statement seems to jump out since we have not been
+talking about the heap being symbolic (have we?)} We refer
+to initialization in the summary machine as conditional
+initialization \sjp{Not sure why we say this - what does it mean
+to the reader?}. Finally, the fields of the reference $\cfgnt{r}_f$ are marked
+as uninitialized. In the post condition of the rule, the reference
 $\cfgnt{r}_f$ points to $\theta$ which contains the union of all the
 constraint location pairs sets, and the field $f$ points to the new
 reference $\cfgnt{r}_f$ in the summary heap.
@@ -131,15 +135,15 @@ reference. In~\figref{fig:initHeap} $\cfgnt{r}_0^s$ represents a local
 reference for the $\cfgt{this}$ reference which has two fields $x$
 and $y$ of the same type; reference $\cfgnt{r}_0^s$ points to location
 $\cfgnt{l}_0$. Note that when no constraint is specified in the graphs, then
-there is a implicit $\mathit{true}$ constraint, for example, $\cfgnt{r}_0^s$
+there is an implicit $\mathit{true}$ constraint, for example, $\cfgnt{r}_0^s$
 points to $\cfgnt{l}_0$ on the constraint $\mathit{true}$. The fields $x$ and
 $y$ point to the uninitialized reference $\cfgnt{r}_\mathit{un}$.
 
 % The reference $\cfgnt{r}_\mathit{un}$ points to the uninitialized location
 %$\cfgnt{l}_\mathit{un}$ on the $\mathit{true}$ constraint.
 
-The graph in~\figref{fig:initHeap}(b) represents the symbolic heap
-summary after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ field while
+The graph in~\figref{fig:initHeap}(b) represents the summary heap
+after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ field while
 the graph in~\figref{fig:initHeap}(c) represents the symbolic heap
 summary after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ field
 following the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$. The list
@@ -156,8 +160,8 @@ is not $\mathit{null}$ $\phi_{1b} :=\cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null}$.
 location $\cfgnt{l}_1$ represents a fresh location of type $C$ is created on
 the heap such that $C$ is type of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$.
 
-Following the initialization to the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$, when we
-initialize $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ the resulting summary heap is shown
+Following initialization to $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$, when
+$\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized, the resulting summary heap is shown
 in~\figref{fig:initHeap}(c). The set $\rho$ shown
 in~\figref{fig:initHeap}(d) contains the potential aliases for
  $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ which is location $\cfgnt{l}_1$ ($\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$). The

@@ -1,74 +1,85 @@
 \subsection{Heaps as Bipartite Graphs}
-An important aspect, and a novel contribution, of a symbolic heap is
-its representation as a labeled bipartite graph consisting of
-references, $\cfgnt{r}$, and constraint location pairs,
-$\lp\phi\ \cfgnt{l}\rp$. The bipartite graph separates the constraint
-problem from the morphology problem, that is to say, the shape of the
-heap. Being bipartite also makes it so it is not needed to rewrite the
-path condition every time the heap is updated. Without these two
-properties, it would not be possible to lazily initialize heap
-locations along a program path. The heap structure itself captures
-that the actual location pointed to by a reference is conditional on
+\sjp{General comment: we are missing motivation for why we discuss both
+the gse and the summary heap machines - perhaps this goes in the intro?
+And the fact that the GSE machine implements lazy versus lazier, etc. and
+why this decision}
+An important part and novel contribution of summary heaps for
+symbolic execution is the labeled bipartite graph representation
+of the heap which enables a summary heap to represent an equivalence class of
+concrete heaps--all of the concrete heaps that follow the same control
+flow to a given point of execution. The equivalence class splits depending 
+on control flow branches, partitioning the heaps depending on the 
+produced outcome. \sjp{Last sentence should be clarified.}
+
+The bipartite graph consists of 
+references, $\cfgnt{r}$, and constraint-location pairs,
+$\lp\phi\ \cfgnt{l}\rp$, capturing the fact that the
+actual location pointed to by a reference is conditional on
 aliasing relationships within the heap. In this way, the graph
 represents sets of heaps with the conditions under which those heaps
-exist.
+exist. This representation separates the constraint
+problem from the morphology problem, i.e, separates the \sjp{??}
+from the shape of the heap, and also makes 
+it unnecessary to rewrite the
+path condition every time the heap is updated. Without these two
+features,
+%properties, 
+it would not be possible to lazily initialize heap
+locations along a program path. 
 
-The graph is expressed in $\cfgnt{L}$, the location map, and
-$\cfgnt{R}$, the reference map. As done with the environment,
+The graph is expressed in the location map, $\cfgnt{L}$, and
+the reference map, $\cfgnt{R}$. As done with the environment,
 $\cfgnt{L}$ and $\cfgnt{R}$ are treated as partial functions where
 $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set of
-location-constraint pairs in the heap associated with the given
+constraint-location pairs in the heap associated with the given
 reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
 reference associated with the given location-field pair in the
 heap. Predicate calculus is used to describe the more complex updates
 to the heap in the semantics.
 
-There are several properties of the heap that are invariant and
-important to the correctness proofs on the algorithm.
+There are several properties of the summary heap 
+enforced by the rewrite rules that are invariant and
+important to the correctness proofs
+presented in \sjp{need sec ref}.
 \begin{compactitem}
 \item \textbf{Immutable references}: a reference does not change in
   the location map; it always points to the same set of constraint
-  location pairs. The property ensures that constraints never need to
+  location pairs. This property ensures that constraints never need to
   be rewritten as the program evolves its state.
 \item \textbf{Reference partitions}: new references are drawn from
-  three distinct partitions $\mathrm{init}_r()$ for initialization,
-  $\mathrm{fresh}_r()$ for the input heap, and $\mathrm{stack}_r()$
+  three distinct partitions (i) $\mathrm{init}_r()$ for initialization, (ii)
+  $\mathrm{fresh}_r()$ for the input heap, and (iii) $\mathrm{stack}_r()$
   for references in the expressions and continuations. The references
   strictly increase in value on each call, and modular arithmetic is
-  used to determine the partition to which a reference belongs. The
+  used to determine the partition to which a reference belongs. Reference
   partitions are a critical piece to the existence proof of a
   bisimulation that relates states with a concrete heap to states with
-  heap summaries.
-\item \textbf{Determinism}: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point to two locations at the same time.
+  a summary heap (see \sjp{add secref}).
+\item \textbf{Determinism}: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point to two  locations at the same time \sjp{multiple locations simultaneously?}.
 \[
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
 \ \ \ \ (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
 \end{array}
 \]
-$\cfgnt{L}^\leftarrow$ is the pre-image of the location map.
-\item \textbf{Type consistency}: every location associated to a reference has the same type.
+$\cfgnt{L}^\leftarrow$ is the pre-image of the location map. \sjp{need more of a description here}
+\item \textbf{Type consistency}: all locations associated with a reference have the same type.
 \[
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
 \ \ \ \ (\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))
 \end{array}
 \]
-\item \textbf{Null and Uninitialized}: every heap contains special
-  locations for null ($\cfgnt{l}_\mathit{null}$) and uninitialized
-  ($\cfgnt{l}_\mathit{un}$) with corresponding references
+\item \textbf{Null and Uninitialized}: every summary heap contains 
+a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
+location for uninitialized
+  ($\cfgnt{l}_\mathit{un}$), with corresponding references
   $\cfgnt{r}_\mathit{null}$ and
-  $\cfgnt{r}_\mathit{un}$. $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  $\cfgnt{r}_\mathit{un}$, respectively. $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$.
 \end{compactitem}
-The Javalite semantics are modified to operate on this new heap
-structure so that a heap summary represents an equivalence class of
-concrete heaps. All the concrete heaps that follow the same control
-flow to a point of execution are in the equivalence class represented
-by the summary. That equivalence class splits depending control flow
-branches, partitioning the heaps depending on the produced outcome.
 
 \subsection{State Transition Relation}
 
@@ -88,14 +99,17 @@ $$
 \end{array}
 $$
 The first expression in the initial state is a call to a constructor
-to create an instance of the class $\cfgnt{C}$. Once an instance of
-$\cfgnt{C}$ is exists, the methods $\cfgnt{m}$ of the class is
+to create an instance of the class $\cfgnt{C}$. \sjp{I was under the
+impression that Javalite does not have constructors -- that
+It only initializes the new object's locations on the heap with their default
+values.} Once an instance of
+$\cfgnt{C}$ exists, the method $\cfgnt{m}$ of the class is
 invoked.
 
-The common portion of Javalite for the new heap summary is defined
-elsewhere, but in general, the semantics of Javalite are expressed as
+In general, the semantics of Javalite are expressed as
 rewrites on strings using pattern matching. Consider the rewrite rule
-for the beginning of a field access instruction:
+for the beginning of a  field access instruction \sjp{in the Javalite
+machine?}:
 $$
 \mprset{flushleft}
 	\inferrule[Field Access(eval)]{}{
@@ -103,7 +117,7 @@ $$
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp 
 	}
 $$
-If the string representing the state matches the left side, then it
+If the string representing the current state matches the left side, then it
 creates the new string on the right. In this example, the new string
 on the right is now evaluating the expression $\cfgnt{e}$ in the field
 access, and it includes the continuation indicating that it still
@@ -125,13 +139,20 @@ $$
       \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
 	}
 $$
-Here when the string matches the new-expression, it is written to use
-a new heap where all the fields for the new object point to null and
-the location map points a new stack reference to that new object.
+In this rule, when the string matches the new-expression, it is rewritten to use
+a new heap location where all of the fields for the new object point to
+$\cfgnt{r}_\mathit{null}$
+and the location map points a new stack reference to that new object.
 
-The full operational semantics for generalized symbolic execution with
-lazy initialization for Javalite are in the supplemental
-document. From here forward, that machine is referred to by the
-relation $\rgse$ or $p \rgse p^\prime$. The new algorithm for symbolic
-execution with summary heaps is indicated by $\rsym$ or $q \rsym
-q^\prime$, and it is defined in the next section.
+In the remainder of the paper, we refer to the the generalized
+symbolic execution with lazy initialization machine by the relation
+$\rgse$ or $p \rgse p^\prime$, and to the new summary heap 
+machine by $\rsym$ or $q \rsym q^\prime$.
+Due to space restrictions, the full operational semantics for generalized 
+symbolic execution with
+lazy initialization for Javalite are presented in the supplemental
+document. We also  present the portion of the Javalite 
+rewrite rules which are common to both machines in 
+the supplementary document. In the next section, we present
+the rewrite rules specific to the new summary heap algorithm for symbolic
+execution.

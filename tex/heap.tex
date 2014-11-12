@@ -22,10 +22,10 @@ the semantics.
 There are several properties of the summary heap enforced by the
 rewrite rules that are invariant and important to the correctness
 proofs presented in \secref{sec:bisim}: \emph{reference partitions},
-\emph{immutable references}, \emph{determinism}, and \emph{type
-  consistency}.
+\emph{immutable references}, \emph{determinism}, \emph{type
+  consistency}, and \emph{null and uninitialized}.
 
-Reference partitions: new references are drawn from
+\emph{Reference partitions} are new references drawn from
   three distinct partitions (i) $\mathrm{init}_\cfgnt{r}()$ for references for the \emph{input heap}, (ii) $\mathrm{fresh}_\cfgnt{r}()$ for references for \emph{auxiliary literals}, and
   (iii) $\mathrm{stack}_\cfgnt{r}()$ for references for the \emph{stack literals} in the expressions and
   continuations. The references strictly increase in value on each
@@ -48,12 +48,12 @@ Reference partitions are a critical piece to the existence proof of a
 bisimilation between the summary heap algorithm and generalized
 symbolic execution (see \secref{sec:bisim}).
 
-Immutable references: a reference does not change in the
+\emph{Immutable references} means that a reference does not change in the
 location map. It always points to the same set of constraint location
 pairs. This property ensures that constraints never need to be
 rewritten as the program evolves its state.
 
-Determinism: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point multiple locations simultaneously.
+\emph{Determinism} means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point multiple locations simultaneously.
 $$
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
@@ -67,7 +67,7 @@ satisfying assignment. The property means that a satisfying assignment
 resolving aliasing relationships results in a deterministic heap: a
 field access returns a single location.
 
-Type consistency: all locations associated with a reference have the same type.
+\emph{Type consistency} implies that all locations associated with a reference have the same type.
 \[
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
@@ -75,7 +75,7 @@ Type consistency: all locations associated with a reference have the same type.
 \end{array}
 \]
 
-Null and Uninitialized: every summary heap contains 
+\emph{Null and Uninitialized} means that every summary heap contains 
 a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
 location for uninitialized
   ($\cfgnt{l}_\mathit{un}$), with corresponding references
@@ -85,8 +85,7 @@ location for uninitialized
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. These special references can be used in constraints.
 
-The reference partitions merit further discussion as they are a
-central to the proofs. The heap summary algorithm creates
+To summarize, the heap summary algorithm creates
 many references that are auxiliary literals or stack literals to
 define the structure of the bipartite graph.  It only uses input heap
 references for constraints expressing potential aliasing. A solver

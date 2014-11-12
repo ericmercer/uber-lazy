@@ -95,15 +95,33 @@ execution.
 %techniques are based on a static analysis, the resulting summaries
 %over-approximate the actual potential heaps.
 
-In this work, we present a novel heap initialization and analysis
-technique which takes inspiration from both GSE and existing heap
-summarization techniques. The intuition behind our analysis is to
-construct the heap lazily during symbolic execution but reduce the
-points of non-determinism in the symbolic execution tree by analyzing
-each control-flow path only once for any given set of isomorphic
-heaps. To represent the exact set of feasible concrete heap structures
-resulting from execution of the control-flow path, we use a heap
-summary.  Our analysis improves on existing GSE approaches by reducing
+In this work, we present a technique for heap summarization,
+initialization, and analysis in the context of symbolic execution. We
+represent the heap as a bipartiate graph of references and sets of
+constraints over locations. The use of a bipartiate graph affords two
+key advantages: (i) it allows for a non-recursive definition of
+objects, allowing us to handle aliasing and (ii) it does not require
+rewrite of the constraints during updates to the heap. We lazily
+initialize, summarize, and update the bipartiate graph during symbolic
+execution. Unlike GSE, however, we only partition the heaps at points
+of divergence in the control flow graph. These points of
+non-determinism at field accesses that lead to null-pointer exception
+and checking equality of references. The former represents a
+divergence due to exceptional control flow while the later due to
+program structure.
+
+%In this work, we present a novel heap initialization and analysis
+%technique which takes inspiration from both GSE and existing heap
+%summarization techniques. The intuition behind our analysis is to
+%construct the heap lazily during symbolic execution but reduce the
+%points of non-determinism in the symbolic execution tree by analyzing
+%each control-flow path only once for any given set of isomorphic
+%heaps. To represent the exact set of feasible concrete heap
+%structures resulting from execution of the control-flow path, we use
+%a heap summary.
+
+
+ Our analysis improves on existing GSE approaches by reducing
 the size of the symbolic execution state space explored, thereby
 improving scalability of symboic execution for heap manipulating
 software. It improves on existing heap summarization techniques by

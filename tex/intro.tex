@@ -105,8 +105,8 @@ rewrite of the constraints during updates to the heap. We lazily
 initialize, summarize, and update the bipartiate graph during symbolic
 execution. Unlike GSE, however, we only partition the heaps at points
 of divergence in the control flow graph. These points of
-non-determinism at field accesses that lead to null-pointer exception
-and checking equality of references. The former represents a
+non-determinism are at field accesses that lead to null-pointer
+exception and checking equality of references. The former represents a
 divergence due to exceptional control flow while the later due to
 program structure.
 

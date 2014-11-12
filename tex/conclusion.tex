@@ -1,8 +1,16 @@
 \section{Conclusion}
+We have presented a new heap representation for symbolic execution that maintains exactness, represents arbitrary heap structures without restrictions on aliasing relationships, and supports dynamic on-the-fly initialization of heap structures. Despite this unique combination of capabilities, performance is not sacrificed compared to previous methods, and in some cases is greatly enhanced.
 
 \subsection{Future Work}
-While our representation reduces paths significantly compared to \gsetxt{}, there remains room for improvement. Another way to reduce path explosion is through state merging. We are investigating ways of merging states at join points in the program, perhaps involving a combination of heap merging and / or heap equivalence testing.
+Planned future work includes extensions to reason about scalar types, support for test case generation, state merging, and solver performance enhancements.
 
-A key advantage of many symbolic execution techniques is the ability to generate test inputs to exercise every possible control flow path. Our technique could be adapted for test input generation by maintaining an explicit input heap in addition to the actual heap which is mutated as the program progresses. 
+In this paper, we have restricted our presentation of symbolic heaps to constraints reasoning over heap morphology. However, in order to be useful for reasoning about real programs, we must consider the impact of scalar types. Our implementation includes limited support for linear operations over integer types, but we intent to extend support for all types of operations, as well as develop the theory for doing so.
 
-We are also contemplating a variety of performance optimizations. Due to the structure of the constraints used in the heap representation, our representation is amenable to sophisticated results-caching schemes such as Green. Likewise, a considerable amount of solver time is spent calculating object invariants during program initialization. In order to improve responsiveness during debugging operations, it should be possible to cache object invariants between test runs in to obtain a substantial speed-up.
+Another feature we would like to add is support for test case generation, which is traditionally a key advantage of symbolic execution techniques. Under the current rules, it is difficult to extract test cases because the heap may be destructively altered during field writes. A simple remedy would be to maintain an explicit input heap in addition to the actual heap which is mutated as the program progresses. 
+
+Besides extending the capabilities of the algorithm, it should also be possible to increase performance through a variety of means. While our representation reduces paths significantly compared to \gsetxt{}, there remains room for improvement. Another way to reduce path explosion is through state merging. We are investigating ways of merging states at join points in the program, perhaps involving a combination of heap merging and / or heap equivalence testing as in \cite{Sen:2014}.
+
+We are also contemplating a variety of performance optimizations that deal with constraints. Due to the structure of the constraints used in the heap representation, our representation is amenable to sophisticated results-caching schemes such as Green \cite{Visser:2012}. Likewise, a considerable amount of solver time is spent calculating object invariants during program initialization. In order to improve responsiveness during debugging operations, it should be possible to cache object invariants between test runs in to obtain a substantial speed-up.
+
+
+

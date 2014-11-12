@@ -56,35 +56,35 @@ $\cfgnt{l}_\mathit{un}$.
 The rewrite rule to initialize a heap in the symbolic summarization
 technique is shown in~\figref{fig:symInit}. Given the unitialized set
 $\mathbb{UN}$ for field $f$, the $\mathit{min}_l$ function returns
-$(\phi_x, l_x)$ based on a lexical ordering of uninitialized locations
-in $\Lambda$. The init$_r$ method returns a new input reference $r_f$
+$(\phi_x, \cfgnt{l}_x)$ based on a lexical ordering of uninitialized locations
+in $\Lambda$. The init$_r$ method returns a new input reference $\cfgnt{r}_f$
 while the fresh$_f$ returns a new location of type $C$. The set $\rho$
-contains the set of reference location pairs, $(r_a, l_a)$, that the
-field being initialized may alias. The pair $(r_a, l_a)$ is contained
-in the set $ \rho $ if the following conditions hold: (i) $r_a$ is
+contains the set of reference location pairs, $(\cfgnt{r}_a, \cfgnt{l}_a)$, that the
+field being initialized may alias. The pair $(\cfgnt{r}_a, \cfgnt{l}_a)$ is contained
+in the set $ \rho $ if the following conditions hold: (i) $\cfgnt{r}_a$ is
 part of the input references initialized in the summary heap, (ii)
-$r_a$ is in the pre-image of $l_a$, (iii) and the type of $l_a$ is the
+$\cfgnt{r}_a$ is in the pre-image of $\cfgnt{l}_a$, (iii) and the type of $\cfgnt{l}_a$ is the
 same as the type of the field being initialized.
 
 There are three constraint-location pair sets that correspond to
 non-deterministic choices in GSE: (a) $\theta_\mathit{null}$ contains
-a constraint $r_f = r_\mathit{null}$ paired with the location
-$l_\mathit{null}$, (b) $\theta_\mathit{new}$ creates a pair with the
-constraint $r_f$ is not null and it does not alias any reference in
-set $\rho$ under and a newly created location $l_f$, (c) and
-$\theta_\mathit{alias}$ where for each element in the set $(r_a, l_a)
-\in \rho$ it creates a constraints that $r_f$ is not null, points to
-$r_a$, and does not point to any reference contained in $(r_a^\prime,
-l_a^\prime) \in \rho$ such that $r_a < r_a^\prime$ based on a lexical
+a constraint $\cfgnt{r}_f = \cfgnt{r}_\mathit{null}$ paired with the location
+$\cfgnt{l}_\mathit{null}$, (b) $\theta_\mathit{new}$ creates a pair with the
+constraint $\cfgnt{r}_f$ is not null and it does not alias any reference in
+set $\rho$ under and a newly created location $\cfgnt{l}_f$, (c) and
+$\theta_\mathit{alias}$ where for each element in the set $(\cfgnt{r}_a, \cfgnt{l}_a)
+\in \rho$ it creates a constraints that $\cfgnt{r}_f$ is not null, points to
+$\cfgnt{r}_a$, and does not point to any reference contained in $(\cfgnt{r}_a^\prime,
+\cfgnt{l}_a^\prime) \in \rho$ such that $\cfgnt{r}_a < \cfgnt{r}_a^\prime$ based on a lexical
 ordering of initialized references. Additionally
 $\theta_\mathit{orig}$ allows for the possibility that the field
 continues to remain uninitialized since the heap is symbolic. We refer
 to this initialization in the summary machine as conditional
-initialization. Finally, the fields of the reference $r_f$ are marked
+initialization. Finally, the fields of the reference $\cfgnt{r}_f$ are marked
 as uninitialized. In the post condition of the rule the reference
-$r_f$ points to $\theta$ which contains the union of all the
+$\cfgnt{r}_f$ points to $\theta$ which contains the union of all the
 constraint location pairs sets, and the field $f$ points to the new
-reference $r_f$ in the summary heap.
+reference $\cfgnt{r}_f$ in the summary heap.
 
 \begin{comment}
  Note that the summarize rule invoked repeatedly until
@@ -106,70 +106,70 @@ the summarize end rule in~\figref{fig:symInit}.
 \scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
 \end{tabular} &
 \begin{tabular}[c]{l}
-$\rho := \{ (r_1^i, l_1 \}$ \\
-$\theta_\mathit{null} := \{ ( r_2^i = r_\mathit{null}, l_\mathit{null}) \}$\\
-$\theta_\mathit{new} := \{ ( r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i, l_2) \}$\\
-$\theta_\mathit{alias} := \{ ( r_1^i \neq r_\mathit{null} \wedge r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i, l_1) \}$\\
+$\rho := \{ (\cfgnt{r}_1^i, \cfgnt{l}_1 \}$ \\
+$\theta_\mathit{null} := \{ ( \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}, \cfgnt{l}_\mathit{null}) \}$\\
+$\theta_\mathit{new} := \{ ( \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i, \cfgnt{l}_2) \}$\\
+$\theta_\mathit{alias} := \{ ( \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i, \cfgnt{l}_1) \}$\\
 $\theta_\mathit{orig} := \{ \}$ \\
-$\phi_{\mathit{1a}} := r_1^i = r_\mathit{null} $ \\
-$\phi_{\mathit{1b}} := r_1^i \neq r_\mathit{null} $  \\
-$\phi_{\mathit{2a}} := r_2^i = r_\mathit{null}$ \\
-$\phi_{\mathit{2b}} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq r_1^i$ \\
-$\phi_{\mathit{2c}} :=  r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i $ \\
+$\phi_{\mathit{1a}} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null} $ \\
+$\phi_{\mathit{1b}} := \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} $  \\
+$\phi_{\mathit{2a}} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$ \\
+$\phi_{\mathit{2b}} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i$ \\
+$\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i $ \\
 \end{tabular} \\
 (a) & (b) & (c) & (d) \\
 \end{tabular}
 \end{center}
-\caption{initialize this.x and this.y}
+\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Constraint sets from the summary rule and constraints on the edges.}
 \label{fig:initHeap}
 \end{figure*}
 
 We visualize the initialization process in~\figref{fig:initHeap}. The
 graph in~\figref{fig:initHeap}(a) represents the initial heap. The
 references with the superscript $s$ indicates that it is a local
-reference. In~\figref{fig:initHeap} $r_0^s$ represents a local
-reference for the $\mathit{this}$ reference which has two fields $x$
-and $y$ of the same type; reference $r_0^s$ points to location
-$l_0$. Note that when no constraint is specified in the graphs, then
-there is a implicit $\mathit{true}$ constraint, for example, $r_0^s$
-points to $l_0$ on the constraint $\mathit{true}$. The fields $x$ and
-$y$ point to the uninitialized reference $r_\mathit{un}$.
+reference. In~\figref{fig:initHeap} $\cfgnt{r}_0^s$ represents a local
+reference for the $\cfgt{this}$ reference which has two fields $x$
+and $y$ of the same type; reference $\cfgnt{r}_0^s$ points to location
+$\cfgnt{l}_0$. Note that when no constraint is specified in the graphs, then
+there is a implicit $\mathit{true}$ constraint, for example, $\cfgnt{r}_0^s$
+points to $\cfgnt{l}_0$ on the constraint $\mathit{true}$. The fields $x$ and
+$y$ point to the uninitialized reference $\cfgnt{r}_\mathit{un}$.
 
-% The reference $r_\mathit{un}$ points to the uninitialized location
-%$l_\mathit{un}$ on the $\mathit{true}$ constraint.
+% The reference $\cfgnt{r}_\mathit{un}$ points to the uninitialized location
+%$\cfgnt{l}_\mathit{un}$ on the $\mathit{true}$ constraint.
 
 The graph in~\figref{fig:initHeap}(b) represents the symbolic heap
-summary after the initialization of the $\mathit{this}.x$ field while
+summary after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ field while
 the graph in~\figref{fig:initHeap}(c) represents the symbolic heap
-summary after the initialization of the $\mathit{this}.y$ field
-following the initialization of $\mathit{this}.x$. The list
+summary after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ field
+following the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$. The list
 in~\figref{fig:initHeap}(d) represents the various sets constructed in
-the summarize rule during the initialization of $\mathit{this}.y$. We
+the summarize rule during the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. We
 also define values of constraints used as labels in the graph.
 
-The access on $l_0.x$ creates a new input reference $r_1^i$ in the
-summary heap shown in~\figref{fig:initHeap}(b). The reference $r_1^1$
-points to the $l_\mathit{null}$ location under the constraint that
-$r_1^i$ is null: $\phi_{1a} := r_1^i = r_\mathit{null}$. The reference
-$r_1^i$ points to the location $l_1$ under the constraint that $r_1^i$
-is not $\mathit{null}$ $\phi_{1b} :=r_1^i \neq r_\mathit{null}$. The
-location $l_1$ represents a fresh location of type $C$ is created on
-the heap such that $C$ is type of $\mathit{this}.x$.
+The access on $\cfgnt{l}_0.x$ creates a new input reference $\cfgnt{r}_1^i$ in the
+summary heap shown in~\figref{fig:initHeap}(b). The reference $\cfgnt{r}_1^1$
+points to the $\cfgnt{l}_\mathit{null}$ location under the constraint that
+$\cfgnt{r}_1^i$ is null: $\phi_{1a} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null}$. The reference
+$\cfgnt{r}_1^i$ points to the location $\cfgnt{l}_1$ under the constraint that $\cfgnt{r}_1^i$
+is not $\mathit{null}$ $\phi_{1b} :=\cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null}$. The
+location $\cfgnt{l}_1$ represents a fresh location of type $C$ is created on
+the heap such that $C$ is type of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$.
 
-Following the initialization to the $\mathit{this}.x$, when we
-initialize $\mathit{this}.y$ the resulting summary heap is shown
+Following the initialization to the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$, when we
+initialize $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ the resulting summary heap is shown
 in~\figref{fig:initHeap}(c). The set $\rho$ shown
 in~\figref{fig:initHeap}(d) contains the potential aliases for
-$\mathit{this}.y$ which is location $l_1$ ($\mathit{this}.x$). The
+ $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ which is location $\cfgnt{l}_1$ ($\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$). The
 constraint location $\theta$ sets represents the initialization
-choices for $\mathit{this}.y$. The new input reference $r_2^i$ for
-$this.y$ points to (a) location $l_\mathit{null}$ under the constraint
-$\phi_{2a} := r_2^i = r_\mathit{null}$, (b) location $l_2$ under the
-constraint $\phi_{2b} := r_2^i \neq r_\mathit{null} \wedge r_2^i \neq
-r_1^i$ that states that $r_2^i$ is not null and does not alias
-$r_1^i$, and (c) location $l_1$ under the constraint $\phi_{2c} :=
-r_2^i \neq r_\mathit{null} \wedge r_2^i = r_1^i$ that states $r_2^i$
-is not null and \emph{does} alias $r_1^i$.
+choices for $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. The new input reference $\cfgnt{r}_2^i$ for
+$\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ points to (a) location $\cfgnt{l}_\mathit{null}$ under the constraint
+$\phi_{2a} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$, (b) location $\cfgnt{l}_2$ under the
+constraint $\phi_{2b} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq
+\cfgnt{r}_1^i$ that states that $\cfgnt{r}_2^i$ is not null and does not alias
+$\cfgnt{r}_1^i$, and (c) location $\cfgnt{l}_1$ under the constraint $\phi_{2c} :=
+\cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i$ that states $\cfgnt{r}_2^i$
+is not null and \emph{does} alias $\cfgnt{r}_1^i$.
 
 
 \subsection{Reading and Writing References}
@@ -186,7 +186,7 @@ is not null and \emph{does} alias $r_1^i$.
 (a) & (b)
 \end{tabular}
 \end{center}
-\caption{field access for this.y and field write for this.x = this.y}
+\caption{Field read and write relations with an example heap. (a) Field-access, $\rsym^\mathit{A}$, and field-write, $\rsym^\mathit{W}$, rewrite rules for the $\rsym$ relation. (b) The final heap after $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\ \cfgt{:=}\ \lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp\rp$.}
 \label{fig:fHeap}
 \end{figure*}
 
@@ -226,53 +226,53 @@ the value set of input reference $r$ to the local reference $r^\prime$
 and return the local reference $r^\prime$ in the next state.
 
 Consider the graph shown in~\figref{fig:fHeap}(b) the reference
-$r_2^i$ is created during the initialization of $\mathit{this}.y$. The
+$\cfgnt{r}_2^i$ is created during the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. The
 reference that is returned during the access of the field, however, is
-$r_3^s$. The reference $r_3^s$ points to the value set of $r_2^i$
-which are: $(\phi_{2a}, l_\mathit{null})$, $(\phi_{2b}, l_2)$, and
-$(\phi_{2c}, l_1)$. The values of the constraints $\phi_{2a}$,
+$\cfgnt{r}_3^s$. The reference $\cfgnt{r}_3^s$ points to the value set of $\cfgnt{r}_2^i$
+which are: $(\phi_{2a}, \cfgnt{l}_\mathit{null})$, $(\phi_{2b}, \cfgnt{l}_2)$, and
+$(\phi_{2c}, \cfgnt{l}_1)$. The values of the constraints $\phi_{2a}$,
 $\phi_{2b}$, and $\phi_{2c}$ are defined in~\figref{fig:initHeap}(d).
 
 The field-write rewrite rule in~\figref{fig:fHeap}(a) after the
 non-nullness check we We look up the value of the base reference in
-the environment $\eta(x)$.  The reference $r_x$ is the base pointer
-whose field, $r_\mathit{curr}$ is being written to to while the
+the environment $\eta(x)$.  The reference $\cfgnt{r}_x$ is the base pointer
+whose field, $\cfgnt{r}_\mathit{curr}$ is being written to to while the
 reference $r$ is the target reference. The set $\Psi_x$ contains
-tuples $(\phi l r_\mathit{curr})$ of constraints, locations, and
-references. These tuples represent access chains leading from $r_x$ to
-the reference of the field, $r_\mathit{curr}$. The goal is to
-overwrite the $r_\mathit{curr}$ references with the target
+tuples $(\phi l \cfgnt{r}_\mathit{curr})$ of constraints, locations, and
+references. These tuples represent access chains leading from $\cfgnt{r}_x$ to
+the reference of the field, $\cfgnt{r}_\mathit{curr}$. The goal is to
+overwrite the $\cfgnt{r}_\mathit{curr}$ references with the target
 references. Since the target of the write is $r$, we first check that
 the location constraint pairs of $L(r)$ are satisfiable when accessed
-through the $r_x$ chain. This is accomplished by the strengthening
+through the $\cfgnt{r}_x$ chain. This is accomplished by the strengthening
 function.
 
 \input{st-def}
 
 Note that the write is conditional. In the case that $\phi$ is true
-then $r_\mathit{curr}$ will point to the constraint location pairs of
-$L(r)$ while if $\phi$ is false then $r_\mathit{curr}$ will continue
+then $\cfgnt{r}_\mathit{curr}$ will point to the constraint location pairs of
+$L(r)$ while if $\phi$ is false then $\cfgnt{r}_\mathit{curr}$ will continue
 to point to the constraint location pair it is currently pointing to.
 Again since the references are immutable we create a new reference for
-each $r_\mathit{curr}$ and point them to the target constraint
+each $\cfgnt{r}_\mathit{curr}$ and point them to the target constraint
 location pairs.
 
 Consider the example shown in~\figref{fig:fHeap}(b) where we assign
-$\mathit{this}.x := \mathit{this}.y$. Note that
-in~\figref{fig:initHeap}(c) $\mathit{this}.x$ is represented by
-$r_1^i$. After applying the field-write rule the reference $r_1^i$ is
-replaced by the fresh reference $r_4$ which now points to target
-$\mathit{this}.y$ represented by $L(r_2^i)$.
+$\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\ \cfgt{:=}\ \lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp\rp$. Note that
+in~\figref{fig:initHeap}(c) $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is represented by
+$\cfgnt{r}_1^i$. After applying the field-write rule the reference $\cfgnt{r}_1^i$ is
+replaced by the fresh reference $\cfgnt{r}_4$ which now points to target
+ $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ represented by $L(\cfgnt{r}_2^i)$.
 
 
 \begin{comment}
 \begin{figure}[t]
 \begin{center}
 \begin{tabular}[c]{l}
-$\Psi_x = \{ (true, l_0, r_1^i) \}$\\
-$ST (L, r_3^s, \phi, \phi_g)$ \\
-$\theta = \{ (\phi_{2a}\; l_\mathit{null} ) (\phi_{2b}\; l_2) (\phi_{2c}\; l_1) \}$\\
-$ST(L, r_0, \phi, \phi_g)$\\
+$\Psi_x = \{ (true, \cfgnt{l}_0, \cfgnt{r}_1^i) \}$\\
+$ST (L, \cfgnt{r}_3^s, \phi, \phi_g)$ \\
+$\theta = \{ (\phi_{2a}\; \cfgnt{l}_\mathit{null} ) (\phi_{2b}\; \cfgnt{l}_2) (\phi_{2c}\; \cfgnt{l}_1) \}$\\
+$ST(L, \cfgnt{r}_0, \phi, \phi_g)$\\
 $\theta = \{ \}$\\
 \end{tabular}
 \end{center}
@@ -294,7 +294,7 @@ $\theta = \{ \}$\\
 %(a) & (b) \\
 \end{tabular}
 \end{center}
-\caption{FIXME: I desperately need a caption!}
+\caption{The reference compare rewrite rule for both the true, $\rsym^\mathit{E}$, and false, $\rsym^\mathit{E^\prime}$ outcomes.}
 \label{fig:eqs}
 \end{figure*}
 
@@ -303,8 +303,8 @@ $\theta = \{ \}$\\
 \newsavebox{\boxPEX}
 \savebox{\boxPEX}{
 \begin{tabular}[c]{l}
-$L(r_1^i) = \{ (\phi_{1a}\; l_\mathit{null})\; (\phi_{1b}\; l_1) \}$ \\
-$L(r_2^i) = \{ (\phi_{2a}\; l_\mathit{null}),\; (\phi_{2b}\; l_2),\; (\phi_{2c}\; l_1) \} $\\
+$L(\cfgnt{r}_1^i) = \{ (\phi_{1a}\; \cfgnt{l}_\mathit{null})\; (\phi_{1b}\; \cfgnt{l}_1) \}$ \\
+$L(\cfgnt{r}_2^i) = \{ (\phi_{2a}\; \cfgnt{l}_\mathit{null}),\; (\phi_{2b}\; \cfgnt{l}_2),\; (\phi_{2c}\; \cfgnt{l}_1) \} $\\
   $\theta_0 = \{ \} $\\
 $\theta_1 = \{ \phi_{2b}\} $\\ \hline
 Equals true \\
@@ -318,7 +318,7 @@ $\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wed
 
 The rewrite rules to compare two references in the symbolic summary
 heap are shown in~\figref{fig:eqs}. The equals references-true rewrite
-rule returns true when two references $r_0$ and $r_1$ \emph{can} be
+rule returns true when two references $\cfgnt{r}_0$ and $\cfgnt{r}_1$ \emph{can} be
 equal. In GSE semantics checking equality of references is a simple
 comparision of two concrete object references. In the symbolic summary
 heap, however, we compare sets of constraint location pairs pointed to
@@ -326,24 +326,24 @@ by each reference to determine if they could be equal.
 
 Consider the equals reference-true rewrite rule
 in~\figref{fig:eqs}. In order to check equality we construct three
-sets of constraints. For all constraint location pairs $(\phi_0, l_0)
-\in L(r_0)$ and $(\phi_1, l_1) \in L(r_1)$ such that $l_0$ and $l_1$
-are the same ($l_0 = l_1$) we create conjunctions of the constraints
+sets of constraints. For all constraint location pairs $(\phi_0, \cfgnt{l}_0)
+\in L(\cfgnt{r}_0)$ and $(\phi_1, \cfgnt{l}_1) \in L(\cfgnt{r}_1)$ such that $\cfgnt{l}_0$ and $\cfgnt{l}_1$
+are the same ($\cfgnt{l}_0 = \cfgnt{l}_1$) we create conjunctions of the constraints
 $\phi_0 \wedge \phi_1$ and add them to set $\Phi_\alpha$. Intutively,
-$\Phi_\alpha$ contains all constraints under which $r_0$ and $r_1$ may
+$\Phi_\alpha$ contains all constraints under which $\cfgnt{r}_0$ and $\cfgnt{r}_1$ may
 point to the same location in the symbolic summary heap. The second
-set, $\Phi_0$, contains constraints under which the reference $r_0$
-points corresponding locations such that the reference $r_1$
+set, $\Phi_0$, contains constraints under which the reference $\cfgnt{r}_0$
+points corresponding locations such that the reference $\cfgnt{r}_1$
 \emph{does not} point to those locations under any
 constraint. Finally, the set, $\Phi_1$, contains constraints under
-which $r_1$ points to corresponding locations and $r_0$ \emph{does
+which $\cfgnt{r}_1$ points to corresponding locations and $\cfgnt{r}_0$ \emph{does
   not} point to those locations under any constraint.
 
 We use the three sets of constraints to update the current global heap
 constraint $\phi_g$ and create a new global heap constraint
 $\phi_g^\prime$. We add to $\phi_g$ the disjunction of the constraints
 in $\Phi_\alpha$ to indicate that if any of the constraints are
-satisfiable, then references $r_0$ and $r_1$ can be
+satisfiable, then references $\cfgnt{r}_0$ and $\cfgnt{r}_1$ can be
 equal. Furthermore, we had to the global heap constraint,
 $\phi_g^\prime$, the conjunctions of negations to the constraints in
 $\Phi_0$ and $\Phi_1$. This indicates for locations that are not
@@ -352,14 +352,14 @@ satisfiable. Before the rewrite rule returns true we check the
 satisfiability of the updated global heap constraint.
 
 Consider the example in~\figref{fig:initHeap}(c). In order to to check
-if $r_1^i$ and $r_2^i$ are equal we first get the constraint location
+if $\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$ are equal we first get the constraint location
 pairs associated with each of the references:
 
 \[
-L(r_1^i) = \{ (\phi_{1a}\; l_\mathit{null})\; (\phi_{1b}\; l_1) \} 
+L(\cfgnt{r}_1^i) = \{ (\phi_{1a}\; \cfgnt{l}_\mathit{null})\; (\phi_{1b}\; \cfgnt{l}_1) \} 
 \]
 \[
-L(r_2^i) = \{ (\phi_{2a}\; l_\mathit{null}),\; (\phi_{2b}\; l_2),\; (\phi_{2c}\; l_1) \} \\
+L(\cfgnt{r}_2^i) = \{ (\phi_{2a}\; \cfgnt{l}_\mathit{null}),\; (\phi_{2b}\; \cfgnt{l}_2),\; (\phi_{2c}\; \cfgnt{l}_1) \} \\
 \]
 
 \noindent{The three constraint sets are:} 

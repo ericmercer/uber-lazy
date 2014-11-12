@@ -5,7 +5,7 @@ summary heap to group heaps together that follow the same control flow
 to a given point of execution. The graph structure is able to capture
 group membership and compute value sets using entirely non-recursive
 local look up. Additionally, updates on the heap do not require
-rewriting the path condition or any constraints in the heap.
+rewriting the path condition or any constraints in summary heap.
 
 The bipartite graph itself consists of references, $\cfgnt{r}$, and
 constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is
@@ -19,39 +19,41 @@ associated with the given location-field pair in the heap. Predicate
 calculus is used to describe the more complex updates to the heap in
 the semantics.
 
-There are several properties of the summary heap 
-enforced by the rewrite rules that are invariant and
-important to the correctness proofs
-presented in \secref{sec:bisim}.
+There are several properties of the summary heap enforced by the
+rewrite rules that are invariant and important to the correctness
+proofs presented in \secref{sec:bisim}: \emph{reference partitions},
+\emph{immutable references}, \emph{determinism}, and \emph{type
+  consistency}.
 
-\textbf{Reference partitions}: new references are drawn from
+Reference partitions: new references are drawn from
   three distinct partitions (i) $\mathrm{init}_\cfgnt{r}()$ for references for the \emph{input heap}, (ii) $\mathrm{fresh}_\cfgnt{r}()$ for references for \emph{auxiliary literals}, and
   (iii) $\mathrm{stack}_\cfgnt{r}()$ for references for the \emph{stack literals} in the expressions and
   continuations. The references strictly increase in value on each
   call, and modular arithmetic is used to determine the partition to
-  which a reference belongs. Reference partitions are a critical piece
-  to the existence proof of a bisimulation between the summary heap
-  algorithm and generalized symbolic execution (see \secref{sec:bisim}).
-\begin{compactitem}
-\item \textbf{Input heap}: these references have two
+  which a reference belongs.
+\begin{compactdesc}
+\item[Input heap] these references have two
   interpretations: one as a literal and another as a variable. First,
   an input heap reference is a literal, and that literal is a node in
   the summary heap. Second, an input heap reference is a variable, and
   that variable is a term in any number of constraints that label
   edges in the summary heap. Only input heap references and the
   special reference $\cfgnt{r}_\mathit{null}$ appear in constraints
-\item \textbf{Auxiliary literals}: these references are only used to define additional structure in
+\item[Auxiliary literals] these references are only used to define additional structure in
   the bipartite graph and are not part of any constraint and do not appear
   in any environment, expression, or continuation.
-\item \textbf{Stack references}: these references are also used to define additional structure in the bipartite graph but may also appear in the environment, expression, or continuation. These are not part of any constraint.
-\end{compactitem}
+\item[Stack references] these references are also used to define additional structure in the bipartite graph but may also appear in the environment, expression, or continuation. These are not part of any constraint.
+\end{compactdesc}
+Reference partitions are a critical piece to the existence proof of a
+bisimilation between the summary heap algorithm and generalized
+symbolic execution (see \secref{sec:bisim}).
 
-\textbf{Immutable references}: a reference does not change in the
+Immutable references: a reference does not change in the
 location map. It always points to the same set of constraint location
 pairs. This property ensures that constraints never need to be
 rewritten as the program evolves its state.
 
-\textbf{Determinism}: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point multiple locations simultaneously.
+Determinism: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point multiple locations simultaneously.
 $$
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
@@ -65,7 +67,7 @@ satisfying assignment. The property means that a satisfying assignment
 resolving aliasing relationships results in a deterministic heap: a
 field access returns a single location.
 
-\textbf{Type consistency}: all locations associated with a reference have the same type.
+Type consistency: all locations associated with a reference have the same type.
 \[
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
@@ -73,7 +75,7 @@ field access returns a single location.
 \end{array}
 \]
 
-\textbf{Null and Uninitialized}: every summary heap contains 
+Null and Uninitialized: every summary heap contains 
 a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
 location for uninitialized
   ($\cfgnt{l}_\mathit{un}$), with corresponding references

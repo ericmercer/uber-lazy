@@ -21,7 +21,8 @@ The proof only reasons about well-formed states: heaps are
 deterministic, type consistent, with no dangling references, and it
 knows about any references in the environment, expression, or
 continuation. Well-formed states always have a successor unless it is
-the end of the program execution.
+the end of the program execution. It is trivial to show that every
+rule in the transition relation preserves well-formedness.
 
 Let $p \rgse p^\prime$ be defined as a union over state relations:
 $$
@@ -155,7 +156,10 @@ As the forward and backward simulations hold for any $p \in P$, $P
 \sqsubset q$ must be in the functional, $F_\sim(\sqsubset)$, which is
 a contradiction.
 \end{proof}
-Similar lemmas are proved for field write and equals reference.
+Similar lemmas are proved for field write and equals reference. These
+require additional lemmas on properties of the summary machine
+$\rightarrow_S$. Specifically, that it preserves determinism, and it
+preserves the homomorphism and the satisfiability of homomorphism constraint 
 
 \begin{theorem}
 \label{th:bisim}
@@ -168,27 +172,28 @@ functional. The other transition relations are supported by lemmas
 such as \lemref{lem:access}.
 \end{proof}
 
-The notation $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$ is
-the $n$-step successor of $p$, if it exists, and $q
+The notation $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$
+is the $n$-step successor of $p$, if it exists, and $q
 \stackrel{n}{\rsym} q^\prime$ is similarly defined. Completeness and
 soundness are readily established by \thref{th:bisim} and inducting
-over $n$.
+over $n$. The state $S$ is the universe of well-formed states, and the
+set $S_A \subseteq S$ is the set of states at a field access continuation.
 
 \begin{corollary}[$\rsym$ is complete]
-If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then for any $p \in P$
+If $P \in 2^{S_\mathit{A}}$ and $q \in S$ are such that $P \sqsubset q$ then for any $p \in P$
 $$
 \forall p^\prime\ (p \stackrel{n}{\rgse} p^\prime \Rightarrow \exists q^\prime\ (q \stackrel{n}{\rsym} q^\prime \wedge p^\prime \sqsubset q^\prime))
 $$
 \end{corollary}
 
 \begin{corollary}[$\rsym$ is sound]
-If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$ then
+If $P \in 2^{S_\mathit{A}}$ and $q \in S$ are such that $P \sqsubset q$ then
 $$
 \forall q^\prime\ (q \stackrel{n}{\rsym} q^\prime \Rightarrow \exists p \in P\ (\exists p^\prime\ (p \stackrel{n}{\rgse} p^\prime \wedge p^\prime \sqsubset q^\prime)))
 $$
 \end{corollary}
 
 The relation, $P \sqsubset q$, is readily established in the initial
-state of a given program, as there is single initial state, $P_o =
+state of a given program as there is single initial state, $P_o =
 \{p_o\}$, in any valid Javalite program. The initial state for $\rsym$ is
-then defined as $q_o = p_o$; $P_o \sqsubset q_o$ is trivially shown.
+then defined as $q_o = p_o$ so $P_o \sqsubset q_o$ trivially holds.

@@ -101,12 +101,13 @@ represent the heap as a bipartiate graph of references and sets of
 constraints over locations. The use of a bipartiate graph affords two
 key advantages: (i) it allows for a non-recursive definition of
 objects, allowing us to handle aliasing and (ii) it does not require
-rewrite of the constraints during updates to the heap. We lazily
-initialize, summarize, and update the bipartiate graph during symbolic
-execution. Unlike GSE, however, we only partition the heaps at points
+rewrite of the constraints during updates to the heap nor does it
+introduce any auxillary variables in the constraints. During symbolic
+execution, we initialize, summarize, and update the bipartiate
+graph. Unlike GSE, however, the heaps are partitioned only at points
 of divergence in the control flow graph. These points of
 non-determinism are at field accesses that lead to null-pointer
-exception and checking equality of references. The former represents a
+exceptions and at comparisons of references. The former represents a
 divergence due to exceptional control flow while the later due to
 program structure.
 

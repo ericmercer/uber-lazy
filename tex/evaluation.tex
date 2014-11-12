@@ -1,6 +1,6 @@
 \begin{table} [h]
   \centering
-  \begin{tabular}{| c | c | c | c | c | c | c | c |}
+  \begin{tabular}{| c | c | r | r | r | r | }
   \hline
    \multirow{2}{*}{Method }&\multirow{2}{*}{ $k$ }
    &\multicolumn{2}{|c|}{Time} &\multicolumn{2}{|c|}{ Paths }\\
@@ -27,12 +27,11 @@
 
 \subsection{Analysis}
 
-LinkedList
-As expected, the repeated use of lazy initialization throughout the program causes an exponential increase in the number of paths explored by \gsetxt{}. By combining many of the \gsetxt{} paths, \shtxt{} avoids the exponential path explosion, demonstrating dramatically reduced, though still exponential, execution time growth. Remarkably, path growth in the k-bound appears to be sub-linear.
+As expected, the repeated use of lazy initialization throughout the program causes an exponential increase in the number of paths explored by \gsetxt{}. By combining many of the \gsetxt{} paths, \symtxt{} avoids the exponential path explosion, demonstrating dramatically reduced, though still exponential, execution time growth. Remarkably, path growth in the k-bound appears to be sub-linear.
 
-In the BinarySearchTree example, the 
+While the BinarySearchTree example introduces integer constraints, \symtxt{} performance does not appear to suffer due to the constraint burden. Indeed, at k=3, there appears to be a significant performance advantage in favor of \symtxt{}.
 
-The TreeMap example has a large number of integer compare instructions, and so it should present the greatest challenge to the constraint solver. However, it still explores far fewer 
+The TreeMap example has a large number of integer compare instructions, and so it should present the greatest challenge to the constraint solver. Despite this, \symtxt{} still explores fewer paths than \gsetxt{}, and \gsetxt{} notably failed to terminate within the allotted time bounds for the $k=3$ test case.
 
 
 

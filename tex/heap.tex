@@ -55,12 +55,12 @@ pairs. This property ensures that constraints never need to be
 rewritten as the program evolves its state.
 
 \textbf{Determinism}: a reference in  $(\cfgnt{L}\ \cfgnt{R})$ cannot point multiple locations simultaneously.
-\[
+$$
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
 \ \ \ \ (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
 \end{array}
-\]
+$$
 $\cfgnt{L}^\leftarrow$ is the pre-image of the location
 map. Informally, any two constraint location pairs connected to a
 common reference form a contradiction: only one can be true in any
@@ -68,7 +68,7 @@ satisfying assignment. The property means that a satisfying assignment
 resolving aliasing relationships results in a deterministic heap: a
 field access returns a single location.
 
-\noindent\textbf{Type consistency}: all locations associated with a reference have the same type.
+\textbf{Type consistency}: all locations associated with a reference have the same type.
 \[
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
@@ -87,10 +87,10 @@ location for uninitialized
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. These special references can be used in constraints.
 
 The reference partitions merit further discussion as they are a
-central contribution of this work. The heap summary algorithm creates
+central to the proofs. The heap summary algorithm creates
 many references that are auxiliary literals or stack literals to
-define the structure of the bipartite graph.  It reserves input heap
-reference for constraints expressing potential aliasing. A solver
+define the structure of the bipartite graph.  It only uses input heap
+references for constraints expressing potential aliasing. A solver
 reasons over the aliasing relationships, and a satisfying assignment
 uniquely identifies active edges in the graph. Those active edges
 describe a concrete heap and its shape.

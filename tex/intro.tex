@@ -61,6 +61,17 @@ single representation. These sets, sometimes known as \emph{value sets} or
 with a higher degree of precision than afforded by traditional
 techniques for shape analysis.
 
+Some of these
+previous attempts, however, are unable to handle aliasing in heaps due
+to a recursive definition of objects~\cite{..}, while others require a
+set of heaps as input and are unable to initialize heaps
+on-the-fly~\cite{..}. For these reasons the techniques use
+over-approximations to reason about heaps and may report false
+positives. Also, update to heaps require a rewrite of the constraint
+system making it prohitive for use in the context of symbolic
+execution.
+
+\begin{comment}
 Unfortunately, value sets often do not support aliasing and require a
 recursive definition of objects~\cite{..}. Also, heap updates often
 require that the path constraint be rewritten to reflect the update,
@@ -69,6 +80,7 @@ addition of auxiliary variables. These non-local operations make it
 difficult to use value sets in symbolic execution. As is
 typical in static analysis, over approximation of the value sets
 alleviates some of the limitations but also leads to false positives.
+\end{comment}
 
 %The goal of this work is find a more compact representation of the heaps
 %and be better able to leverage constraint solvers.

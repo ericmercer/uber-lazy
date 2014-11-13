@@ -200,26 +200,45 @@ finishes exploration in a few seconds.
 
 \begin{compactdesc}
 
-\item\textbf{-} A symbolic summary heap representing
-sets of concrete heaps without overapproximation or restricting aliasing.
-% supports aliasing, and and allows strong updates without auxiliary variables 
-% or constraint rewriting.
+%\item\textbf{-} A summary heap that represents sets of concrete heaps
+% without approximation or morphological restrictions.
 
-% to handle alias and efficient updates of constraints.
+\item\textbf{-} A non-approximate, morphologically arbitrary, and efficient 
+summary heap representation.
 
-\item\textbf{-} A algorithm to initialize, summarize, and
-  update summary heaps during symbolic execution, without mutating 
-  constraints or introducing auxiliary variables.
+\item\textbf{-} An algorithm to dynamically initialize, summarize, and
+  update the summary heap during symbolic execution.
 
-\item\textbf{-} A proof of the existence of a bisimulation relation to establish
-  that the heap summary approach is sound and complete with respect to
-  properties provable by GSE.
+\item\textbf{-} A bisimulation proof establishing the soundness and 
+completeness of the heap summary approach with respect to
+properties provable by GSE.
 
 \item\textbf{-} A proof-of-concept implementation and small empirical study 
 demonstrating the scalability of the heap summary approach
   compared to other GSE approaches.
 
 \end{compactdesc}
+
+
+%\begin{compactdesc}
+%
+%\item\textbf{-} A summary heap as a bipartite graph that supports
+%  aliasing and does not require rewriting of constraints.
+%
+%% to handle alias and efficient updates of constraints.
+%
+%\item\textbf{-} A summary heap algorithm to initialize, summarize, and
+%  update the bipartiate graphs during symbolic execution.
+%
+%\item\textbf{-} A proof of the existence of a bisimulation relation to establish
+%  that the heap summary approach is sound and complete with respect to
+%  properties provable by GSE.
+%
+%\item\textbf{-} A proof of concept implementation and small empirical study to demonstrate the scability of the heap summary approach
+%  compared to other GSE approaches.
+%
+%\end{compactdesc}
+
 
 %The rest of this paper defines summary heap and its to symbolic
 %execution. Following the algorithm definition, the existence proof of

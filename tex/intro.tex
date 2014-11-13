@@ -145,15 +145,17 @@ proved using summary heaps, furthermore, any property proved by
 summary heaps can also be proved by GSE. Of course, both require a
 bound on heap reference chains and loops.
 
-Aside from the novelty of the heap summary and its application to
-symbolic execution, the new data structure appears to ameliorate state
-explosion in symbolic execution as hoped. A preliminary implementation
-in Java Pathfinder (JPF) shows that in general, that the heap summary
-algorithm improves over other state-of-the-art techniques, and in some
-instances, the improvement is remarkable: two-orders of magnitude
-reduction in running time. More critically though, the heap summary
-enables the initialization of larger more complex heaps than
-heretofore possible as shown in our results.
+%Aside from the novelty of the heap summary and its application to
+%symbolic execution, the new data structure appears to ameliorate
+%state explosion in symbolic execution as hoped.
+
+A preliminary implementation in Java Pathfinder (JPF) shows that in
+general, that the heap summary algorithm improves over other
+state-of-the-art techniques, and in some instances, the improvement is
+remarkable: two-orders of magnitude reduction in running time. More
+critically though, the heap summary enables the initialization of
+larger more complex heaps than heretofore possible as shown in our
+results.
 
 
 %, described in this paper, compares the heap summary algorithm on a

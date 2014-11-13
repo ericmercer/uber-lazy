@@ -10,13 +10,7 @@ proofs is given due to space.
 
 The inspiration for $\rsym$ came from a desire to create
 a new way to initialize heap objects that avoided initializing heaps
-that traverse the same control flow paths. The thought was to group together heaps
-into equivalence classes: all the heaps that followed the same control
-flow path to a given point of execution would be in the same
-equivalence class at that point of execution. An equivalence class
-splits at branches, where the program actually differentiates heaps.
-
-The proof only reasons about well-formed states, which have
+that traverse the same control flow paths. The proof only reasons about well-formed states, which have
 deterministic, type-consistent heaps, and feasible environments, expressions, and
 continuations. Well-formed states always have successors unless at the end of a 
 program execution. It is trivial to show that the set of well-formed states is closed

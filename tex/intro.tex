@@ -5,7 +5,7 @@ software testing and analysis techniques. Symbolic execution
 systematically explores the program execution space using
 symbolic input values, and for each explored path, computes
 constraints on the symbolic inputs to create a \emph{ path condition}.
-The set of path conditions computed by
+The path conditions computed by
 symbolic execution characterize the observed program execution
 behaviours and have been used as an enabling technology for various
 applications, e.g., regression
@@ -65,7 +65,7 @@ to a recursive definition of objects~\cite{Xie:2005}, while others require a
 set of heaps as input and are unable to initialize heaps
 on-the-fly~\cite{Dillig:2011,Tillmann:2008}.  As is typical in static analysis, over
 approximation of the heap representations alleviates some of these
-limitations but also leads to false positives. Also, updates to heaps
+limitations but also leads to infeasible heaps. Also, heap updates
 require a rewrite of the constraint system making it prohibtive for use
 in the context of symbolic execution.
 
@@ -106,7 +106,7 @@ alleviates some of the limitations but also leads to false positives.
 %over-approximate the actual potential heaps.
 
 In this work, to effectively represent multiple heaps simultaneously
-in the context of symbolic execution we define a novel heap
+in the context of symbolic execution, we define a novel heap
 representation and an algorithm to initialize and update the heap
 on-the-fly. Our summary heap approach supports aliasing, does not
 require constraint rewriting on heap updates, and reduces
@@ -119,7 +119,7 @@ references. Each location points to a single reference for a given
 field. The use of a bipartite graph affords two key advantages: (i)
 it allows for a non-recursive definition of objects which enables us
 to support aliasing, and (ii) it does not introduce auxiliary variables or 
-require rewriting non-local constraints during updates to the heap.
+require rewriting of non-local constraints during updates to the heap.
 
 The summary heap algorithm defines how the bipartite graph is updated
 during lazy initialization. Unlike GSE, however, the summary heap
@@ -128,18 +128,21 @@ divergence in the control flow graph. These points of non-determinism
 are at field accesses that lead to null-pointer exceptions
 and at comparisons of references. The former represents a divergence
 due to exceptional control flow while the latter is due to program
-structure.
+structure. 
 
 % The precise heap representation based on a bipartiate graph coupled
 %with this algorithm to perform updates to the heap enable us to
 %successfully mitigate the state space explosion problem in GSE.
 
-The summary heap algorithm is sound and complete with
+This combination of summary heap and lazy initialization
+enable us to improve the efficiency of symbolic execution of heap
+manipulating programs over state-of-the-art techniques.
+Furthermore, the summary heap algorithm is sound and complete with
 respect to properties that are provable using GSE. This proof is
 accomplished by showing the existence of a bisimulation relation
 between states in GSE and states in the summary heap algorithm. In
 practical terms, any property that can be proved using GSE can also be
-proved using summary heaps, furthermore, any property proved by
+proved using summary heaps, and, any property proved by
 summary heaps can also be proved by GSE. Of course, both require a
 bound on heap reference chains and loops.
 
@@ -152,7 +155,7 @@ general, that the heap summary algorithm improves over other
 state-of-the-art techniques, and in some instances, the improvement is
 remarkable: two-orders of magnitude reduction in running time. More
 critically though, the heap summary enables the initialization of
-larger more complex heaps than heretofore possible as shown in our
+larger more complex heaps than previously possible as shown in our
 results.
 
 
@@ -213,9 +216,9 @@ summary heap representation.
 completeness of the heap summary approach with respect to
 properties provable by GSE.
 
-\item\textbf{-} A proof-of-concept implementation and small empirical study 
-demonstrating the scalability of the heap summary approach
-  compared to other GSE approaches.
+\item\textbf{-} A proof-of-concept implementation and empirical study 
+demonstrating the scalability of the summary heap approach
+compared to other GSE approaches.
 
 \end{compactdesc}
 

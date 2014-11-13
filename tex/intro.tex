@@ -56,21 +56,19 @@ in GSE by grouping multiple heaps together and only partitioning the
 heaps at points of divergence in the control flow graph. Our
 inspiration is found in the domain of static analysis that uses sets
 of constraints over heap locations to encode multiple heaps in a
-single representation. These sets, sometimes known as value sets or
-value summaries, allow multiple heaps to be represented simultaneously
+single representation. These sets, sometimes known as \emph{value sets} or
+\emph{value summaries}, allow multiple heaps to be represented simultaneously
 with a higher degree of precision than afforded by traditional
 techniques for shape analysis.
 
 Unfortunately, value sets often do not support aliasing and require a
-recursive definition of objects~\cite{..}. Also, it is not obvious how
-to support heap updates in value sets, and in particular, on-the-fly
-lazy initialization as is common in GSE, so it is not unusual to
-require a fully initialized set of input heaps in the analysis. As is
+recursive definition of objects~\cite{..}. Also, heap updates often
+require that the path constraint be rewritten to reflect the update,
+and the constraints in the value set may also need to be rewritten with the
+addition of auxiliary variables. These non-local operations make it
+difficult to use value sets in symbolic execution. As is
 typical in static analysis, over approximation of the value sets
-alleviates some of the limitations but also leads to false positives,
-and when heap updates are supported, with or without over
-approximation, the path constraint must be rewritten to reflect the
-update, and the constraints in the value set must also be rewritten.
+alleviates some of the limitations but also leads to false positives.
 
 %The goal of this work is find a more compact representation of the heaps
 %and be better able to leverage constraint solvers.
@@ -100,7 +98,7 @@ update, and the constraints in the value set must also be rewritten.
 The solution presented in this paper to enabling value sets in symbolic execution
 with lazy initialization is to represent the heap as a bipartite graph
 consisting of references and locations. A reference is able to point
-to several different locations; each edge is predicated on constraints
+to several different locations: each edge predicated on constraints
 over aliasing between references. Locations point back to references
 on different fields. The bipartite graph enables (i) the use of
 aliasing to define objects rather than recursive definitions; (ii)
@@ -138,9 +136,9 @@ proved using summary heaps, furthermore, any property proved by
 summary heaps can also be proved by GSE. Of course, Both require a bound on heap
 reference chains and loops.
 
-Aside from the novelty of the heap summary and it application to
+Aside from the novelty of the heap summary and its application to
 symbolic execution, the new data structure appears to ameliorate state
-explosion in symbolic execution. A preliminary implementation in Java
+explosion in symbolic execution as hoped. A preliminary implementation in Java
 Pathfinder (JPF), described in this paper, compares the heap summary
 algorithm on a handful of benchmarks, each representing different
 degrees of initialization and branching, to GSE with lazy
@@ -188,7 +186,7 @@ finishes exploration in a few seconds.
 
 \noindent{This paper makes the following contributions:}
 
-\begin{description}
+\begin{compactdesc}
 
 \item\textbf{-} A summary heap as a bipartite graph that supports aliasing, local value set computation, and heap updates.
 
@@ -204,16 +202,12 @@ finishes exploration in a few seconds.
 \item\textbf{-} A proof of concept implementation and small empirical study to demonstrate the scability of the heap summary approach
   compared to other GSE approaches.
 
-\end{description}
-
-\noindent{The rest of this paper discusses a formal language semantics
-  for the summary heap algorithm definition with the definition of the
-  summary heap. The paper then presents the application of summary
-  heaps to symbolic execution. Following the algorithm definition, the
-  existence proof of bisimulation is given with the accompanying
-  corollaries for soundness and completeness. This is followed by the
-  implementation in JPF and the evaluation. The paper ends with the
-  conclusion and future work.}
+\end{compactdesc}
+The rest of this paper defines summary heap and its to symbolic
+execution. Following the algorithm definition, the existence proof of
+bisimulation is given with the accompanying corollaries for soundness
+and completeness. This is followed by the implementation in JPF and
+the evaluation. The paper ends with the conclusion and future work.
 
 
 %\item{We present a novel inter-procedural analysis technique for 

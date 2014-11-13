@@ -1,9 +1,31 @@
 \section{Conclusion}
 
 
-Although our approach is inspired by the work in the static analysis domain, the heap representations used by those techniques do not lend themselves for use in symbolic execution since they rely on approximations, they are inflexible in what types of relations can be expressed, and they rely on rewriting of constraints.  In this work, we present a heap summary technique for symbolic execution that maintains exactness, represents arbitrary heap structures without restrictions on aliasing relationships, and supports dynamic on-the-fly initialization of heap structures. Despite this unique combination of capabilities, the summary heap technique outperforms  state-of-the-art symbolic execution techniques, and in some cases the performance gains are considerable. We believe that performance gains in symbolic execution can naturally benefit a variety of analyses based on symbolic execution, for example, verification of properties, especially those related to the heap, test case generation, program evolution techniques such as directed incremental symbolic execution~\cite{person:pldi2011}, and other back-end analyses.
+Although our approach is inspired by the work in the static analysis
+domain, the heap representations used by those techniques do not lend
+themselves to symbolic execution since they rely on
+approximations, they are inflexible in what types of relations can be
+expressed, and they rely on rewriting of constraints.  In this work,
+we present a heap summary technique for symbolic execution that
+maintains exactness, represents arbitrary heap structures without
+restrictions on aliasing relationships, and supports dynamic
+on-the-fly initialization of heap structures. This unique
+combination of capabilities enables the summary heap to outperform
+state-of-the-art symbolic execution techniques, and in some cases, the
+performance gains are considerable. We believe that performance gains
+in symbolic execution can naturally benefit a variety of analyses
+based on symbolic execution, for example, verification of properties,
+especially those related to the heap, test case generation, program
+evolution techniques such as directed incremental symbolic
+execution~\cite{person:pldi2011}, and other back-end analyses.
 
-In this work, we restricted our presentation of symbolic heaps to constraints reasoning over heap morphology. However, in order to be useful for reasoning about real programs, we must also consider the impact of scalar types. Our implementation includes limited support for linear operations over integer types, however, we plan to add support for all types of operations such as floating point operations, arrays, and bitvectors.
+In this work, we restricted our presentation of symbolic heaps to
+constraints reasoning over heap morphology. However, in order to be
+useful for reasoning about real programs, we must also consider the
+impact of scalar types. Our implementation includes limited support
+for linear operations over integer types, however, we plan to add
+support for all types of operations such as floating point operations,
+arrays, and bitvectors.
 
 
 \begin{comment}

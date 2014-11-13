@@ -3,12 +3,12 @@
 \section{Evaluation}
 \label{sec:eval}
 In this section we evaluate the effectiveness of the \symtxt{}
-approach at analyzing programs with unbounded complex input data in
+algorithm at analyzing programs with unbounded complex input data in
 the context of symbolic execution. To perform our evaluation
-we implement a prototype of the \symtxt{} technique and evaluate its efficiacy on
+we implement a prototype of the algorithm and evaluate its efficiacy on
 three Java data structure artifacts. We compare the results of the
 \symtxt{} approach with other state-of-the-art symbolic execution techniques 
-that support analysis of program with complex input data types. 
+that support analysis of programs with complex input data types. 
 
 Symbolic Pathfinder (SPF) is an open source engine for performing symbolic 
 execution on Java 
@@ -27,12 +27,12 @@ SPF framework~\cite{Hillery:2014}.
 %fields~\cite{} SPF performs a stateless search to generate the
 %symbolic execution tree.
 
-The prototype of  our~\symtxt{} approach is implemented as a new extension to SPF.
+The prototype of  our~\symtxt{} algorithm is implemented as a new extension to SPF.
 In addition to the operations presented in the Javalite
 semantics (see \secref{sec:precise}), the implementation contains 
 support for operations over
-integers. Examples of bytecode implemented in SPF to support \symtxt{} 
-algorithm include:
+integers including symbolic representations. Examples of bytecode implemented in SPF to support the \symtxt{} algorithm
+include:
 (i) field access bytecodes, e.g., GETFIELD and ALOAD, to implement the 
 field-access and summarize rules
 in~\figref{fig:symInit} and~\figref{fig:fHeap}(a) respectively, (ii) the field
@@ -91,12 +91,9 @@ the \gsetxt{} (lazy), lazier, and lazier\# algorithms?
 \end{description}
 
 The evaluation is performed using three Java data structure artifacts 
-(a) Linked List,
-(b) Binary Search Tree, and (c) Tree Map. 
-\sjp{next sentence is bumpy}
-These data structure
-programs are often used to evaluate symbolic execution algorithms
-that analyze software using arbitrary heap inputs. The \emph{independent} variable in our
+(i) Linked List,
+(ii) Binary Search Tree, and (iii) Tree Map. 
+These are the typical data structures for evaluating symbolic execution algorithms with heap initialization. The \emph{independent} variable in our
 study is the algorithm for initializing symbolic references and the
 $k$-bound. The initialization algorithms that we vary in our study
 are: \symtxt{}, \gsetxt{}, lazier, and lazier\#. We also vary the

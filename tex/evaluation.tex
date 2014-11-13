@@ -4,7 +4,7 @@
   \scalebox{0.88}{\begin{tabular}{| c | c | r | r | r | r | r | r | r | r | r |}
   \hline
    \multirow{2}{*}{Method }&\multirow{2}{*}{ $k$ }
-   &\multicolumn{3}{|c|}{Time} &\multicolumn{3}{|c|}{States} &\multicolumn{3}{|c|}{ Paths }\\
+   &\multicolumn{3}{|c|}{Time (seconds)} &\multicolumn{3}{|c|}{States} &\multicolumn{3}{|c|}{ Paths }\\
 								&	&\gsetxt{} & L\#		&SL		&\gsetxt{}	& L\# & SL&\gsetxt{}	& L\# 	& SL\\
    \hline
     \multirow{3}{*}{LinkedList }			&3	& 0.91	& 1.21	& 0.69	& 2465	& 2844	& 99		&1656	& 1269	& 25\\
@@ -36,20 +36,19 @@ wall clock time in seconds, states explored, and paths generated for
 each of the algorithms. The headings \gsetxt{}, L\#, and SL correspond
 to the Generalized Symblic Execution, lazier\#, and \symtxt{}
 algorithms, respectively. Note that we do no present the results for
-lazier algorithm since they are almost identical to that of lazier\#
-for our examples. Table entries containing - correspond to test runs
-that exceeded the allotted time bounds. Each trial is time bounded to
-10 mins.
+the lazier algorithm since they are almost identical to that of lazier\#
+for our examples. Table entries containing '-' correspond to test runs
+that exceeded the allotted time bound of 10 minutes.
 
-In most tests, run times strongly favor \symtxt{}, especially for
+In most tests, run times strongly favor the \symtxt{} algorithm, especially for
 large $k$-values. Performance improvement ranges from $4.8x$ for
 BinarySearchTree at $k$=3, to $118x$ for LinkedList at $k$=6. In fact,
 for certain $k$-bounds a number of experiments completed exploration
-using \symtxt{} in a few seconds whereas \gsetxt{} or lazier\# were
-unable to do, e.g., BinarySearchTree for $k$=4 and LinkedList for
-$k$=8. These results demonstrate the potential of using \symtxt{} as
-an approach to handle data input of complex types. The lower runtimes
-show that we can prove properties using \symtxt{} faster compared to
+using the \symtxt{} algorithm in a few seconds whereas \gsetxt{} or lazier\# were
+unable to finish, e.g., BinarySearchTree for $k$=4 and LinkedList for
+$k$=8. These results demonstrate the potential of using the \symtxt{} algorithm 
+to handle data input for complex types. The lower running times
+show that we can prove properties using the \symtxt{} algorithm faster than
 \gsetxt{}.
 
 % Some of this discrepancy may be accounted for by the fact that
@@ -58,13 +57,13 @@ show that we can prove properties using \symtxt{} faster compared to
 %usually performed better than \gsetxt{} and lazier\#, especially in
 %test runs with high k-bounds.
 
-Path counts likewise substantially favor \symtxt{}. The number of
-paths explored by \symtxt{} is strictly less than or equal the number
+Path counts likewise substantially favor the \symtxt{} algorithm. The number of
+paths explored by the algorithm is strictly less than or equal to the number
 of paths explored by \gsetxt{} for all test cases. We can use this
 result to do more efficient test case generation. From a path
 generated we can use the solutions provided by the constraint solver
 to instantiate a set of concrete heaps to provide as test input. These
-can provide a smaller test suite to achieve control-flow path coverage
+can provide a smaller test suite to achieve control-flow path coverage when
 compared to GSE and Lazier\#.
 
 
@@ -73,12 +72,12 @@ compared to GSE and Lazier\#.
 
 Curiously, the pattern established with run-times and path counts does
 not hold true for state counts. State counts can vary between
-algorithms, because states in JPF represent points of nondeterminism,
+algorithms because states in JPF represent points of nondeterminism,
 and each algorithm differs in this regard. For example, \gsetxt{} has
 additional points of nondeterminism during field reads, but in
-contrast references compares are completely deterministic. Thus, in
-example programs with large numbers reference compares, such as
-TreeMap, state counts for lazier\# and \symtxt{} may exceed those for
+contrast reference compares are completely deterministic. Thus, in
+example programs with large numbers of reference compares, such as
+TreeMap, state counts for lazier\# and the \symtxt{} algorithm may exceed those for
 \gsetxt{}. The larger state count, however, does not contribute to the
 runtime of the technique.
 
@@ -86,9 +85,9 @@ runtime of the technique.
 %fact that \symtxt{} can dispatch address compares without consulting
 %the constraint solver.
 
-In summary, it appears that the benefits of avoiding
-initialization-based nondeterminism more than outweigh the increased
+In summary, the benefits of avoiding
+initialization-based non-determinism outweigh the increased
 complexity in the constraints due to the advances made in SMT
-solvers. In fact, \symtxt{} can analyze certain types of programs with
+solvers in these examples. In fact, the \symtxt{} algorithm can analyze certain types of programs with
 orders of magnitude greater efficiency than with \gsetxt{} or
 lazier\#, while covering exactly the same control flow paths. 

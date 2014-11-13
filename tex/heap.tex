@@ -8,7 +8,9 @@ local lookup. Additionally, updates on the heap do not require
 rewriting the path condition.
 
 The bipartite graph itself consists of references, $\cfgnt{r}$, and
-constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is
+constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. Locations may be 
+altered to perform updates, whereas references are immutable
+once they are added to the graph. The graph is
 expressed in the location map, $\cfgnt{L}$, and the reference map,
 $\cfgnt{R}$. As done with the environment, $\cfgnt{L}$ and $\cfgnt{R}$
 are treated as partial functions where $\cfgnt{L}(r) =

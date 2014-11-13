@@ -6,7 +6,15 @@ Planned future work includes extensions to reason about scalar types, support fo
 
 In this paper, we have restricted our presentation of symbolic heaps to constraints reasoning over heap morphology. However, in order to be useful for reasoning about real programs, we must consider the impact of scalar types. Our implementation includes limited support for linear operations over integer types, but we intent to extend support for all types of operations, as well as develop the theory for doing so.
 
-Another feature we would like to add is support for test case generation, which is traditionally a key advantage of symbolic execution techniques. Under the current rules, it is difficult to extract test cases because the heap may be destructively altered during field writes. A simple remedy would be to maintain an explicit input heap in addition to the actual heap which is mutated as the program progresses. 
+\begin{comment}
+Another feature we would like to add is support for test case
+generation, which is traditionally a key advantage of symbolic
+execution techniques. Under the current rules, it is difficult to
+extract test cases because the heap may be destructively altered
+during field writes. A simple remedy would be to maintain an explicit
+input heap in addition to the actual heap which is mutated as the
+program progresses.
+\end{comment}
 
 Besides extending the capabilities of the algorithm, it should also be possible to increase performance through a variety of means. While our representation reduces paths significantly compared to \gsetxt{}, there remains room for improvement. Another way to reduce path explosion is through state merging. We are investigating ways of merging states at join points in the program, perhaps involving a combination of heap merging and / or heap equivalence testing as in \cite{Sen:2014}.
 

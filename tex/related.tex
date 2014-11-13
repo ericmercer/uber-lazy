@@ -1,13 +1,19 @@
 \section{Related Work}
 \label{related}
 
-%\subsection{Symbolic Exection}
+While there exists a large body of work related to summary heaps,
+we discuss work most closely related, including techniques for
+scaling symbolic execution of programs with complex data types,
+heap summary techniques, ...
 
-Recent years have seen a significant growth in research projects based
-on symbolic execution, first introduced in the 1970's by
-Clarke~\cite{Clarke:76} and King~\cite{King:76}. Initial work on symbolic
-execution largely focused on checking properties of program with
-primitive types. Several recent projects generalized the core
+%Recent years have seen a significant growth in research projects based
+%on symbolic execution, first introduced in the 1970's by
+%Clarke~\cite{Clarke:76} and King~\cite{King:76}.
+
+Initial work on symbolic execution largely focused on checking 
+properties of imperative programs with primitive
+primitive types~\cite{Clarke:76,King:76}. Several recent projects 
+generalized the core
 idea of symbolic execution which enabled it to be applied to
 programs with more general types, including references and 
 arrays~\cite{GSE03,Godefroid:PLDI05,Sen:FSE05,CadarEngler05EXE,KiasanKunit}.

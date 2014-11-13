@@ -27,7 +27,7 @@ possible initialization choices.
 \end{figure*}
 
 The initialization rules, \figref{fig:symInit}, are invoked whenever
-an uninitialized field in a symbolic reference is accessed. The
+a field containing an uninitialized reference is accessed. The
 interaction with the solver in the definition of the rules is denoted
 by $\mathbb{S}(\phi)$ where it returns true if $\phi$ is
 satisfiable. The end rule is active when there is nothing to
@@ -75,7 +75,7 @@ $\cfgnt{l}_\mathit{null}$ is possible (any time the solver assigns
 values to reference variables in such a way that both $\phi_x$ and $\cfgnt{r}_f =
 \cfgnt{r}_\mathit{null}$ hold). (ii)
 $\theta_\mathit{new}$ is active when $\cfgnt{r}_f$ points to the
-fresh location. This occurs when $\cfgnt{r}_f$ is not new or any other alias. (iii) a member of $\theta_\mathit{alias}$ restricts $\cfgnt{r}_f$ to
+fresh location. This occurs when $\cfgnt{r}_f$ is not new or any other alias. (iii) each member of $\theta_\mathit{alias}$ restricts $\cfgnt{r}_f$ to
 a particular alias in $\rho$, and at the same time, not alias any member of $\rho$
 that was initialized earlier than the current choice (a later
 initialization may indeed also alias the current choice in a valid
@@ -142,11 +142,11 @@ $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt
 
 We visualize the initialization process in~\figref{fig:initHeap}. The
 graph in~\figref{fig:initHeap}(a) represents the initial heap. The
-references with the superscript $s$ indicates that it is a reference from the stack partition.
+reference superscripts $s$ and $i$ indicate the partition containing the reference.
  In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a stack
 reference for the $\cfgt{this}$ variable which has two fields $x$
-and $y$ of the same type. Note that when no constraint is specified in the graphs, then
-there is an implicit $\mathit{true}$ constraint, for example, $\cfgnt{r}_0^s$
+and $y$ of the same type. Note that when no constraint is specified for a location,
+there is an implicit $\mathit{true}$ constraint. For example, $\cfgnt{r}_0^s$
 points to $\cfgnt{l}_0$ on the constraint $\mathit{true}$. The fields $x$ and
 $y$ point to the uninitialized reference $\cfgnt{r}_\mathit{un}$.
 
@@ -162,18 +162,19 @@ in~\figref{fig:initHeap}(d) represents the various sets constructed in
 the summarize rule during the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. We
 also define values of constraints used as labels in the graph.
 
-The access of $x$ from $\cfgnt{l}_0$ creates a new input heap reference $\cfgnt{r}_1^i$ in the
-summary heap shown in~\figref{fig:initHeap}(b). The reference $\cfgnt{r}_1^i$
+Accessing field $x$ from $\cfgnt{l}_0$ creates a new input heap reference $\cfgnt{r}_1^i$ in the
+summary heap shown in~\figref{fig:initHeap}(b). Reference $\cfgnt{r}_1^i$
 points to the $\cfgnt{l}_\mathit{null}$ location under the constraint that
-$\cfgnt{r}_1^i$ is null (\figref{fig:inintHeap}(d)): $\phi_{1a} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null}$. The reference
-$\cfgnt{r}_1^i$ points to the location $\cfgnt{l}_1$ under the constraint that $\cfgnt{r}_1^i$
-is not $\mathit{null}$ ($\phi_{1b}$). The
-location $\cfgnt{l}_1$, a fresh location of type $C$ (the type of field $\cfgnt{x}\rp$), is added to the heap. There are no aliases because the input heap was empty.
+$\cfgnt{r}_1^i$ is null (constraint $\phi_{1a}$ in  \figref{fig:initHeap}(d)), reference
+$\cfgnt{r}_1^i$ points to location $\cfgnt{l}_1$ under the constraint that $\cfgnt{r}_1^i$
+is not $\mathit{null}$ (constraint $\phi_{1b}$), and fresh location $\cfgnt{l}_1$ of type $C$ 
+(the type of field $\cfgnt{x}$), is added to the heap. There are no aliases because $\cfgnt{l}_1$ 
+is the first location of type $C$ to be initialized.
 
 Following $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$, 
 $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized leading to the summary heap
 in~\figref{fig:initHeap}(c). The set $\rho$ 
-in~\figref{fig:initHeap}(d) contains the one potential aliases $\cfgnt{l}_1$ from the previous initialization for $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$. It also shows the $\theta$-sets for this initialization and the resulting edge labels. Note that the ordering between aliases in $\theta_\mathit{alias}$ does not matter until a third field is initialized and there are two potential choices.
+in~\figref{fig:initHeap}(d) contains the one potential aliases $\cfgnt{l}_1$ from the previous initialization for $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$. It also shows the $\theta$-sets for this initialization and the resulting edge labels. Note that the ordering between aliases in $\theta_\mathit{alias}$ is insignificant until a third field is initialized and there are two potential choices.
 
 \begin{comment}
 The

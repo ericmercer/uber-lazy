@@ -38,8 +38,28 @@ field access operations, the machine moves to an error state. The
 rewrite rules for null locations are in the supplemental document.
 
 In the field-access rewrite rule in~\figref{fig:fHeap}(a), after the
-non-nullness check we extract the The type $C$ of the field is
-extracted and invoke the summarize rewrite rule
+non-nullness check, the rules gets the field type $\cfgnt{C}$ and uses
+the summarize machine,\figref{fig:symInit}, to get a new summary heap
+that is initialized on the field $\cfgnt{f}$. The summary heap after
+initialization is further modified in the final state of the field
+access to include a new stack reference pointing to the value set from
+the read. The new stack reference is the return value from the operation.
+\input{value-set-def}
+The value set computation is local: it only considers
+constraint locations on the reference $\cfgnt{r}$. Further, it only
+includes things that are feasible under the current path condition
+$\phi_g$. It also ensures that the access path valid. 
+
+There is a constraint from the base reference and a given
+location. Once a location is selected, the field is accessed to get
+another reference, and from that reference there is a set of locations
+each with a constraint. The first constraint from the base reference
+plus this second constraint to the actual location of the field
+comprise the access path. For each member of the value set, these
+constraints together with the global path constraint must be satisfied
+on some aliasing assignment.
+
+\begin{comment}invoke the summarize rewrite rule
 in~\figref{fig:symInit} that performs the initialization of the field
 if it points to uninitialized locations. Once the initialization is
 complete, we create a new local reference $r^\prime$. An important
@@ -49,45 +69,46 @@ to the initialized reference, and return the local reference. In order
 to de-reference a field $r.f$ we define a helper function which is
 called the value set.
 
-\input{value-set-def}
-
 In the post-condition of the rewrite rule we assign
 the value set of input reference $r$ to the local reference $r^\prime$
 and return the local reference $r^\prime$ in the next state.
+\end{comment}
 
-Consider the graph shown in~\figref{fig:fHeap}(b) the reference
-$\cfgnt{r}_2^i$ is created during the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. The
-reference that is returned during the access of the field, however, is
-$\cfgnt{r}_3^s$. The reference $\cfgnt{r}_3^s$ points to the value set of $\cfgnt{r}_2^i$
-which are: $(\phi_{2a}\ \cfgnt{l}_\mathit{null})$, $(\phi_{2b}\ \cfgnt{l}_2)$, and
-$(\phi_{2c}\ \cfgnt{l}_1)$. The values of the constraints $\phi_{2a}$,
-$\phi_{2b}$, and $\phi_{2c}$ are defined in~\figref{fig:initHeap}(d).
+Consider the graph shown in~\figref{fig:fHeap}(b). The goal is to
+complete the operation $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. The
+machine first evaluates the local variable look up to get the base
+reference: $\eta(\cfgt{this}) = \cfgnt{r}^s_0$. From the base
+reference, field access is able to complete returning the stack
+reference $\cfgnt{r}_3^s$ in the figure. The reference $\cfgnt{r}_3^s$
+points to the value set of $\cfgnt{r}_2^i$:
+$(\phi_{2a}\ \cfgnt{l}_\mathit{null})$, $(\phi_{2b}\ \cfgnt{l}_2)$,
+and $(\phi_{2c}\ \cfgnt{l}_1)$.
 
-The field-write rewrite rule in~\figref{fig:fHeap}(a) after the
-non-nullness check we We look up the value of the base reference in
-the environment $\eta(x)$.  The reference $\cfgnt{r}_x$ is the base pointer
-whose field, $\cfgnt{r}_\mathit{curr}$ is being written to to while the
+For field-write in~\figref{fig:fHeap}(a), after the
+non-null check and strengthening of the global heap constraint, it computes the current references associated with the field in every location in $\Psi_\cfgnt{x}$. Please note that the reference $\cfgnt{r}_x$ is the base reference
+whose field, $\cfgnt{r}_\mathit{cur}$ is being written to while the
 reference $r$ is the target reference. The set $\Psi_x$ contains
-tuples $(\phi\ l\ \cfgnt{r}_\mathit{curr})$ of constraints, locations, and
+tuples $(\phi\ l\ \cfgnt{r}_\mathit{cur})$ of constraints, locations, and
 references. These tuples represent access chains leading from $\cfgnt{r}_x$ to
-the reference of the field, $\cfgnt{r}_\mathit{curr}$. The goal is to
-overwrite the $\cfgnt{r}_\mathit{curr}$ references with the target
-references. Since the target of the write is $r$, we first check that
-the location constraint pairs of $\cfgnt{L}(r)$ are satisfiable when accessed
-through the $\cfgnt{r}_x$ chain. This is accomplished by the strengthening
-function.
-
+the reference of the field, $\cfgnt{r}_\mathit{cur}$. The goal is to change the fields to no longer point to $\cfgnt{r}_\mathit{cur}$, but rather fresh references that have both the original locations before the write and the locations from the write in the value sets (i.e., conditional write). Since the target of the write is $r$, the rule checks that
+the location constraint pairs of $\cfgnt{L}(\cfgnt{r})$ are satisfiable when accessed
+through the $\cfgnt{r}_x$ chain in the strengthening function.
 \input{st-def}
+Constraints on locations are strengthened with new aliasing conditions
+and those that are feasible with the current path constraint are
+retained. 
 
-Note that the write is conditional. In the case that $\phi$ is true
-then $\cfgnt{r}_\mathit{curr}$ will point to the constraint location pairs of
-$\cfgnt{L}(\cfgnt{r})$ while if $\phi$ is false then $\cfgnt{r}_\mathit{curr}$ will continue
-to point to the constraint location pair it is currently pointing to.
-Again since the references are immutable we create a new reference for
-each $\cfgnt{r}_\mathit{curr}$ and point them to the target constraint
-location pairs.
+Strengthening in the field write creates a value set the
+contains feasible locations if the write happens on that location (the
+first call) and feasible locations if the write does not happen on
+that location (the second call). This is the conditional in the write. In the case that $\phi$ is true
+then $\cfgnt{r}_\mathit{cur}$ will point to the constraint location pairs of
+$\cfgnt{L}(\cfgnt{r})$ while if $\phi$ is false then $\cfgnt{r}_\mathit{cur}$ will continue
+to point to the constraint location pair it is currently referenced.
+As the references are immutable, the rule creates fresh reference for
+each $\cfgnt{r}_\mathit{cur}$ and points them to the appropriate value sets.
 
-Consider the example shown in~\figref{fig:fHeap}(b) where we assign
+Consider again the example shown in~\figref{fig:fHeap}(b) where we assign
 $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\ \cfgt{:=}\ \lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp\rp$. Note that
 in~\figref{fig:initHeap}(c) $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is represented by
 $\cfgnt{r}_1^i$. After applying the field-write rule the reference $\cfgnt{r}_1^i$ is
@@ -149,21 +170,21 @@ $\phi^\prime = \mathit{true} \wedge  (\phi_{1a}\; \implies\; \neg\phi_{2a} )\wed
 The rewrite rules to compare two references in the symbolic summary
 heap are shown in~\figref{fig:eqs}. The equals references-true rewrite
 rule returns true when two references $\cfgnt{r}_0$ and $\cfgnt{r}_1$ \emph{can} be
-equal. In GSE semantics checking equality of references is a simple
+equal. In GSE semantics, checking equality of references is a simple
 comparision of two concrete object references. In the symbolic summary
 heap, however, we compare sets of constraint location pairs pointed to
-by each reference to determine if they could be equal. 
+by each reference to determine if equality is possible. 
 
 Consider the equals reference-true rewrite rule
-in~\figref{fig:eqs}. In order to check equality we construct three
-sets of constraints. For all constraint location pairs $(\phi_0\ \cfgnt{l}_0)
+in~\figref{fig:eqs}. In order to check equality, three
+sets of constraints are used. For all constraint location pairs $(\phi_0\ \cfgnt{l}_0)
 \in \cfgnt{L}(\cfgnt{r}_0)$ and $(\phi_1\ \cfgnt{l}_1) \in \cfgnt{L}(\cfgnt{r}_1)$ such that $\cfgnt{l}_0$ and $\cfgnt{l}_1$
-are the same ($\cfgnt{l}_0 = \cfgnt{l}_1$) we create conjunctions of the constraints
+are the same ($\cfgnt{l}_0 = \cfgnt{l}_1$), the rule creates conjunctions of the constraints
 $\phi_0 \wedge \phi_1$ and add them to set $\Phi_\alpha$. Intutively,
 $\Phi_\alpha$ contains all constraints under which $\cfgnt{r}_0$ and $\cfgnt{r}_1$ may
 point to the same location in the symbolic summary heap. The second
 set, $\Phi_0$, contains constraints under which the reference $\cfgnt{r}_0$
-points corresponding locations such that the reference $\cfgnt{r}_1$
+points to corresponding locations such that the reference $\cfgnt{r}_1$
 \emph{does not} point to those locations under any
 constraint. Finally, the set, $\Phi_1$, contains constraints under
 which $\cfgnt{r}_1$ points to corresponding locations and $\cfgnt{r}_0$ \emph{does
@@ -178,7 +199,9 @@ equal. Furthermore, we had to the global heap constraint,
 $\phi_g^\prime$, the conjunctions of negations to the constraints in
 $\Phi_0$ and $\Phi_1$. This indicates for locations that are not
 common to the references, the negations of their constraints are
-satisfiable. Before the rewrite rule returns true we check the
+satisfiable. The rule does not complete (i.e., is not feasible) if the new global constraint is not satisfied on any aliasing assignment. In such a case, the true outcome is not possible on any heap in the summary.
+
+Before the rewrite rule returns true we check the
 satisfiability of the updated global heap constraint.
 
 Consider the example in~\figref{fig:initHeap}(c). In order to to check
@@ -200,5 +223,5 @@ pairs associated with each of the references:
 \phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
 \]
 \noindent{The equals references-false is the logical dual of the
-  reference-true rewrite rule. The references-false is shown
+  reference-true rewrite rule. The references-false is also shown
   in~\figref{fig:eqs}.}

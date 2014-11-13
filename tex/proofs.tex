@@ -66,10 +66,26 @@ reference rule is given.
 
 The final statement that $\sqsubset$ is a bisimulation is in \thref{th:bisim}.
 
+\begin{theorem}
+If $R \subseteq F\sim(R)$, then $R$ is a bisimulation.
+\label{lem:bisim}
+\end{theorem}
+The proof can be found in any good text on bisimulation.
+%For the proof, we refer the reader to \cite{Sangiorgi:2011}
+
+\begin{theorem}
+
+\end{theorem}
+
+%\begin{lemma}[$\sqsubset$ is a bisimulation for $\rinit$ and $\rsum$]
+%\label{lem:init}
+%If $s_\sym \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$ for symbolic state $s_\sym = \lp \cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$, initial state $s_0$, and control flow path $\pi_n$, and if there exists some intermediate state state $s_\sym^\prime$ such that $(\cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C}) \rsum^* (\cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C})$, then:
+% $$s_\sym^\prime \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
+%\end{lemma}
+
 \begin{lemma}[$\sqsubset$ is a bisimulation for $\rinit$ and $\rsum$]
 \label{lem:init}
-If $s_\sym \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$ for symbolic state $s_\sym = \lp \cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$, initial state $s_0$, and control flow path $\pi_n$, and if there exists some intermediate state state $s_\sym^\prime$ such that $(\cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C}) \rsum^* (\cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C})$, then:
- $$s_\sym^\prime \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
+If $P \sqsubset q$ and if $\exists q^\prime (q \rsym q^\prime )$ , then $\exists 
 \end{lemma}
 
 \begin{proof}
@@ -230,17 +246,28 @@ Observe that by virtue of the GSE Field Access rule, $s_i \rgse s_i^\prime$. Now
 \end{proof}
 
 %proof for field write
-\begin{lemma}[Exactness of Field Write Rule]
-\label{lem:write}
-If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FW}$ and $s_\gse \sqsubset s_\sym$, then:
-\begin{equation}
-\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
-and
-\begin{equation}
-\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
+%\begin{lemma}[Exactness of Field Write Rule]
+%\label{lem:write}
+%If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FW}$ and $s_\gse \sqsubset s_\sym$, then:
+%\begin{equation}
+%\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\end{equation}
+%and
+%\begin{equation}
+%\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\end{equation}
+%\end{lemma}
+
+\begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{W{\footnotesize RITE}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
+If $P \in 2^{S_\mathit{FW}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
+\label{lem:access}
+$$
+\forall P \in 2^{S_\mathit{FW}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
+$$
 \end{lemma}
+
+
+
 \begin{proof}
 Begin by assuming the conditions from Lemma~\ref{lem:write}.
 
@@ -265,7 +292,7 @@ To show that $s_\sym^\prime$ is sound with respect to the feasible set, we use t
 \end{proof}
 
 
-\begin{lemma}[$\rsum^*$ produces well-formed heaps]
+\begin{lemma}[$\rsum^*$ preserves heap determinism]
 \label{lem:S-determ}
 Given a deterministic heap, $(\cfgnt{L}_0\ \cfgnt{R}_0)$, from a
 state with a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the
@@ -351,7 +378,7 @@ same argument as in the base case,
 $(\cfgnt{L}_{n+1}\ \cfgnt{R}_{n+1})$ is thus deterministic.
 \end{proof}
 
-\begin{lemma}[$\rightarrow_\mathit{FA}$ produces well-formed heaps]
+\begin{lemma}[$\rightarrow_\mathit{FA}$ preserves heap determinism]
 \label{lem:FA-determ}
 Given a state, $s$, with a deterministic heap,
 $(\cfgnt{L}\ \cfgnt{R}) =
@@ -397,7 +424,7 @@ $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime) =
 \mathrm{heap}(s^\prime)$, is also deterministic.
 \end{proof}
 
-\begin{lemma}[$\rightarrow_\mathit{FW}$ produces well-formed heaps]
+\begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]
 \label{lem:FW-determ}
 Given a state, $s_\sym$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
@@ -441,7 +468,7 @@ that $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime)$ is also
 deterministic.
 \end{proof}
 
-\begin{lemma}[$\rcom$ produces well-formed heaps]
+\begin{lemma}[$\rcom$ preserves heap determinism]
 \label{lem:J-determ}
 Given a state, $s_\sym$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
@@ -480,18 +507,28 @@ which represent all the rules that relate states in
 $\rsym$.
 \end{proof}
 
-\begin{lemma}[Exactness of Reference Compare Rule]
-\label{lem:compare}
-If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$, then:
-\begin{equation}
-\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
-and
-\begin{equation}
-\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
+%\begin{lemma}[Exactness of Reference Compare Rule]
+%\label{lem:compare}
+%If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$, then:
+%\begin{equation}
+%\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\end{equation}
+%and
+%\begin{equation}
+%\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\end{equation}
+%\end{lemma}
+
+
+\begin{lemma}[\textrm{E{\footnotesize QUALS}} } preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
+If $P \in 2^{S_\mathit{E}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
+\label{lem:access}
+$$
+\forall P \in 2^{S_\mathit{E}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
+$$
 \end{lemma}
-There are two rules that apply to state $s_\sym$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for brevity we will only show the proofs for the case for the $\cfgt{true}$ branch. 
+
+There are two rules that apply to state $s_\sym \in 2^{E}$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for brevity we will only show the proofs for the case for the $\cfgt{true}$ branch. 
 \begin{proof}
 Assume there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$. Let $s_\sym^\prime$ be any state such that $s_\sym \rsym s_\sym$ and let $\zeta_T = \forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime )$. Since $s_\gse \sqsubset s_\sym$, we know that $s_\gse \in \mathcal{RC}$, and that there exists a homomorphism $s_\gse \rightharpoonup_{h} s_\sym$ such that $\mathbb{S}( \phi_\sym \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym) ) $. We partition $\zeta_T$ based on the values of $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$ as follows: Let
 $$\zeta_t = \zeta_T \setminus \{ s_f | (s_f= \lp \cfgnt{L}_f\ \cfgnt{R}_f\ \phi_\gse\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp) \wedge (\cfgnt{L}_f \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_f \lp \cfgnt{r}_1 \rp ) \}$$
@@ -547,22 +584,24 @@ Likewise, we can combine Equation \ref{eqn:RCBackwardsTrue} with Equation \ref{e
 \end{equation}
 \end{proof}
 
-\begin{lemma}[Exactness of New Rule]
-\label{lem:new}
-If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{NW}$ and $s_\gse \sqsubset s_\sym$, then:
-\begin{equation}
-\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
-and
-\begin{equation}
-\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
-\end{equation}
+%\begin{lemma}[Exactness of New Rule]
+%\label{lem:new}
+%If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{NW}$ and $s_\gse \sqsubset s_\sym$, then:
+%\begin{equation}
+%\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\end{equation}
+%and
+%\begin{equation}
+%\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\end{equation}
 
-\begin{proof}
-The proof is left as an exercise to the reader.
-\end{proof}
+%\end{lemma}
 
-\end{lemma}
+%
+%\begin{proof}
+%The proof follows immediately from the rule.
+%\end{proof}
+
 
 
 \begin{theorem}

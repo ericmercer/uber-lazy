@@ -38,11 +38,11 @@ field access operations, the machine moves to an error state. The
 rewrite rules for null locations are in the supplemental document.
 
 In the field-access rewrite rule in~\figref{fig:fHeap}(a), after the
-non-nullness check, the rules gets the field type $\cfgnt{C}$ and uses
-the summarize machine,\figref{fig:symInit}, to get a new summary heap
-that is initialized on the field $\cfgnt{f}$. The summary heap after
-initialization is further modified in the final state of the field
-access to include a new stack reference pointing to the value set from
+null check, the rule gets the field type $\cfgnt{C}$ and uses
+the summarize machine, \figref{fig:symInit}, to get a new summary heap
+that is initialized on the field $\cfgnt{f}$. After
+initialization, the summary heap is further modified to include 
+a new stack reference pointing to the value set from
 the read. The new stack reference is the return value from the operation.
 \input{value-set-def}
 The value set computation is local: it only considers
@@ -50,11 +50,11 @@ constraint locations on the reference $\cfgnt{r}$. Further, it only
 includes things that are feasible under the current path condition
 $\phi_g$. It also ensures that the access path valid. 
 
-There is a constraint from the base reference and a given
-location. Once a location is selected, the field is accessed to get
-another reference, and from that reference there is a set of locations
-each with a constraint. The first constraint from the base reference
-plus this second constraint to the actual location of the field
+There is a constraint $\phi$ from the base reference $r$ and a given
+location. Once a location $l$ is selected, the field $\cfgnt{f}$ is accessed to get
+another reference $r^\prime$, and from that reference there is a set of locations
+each with a constraint. The first constraint $\phi$ from the base reference
+plus this second constraint to the actual location of the field $\phi^\prime$
 comprise the access path. For each member of the value set, these
 constraints together with the global path constraint must be satisfied
 on some aliasing assignment.
@@ -98,14 +98,14 @@ Constraints on locations are strengthened with new aliasing conditions
 and those that are feasible with the current path constraint are
 retained. 
 
-Strengthening in the field write creates a value set the
-contains feasible locations if the write happens on that location (the
-first call) and feasible locations if the write does not happen on
-that location (the second call). This is the conditional in the write. In the case that $\phi$ is true
+Strengthening in the field write creates a value set that
+contains two types of locations:  those for the case where the write is feasible (the
+first call), and those for the case where it is not (the second call). 
+This is the conditional in the write. In the case that $\phi$ is true
 then $\cfgnt{r}_\mathit{cur}$ will point to the constraint location pairs of
 $\cfgnt{L}(\cfgnt{r})$ while if $\phi$ is false then $\cfgnt{r}_\mathit{cur}$ will continue
 to point to the constraint location pair it is currently referenced.
-As the references are immutable, the rule creates fresh reference for
+As the references are immutable, the rule creates fresh references for
 each $\cfgnt{r}_\mathit{cur}$ and points them to the appropriate value sets.
 
 Consider again the example shown in~\figref{fig:fHeap}(b) where we assign
@@ -195,13 +195,15 @@ constraint $\phi_g$ and create a new global heap constraint
 $\phi_g^\prime$. We add to $\phi_g$ the disjunction of the constraints
 in $\Phi_\alpha$ to indicate that if any of the constraints are
 satisfiable, then references $\cfgnt{r}_0$ and $\cfgnt{r}_1$ can be
-equal. Furthermore, we had to the global heap constraint,
+equal. Furthermore, we conjoin to the global heap constraint 
 $\phi_g^\prime$, the conjunctions of negations to the constraints in
 $\Phi_0$ and $\Phi_1$. This indicates for locations that are not
 common to the references, the negations of their constraints are
-satisfiable. The rule does not complete (i.e., is not feasible) if the new global constraint is not satisfied on any aliasing assignment. In such a case, the true outcome is not possible on any heap in the summary.
+satisfiable. The rule does not complete (i.e., is not feasible) if the new
+ global constraint is not satisfied on any aliasing assignment. In such a case, 
+ the $\cfgt{true}$ outcome is not possible on any heap in the summary.
 
-Before the rewrite rule returns true we check the
+Before the rewrite rule returns $\cfgt{true}$ we check the
 satisfiability of the updated global heap constraint.
 
 Consider the example in~\figref{fig:initHeap}(c). In order to to check
@@ -222,6 +224,6 @@ pairs associated with each of the references:
 \[
 \phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
 \]
-\noindent{The equals references-false is the logical dual of the
-  reference-true rewrite rule. The references-false is also shown
+\noindent{The equals references-false rule is the logical dual of the
+  reference-true rewrite rule. The references-false rule is also shown
   in~\figref{fig:eqs}.}

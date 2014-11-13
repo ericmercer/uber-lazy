@@ -1,20 +1,99 @@
 \section{Related Work}
 \label{related}
 
-\subsection{Symbolic Exection}
-As originally formulated, symbolic execution was incapable of reasoning beyond scalar input values. Since then, several adaptations to allow symbolic execution to cope with heap data structures have been proposed, beginning with Generalized symbolic execution \cite{GSE03}. Subsequent improvements to the method \cite{Deng:2006,Deng:2007} reduce path explosion by delaying path splitting over aliasing choices for as long as possible. However, since all of the above methods introduce nondeterminism during field reads and writes, they all contribute to path explosion to some extent. Since our heap representation does not introduce any nondeterminism beyond the level in standard symbolic execution, it will generally create fewer paths than these methods, sometimes by a wide margin.
+%\subsection{Symbolic Exection}
 
-\subsection{Model Checking}
-Need to talk about Bounded Model Checking, etc.
+Recent years have seen a significant growth in research projects based
+on symbolic execution, first introduced in the 1970's by
+Clarke~\cite{Clarke:76} and King~\cite{King:76}.  These projects have
+pursued three primary research directions to enhance traditional
+symbolic execution: (1)~to improve its
+effectiveness~\cite{Godefroid:PLDI05,Sen:FSE05,CadarEngler05EXE,KiasanKunit,Pasareanu:2011};
+(2)~to improve its
+efficiency~\cite{AnandETAL2009AbsSymExe,KhurshidSuen2005AbsSymExe,Godefroid:POPL07,Inkumsah:2008,ChangPhD10DataFlowSymbolicExecution,Santelices:ISSTA10,Visser:2012};
+and (3)~to improve its
+applicability~\cite{Person:FSE08,KhurshidETAL05RepairingStructurally,CsallnerETAL08DySy,SeoETAL06EnergyConsumptionFrameworkDistributedJava,Geldenhuys:2012,Ma:2011}. Handling
+unbounded data input of complex type has continued to be a challenge
+for symbolic execution.  Generalized symbolic execution \cite{GSE03}
+with lazy initialization set the path to materializing fields
+concretely. Subsequent improvements to the method
+\cite{Deng:2006,Deng:2007} to reduce path explosion by delaying path
+splitting over aliasing choices for as long as possible. However,
+since all of the above methods introduce nondeterminism during field
+reads and writes, they all contribute to path explosion to some
+extent.
 
-\subsection{Static Analysis}
-A number of static analysis techniques have been proposed that have some ability to reason about input heap structures. These techniques are usually over-approximations, often have difficulty reasoning about path-sensitive properties, or cannot reason about programs with recursive data structures. Moreover, static analysis methods are seldom useful for test-case generation.
+% Since our heap representation does not introduce any nondeterminism
+%beyond the level in standard symbolic execution, it will generally
+%create fewer paths than these methods, sometimes by a wide margin.
 
-One notable static analysis method that is closely related to ours is the procedure summaries proposed by Isil and Tomas Dillig \cite{Dillig:2011}. Elements of their technique that are similar to ours include; references guarded by constraint expressions, conditional write semantics, and a general aversion to path splitting. However, their method is limited by most of the standard problems with static analysis techniques, including path sensitivity, imprecision, and recursive data structures. While their method has improved path sensitivity over standard static analysis methods, it remains limited by a statically-generated symbolic input heap, and cannot adapt to path-sensitive heap properties of the input heap. Thus, their method cannot determine a priori which nodes in the input heap are actually accessed by the program. It may potentially generate input heaps containing a significant number of nodes that have no impact on program execution.
+%\subsection{Model Checking} Need to talk about Bounded Model
+%Checking, etc.
 
-\subsection{Heap Representations}
-One significant line of work on representing heaps is shape analysis. Shape analysis attempts to reduce the complexity of the heap by combining multiple nodes with similar properties into summary nodes. The summary nodes typically establish may/must constraints over the heap structure, and typically represent an overapproximation of the represented heap. As such, program evaluations using shape analysis representations are prone to reporting large numbers of false positives.
+%\subsection{Static Analysis}
 
-As in our representation, other methods have been proposed that model references using sets of guarded locations \cite{Xie:2005,Cherem:2007,Dillig:2011,Sen:2014}. These sets, sometimes known as value sets or value summaries, allow multiple heaps to be represented simultaneously with a higher degree of precision than afforded by shape analysis. However, some of these previous attempts  \cite{Xie:2005,Cherem:2007} utilize non-local recursive definitions for objects. The impact of using recursive definitions for objects is two-fold. First, these techniques must use approximations to resolve reference inequalities, resulting in false positives in the results. Second, these techniques are incapable of reasoning about heaps with recursive data structures due to the potential for infinite recursion during dereferencing. This means that either a large class of data structures must be avoided, or a large class of behaviors must be ignored. In our heap representation, object descriptions are entirely local, thus avoiding these pitfalls. Other methods  \cite{Dillig:2011,Sen:2014}, while having local morphological representations, do not provide for dynamic exploration of the initial heap state. 
+A number of static analysis techniques have been proposed that have
+some ability to reason about input heap structures. One notable static
+analysis method that is closely related to ours is the procedure
+summaries proposed by Isil and Tomas Dillig \cite{Dillig:2011}.  While
+their method has improved path sensitivity over standard static
+analysis methods, it remains limited by a statically-generated
+symbolic input heap, and cannot adapt to path-sensitive heap
+properties of the input heap.
 
-Another line of work in heap representation lies in identifying isomorphic heap structures in order to avoid exploring redundant paths. Examples of such methods include Korat, XXX, and YYY. These methods are generally focused on the morphology of the heap alone, in isolation from the external constraint problems encountered during program execution. As such, these works are largely orthogonal to the methods presented here, though some of them may possibly be complimentary.
+% These techniques are usually over-approximations, often have
+% difficulty reasoning about path-sensitive properties, or cannot
+% reason about programs with recursive data structures. Moreover,
+% static analysis methods are seldom useful for test-case generation.
+
+%. Elements of their technique that are similar to ours include;
+%references guarded by constraint expressions, conditional write
+%semantics, and a general aversion to path splitting. However, their
+%method is limited by most of the standard problems with static
+%analysis techniques, including path sensitivity, imprecision, and
+%recursive data structures.
+
+% Thus, their method cannot determine a priori which nodes in the
+%input heap are actually accessed by the program. It may potentially
+%generate input heaps containing a significant number of nodes that
+%have no impact on program execution.
+
+%\subsection{Heap Representations}
+
+%One significant line of work on representing heaps is shape
+%analysis. Shape analysis attempts to reduce the complexity of the
+%heap by combining multiple nodes with similar properties into summary
+%nodes. The summary nodes typically establish may/must constraints
+%over the heap structure, and typically represent an overapproximation
+%of the represented heap. As such, program evaluations using shape
+%analysis representations are prone to reporting large numbers of
+%false positives.
+
+As in our representation, other methods have been proposed that model
+references using sets of guarded locations
+\cite{Xie:2005,Cherem:2007,Dillig:2011,Sen:2014}. These sets,
+sometimes known as value sets or value summaries, allow multiple heaps
+to be represented simultaneously with a higher degree of precision
+than afforded by shape analysis. However, some of these previous
+attempts \cite{Xie:2005,Cherem:2007} utilize non-local recursive
+definitions for objects. The impact of using recursive definitions for
+objects is two-fold. First, these techniques must use approximations
+to resolve reference inequalities, resulting in false positives in the
+results. Second, these techniques are incapable of reasoning about
+heaps with recursive data structures due to the potential for infinite
+recursion during dereferencing. This means that either a large class
+of data structures must be avoided, or a large class of behaviors must
+be ignored. In our heap representation, object descriptions are
+entirely local, thus avoiding these pitfalls. Other methods
+\cite{Dillig:2011,Sen:2014}, while having local morphological
+representations, do not provide for dynamic exploration of the initial
+heap state.
+
+Another line of work in heap representation lies in identifying
+isomorphic heap structures in order to avoid exploring redundant
+paths. Examples of such methods include Korat, XXX, and YYY. These
+methods are generally focused on the morphology of the heap alone, in
+isolation from the external constraint problems encountered during
+program execution. As such, these works are largely orthogonal to the
+methods presented here, though some of them may possibly be
+complimentary.

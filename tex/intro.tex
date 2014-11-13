@@ -139,19 +139,22 @@ enable us to improve the efficiency of symbolic execution of heap
 manipulating programs over state-of-the-art techniques.
 Furthermore, the summary heap algorithm is sound and complete with
 respect to properties that are provable using GSE. This proof is
-accomplished by showing the existence of a bisimulation relation
-between states in GSE and states in the summary heap algorithm. In
+accomplished by showing the existence of a bisimulation
+between states in GSE and states in the summary heap algorithm. 
+\begin{comment}
+In
 practical terms, any property that can be proved using GSE can also be
 proved using summary heaps, and, any property proved by
 summary heaps can also be proved by GSE. Of course, both require a
 bound on heap reference chains and loops.
+\end{comment}
 
 %Aside from the novelty of the heap summary and its application to
 %symbolic execution, the new data structure appears to ameliorate
 %state explosion in symbolic execution as hoped.
 
 A preliminary implementation in Java Pathfinder (JPF) shows that in
-general, that the heap summary algorithm improves over other
+general, the heap summary algorithm improves over other
 state-of-the-art techniques, and in some instances, the improvement is
 remarkable: two-orders of magnitude reduction in running time. More
 critically though, the heap summary enables the initialization of

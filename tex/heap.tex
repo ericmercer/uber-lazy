@@ -5,7 +5,7 @@ summary heap to group heaps together that follow the same control flow
 to a given point of execution. The graph structure is able to capture
 group membership and compute value sets using entirely non-recursive
 local lookup. Additionally, updates on the heap do not require
-rewriting the path condition or any constraints in the summary heap.
+rewriting the path condition.
 
 The bipartite graph itself consists of references, $\cfgnt{r}$, and
 constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is
@@ -19,22 +19,20 @@ associated with the given location-field pair in the heap.
 
 There are several properties of the summary heap enforced by the
 rewrite rules that are invariant and important to the correctness
-proofs presented in \secref{sec:bisim}: \emph{reference partitions},
+proofs in \secref{sec:bisim}: \emph{reference partitions},
 \emph{immutability}, \emph{determinism}, \emph{type
   consistency}, and \emph{null and uninitialized}.
 
-\emph{Reference partitions} are new references drawn from
+\emph{Reference partitions}: new references drawn from
   three distinct partitions (i) $\mathrm{init}_\cfgnt{r}()$ for references for the \emph{input heap}, (ii) $\mathrm{fresh}_\cfgnt{r}()$ for references for \emph{auxiliary literals}, and
-  (iii) $\mathrm{stack}_\cfgnt{r}()$ for references for the \emph{stack literals} in the expressions and
+  (iii) $\mathrm{stack}_\cfgnt{r}()$ for references for \emph{stack literals} in the expressions and
   continuations. The references strictly increase in value on each
   call, and modular arithmetic is used to determine the partition to
   which a reference belongs.
 \begin{compactdesc}
 \item[Input heap:] these references have two
-  interpretations: one as a literal and another as a variable. First,
-  an input heap reference is a literal, and that literal is a node in
-  the summary heap. Second, an input heap reference is a variable, and
-  that variable is a term in any number of constraints that label
+  interpretations: one as a literal and another as a variable. As a literal it is a node in
+  the summary heap. As a variable it is a term in any number of constraints that label
   edges in the summary heap. Only input heap references and the
   special reference $\cfgnt{r}_\mathit{null}$ appear in constraints
 \item[Auxiliary literals:] these references are only used to define additional structure in
@@ -51,19 +49,18 @@ location map. It always points to the same set of constraint location
 pairs. This property ensures that constraints never need to be
 rewritten as the program evolves its state.
 
-\emph{Determinism} means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point multiple locations simultaneously.
+\emph{Determinism} means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously. In the definition $\cfgnt{L}^\leftarrow$ is the pre-image of the location map.
 $$
 \begin{array}{l}
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
 \ \ \ \ (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
 \end{array}
 $$
-$\cfgnt{L}^\leftarrow$ is the pre-image of the location
-map. Informally, any two constraint location pairs connected to a
+Informally, any two constraint location pairs connected to a
 common reference form a contradiction: only one can be true in any
-satisfying assignment. The property means that a satisfying assignment
+satisfying assignment. The property ensures that any satisfying assignment
 resolving aliasing relationships results in a deterministic heap: a
-field access returns a single location.
+field access returns a single location under that assignment.
 
 \emph{Type consistency} implies that all locations associated with a reference have the same type.
 \[
@@ -98,7 +95,7 @@ that
 \begin{compactitem}
 \item $\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; and
 \item $\lp\phi^\prime\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r}^\prime)$; and
-\item $\phi$ and $\phi^\prime$ hold in aliasing assignments from the solver.
+\item $\phi$ and $\phi^\prime$ hold in the aliasing assignments from the solver.
 \end{compactitem}
 In this way, the graph groups heaps with the conditions under which
 those heaps exist. This representation separates the constraint
@@ -148,8 +145,8 @@ access, and it includes the continuation indicating that it still
 needs to complete the actual field access once the expression is
 evaluated.
 
-Other more complex rules such as the one to create a new instance of a
-class define constraints on the rewrites and more complex
+Other more complex rules, such as one to create a new instance of a
+class, define constraints on the rewrites and more complex
 transformations on the heap.
 $$
 \mprset{flushleft}

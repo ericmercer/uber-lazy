@@ -36,5 +36,4 @@ Path counts likewise substantially favor \symtxt{}. In agreement with the theore
 
 Curiously, the pattern established with run-times and path counts does not hold true for state counts. State counts can vary between algorithms, because states in JPF represent points of nondeterminism, and each algorithm differs in this regard. For example, \gsetxt{} has additional points of nondeterminism during field reads, but in contrast address compares are completely deterministic. Thus, in example programs with large numbers address compares, such as TreeMap, state counts for lazier\# and \symtxt{} may exceed those for \gsetxt{}. Despite this, in practice this is often mitigated by the fact that \symtxt{} can dispatch address compares without consulting the constraint solver.
 
-
-
+In summary, it appears that the benefits of avoiding initialization-based nondeterminism more than outweigh the increased complexity in the constraints. In fact, \symtxt{} can analyze certain types of programs with orders of magnitude greater efficiency than with \gsetxt{} or lazier#, while covering exactly the same test cases with zero loss of precision.

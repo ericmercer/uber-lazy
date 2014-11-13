@@ -105,62 +105,43 @@ alleviates some of the limitations but also leads to false positives.
 %techniques are based on a static analysis, the resulting summaries
 %over-approximate the actual potential heaps.
 
-In order to represent multiple heaps simultaneously in the context of
-symbolic execution we define a novel heap representation and an
-algorithm to initialize and update the heap on-the-fly. Our summary
-heap approach supports aliasing, it does not require constraint
-rewriting on heap updates, and it reduces the non-determinism in the
-search space during symbolic execution.
-
-\begin{comment}
+In this work, in order to effectively represent multiple heaps
+simultaneously in the context of symbolic execution we define a novel
+heap representation and an algorithm to initialize and update the heap
+on-the-fly. Our summary heap approach supports aliasing, it does not
+require constraint rewriting on heap updates, and it reduces the
+non-determinism in the search space during symbolic execution.
 
 
-The solution presented in this paper to enabling value sets in
-symbolic execution with lazy initialization is to represent the heap
-as a bipartite graph consisting of references and locations. A
-reference is able to point to several different locations: each edge
-predicated on constraints over aliasing between references. Locations
-point back to references on different fields. The bipartite graph
-enables (i) the use of aliasing to define objects rather than
-recursive definitions; (ii) value set computation using only local
-information; and (iii) heap updates that only impact affected
-locations, require no constraint rewriting, and require no auxiliary
-variables in the constraints.  We call this new heap a summary heap.
+We represent the heap as a bipartite graph consisting of references
+and locations. Each reference is able to point to multiple locations,
+where each edge is predicated on constraints over aliasing between
+references. Each location points to a single reference for a given
+field. The use of a bipartiate graph affords two key advantages: (i)
+it allows for a non-recursive definition of objects which enables us
+to support aliasing, and (ii) it does not require rewriting of the
+constraints during updates to the heap nor does it introduce auxillary
+variables into the constraints.
 
-To mitigate state space explosion in GSE, the solution described in
-paper uses a summary heap in the symbolic execution. This summary heap
-algorithm defines how the bipartite graph updates in lazy
-initialization. Unlike GSE, however, the summary heap algorithm
-partitions only at points of divergence in the control flow
-graph. These points of non-determinism are at field accesses or writes
-that lead to null-pointer exceptions and at comparisons of
-references. The former represents a divergence due to exceptional
-control flow while the later due to program structure.
+This summary heap algorithm defines how the bipartite graph is updated
+during lazy initialization. Unlike GSE, however, the summary heap
+algorithm introduces non-determinism in the search only at points of
+divergence in the control flow graph. These points of non-determinism
+are at field accesses or writes that lead to null-pointer exceptions
+and at comparisons of references. The former represents a divergence
+due to exceptional control flow while the latter is due to program
+structure. The precise heap representation based on a bipartiate graph
+coupled with this algorithm to perform updates to the heap enable us
+to successfully mitigate the state space explosion problem in GSE.
 
-%In this work, we present a novel heap initialization and analysis
-%technique which takes inspiration from both GSE and existing heap
-%summarization techniques. The intuition behind our analysis is to
-%construct the heap lazily during symbolic execution but reduce the
-%points of non-determinism in the symbolic execution tree by analyzing
-%each control-flow path only once for any given set of isomorphic
-%heaps. To represent the exact set of feasible concrete heap
-%structures resulting from execution of the control-flow path, we use
-%a heap summary.
-
-\end{comment}
-We represent the heap as a bipartite graph consisting of references and locations. Each reference is able to point to multiple locations, where each edge is predicated on constraints over aliasing between references. Each location points to a single reference for a given field. The use of a bipartiate graph affords two
-key advantages: (i) it allows for a non-recursive definition of objects which enables us to support aliasing, and (ii) it does not require rewriting of the constraints during updates to the heap nor does it introduce auxillary variables into the constraints.
-
-This summary heap algorithm defines how the bipartite graph is updated during lazy initialization. Unlike GSE, however, the summary heap algorithm introduces non-determinism in the search only at points of divergence in the control flow graph. These points of non-determinism are at field accesses or writes that lead to null-pointer exceptions and at comparisons of references. The former represents a divergence due to exceptional control flow while the latter is due to program structure. The precise heap representation based on a bipartiate graph coupled with this algorithm to perform updates to the heap enable us to successfully mitigate the state space explosion problem in GSE.        
-
-The summary heap algorithm is sound and complete with respect to
-properties that are provable using GSE. This proof is accomplished by
-showing the existence of a bisimulation relation between states in GSE
-and states in the summary heap algorithm. In practical terms, any
-property that can be proved using GSE can also be proved using summary
-heaps, furthermore, any property proved by summary heaps can also be
-proved by GSE. Of course, both require a bound on heap reference
-chains and loops.
+The summary heap algorithm is sound and complete with
+respect to properties that are provable using GSE. This proof is
+accomplished by showing the existence of a bisimulation relation
+between states in GSE and states in the summary heap algorithm. In
+practical terms, any property that can be proved using GSE can also be
+proved using summary heaps, furthermore, any property proved by
+summary heaps can also be proved by GSE. Of course, both require a
+bound on heap reference chains and loops.
 
 Aside from the novelty of the heap summary and its application to
 symbolic execution, the new data structure appears to ameliorate state

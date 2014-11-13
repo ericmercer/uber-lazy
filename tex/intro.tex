@@ -130,9 +130,11 @@ divergence in the control flow graph. These points of non-determinism
 are at field accesses or writes that lead to null-pointer exceptions
 and at comparisons of references. The former represents a divergence
 due to exceptional control flow while the latter is due to program
-structure. The precise heap representation based on a bipartiate graph
-coupled with this algorithm to perform updates to the heap enable us
-to successfully mitigate the state space explosion problem in GSE.
+structure.
+
+% The precise heap representation based on a bipartiate graph coupled
+%with this algorithm to perform updates to the heap enable us to
+%successfully mitigate the state space explosion problem in GSE.
 
 The summary heap algorithm is sound and complete with
 respect to properties that are provable using GSE. This proof is
@@ -145,19 +147,20 @@ bound on heap reference chains and loops.
 
 Aside from the novelty of the heap summary and its application to
 symbolic execution, the new data structure appears to ameliorate state
-explosion in symbolic execution as hoped. A preliminary implementation in Java
-Pathfinder (JPF), described in this paper, compares the heap summary
-algorithm on a handful of benchmarks, each representing different
-degrees of initialization and branching, to GSE with lazy
-initialization in Symbolic Pathfinder (SPF) and implementation
-lazier\# also in SPF. The results show that in general, that the heap
-summary algorithm improves over other techniques, and in some
+explosion in symbolic execution as hoped. A preliminary implementation
+in Java Pathfinder (JPF) shows that in general, that the heap summary
+algorithm improves over other state-of-the-art techniques, and in some
 instances, the improvement is remarkable: two-orders of magnitude
 reduction in running time. More critically though, the heap summary
 enables the initialization of larger more complex heaps than
 heretofore possible as shown in our results.
 
 
+%, described in this paper, compares the heap summary algorithm on a
+%handful of benchmarks, each representing different degrees of
+%initialization and branching, to GSE with lazy initialization in
+%Symbolic Pathfinder (SPF) and implementation lazier\# also in
+%SPF. The results
 
 \begin{comment}
 We implement the summary heap algorithm as an extension to \emph{Java
@@ -197,7 +200,8 @@ finishes exploration in a few seconds.
 
 \begin{compactdesc}
 
-\item\textbf{-} A summary heap as a bipartite graph that supports aliasing, local value set computation, and heap updates.
+\item\textbf{-} A summary heap as a bipartite graph that supports
+  aliasing and does not require rewriting of constraints.
 
 % to handle alias and efficient updates of constraints.
 
@@ -212,11 +216,12 @@ finishes exploration in a few seconds.
   compared to other GSE approaches.
 
 \end{compactdesc}
-The rest of this paper defines summary heap and its to symbolic
-execution. Following the algorithm definition, the existence proof of
-bisimulation is given with the accompanying corollaries for soundness
-and completeness. This is followed by the implementation in JPF and
-the evaluation. The paper ends with the conclusion and future work.
+
+%The rest of this paper defines summary heap and its to symbolic
+%execution. Following the algorithm definition, the existence proof of
+%bisimulation is given with the accompanying corollaries for soundness
+%and completeness. This is followed by the implementation in JPF and
+%the evaluation. The paper ends with the conclusion and future work.
 
 
 %\item{We present a novel inter-procedural analysis technique for 

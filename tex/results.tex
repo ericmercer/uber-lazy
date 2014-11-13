@@ -64,7 +64,7 @@ Loops and recursive methods over symbolic variables are bounded based
 on some user-provided limit. These bounds are based on some
 control-flow structure of the program and are often insufficient for
 analyzing programs with input of complex data types as demonstrated
-in~\cite{Kiasan07,Deng:2006}. In this work we use the $k$-bounding
+in~\cite{Kiasan07,Kiasan06}. In this work we use the $k$-bounding
 technique that bounds the length of a reference chain from the root of
 the heap~\cite{Deng:2006}.\nsr{check this!} Note we use $k$-bounding
 because it preserves the functional equivalence of \gsetxt{}, lazier,
@@ -90,22 +90,23 @@ the \gsetxt{} (lazy), lazier, and lazier\# algorithms?
 %  approaches that can leverage its output?
 \end{description}
 
-The evaluation is performed using three Java data structure artifacts 
-(i) Linked List,
-(ii) Binary Search Tree, and (iii) Tree Map. 
-These are the typical data structures for evaluating symbolic execution algorithms with heap initialization. The \emph{independent} variable in our
-study is the algorithm for initializing symbolic references and the
-$k$-bound. The initialization algorithms that we vary in our study
+The evaluation is performed using three Java data structure artifacts
+(i) Linked List, (ii) Binary Search Tree, and (iii) Tree Map.  These
+are the typical data structures for evaluating symbolic execution
+algorithms with heap initialization. The \emph{independent} variable
+in our study is the algorithm for initializing symbolic references and
+the $k$-bound. The initialization algorithms that we vary in our study
 are: \symtxt{}, \gsetxt{}, lazier, and lazier\#. We also vary the
-$k$-bound for each of the algorithms. Note that $k$-bounding bounds the
-length of a reference chain from the root of the heap~\cite{Deng:2006}.
-We select three dependent variables and measures for our study: (i)
-time, (ii) states explored, and (iii) paths generated. The \emph{time}
-is the total time taken by each algorithm to explore the symbolic
-execution tree as well as total constraint solving time. The
-\emph{states explored} represents the number of nodes in the symbolic
-execution tree, and the \emph{paths generated} represents 
-the number of unique paths in the symbolic execution tree.
+$k$-bound for each of the algorithms. Note that $k$-bounding bounds
+the length of a reference chain from the root of the
+heap~\cite{Kiasan06}.  We select three dependent variables and
+measures for our study: (i) time, (ii) states explored, and (iii)
+paths generated. The \emph{time} is the total time taken by each
+algorithm to explore the symbolic execution tree as well as total
+constraint solving time. The \emph{states explored} represents the
+number of nodes in the symbolic execution tree, and the \emph{paths
+  generated} represents the number of unique paths in the symbolic
+execution tree.
 
 
 \begin{comment}

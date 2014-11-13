@@ -1,20 +1,27 @@
 \section{Generating Summary Heaps}
 \label{sec:precise}
-There are three sets of rewrite rules specific to the summary heap
-algorithm: (i) rules to initialize symbolic references, (ii) rules to complete field
-access and field write, and (iii) rules to check equality and
-inequality of references. The other rules are common to both $\rsym$
-and $\rgse$.
+In this section we present the summary heap algorithm that operates on
+the bipartiate graph described in the previous section.  The summary
+heap algorithm initializes, updates, and partitions the heap. It only
+partitions the heap at points of divergence in the control flow graph
+such as field accesses or writes (exeception control flow due to null
+pointers) or comparisons of references (program control flow). There
+are three sets of rewrite rules specific to the summary heap
+algorithm: (i) rules to initialize symbolic references, (ii) rules to
+complete field access and field write, and (iii) rules to check
+equality and inequality of references. The other rules are common to
+both $\rsym$ and $\rgse$. The complete set of rules are shown in the
+supplemental attached with the paper.
 
 \subsection{Initialization of Symbolic References}
 
-Initialization of uninitialized references in the $\rgse$ relation is
-a non-deterministic choice that creates a heap either for
-the initialization of the reference to null, a new instance of
-the object, or to any type compatible object in the input heap (e.g.,
-previously initialized by $\rgse$). In contrast, initialization in the
-$\rsym$ relation creates a single summary heap containing all of the
-possible initialization choices.
+Initialization of references in GSE ($\rgse$ relation) is a
+non-deterministic choice where the reference in the heap is
+initialized to null, a new instance of the object, or to any type
+compatible object in the input heap (e.g., previously initialized by
+$\rgse$). In contrast, initialization in the $\rsym$ relation creates
+a single summary heap containing all of the possible initialization
+choices.
 
 \input{summarize-precise-incomplete}
 
@@ -26,15 +33,15 @@ possible initialization choices.
 \label{fig:symInit}
 \end{figure*}
 
-The initialization rules, \figref{fig:symInit}, are invoked whenever
-a field containing an uninitialized reference is accessed. The
+The initialization rules, \figref{fig:symInit}, are invoked whenever a
+field pointing to an uninitialized reference is accessed. The
 interaction with the solver in the definition of the rules is denoted
-by $\mathbb{S}(\phi)$ where it returns true if $\phi$ is
-satisfiable. The end rule is active when there is nothing to
+by $\mathbb{S}(\phi)$ which returns true if $\phi$ is satisfiable. The
+summarize-end rule becomes active when there is nothing to
 initialize. This condition is determined by the function
 $\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
-\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which returns constraint-location pairs
-where the field $\cfgnt{f}$ is uninitialized.
+\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which returns constraint-location
+pairs where the field $\cfgnt{f}$ is uninitialized.
 \[
 \begin{array}{rcl}
 \mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\

@@ -10,7 +10,7 @@ and $\rgse$.
 
 Initialization of uninitialized references in the $\rgse$ relation is
 a non-deterministic choice that creates a heap either for
-the initialization of the reference to $\mathit{null}$, a new instance of
+the initialization of the reference to null, a new instance of
 the object, or to any type compatible object in the input heap (e.g.,
 previously initialized by $\rgse$). In contrast, initialization in the
 $\rsym$ relation creates a single summary heap containing all of the
@@ -42,48 +42,46 @@ where the field $\cfgnt{f}$ is uninitialized.
 & & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
 \end{array}
 \]
-For reference $\cfgnt{r}$, this function constructs the set, $\theta$,
-of constraint location pairs reachable from $\cfgnt{r}$ on the field
-$\cfgnt{f}$ that are valid under the access path from $\cfgnt{r}$.
+A pair in the set means the field in the location maps to a reference
+that then points to $\cfgnt{l}_\mathit{un}$, and that the path to that
+location is feasible on some aliasing assignment. 
 
 % The cardinality of the set, $\theta$ is never
 %greater than one in GSE and the constraint is always satisfiable
 %because all constraints are constant. This property is relaxed in GSE
 %with heap summaries.
 
-In~\figref{fig:symInit}, given the unitialized set $\mathbb{UN}$ for
+In~\figref{fig:symInit}, given the unitialized set $\Lambda$ for
 field $f$, the $\mathit{min}_l$ function returns
 $(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
 uninitialized locations in $\Lambda$ to make initialization
-deterministic (the same heap is always initialized in the same
-way). 
+deterministic (i.e., the same heap is always initialized in the same
+way as order determines how many aliases are available in the input heap at any given point in initialization). 
 %The $\mathrm{fresh}_\cfgnt{l}(\cfgnt{C})$ call returns a new location of type $C$. 
 The set $\rho$ contains the set of
 reference-location pairs from the input heap that are potential
-alias. Minimizing over the set of references in the pre-image ensures
-that any pair in $\rho$ is the reference $\cfgnt{r}_a$ that birthed
-the location $\cfgnt{l}_a$ in some prior initialization (i.e., it was
-$\cfgnt{r}_f$ and $\cfgnt{l}_f$ at one time). Aliasing constraint
+aliases. Minimizing over the set of references in the pre-image ensures
+that any pair in $\rho$ is the reference $\cfgnt{r}_a$ and the location $\cfgnt{l}_a$ materialized at the same time in some prior initialization (i.e., they were once
+$\cfgnt{r}_f$ and $\cfgnt{l}_f$). Aliasing constraints
 in the new summary heap reason over these original creators; otherwise aliasing and local value set
 computation breaks down.  The reference partitions with their
 monotonicity make this determination possible.
 
-There are three sets correspond to the non-deterministic choices in
-GSE with a fourth that preserves the pre-initialized heap structure
-(the constraints in each preserve the access path to the location):
+There are three sets corresponding to the non-deterministic choices in
+GSE with a fourth that preserves the pre-initialized heap structure.
+Note that the constraints always preserve the access path to the location which is $\phi_x$.
 (i) $\theta_\mathit{null}$ asserts the condition under which
 $\cfgnt{l}_\mathit{null}$ is possible (any time the solver assigns
-values to reference variables in such a way that $\cfgnt{r}_f =
-\cfgnt{r}_\mathit{null}$ holds as does access path $\phi_x$). (ii)
-$\theta_\mathit{new}$, meaning $\cfgnt{r}_f$ refers to the fresh
-location, occurs when $\cfgnt{r}_f$ is not new or any other alias. (iii) any member of $\theta_\mathit{alias}$ restricts $\cfgnt{r}_f$ to
-only alias one member of $\rho$ and not alias any member of $\rho$
+values to reference variables in such a way that both $\phi_x$ and $\cfgnt{r}_f =
+\cfgnt{r}_\mathit{null}$ hold). (ii)
+$\theta_\mathit{new}$ is active when $\cfgnt{r}_f$ points to the
+fresh location. This occurs when $\cfgnt{r}_f$ is not new or any other alias. (iii) a member of $\theta_\mathit{alias}$ restricts $\cfgnt{r}_f$ to
+a particular alias in $\rho$, and at the same time, not alias any member of $\rho$
 that was initialized earlier than the current choice (a later
-initialization may indeed alias the current alias choice in a valid
-heap but the current choice cannot alias both the choice and a
-previous initialization). And (iv) $\theta_\mathit{orig}$  implements conditional initialization to preserve the
+initialization may indeed also alias the current choice in a valid
+heap as order determines the number of aliasing choices available). And (iv) $\theta_\mathit{orig}$  implements conditional initialization to preserve the
 original heap structure. This property is needed for the bisumulation. 
-These sets are added into the heap on the field after initializing the fields in the new location to $\cfgnt{l}_\mathit{un}$.
+These sets are added into the heap on $\cfgnt{r}_f$ after the fields for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
 
 
 \begin{comment} where for each element in the set $(\cfgnt{r}_a\ \cfgnt{l}_a)
@@ -138,17 +136,16 @@ $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt
 (a) & (b) & (c) & (d) \\
 \end{tabular}
 \end{center}
-\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Constraint sets from the summary rule and constraints on the edges.}
+\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the summarize rule and constraints on the edges.}
 \label{fig:initHeap}
 \end{figure*}
 
 We visualize the initialization process in~\figref{fig:initHeap}. The
 graph in~\figref{fig:initHeap}(a) represents the initial heap. The
 references with the superscript $s$ indicates that it is a reference from the stack partition.
- In~\figref{fig:initHeap} $\cfgnt{r}_0^s$ represents a stack
+ In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a stack
 reference for the $\cfgt{this}$ variable which has two fields $x$
-and $y$ of the same type; reference $\cfgnt{r}_0^s$ points to location
-$\cfgnt{l}_0$. Note that when no constraint is specified in the graphs, then
+and $y$ of the same type. Note that when no constraint is specified in the graphs, then
 there is an implicit $\mathit{true}$ constraint, for example, $\cfgnt{r}_0^s$
 points to $\cfgnt{l}_0$ on the constraint $\mathit{true}$. The fields $x$ and
 $y$ point to the uninitialized reference $\cfgnt{r}_\mathit{un}$.
@@ -165,20 +162,21 @@ in~\figref{fig:initHeap}(d) represents the various sets constructed in
 the summarize rule during the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. We
 also define values of constraints used as labels in the graph.
 
-The access on $\cfgnt{l}_0.x$ creates a new input heap reference $\cfgnt{r}_1^i$ in the
-summary heap shown in~\figref{fig:initHeap}(b). The reference $\cfgnt{r}_1^1$
+The access of $x$ from $\cfgnt{l}_0$ creates a new input heap reference $\cfgnt{r}_1^i$ in the
+summary heap shown in~\figref{fig:initHeap}(b). The reference $\cfgnt{r}_1^i$
 points to the $\cfgnt{l}_\mathit{null}$ location under the constraint that
-$\cfgnt{r}_1^i$ is null: $\phi_{1a} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null}$. The reference
+$\cfgnt{r}_1^i$ is null (\figref{fig:inintHeap}(d)): $\phi_{1a} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null}$. The reference
 $\cfgnt{r}_1^i$ points to the location $\cfgnt{l}_1$ under the constraint that $\cfgnt{r}_1^i$
-is not $\mathit{null}$ $\phi_{1b} :=\cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null}$. The
-location $\cfgnt{l}_1$ represents a fresh location of type $C$ is created on
-the heap such that $C$ is type of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$.
+is not $\mathit{null}$ ($\phi_{1b}$). The
+location $\cfgnt{l}_1$, a fresh location of type $C$ (the type of field $\cfgnt{x}\rp$), is added to the heap. There are no aliases because the input heap was empty.
 
-Following initialization to $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$, when
-$\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized, the resulting summary heap is shown
-in~\figref{fig:initHeap}(c). The set $\rho$ shown
-in~\figref{fig:initHeap}(d) contains the potential aliases for
- $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ which is location $\cfgnt{l}_1$ ($\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$). The
+Following $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$, 
+$\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized leading to the summary heap
+in~\figref{fig:initHeap}(c). The set $\rho$ 
+in~\figref{fig:initHeap}(d) contains the one potential aliases $\cfgnt{l}_1$ from the previous initialization for $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$. It also shows the $\theta$-sets for this initialization and the resulting edge labels. Note that the ordering between aliases in $\theta_\mathit{alias}$ does not matter until a third field is initialized and there are two potential choices.
+
+\begin{comment}
+The
 constraint location $\theta$ sets represents the initialization
 choices for $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. The new input reference $\cfgnt{r}_2^i$ for
 $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ points to (a) location $\cfgnt{l}_\mathit{null}$ under the constraint
@@ -188,5 +186,4 @@ constraint $\phi_{2b} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgn
 $\cfgnt{r}_1^i$, and (c) location $\cfgnt{l}_1$ under the constraint $\phi_{2c} :=
 \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i$ that states $\cfgnt{r}_2^i$
 is not null and \emph{does} alias $\cfgnt{r}_1^i$.
-
-
+\end{comment}

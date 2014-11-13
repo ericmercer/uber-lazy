@@ -18,22 +18,26 @@
 
 There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
 the value of a field (field-access) and the other when we write to a
-field (field-write). In both the field rewrite rules we first check we
-perform is whether there exists a constraint location pair for the $r$
-being accessed such that the location is not null and the constraint
-when conjuncted with the global constraint is satisfiable. Next we
-extract all possible constraints under which $r$ points to a null
-location such that the constraint is satisfiable under the current
-global constraint, $\phi_g$. The negation of these constraints are
-added to the global constraint to create a new global constraint
-$\phi_g^\prime$. The update to the global constraint ensures that
-access or write of the field $f$ happens only on non-null
-locations. There are rewrite rules for accessing and writing to fields
-on null locations where it leads the current program execution state
-to an error state. The rewrite rules for the accessing and writing to
-null locations are presented in the supplemental document.
+field (field-write). Both rules first check that the operations can be
+performed on a non-null location. If such is the case, then the global
+constraint $\phi_g$ is updated to disallow any viable null locations
+from this point forward: future accesses are non-null.
+%perform is whether there exists a constraint location pair for the $r$
+%being accessed such that the location is not null and the constraint
+%when conjuncted with the global constraint is satisfiable. Next we
+%extract all possible constraints under which $r$ points to a null
+%location such that the constraint is satisfiable under the current
+%global constraint, $\phi_g$. The negation of these constraints are
+%added to the global constraint to create a new global constraint
+%$\phi_g^\prime$.
+%The update to the global constraint ensures that
+%access or write of the field $f$ happens only on non-null
+%locations. 
+When there is a feasible null location in the summary heap on the
+field access operations, the machine moves to an error state. The
+rewrite rules for null locations are in the supplemental document.
 
-In the field-access rewrite rule in~\figref{fig:fHeap}(a) after the
+In the field-access rewrite rule in~\figref{fig:fHeap}(a), after the
 non-nullness check we extract the The type $C$ of the field is
 extracted and invoke the summarize rewrite rule
 in~\figref{fig:symInit} that performs the initialization of the field

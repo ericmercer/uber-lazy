@@ -27,30 +27,33 @@ SPF framework~\cite{Hillery:2014}.
 %fields~\cite{} SPF performs a stateless search to generate the
 %symbolic execution tree.
 
-The prototype of  our~\symtxt{} algorithm is implemented as a new extension to SPF.
-In addition to the operations presented in the Javalite
-semantics (see \secref{sec:precise}), the implementation contains 
-support for operations over
-integers including symbolic representations. Examples of bytecode implemented in SPF to support the \symtxt{} algorithm
-include:
-(i) field access bytecodes, e.g., GETFIELD and ALOAD, to implement the 
-field-access and summarize rules
-in~\figref{fig:symInit} and~\figref{fig:fHeap}(a) respectively, (ii) the field
-write bytecodes, e.g., PUTFIELD and ASTORE, to implement the
-field-write rules in~\figref{fig:fHeap}(a), and (iii) equality checking of
-references bytecodes, IF\_ACMPEQ and IF\_ACMPNE, to implement the
-equals references-true and references-false rules in~\figref{fig:eqs}.
-We also implement linear arithmetic operations on integers, and integer
-comparison operations. We are currently working on adding support for
-floating point operations, arrays, and bit-operations.  We use the
+The prototype of our~\symtxt{} algorithm is implemented as a new
+extension to SPF.  In addition to the operations presented in the
+Javalite semantics (see \secref{sec:precise}), the implementation
+contains support for operations over integers.
+% including symbolic
+%representations.
+% Examples of bytecode implemented in SPF to support the \symtxt{} algorithm
+%include:
+%(i) field access bytecodes, e.g., GETFIELD and ALOAD, to implement the 
+%field-access and summarize rules
+%in~\figref{fig:symInit} and~\figref{fig:fHeap}(a) respectively, (ii) the field
+%write bytecodes, e.g., PUTFIELD and ASTORE, to implement the
+%field-write rules in~\figref{fig:fHeap}(a), and (iii) equality checking of
+%references bytecodes, IF\_ACMPEQ and IF\_ACMPNE, to implement the
+%equals references-true and references-false rules in~\figref{fig:eqs}.
+%We also implement linear arithmetic operations on integers, and integer
+%comparison operations.
+We are currently working on adding support for floating point
+operations, arrays, and bit-operations.  We use the
 \texttt{jConstraints} library which provides support for handling heap
 constraints~\cite{ase2014-ghilrr,jpf2014-dghirr}. It uses the z3
-solver~\cite{deMouraBjorner08Z3} as the underlying constraint solver. We
-leverage the incremental solving feature in z3 in our experiments. We
-also implement other optimizations that cache and re-use solutions to
-previous constraints. These optimizations are an important part of our
-implementation because only small portions of the heap constraint
-changes from one state to another.
+solver~\cite{deMouraBjorner08Z3} as the underlying constraint
+solver. We leverage the incremental solving feature in z3 in our
+experiments. We also implement other optimizations that cache and
+re-use solutions to previous constraints. These optimizations are an
+important part of our implementation because only small portions of
+the heap constraint changes from one state to another.
 
 
 %The default constraints library in SPF requires constraints to be in

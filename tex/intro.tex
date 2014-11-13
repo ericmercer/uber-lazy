@@ -31,20 +31,19 @@ With the advent of object-oriented languages,
 recent work has generalized the core ideas of symbolic execution to enable 
 analysis of programs containing complex data structures with unbounded 
 domains, i.e., data stored on the heap~\cite{Kiasan06,Kiasan07,GSE03}.  
-These Generalized Symbolic Execution (GSE) techniques construct the 
+These \emph{Generalized Symbolic Execution} (GSE) techniques construct the 
 heap in a lazy manner, deferring
 materialization of objects on the concrete heap until they are needed
 for the analysis to proceed. The materilization 
 %accounts for various heap configurations, 
 creates additional non-deterministic choice points in the symbolic
-execution tree representing the feasible heap configurations.  as (a)
-null, (b) instance of a new reference of a compatible class, and (c)
-alias an previously initialized symbolic reference.  Symbolic
-execution follows concrete program semantics for materialized heap
-locations. Although this approach enables analysis of heap
+execution tree by representing the feasible heap configurations as (i)
+null, (ii) an instance of a new reference of a compatible class, and (iii)
+an alias to a previously initialized symbolic reference.  Symbolic
+execution then follows concrete program semantics for materialized heap
+locations. Although this approach enables the analysis of heap
 manipulating programs, a large number of feasible concrete heap
-configurations may be created exacerbating the well known state space
-explosion problem associated with symbolic execution.
+configurations are created leading to state space explosion.
 
 %  resulting in a large number of feasible concrete heap
 %configurations, and as a result, a large number of points of
@@ -54,21 +53,24 @@ explosion problem associated with symbolic execution.
 
 The goal of this work is to mitigate the state space explosion problem
 in GSE by grouping multiple heaps together and only partitioning the
-heaps at points of divergence in the control flow graph. To achieve
-this goal, we found inspiration from recent work in the domain of
-static analysis that uses sets of constraints over heap locations to
-encode multiple heaps in a single representation. These sets,
-sometimes known as value sets or value summaries, allow multiple heaps
-to be represented simultaneously with a higher degree of precision
-than afforded by traditional shape analysis techniques. Some of these
-previous attempts, however, are unable to handle aliasing in heaps due
-to a recursive definition of objects~\cite{..}, while others require a
-set of heaps as input and are unable to initialize heaps
-on-the-fly~\cite{..}. For these reasons the techniques use
-over-approximations to reason about heaps and may report false
-positives. Also, update to heaps require a rewrite of the constraint
-system making it prohitive for use in the context of symbolic
-execution.
+heaps at points of divergence in the control flow graph. Our
+inspiration is found in the domain of static analysis that uses sets
+of constraints over heap locations to encode multiple heaps in a
+single representation. These sets, sometimes known as value sets or
+value summaries, allow multiple heaps to be represented simultaneously
+with a higher degree of precision than afforded by traditional
+techniques for shape analysis.
+
+Unfortunately, value sets often do not support aliasing and require a
+recursive definition of objects~\cite{..}. Also, it is not obvious how
+to support heap updates in value sets, and in particular, on-the-fly
+lazy initialization as is common in GSE, so it is not unusual to
+require a fully initialized set of input heaps in the analysis. As is
+typical in static analysis, over approximation of the value sets
+alleviates some of the limitations but also leads to false positives,
+and when heap updates are supported, with or without over
+approximation, the path constraint must be rewritten to reflect the
+update, and the constraints in the value set must also be rewritten.
 
 %The goal of this work is find a more compact representation of the heaps
 %and be better able to leverage constraint solvers.
@@ -95,21 +97,27 @@ execution.
 %techniques are based on a static analysis, the resulting summaries
 %over-approximate the actual potential heaps.
 
-In this work, we present a technique for heap summarization,
-initialization, and analysis in the context of symbolic execution. We
-represent the heap as a bipartiate graph of references and sets of
-constraints over locations. The use of a bipartiate graph affords two
-key advantages: (i) it allows for a non-recursive definition of
-objects, allowing us to handle aliasing and (ii) it does not require
-rewrite of the constraints during updates to the heap nor does it
-introduce any auxillary variables in the constraints. During symbolic
-execution, we initialize, summarize, and update the bipartiate
-graph. Unlike GSE, however, the heaps are partitioned only at points
-of divergence in the control flow graph. These points of
-non-determinism are at field accesses or writes that lead to
-null-pointer exceptions and at comparisons of references. The former
-represents a divergence due to exceptional control flow while the
-later due to program structure.
+The solution presented in this paper to enabling value sets in symbolic execution
+with lazy initialization is to represent the heap as a bipartite graph
+consisting of references and locations. A reference is able to point
+to several different locations; each edge is predicated on constraints
+over aliasing between references. Locations point back to references
+on different fields. The bipartite graph enables (i) the use of
+aliasing to define objects rather than recursive definitions; (ii)
+value set computation using only local information; and (iii) heap
+updates that only impact affected locations, require no constraint
+rewriting, and require no auxiliary variables in the constraints.  We
+call this new heap a summary heap.
+
+To mitigate state space explosion in GSE, the solution described in
+paper uses a summary heap in the symbolic execution. This summary heap
+algorithm defines how the bipartite graph updates in lazy
+initialization. Unlike GSE, however, the summary heap algorithm
+partitions only at points of divergence in the control flow
+graph. These points of non-determinism are at field accesses or writes
+that lead to null-pointer exceptions and at comparisons of
+references. The former represents a divergence due to exceptional
+control flow while the later due to program structure.
 
 %In this work, we present a novel heap initialization and analysis
 %technique which takes inspiration from both GSE and existing heap
@@ -121,23 +129,40 @@ later due to program structure.
 %structures resulting from execution of the control-flow path, we use
 %a heap summary.
 
-The heap summary approach for symbolic execution is sound and complete
-with respect to properties that are provable using GSE. This is
-accomplished by showing the existence of a bisimulation relation. In
-other words, any property that can be proved using GSE can also be
-proved using heap summaries, furthermore, any property proved by heap
-summaries can also be proved by GSE---given the same bounds on heap
+Importantly, the summary heap algorithm is sound and complete with
+respect to properties that are provable using GSE. This proof is
+accomplished by showing the existence of a bisimulation relation
+between states in GSE and states in the summary heap algorithm. In
+practical terms, any property that can be proved using GSE can also be
+proved using summary heaps, furthermore, any property proved by
+summary heaps can also be proved by GSE. Of course, Both require a bound on heap
 reference chains and loops.
 
-In a preliminary evaluation comparing the efficiacy of the heap
-summary technique with respect to the other GSE approaches, we observe
-a two-order of magnitude reduction in the total time taken to explore
-the same state space. We implement the heap summary approach as an
-extension to the Symbolic PathFinder symbolic execution engine and
-analyze three Java data structure artifacts. For these examples, we
-show that where other GSE approaches are unable to complete
-exploration within the provided time bound, the summary heap finishes
-exploration in a few seconds.
+Aside from the novelty of the heap summary and it application to
+symbolic execution, the new data structure appears to ameliorate state
+explosion in symbolic execution. A preliminary implementation in Java
+Pathfinder (JPF), described in this paper, compares the heap summary
+algorithm on a handful of benchmarks, each representing different
+degrees of initialization and branching, to GSE with lazy
+initialization in Symbolic Pathfinder (SPF) and implementation
+lazier\# also in SPF. The results show that in general, that the heap
+summary algorithm improves over other techniques, and in some
+instances, the improvement is remarkable: two-orders of magnitude
+reduction in running time. More critically though, the heap summary
+enables the initialization of larger more complex heaps than
+heretofore possible as shown in our results.
+
+\begin{comment}
+We implement the summary heap algorithm as an extension to \emph{Java
+  PathFinder} (JPF) and compare it to GSE with lazy initialization in
+\emph{Symbolic Pathfinder (SPF)} and an implementation of lazier\#
+initialization in SPF.  The comparison shows on some examples up to a two-order of magnitude
+reduction in the total time taken to explore the same state space
+defined by the bound on the longest heap reference chain.  For these
+examples, we show that where other GSE approaches are unable to
+complete exploration within the provided time bound, the summary heap
+finishes exploration in a few seconds.
+\end{comment}
 
 %shows that it can improve the scalability of symbolic execution of
 %heap manipulating programs X fold over GSE-based analyses while
@@ -165,29 +190,30 @@ exploration in a few seconds.
 
 \begin{description}
 
-\item\textbf{-} Define a heap encoding as a bipartiate graph of
-  references and sets of constraints over locations.
+\item\textbf{-} A summary heap as a bipartite graph that supports aliasing, local value set computation, and heap updates.
 
 % to handle alias and efficient updates of constraints.
 
-\item\textbf{-} Present an algorithm to initialize, summarize, and
+\item\textbf{-} A summary heap algorithm to initialize, summarize, and
   update the bipartiate graphs during symbolic execution.
 
-\item\textbf{-} Show the existence of a bisimulation relation to prove
+\item\textbf{-} A proof of the existence of a bisimulation relation to establish
   that the heap summary approach is sound and complete with respect to
   properties provable by GSE.
 
-\item\textbf{-} Demonstrate the scability of the heap summary approach
-  compared to GSE approaches.
+\item\textbf{-} A proof of concept implementation and small empirical study to demonstrate the scability of the heap summary approach
+  compared to other GSE approaches.
 
 \end{description}
 
-\noindent{In this paper, we present a brief overview of a Java-like
-  language and the encoding of heaps as a bipartiate graph. We use the
-  Java-like language to define the formal semantics of the heap
-  summary machine and then prove the existence of a bisumulation
-  relation. Finally we present an evaluation of the heap summary
-  approach. }
+\noindent{The rest of this paper discusses a formal language semantics
+  for the summary heap algorithm definition with the definition of the
+  summary heap. The paper then presents the application of summary
+  heaps to symbolic execution. Following the algorithm definition, the
+  existence proof of bisimulation is given with the accompanying
+  corollaries for soundness and completeness. This is followed by the
+  implementation in JPF and the evaluation. The paper ends with the
+  conclusion and future work.}
 
 
 %\item{We present a novel inter-procedural analysis technique for 

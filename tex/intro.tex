@@ -6,7 +6,7 @@ systematically explores the program execution space using symbolic
 input values, and for each explored path, computes constraints on the
 symbolic inputs to create a \emph{ path condition}.  The path
 conditions computed by symbolic execution characterize the observed
-program execution behaviours and have been used as an enabling
+program execution behaviors and have been used as an enabling
 technology for various applications, e.g., regression
 analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12},
 data structure repair~\cite{KhurshidETAL05RepairingStructurally},
@@ -23,7 +23,7 @@ structures with unbounded domains, i.e., data stored on the
 heap~\cite{Kiasan06,Kiasan07,GSE03}.  These \emph{Generalized Symbolic
   Execution} (GSE) techniques construct the heap in a lazy manner,
 deferring materialization of objects on the concrete heap until they
-are needed for the analysis to proceed. The materilization creates
+are needed for the analysis to proceed. The materialization creates
 additional non-deterministic choice points in the symbolic execution
 tree by representing the feasible heap configurations as (i) null,
 (ii) an instance of a new reference of a compatible class, and (iii)

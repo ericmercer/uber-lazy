@@ -1,4 +1,22 @@
 A fundamental challenge of using symbolic execution for software
+analysis has been the treatment of dynamically allocated
+data. Generalized symbolic execution (GSE) techniques have addressed
+this challenge by materializing a concrete heap lazily during field
+accesses.  This approach however, exacerbates the state space
+explosion problem.  In this work, we present a novel symbolic
+execution technique which takes inspiration from the static analysis
+domain and defines a novel bipartite graph representation of the heap
+and a lazy initialization algorithm that, unlike state-of-the-art
+techniques, (a) supports aliasing, (b) does not require rewrite of
+constraints on heap updates, (c) can initialize the heap-on-the-fly,
+and (d) reduces the number of points of non-determinism during the
+search. Our approach is sound and complete with respect to the
+properties provable by GSE. A preliminary evaluation of our
+implementation in Java Pathfinder shows the summary heap enables the
+initialization of larger more complex heaps than previously possible.
+
+\begin{comment}
+A fundamental challenge of using symbolic execution for software
 analysis has been the treatment of dynamically allocated data.
 State-of-the-art techniques have addressed this challenge through
 either (a) the use of summaries that over-approximate possible heaps, or
@@ -16,6 +34,7 @@ concrete heap structures for the program under analysis, and 3)
 structures. We demonstrate the precision and scalability of our
 approach by implementing it as an extension to the Symbolic PathFinder
 framework for analyzing Java programs.
+\end{comment}
 
 %and by using 
 %materializing objects on the concrete heap ``as needed'' and

@@ -5,7 +5,7 @@ summary heap to group heaps together that follow the same control flow
 to a given point of execution. The graph structure is able to capture
 group membership and compute value sets using entirely non-recursive
 local look up. Additionally, updates on the heap do not require
-rewriting the path condition or any constraints in summary heap.
+rewriting the path condition or any constraints in the summary heap.
 
 The bipartite graph itself consists of references, $\cfgnt{r}$, and
 constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is
@@ -15,14 +15,12 @@ are treated as partial functions where $\cfgnt{L}(r) =
 \{(\phi\ \cfgnt{l})\ ...\}$ is the set of constraint-location pairs in
 the heap associated with the given reference, and
 $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the reference
-associated with the given location-field pair in the heap. Predicate
-calculus is used to describe the more complex updates to the heap in
-the semantics.
+associated with the given location-field pair in the heap.  
 
 There are several properties of the summary heap enforced by the
 rewrite rules that are invariant and important to the correctness
 proofs presented in \secref{sec:bisim}: \emph{reference partitions},
-\emph{immutable references}, \emph{determinism}, \emph{type
+\emph{immutability}, \emph{determinism}, \emph{type
   consistency}, and \emph{null and uninitialized}.
 
 \emph{Reference partitions} are new references drawn from
@@ -32,23 +30,23 @@ proofs presented in \secref{sec:bisim}: \emph{reference partitions},
   call, and modular arithmetic is used to determine the partition to
   which a reference belongs.
 \begin{compactdesc}
-\item[Input heap] these references have two
+\item[Input heap:] these references have two
   interpretations: one as a literal and another as a variable. First,
   an input heap reference is a literal, and that literal is a node in
   the summary heap. Second, an input heap reference is a variable, and
   that variable is a term in any number of constraints that label
   edges in the summary heap. Only input heap references and the
   special reference $\cfgnt{r}_\mathit{null}$ appear in constraints
-\item[Auxiliary literals] these references are only used to define additional structure in
+\item[Auxiliary literals:] these references are only used to define additional structure in
   the bipartite graph and are not part of any constraint and do not appear
   in any environment, expression, or continuation.
-\item[Stack references] these references are also used to define additional structure in the bipartite graph but may also appear in the environment, expression, or continuation. These are not part of any constraint.
+\item[Stack references:] these references are also used to define additional structure in the bipartite graph but may also appear in the environment, expression, or continuation. These are not part of any constraint.
 \end{compactdesc}
 Reference partitions are a critical piece to the existence proof of a
 bisimilation between the summary heap algorithm and generalized
 symbolic execution (see \secref{sec:bisim}).
 
-\emph{Immutable references} means that a reference does not change in the
+\emph{Immutability} means that a reference does not change in the
 location map. It always points to the same set of constraint location
 pairs. This property ensures that constraints never need to be
 rewritten as the program evolves its state.
@@ -100,14 +98,14 @@ that
 \begin{compactitem}
 \item $\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; and
 \item $\lp\phi^\prime\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r}^\prime)$; and
-\item $\phi$ and $\phi^\prime$ are true under aliasing assignments from the solver.
+\item $\phi$ and $\phi^\prime$ hold in aliasing assignments from the solver.
 \end{compactitem}
 In this way, the graph groups heaps with the conditions under which
-those heaps exist. This representation, by virtue of the reference
-partitions, separates the constraint problem from the morphology
-problem: it is possible to update the heap without having to rewrite
-constraints. Without this separation, it would not be possible to
-lazily initialize heap locations along a program path.
+those heaps exist. This representation separates the constraint
+problem from the morphology problem: it is possible to update the heap
+without having to rewrite constraints. Without this separation, it
+would not be possible to lazily initialize heap locations along a
+program path.
 
 \subsection{State Transition Relation}
 
@@ -171,17 +169,12 @@ $\cfgnt{r}_\mathit{null}$
 and the location map points a new stack reference to that new object.
 
 To show the heap summary algorithm is sound and complete with respect
-to properties proved by generalized symbolic execution, we refer to
-the generalized symbolic execution with lazy initialization machine by
-the relation $\rgse$ or $p \rgse p^\prime$, and to the new summary
-heap algorithm machine by $\rsym$ or $q \rsym q^\prime$. Both machines
-use the summary heap structure, and for simplicity,
-both use lazy initialization as opposed to lazier or lazier\#.
+to properties proved by GSE, we define a transition relation that
+relates states according GSE and refer to it as $\rgse$ or $p \rgse
+p^\prime$. Similarly we define for the new summary heap algorithm
+$\rsym$ or $q \rsym q^\prime$. For simplicity, both use lazy
+initialization as opposed to lazier or lazier\#.
 
-Due to space restrictions, the full operational semantics for
-generalized symbolic execution with lazy initialization for Javalite
-are presented in the supplemental document. We also present the
-portion of the Javalite rewrite rules which are common to both
-machines in the supplementary document. In the next section, we
-present the rewrite rules specific to the new summary heap algorithm
-for symbolic execution.
+The full operational semantics for $\rgse$ are in the supplemental
+document. In the next section, we present the rewrite rules specific
+to $\rsym$.

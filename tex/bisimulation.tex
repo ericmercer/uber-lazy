@@ -1,14 +1,12 @@
 \section{Bisimilarity Relation}
 \label{sec:bisim}
-Let $p \rgse p^\prime$ be the binary relation over the universe of states, $S$,
-according to generalized symbolic execution with lazy initialization
-(see the supplemental text for a precise definition of that
-relation). Similarly, let $q \rsym q^\prime$ be the relation for the GSESH
-algorithm in this paper. The principle theoretical result is the
-existence of a bisimilarity relation between states related on $p \rgse p^\prime$
-and the states related on $q \rsym q^\prime$. A corollary is that $\rsym$ is
-both sound and complete with respect to $\rgse$. Only a summary of the
-proof is given due to space.
+Recall that $p \rgse p^\prime$ is the binary relation over the universe of states, $S$,
+according to GSE with lazy initialization. Similarly, $q \rsym q^\prime$ is the relation for the summary heap algorithm
+presented in this paper. The principle theoretical result is the
+existence of a bisimulation between states related on $p \rgse p^\prime$
+and the states related on $q \rsym q^\prime$.  A corollary is that $\rsym$ is
+both sound and complete with respect to properties provable in $\rgse$. Only a summary of the
+proofs is given due to space.
 
 The inspiration for $\rsym$ came from a desire to create
 a new way to initialize heap objects that avoided initializing heaps
@@ -27,35 +25,36 @@ rule in the transition relation preserves well-formedness.
 
 Let $p \rgse p^\prime$ be defined as a union over state relations:
 $$
-\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E^\prime} \cup \rgse^\com
+\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E^\prime} \cup \rcom
 $$
-where \emph{A} is a field access $\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
-\rightarrow \cfgnt{k}\rp$, \emph{W} is a field write $\lp
+where \emph{A} is a field access after evaluating the expression for the base reference $\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
+\rightarrow \cfgnt{k}\rp$, \emph{W} is a field write after evaluating the expression for the right operand$\lp
 \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*} \rightarrow
-\cfgnt{k}\rp$, \emph{E} is a reference compare $\lp
+\cfgnt{k}\rp$, \emph{E} is a reference compare after evaluating the left and right operand expressions $\lp
 \cfgnt{v}\ \cfgt{=}\ \cfgnt{*} \rightarrow \cfgnt{k}\rp$, the prime symbol
 indicates a null reference in the operation or a false outcome, and
 \emph{\com} is everything else in the language. Any state relation, say $\rightarrow_x$, is trivially extended to sets of states as
 $$
 P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
 $$
-Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of states.
+Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of
+states. From this extension, a new meta transition relation is defined
+over sets of states as
 $$
 \rsgse = \hookrightarrow_\gse^\mathit{A}
 \cup \hookrightarrow_\gse^\mathit{A^\prime} \cup \hookrightarrow_\gse^\mathit{W} \cup
 \hookrightarrow_\gse^\mathit{W^\prime} \cup \hookrightarrow_\gse^\mathit{E} \cup \hookrightarrow_\gse^\mathit{E^\prime}
-\cup \hookrightarrow_\gse^\com
+\cup \hookrightarrow_\com
 $$
-The definition embodies the notion of splitting equivalence classes at
-certain operations. The set $P$ at a field access for example has two
-potential successors: a non-null and null reference. Respectively, the
-set $P \rgse^\com P^\prime$ only has a single successor since those expressions
-are not related to control flow.
+The definition embodies the notion of splitting groups of heaps at
+certain operations. The set $P$ at a field access after base reference is known, for example, has two
+potential successors: a non-null and null reference. The $\rsgse$ relation has two successors at that point to divide $P$ into the two outcomes. In contrast, the
+set $P \rgse^\com P^\prime$ only has a single successor since anything in $\rightarrow_\com$ is not related to control flow (e.g., variable look up, creating continuations, etc.).
 
 The functional equivalence between heaps in states $p$
 and $q$ requires both a mapping to relate the two heaps and a
 constraint on the feasibility of that mapping in the presence of a
-path constraint from symbolic execution. Subscripts indicates state
+path constraint from symbolic execution. Subscripts indicates state tuple
 members as in $p = (
 \cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$.
 \begin{definition}
@@ -81,7 +80,7 @@ The \textbf{homomorphism constraint} is
 \end{align*}
 \end{definition}
 The functional equivalence between heaps on a homomorphism and
-a homomorphism constraint asserts a common structures in the two heaps under certain
+a homomorphism constraint asserts a common structure in the two heaps under certain
 conditions. The equivalence is used to related states in $p \rgse
 p^\prime$ to states in $q \rsym q^\prime$.
 \begin{definition}
@@ -94,8 +93,7 @@ q$ such that
 \label{eqn:valid}
  \mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) ) 
 \end{equation}
-The represented relation is extended to sets of states $P$ and a single state $q$ as\footnote{The full proof argues $P \sqsubset Q$ but that $Q$ is
-  always a singleton set containing $q$.}
+The represented relation is extended to sets of states $P$ and a single state $q$ as\footnote{The full proof argues $P \sqsubset Q$ but that any member $Q$ represents that same set of heaps as any other member of $q$ so it is sufficient to a member of $q$ in the relation.}
 $$
 P \sqsubset q \Longleftrightarrow \forall p\ (p \sqsubset q \Rightarrow p \in P)
 $$
@@ -123,12 +121,12 @@ If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsu
 \end{definition}
 As is typical, the functional reasons over a forward and backward
 simulation, while the application to dissimilar states using a
-meta-relation, $\rsgse$, is somewhat non-standard; though convenient
+meta-relation, $\rsgse$, is somewhat non-standard; though it is convenient
 in this instance since it captures the notion of $q$ as a set of
 states \cite{GSE:barbedbisimulation}. 
 
-The state $S$ is the universe of well-formed states, and the
-set $S_A \subseteq S$ is the set of states at a field access continuation.
+In the following lemma, recall that $S$ is the universe of well-formed states, and the
+set $S_A \subseteq S$ is the set of states at a field access continuation having computed the base reference.
 \begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
 If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
 \label{lem:access}
@@ -149,33 +147,33 @@ existence of $q^\prime$ such that $q \rsym q^\prime$ and $p^\prime
 \sqsubset q^\prime$ using the existing homomorphism in $p \sqsubset q$.
 
 In the backward simulation \eqref{eqn:BisimulationBackwards}, for each
-$q^\prime$ such that $q \rsym q^\prime$, the proof posits the
-existences of some $p^\prime \sqsubset q^\prime$ and uses the
+$q^\prime$ such that $q \rsym q^\prime$, the proof posits the existence of some 
+$p^\prime$ such that $p^\prime \sqsubset q^\prime$. It then uses the
 homomorphism in $p^\prime \sqsubset q^\prime$ to derive a $p$ such
-that $p \rgse p^\prime$ and $p \in P$.
+that $p \rgse p^\prime$ and $p \in P$. The existence of $P^\prime$ is established by the existence of $p^\prime$, and $P \sqsubset q$ makes $P^\prime$ the actual successor of $P$.
 
 As the forward and backward simulations hold for any $p \in P$, $P
 \sqsubset q$ must be in the functional, $F_\sim(\sqsubset)$, which is
 a contradiction.
 \end{proof}
 Similar lemmas are proved for field write and equals reference. These
-require additional lemmas on properties of the summary machine
-$\rightarrow_S$. Specifically, that it preserves determinism, and it
-preserves the homomorphism and the satisfiability of homomorphism constraint 
+require additional lemmas on properties of the summarize machine
+$\rightarrow_S$. Specifically, that it preserves determinism, it
+preserves the homomorphism, and it preserves the satisfiability of the homomorphism constraint 
 
 \begin{theorem}
 \label{th:bisim}
 The relation $\sqsubset$ is a bisimulation: $\sqsubset\ \subseteq\ \sim$
 \end{theorem}
 \begin{proof}
-By definition of the bisimilarity relation. All of the common rules
+By definition of bisimilarity. All of the common rules in $\rcom$
 make no changes to the heap, so $P \sqsubset q$ is included in the
-functional. The other transition relations are supported by lemmas
+functional. The other rules that affect the heap are supported by lemmas
 such as \lemref{lem:access}.
 \end{proof}
 
 The notation $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$
-is the $n$-step successor of $p$, if it exists, and $q
+is the $n$-step successor of $p$, when it exists, and $q
 \stackrel{n}{\rsym} q^\prime$ is similarly defined. Completeness and
 soundness are readily established by \thref{th:bisim} and inducting
 over $n$. 

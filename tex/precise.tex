@@ -1,10 +1,10 @@
 \section{Generating Summary Heaps}
 \label{sec:precise}
 In this section we present the summary heap algorithm that operates on
-the bipartiate graph described in the previous section.  The summary
+the bipartite graph described in the previous section.  The summary
 heap algorithm initializes, updates, and partitions the heap. It only
 partitions the heap at points of divergence in the control flow graph
-such as field accesses or writes (exeception control flow due to null
+such as field accesses or writes (execeptional control flow due to null
 pointers) or comparisons of references (program control flow). There
 are three sets of rewrite rules specific to the summary heap
 algorithm: (i) rules to initialize symbolic references, (ii) rules to
@@ -58,7 +58,7 @@ location is feasible on some aliasing assignment.
 %because all constraints are constant. This property is relaxed in GSE
 %with heap summaries.
 
-In~\figref{fig:symInit}, given the unitialized set $\Lambda$ for
+In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
 field $f$, the $\mathit{min}_l$ function returns
 $(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
 uninitialized locations in $\Lambda$ to make initialization
@@ -87,7 +87,7 @@ a particular alias in $\rho$, and at the same time, not alias any member of $\rh
 that was initialized earlier than the current choice (a later
 initialization may indeed also alias the current choice in a valid
 heap as order determines the number of aliasing choices available). And (iv) $\theta_\mathit{orig}$  implements conditional initialization to preserve the
-original heap structure. This property is needed for the bisumulation. 
+original heap structure. This property is needed for the bisimulation. 
 These sets are added into the heap on $\cfgnt{r}_f$ after the fields for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
 
 

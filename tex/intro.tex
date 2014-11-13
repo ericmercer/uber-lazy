@@ -61,12 +61,12 @@ single representation. These sets, sometimes known as \emph{value
 represented simultaneously with a higher degree of precision than
 afforded by traditional techniques for shape analysis. Some of these
 previous attempts, however, are unable to handle aliasing in heaps due
-to a recursive definition of objects~\cite{..}, while others require a
+to a recursive definition of objects~\cite{Xie:2005}, while others require a
 set of heaps as input and are unable to initialize heaps
-on-the-fly~\cite{..}.  As is typical in static analysis, over
-approximation of the heap representations alleviates some of the
-limitations but also leads to false positives. Also, update to heaps
-require a rewrite of the constraint system making it prohitive for use
+on-the-fly~\cite{Dillig:2011,Tillmann:2008}.  As is typical in static analysis, over
+approximation of the heap representations alleviates some of these
+limitations but also leads to false positives. Also, updates to heaps
+require a rewrite of the constraint system making it prohibtive for use
 in the context of symbolic execution.
 
 \begin{comment}
@@ -108,26 +108,24 @@ alleviates some of the limitations but also leads to false positives.
 In this work, to effectively represent multiple heaps simultaneously
 in the context of symbolic execution we define a novel heap
 representation and an algorithm to initialize and update the heap
-on-the-fly. Our summary heap approach supports aliasing, it does not
-require constraint rewriting on heap updates, and it reduces the
+on-the-fly. Our summary heap approach supports aliasing, does not
+require constraint rewriting on heap updates, and reduces
 non-determinism in the search space during symbolic execution.
-
 
 We represent the heap as a bipartite graph consisting of references
 and locations. Each reference is able to point to multiple locations,
 where each edge is predicated on constraints over aliasing between
 references. Each location points to a single reference for a given
-field. The use of a bipartiate graph affords two key advantages: (i)
+field. The use of a bipartite graph affords two key advantages: (i)
 it allows for a non-recursive definition of objects which enables us
-to support aliasing, and (ii) it does not require rewriting of the
-constraints during updates to the heap nor does it introduce auxillary
-variables into the constraints.
+to support aliasing, and (ii) it does not introduce auxiliary variables or 
+require rewriting non-local constraints during updates to the heap.
 
-This summary heap algorithm defines how the bipartite graph is updated
+The summary heap algorithm defines how the bipartite graph is updated
 during lazy initialization. Unlike GSE, however, the summary heap
 algorithm introduces non-determinism in the search only at points of
 divergence in the control flow graph. These points of non-determinism
-are at field accesses or writes that lead to null-pointer exceptions
+are at field accesses that lead to null-pointer exceptions
 and at comparisons of references. The former represents a divergence
 due to exceptional control flow while the latter is due to program
 structure.
@@ -202,19 +200,23 @@ finishes exploration in a few seconds.
 
 \begin{compactdesc}
 
-\item\textbf{-} A summary heap as a bipartite graph that supports
-  aliasing and does not require rewriting of constraints.
+\item\textbf{-} A symbolic summary heap representing
+sets of concrete heaps without overapproximation or restricting aliasing.
+% supports aliasing, and and allows strong updates without auxiliary variables 
+% or constraint rewriting.
 
 % to handle alias and efficient updates of constraints.
 
-\item\textbf{-} A summary heap algorithm to initialize, summarize, and
-  update the bipartiate graphs during symbolic execution.
+\item\textbf{-} A algorithm to initialize, summarize, and
+  update summary heaps during symbolic execution, without mutating 
+  constraints or introducing auxiliary variables.
 
 \item\textbf{-} A proof of the existence of a bisimulation relation to establish
   that the heap summary approach is sound and complete with respect to
   properties provable by GSE.
 
-\item\textbf{-} A proof of concept implementation and small empirical study to demonstrate the scability of the heap summary approach
+\item\textbf{-} A proof-of-concept implementation and small empirical study 
+demonstrating the scalability of the heap summary approach
   compared to other GSE approaches.
 
 \end{compactdesc}

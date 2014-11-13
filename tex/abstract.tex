@@ -3,13 +3,13 @@ analysis has been the treatment of dynamically allocated
 data. Generalized symbolic execution (GSE) techniques have addressed
 this challenge by materializing a concrete heap lazily during field
 accesses.  These techniques however, exacerbate the path explosion
-problem.  In this work, we present a heap summary approach which takes
+problem.  In this work, we present a summary heap approach which takes
 inspiration from the static analysis domain and defines a bipartiate
 graph to encode multiple heaps in single representation, which, unlike
 state-of-the-art static analysis approaches, (i) supports aliasing,
 (ii) does not require rewrite of constraints on heap updates, and
-(iii) can initialize the heap-on-the-fly. We also define a heap
-summary algorithm to perform heap updates during symbolic execution on
+(iii) can initialize the heap-on-the-fly. We also define a summary
+heap algorithm to perform heap updates during symbolic execution on
 this representation in order to mitigate the path explosion problem in
 GSE techniques. Our approach is sound and complete with respect to the
 properties provable by GSE. A preliminary evaluation of our

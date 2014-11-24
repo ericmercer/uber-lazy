@@ -20,7 +20,6 @@
       \lp\phi_x\ \cfgnt{l}_x\rp = \mathrm{min}_l\lp \Lambda\rp\\\\
       \cfgnt{r}^\prime = \mathrm{init}_r\lp \rp\\
       \cfgnt{l}^\prime = \mathrm{fresh}_l\lp \cfgnt{C}\rp \\\\
-      \rho = \{ \lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \mid \mathrm{isInit}\lp \cfgnt{r}_a\rp  \wedge \cfgnt{r}_a = \mathrm{min}_r\lp \cfgnt{R}^{\leftarrow}[\cfgnt{l}_a]\rp \wedge \mathrm{type}\lp \cfgnt{l}_a\rp  = \cfgnt{C} \}\\\\
       \theta_\mathit{new} = \{\lp \cfgt{true}\ \cfgnt{l}^\prime\rp \} \\\\
       \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp \cfgnt{l}^\prime\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{un} \rp ]
       %\phi^\prime = \lp\phi \wedge \cfgnt{r}^\prime \neq \cfgnt{r}_\mathit{null} \wedge \lp \wedge_{\lp\cfgnt{r}_a\ \cfgnt{l}_a\rp \in \rho} \cfgnt{r}^\prime \ne \cfgnt{r}_a\rp\rp
@@ -52,6 +51,6 @@
 	}
 \end{mathpar}
 \end{center}
-\caption{Initialization for generalized symbolic execution, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \phi_g\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s \rinit^* s^\prime = s \rinit \cdots \rinit s^\prime \rinit s^\prime$.}
+\caption{Initialization for generalized symbolic execution, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\rp$, with $s \rinit^* s^\prime = s \rinit \cdots \rinit s^\prime \rinit s^\prime$.}
 \label{fig:lazyInit}
 \end{figure*}

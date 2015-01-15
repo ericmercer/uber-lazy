@@ -1,0 +1,42 @@
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+\documentclass{llncs}
+%
+%\usepackage{makeidx}  % allows for indexgeneration
+%
+\usepackage{paralist}
+
+\begin{document}
+%
+\title{Exact Heap Summaries from Symbolic Execution}
+%
+\author{Benjamin Hillery\inst{1} \and 
+        Eric Mercer\inst{1} \and 
+        Neha Rungta\inst{2} \and 
+        Suzette Person\inst{3}}
+%
+\institute{Brigham Young University, Provo UT, USA
+\and
+NASA Ames, Mountain View CA, USA
+\and
+University of Nebraska, Lincoln NE, USA
+}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+\input{abstract}
+\keywords{symbolic execution, lazy initialization, model checking}
+\end{abstract}
+
+\input{intro}
+\input{motivation}
+\input{rw}
+
+\bibliographystyle{splncs03}
+\bibliography{../bib/paper,../bib/DiSE}
+
+\end{document}

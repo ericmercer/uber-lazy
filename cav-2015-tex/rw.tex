@@ -1,0 +1,93 @@
+\section{Related Work}
+\noindent\textbf{A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages Emina Torlak and Ras Bodik. Programming Language Design and Implementation} (PLDI'14)
+
+\noindent{\textbf{What the reviewers said:} \emph{"the paper [Torlak et al. 2014] definitely shows how to apply the same compact representation to symbolic execution."}
+
+\noindent\textbf{What I think:} They aren’t really breaking any ground with the heap representation here. It’s pretty much the same thing as what was in SATURN. The main focus of the paper is on a VM for mixed symbolic-concrete programming languages. It’s probably worth citing, if only as part of a list of similar techniques.
+
+\noindent\textbf{How this is similar to SymHeap:}
+
+\noindent\textbf{How this is different from SymHeap:}
+\begin{compactenum}
+\item They don’t do lazy initialization. \emph{"The shape of all data structures remains concrete during SVM evaluation."}
+\item There are no real bounding mechanisms, and they assume that programs are self-finitizing.
+\begin{compactitem}
+\item They don’t really handle recursion or loops.
+\item They can’t make any sort of heap-specific bounds
+\item They try to sell this as a feature, by the way, by claiming that they don’t “artificially finitize executions by explicitly bounding the depth of recursion.” That’s the nicest cover-up for a program that fails to terminate I’ve ever heard.
+\end{compactitem}
+\item Their representation is different. Although, they have value
+  sets, I don’t see a bipartite graph, locations, fields, etc. This is
+  worrisome since the reviewer was certain this is the same
+  representation as ours.
+\item They do weird domain-specific programming languages instead of our java-like language.
+\end{compactenum}
+
+Generating precise and concise procedure summaries, POPL’2008
+
+What the reviewer said: This was in a general list of “missing” related work
+
+What I think: This paper is about procedure summaries. It looks like they are concerned with a more general type of problem than we are with the heap, and that the heap-related stuff is a specialization of their framework. It’s worth citing, as an example of a global access-path style representation.
+
+How this is similar to SymHeap:
+1) Uses sets of guarded values, which they call micr-transformers. Their “micro-transformers” can be made to look lot like our references. A dereferencing operation may be performed using a “composition of micro-transformers”.
+
+How this is different from SymHeap: 
+1) The heap is stored as global access paths, related directly to variables. Thus, they don’t have any explicit local representation of the heap, and determining reachability is impossible without consulting the solver.
+
+2) Potential aliasing relationships are determined in a path-insensitive manner, prior to program execution, by means of power sets.
+
+3) It doesn’t look like they do lazy initialization. The size of parameter sets is fixed at the beginning of the program
+
+Boogie: A Modular Reusable Verifier for Object-Oriented Programs FMCO'2005
+
+What the reviewer said: This was in a list of “missing” related work, categorized as “work on precise memory models for verification-condition generation”.
+
+What I think: Boogie doesn’t have a built-in heap encoding. It uses a 2d array to model the heap, and compiles the entire program-correctness problem into a single constraint equation, which it ships off to a constraint solver. It’s a very different sort of analysis. Worth mentioning as part of a list of verification-condition generators, but not for anything else.
+
+Structural Abstractions of Software Verification Conditions, CAV'2007
+
+What the reviewer said: This was in a list of “missing” related work, categorized as “work on precise memory models for verification-condition generation”.
+
+What I think: As far as heap representation goes, this doesn’t look very interesting. Like most VC generators, they assume that input pointers don’t alias. This is a little interesting from a solving standpoint, because they turn the VC into a tree that they then perform structural operations on without consulting a solver. This is reminiscent of how we can do some heap operations without consulting the solver.
+
+A Tool for Checking ANSI-C programs, TACAS'04
+
+What the reviewer said: This was in a general list of “missing” related work.
+
+What I think: This is one of Clarke’s papers on bounded model checking. It couldn’t hurt to cite it, but it’s not super-related.
+
+Precise Pointer reasoning for Dynamic test Generation, ISSTA'2009
+
+What the reviewer said: This was in a general list of “missing” related work.
+
+What I think: This paper is about how to handle pointers during dynamic symbolic execution. It handles pointer dereferences much like GSE, by resolving possible aliases at the time of the dereferencing, but does not seem to include the possibility of a “new” choice. One difference is that this method is adapted to allow pointer arithmetic. The memory model is basically a flat address space, without any explicit notion of a heap.
+
+How this is like SymHeap: It’s a symbolic execution technique that has some facility for linked data structures. Their pointers can be nondeterministic, much like the references in symHeap, and they do conditional writes in a similar fashion as symHeap.
+
+Why this is different from SymHeap:
+
+1 )The memory model is completely different. It’s an addressable array instead of an object-oriented heap. There are no facilities for heap-specific operations like k- or n-bounding. 
+
+2) They have a fixed set of memory locations from the onset. There is no concept of lazy initialization to some “new” reference.
+
+Compositional dynamic test generation. Patrice Godefroid. 2007.
+
+What the Reviewer Said: There is an alternative way to represent a summary using logical
+formulas and extra variables [Godefroid 2007]. I wonder how such a
+representation would work for GSE and heap summarization. Such a
+representation would not require the complex update algorithm
+described in the paper. It would be useful if the authors could
+comment on this and experimentally compare with the technique.
+
+What I think: The SMART approach in Godefroid’s paper is sound but not complete. That is to say, every bug it finds is a real bug, but it is not guaranteed to account for all possible program paths. Given the incomplete of their method, the fact that their representation is simpler is unsurprising.
+
+MultiSE: Multi-Path Symbolic Execution using Value Summaries [Sen et al. 2014]
+
+What the reviewer said: The reviewer claimed that the technique presented in this paper uses the same heap representation as us.
+
+What I think: This paper uses essentially the same representation as the Dilligs. In fact, I think in many ways the Dillig’s work is more sophisticated than the treatment presented here.
+
+How It’s similar to SymHeap: It’s symbolic execution, with a heap. Their heap has value sets like ours does, and their write operation looks like ours.
+
+How it’s different from SymHeap: They don’t do lazy initialization. They use BDDs to represent expressions. Their graph isn’t bipartite.

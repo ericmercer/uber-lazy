@@ -1,0 +1,112 @@
+\section{Introduction}
+
+In recent years symbolic execution has provided the basis for various
+software testing and analysis techniques. Symbolic execution
+systematically explores the program execution space using symbolic
+input values, and for each explored path, computes constraints on the
+symbolic inputs to create a \emph{ path condition}.  The path
+conditions computed by symbolic execution characterize the observed
+program execution behaviors and have been used as an enabling
+technology for various applications, e.g., regression
+analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12},
+data structure repair~\cite{KhurshidETAL05RepairingStructurally},
+dynamic discovery of
+invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
+debugging~\cite{Ma:2011}.
+
+Initial work on symbolic execution largely focused on checking
+properties of programs with primitive
+types~\cite{clarke76TSE,King:76}.  With the advent of object-oriented
+languages, recent work has generalized the core ideas of symbolic
+execution to enable analysis of programs containing complex data
+structures with unbounded domains, i.e., data stored on the
+heap~\cite{Kiasan06,Kiasan07,GSE03}.  These \emph{Generalized Symbolic
+  Execution} (GSE) techniques construct the heap in a lazy manner,
+deferring materialization of objects on the concrete heap until they
+are needed for the analysis to proceed. The materialization creates
+additional non-deterministic choice points in the symbolic execution
+tree by representing the feasible heap configurations as (i) null,
+(ii) an instance of a new reference of a compatible class, and (iii)
+an alias to a previously initialized symbolic reference.  Symbolic
+execution then follows concrete program semantics for materialized
+heap locations. Although this approach enables the analysis of heap
+manipulating programs, a large number of feasible concrete heap
+configurations are created leading to a path explosion.
+
+
+The goal of this work is to mitigate the path explosion problem in GSE
+by grouping multiple heaps together and only partitioning the heaps at
+points of divergence in the control flow graph. Our inspiration is
+found in the domain of static analysis that uses sets of constraints
+over heap locations to encode multiple heaps in a single
+representation. These sets, sometimes known as \emph{value sets} or
+\emph{value summaries}, allow multiple heaps to be represented
+simultaneously with a higher degree of precision than afforded by
+traditional techniques for shape analysis. Some of these previous
+attempts, however, are unable to handle aliasing in heaps due to a
+recursive definition of objects~\cite{Xie:2005}, while others require
+a set of heaps as input and are unable to initialize heaps
+on-the-fly~\cite{Dillig:2011,Tillmann:2008}.  As is typical in static
+analysis, over approximation of the heap representations alleviates
+some of these limitations but often leads to infeasible heaps. Also,
+most static analysis techniques for heap updates require a rewrite of
+the constraint system making it prohibitive for use in the context of
+symbolic execution.
+
+In this work, to effectively represent multiple heaps simultaneously
+in the context of symbolic execution, we define a novel heap
+representation and an algorithm to initialize and update the heap
+on-the-fly. In essence, our summary heap approach supports aliasing,
+does not require constraint rewriting on heap updates, and reduces
+non-determinism in the search space during symbolic execution.
+
+We represent the heap as a bipartite graph consisting of references
+and locations. Each reference is able to point to multiple locations,
+where each edge is predicated on constraints over aliasing between
+references. Each location points to a single reference for a given
+field. The use of a bipartite graph affords two key advantages: (i) it
+allows for a non-recursive definition of objects which enables us to
+support aliasing, and (ii) it does not introduce auxiliary variables
+or require rewriting of non-local constraints during updates to the
+heap.
+
+The summary heap algorithm defines how the bipartite graph is updated
+during lazy initialization. Unlike GSE, however, the summary heap
+algorithm introduces non-determinism in the search only at points of
+divergence in the control flow graph. These points of non-determinism
+are at field accesses that lead to null-pointer exceptions and at
+comparisons of references. The former represents a divergence due to
+exceptional control flow while the latter is due to program structure.
+The combination of the heap representation and the summary heap
+algorithm enables us to improve the efficiency of symbolic execution
+of heap manipulating programs over state-of-the-art techniques.
+
+The summary heap algorithm is sound and complete with respect to
+properties that are provable using GSE. This proof is accomplished by
+showing the existence of a bisimulation between states in GSE and
+states in the summary heap algorithm.  A preliminary implementation in
+Java Pathfinder (JPF) shows that in general, the heap summary
+algorithm improves over other state-of-the-art techniques, and in some
+instances, the improvement is remarkable: two-orders of magnitude
+reduction in running time. More importantly though, the heap summary
+enables the initialization of larger more complex heaps than
+previously possible as shown in our results.
+\noindent{This paper makes the following contributions:}
+
+\begin{compactdesc}
+
+\item\textbf{-} A non-approximate, morphologically arbitrary, and efficient 
+summary heap representation.
+
+\item\textbf{-} An algorithm to dynamically initialize, summarize, and
+  update the summary heap during symbolic execution.
+
+\item\textbf{-} A bisimulation proof establishing the soundness and 
+completeness of the heap summary approach with respect to
+properties provable by GSE.
+
+\item\textbf{-} A proof-of-concept implementation and empirical study 
+demonstrating the scalability of the summary heap approach
+compared to other GSE approaches.
+
+\end{compactdesc}

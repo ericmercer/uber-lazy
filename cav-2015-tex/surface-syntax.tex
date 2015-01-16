@@ -1,0 +1,31 @@
+\begin{figure}
+\begin{center}
+\cfgstart
+\cfgrule{P}{\lp $\mu$ \lp \cfgnt{C} \cfgnt{m}\rp\rp}
+\cfgrule{$\mu$}{(\cfgnt{CL} ...)}
+\cfgrule{T}{\cfgt{bool} \cfgor \cfgnt{C}}
+\cfgrule{CL}{\lp\cfgt{class} \cfgnt{C} \lp\lb\cfgnt{C} \cfgnt{f}\rb\ ...\rp \lp\cfgnt{M} ...\rp\rp}
+\cfgrule{M}{\lp\cfgnt{T} \cfgnt{m} \lb\cfgnt{T} \cfgnt{x}\rb\  e\rp}
+\cfgrule{e}{\cfgnt{x}
+\cfgor{\lp\cfgt{new} \cfgnt{C}\rp}
+\cfgor{\lp\cfgnt{e} \cfgt{\$} \cfgnt{f}\rp}
+\cfgor{\lp\cfgnt{x} \cfgt{\$} \cfgnt{f} \cfgt{:=} \cfgnt{e}\rp}
+\cfgor{\lp\cfgnt{e} \cfgt{=} \cfgnt{e}\rp}}
+\cfgorline{\lp\cfgt{if} \cfgnt{e} \cfgnt{e} \cfgt{else} \cfgnt{e}\rp\  
+\cfgor {\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{e} \cfgt{in} \cfgnt{e}\rp}
+\cfgor {\lp\cfgnt{e} \cfgt{@} \cfgnt{m} \cfgnt{e}\rp}}
+\cfgorline{\lp\cfgnt{x} \cfgt{:=} \cfgnt{e}\rp\ 
+\cfgor{\lp\cfgt{begin} \cfgnt{e} ...\rp}
+\cfgor{\cfgnt{v}}}
+\cfgrule{x}{\cfgt{this} \cfgor \cfgnt{id}}
+\cfgrule{f,m,C}{\cfgnt{id}}
+%\cfgrule{m}{\cfgnt{id}}
+%\cfgrule{C}{\cfgnt{id}}
+\cfgrule{v}{\cfgnt{r} \cfgor \cfgt{null} \cfgor \cfgt{true} \cfgor \cfgt{false} \cfgor \cfgt{error}}
+\cfgrule{r}{\cfgt{number}}
+%\cfgrule{id}{\cfgt{variable-not-otherwise-mentioned}}
+\cfgend
+\end{center}
+\caption{The Javalite surface syntax.}
+\label{fig:surface-syntax}
+\end{figure}

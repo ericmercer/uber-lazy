@@ -1,0 +1,402 @@
+\section{Summary Heap Framework}
+The summary heap algorithm is presented using Javalite, an
+executable formalization of a Java-like language~\cite{saints-MS}. Javalite retains 
+the essence of Java and other object-oriented languages but with formalizations 
+in both PLT Redex and Coq so that the outcome of any program has a precise
+and deterministic meaning.
+
+Javalite is a syntactic machine defined as rewrites on a string.  The
+semantics are small-step using the CESK architecture with a (C)ontrol string
+representing the expression being evaluated, an (E)nvironment for
+local variables, a (S)tore for the heap, and a (K)ontinuation for what
+is to be executed next.  In this work we change the semantics of the original
+ Javalite machine and its machine syntax to represent (i) GSE~\cite{GSE03}, and (ii) the summary heap algorithm
+presented in this work.
+
+The surface syntax (input) for Javalite is shown 
+in~\figref{fig:surface-syntax}, and the machine syntax (state)
+in~\figref{fig:machine-syntax}. Terminals are in bold face while
+non-terminals are italicized. Ellipses indicate zero or more
+repetitions. Tuples omit the commas for compactness. The language
+itself uses s-expressions for convenience.
+
+\input{surface-syntax}
+\input{machine-syntax}
+
+A Javalite program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
+a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
+where execution starts. The only primitive type in Javalite is
+Boolean. Classes have non-primitive fields, $([\cfgnt{C}\ \cfgnt{f}]\ ...)$, and
+methods, $(\cfgnt{M}\ ...)$.\footnote{Summary heaps are able to support non-primitive fields (see \secref{sec:eval}). They are omitted to focus and simplify the presentation.} Methods are limited to a single
+parameter in our Javalite machine. Expressions, $\cfgnt{e}$,  
+include statements, and they
+ use '$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate comparison.
+The dot-operator for field access is replaced by '$\cfgt{\$}$', and the dot-operator
+for method invocation is replaced by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no explicit return
+statement in Javalite; rather, the value of the last expression is
+used as the return value. A variable is always indicated by \cfgnt{x}
+and a value by \cfgnt{v}. A value can be a reference in the heap, $\cfgnt{r}$, or any of the special values shown in~\figref{fig:surface-syntax}. 
+We assume that only
+type correct programs are given as input to the machine.
+
+The state of the Javalite machine (\figref{fig:machine-syntax}),
+$\cfgnt{s}$, includes the program registry, $\mu$, a pair of functions defining the heap
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$, a constraint,
+$\phi$, defined over references in the heap, the environment, $\eta$,
+for local variables, and the continuation $\cfgnt{k}$.\footnote{The registry $\mu$ never changes so it is omitted from the state tuple in the rest of the presentation for compactness.}  The more
+complex structures, such as the environment and heap, are defined as lists that
+start with empty, \cfgnt{mt}. The rewrite rules that define the
+semantics treat these lists as partial functions. As such,
+$\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference $\cfgnt{r}$ associated with variable
+$\cfgnt{x}$. The notation $\eta^\prime = \eta[\cfgnt{x} \mapsto
+  \cfgnt{v}]$ defines a new partial function $\eta^\prime$ that is
+the same as $\eta$ except that the variable $\cfgnt{x}$ now maps to
+$\cfgnt{v}$.
+
+The continuation $\cfgnt{k}$ helps accomplish the small-step semantics
+by indicating where the hole, $\cfgt{*}$, is located, by storing
+temporary computations, and by keeping track of the next
+computation. For example, the continuation
+$\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp$ indicates
+that the machine is currently computing the expression for the object
+reference on which the field $\cfgnt{f}$ is going to be accessed. Once
+the field access is complete, the machine continues with $\cfgnt{k}$.
+
+\subsection{Summary Heaps as Bipartite Graphs}
+A novel contribution of summary heaps for symbolic execution is the
+labeled bipartite graph representation of the heap which enables a
+summary heap to group heaps together that follow the same control flow
+to a given point of execution. The graph structure is able to capture
+group membership and compute value sets using entirely non-recursive
+local lookup. Additionally, updates on the heap do not require
+rewriting the path condition.
+
+The bipartite graph itself consists of references, $\cfgnt{r}$, and
+constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. Locations may be 
+altered to perform updates, whereas references are immutable
+once they are added to the graph. The graph is
+expressed in the location map, $\cfgnt{L}$, and the reference map,
+$\cfgnt{R}$. As done with the environment, $\cfgnt{L}$ and $\cfgnt{R}$
+are treated as partial functions where $\cfgnt{L}(r) =
+\{(\phi\ \cfgnt{l})\ ...\}$ is the set of constraint-location pairs in
+the heap associated with the given reference, and
+$\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the reference
+associated with the given location-field pair in the heap.  
+
+There are several properties of the summary heap enforced by the
+rewrite rules that are invariant and important to the correctness
+proofs in \secref{sec:bisim}: \emph{reference partitions},
+\emph{immutability}, \emph{determinism}, \emph{type
+  consistency}, and \emph{null and uninitialized}.
+
+\emph{Reference partitions}: new references drawn from
+  three distinct partitions (i) $\mathrm{init}_\cfgnt{r}()$ for references for the \emph{input heap}, (ii) $\mathrm{fresh}_\cfgnt{r}()$ for references for \emph{auxiliary literals}, and
+  (iii) $\mathrm{stack}_\cfgnt{r}()$ for references for \emph{stack literals} in the expressions and
+  continuations. The references strictly increase in value on each
+  call, and modular arithmetic is used to determine the partition to
+  which a reference belongs.
+\begin{compactdesc}
+\item[Input heap:] these references have two
+  interpretations: one as a literal and another as a variable. As a literal it is a node in
+  the summary heap. As a variable it is a term in any number of constraints that label
+  edges in the summary heap. Only input heap references and the
+  special reference $\cfgnt{r}_\mathit{null}$ appear in constraints
+\item[Auxiliary literals:] these references are only used to define additional structure in
+  the bipartite graph and are not part of any constraint and do not appear
+  in any environment, expression, or continuation.
+\item[Stack references:] these references are also used to define additional structure in the bipartite graph but may also appear in the environment, expression, or continuation. These are not part of any constraint.
+\end{compactdesc}
+Reference partitions are a critical piece to the existence proof of a
+bisimilation between the summary heap algorithm and generalized
+symbolic execution (see \secref{sec:bisim}).
+
+\emph{Immutability} means that a reference does not change in the
+location map. It always points to the same set of constraint location
+pairs. This property ensures that constraints never need to be
+rewritten as the program evolves its state.
+
+\emph{Determinism} means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously. In the definition $\cfgnt{L}^\leftarrow$ is the pre-image of the location map.
+$$
+\begin{array}{l}
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
+\ \ \ \ (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
+\end{array}
+$$
+Informally, any two constraint location pairs connected to a
+common reference form a contradiction: only one can be true in any
+satisfying assignment. The property ensures that any satisfying assignment
+resolving aliasing relationships results in a deterministic heap: a
+field access returns a single location under that assignment.
+
+\emph{Type consistency} implies that all locations associated with a reference have the same type.
+\[
+\begin{array}{l}
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
+\ \ \ \ (\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))
+\end{array}
+\]
+
+\emph{Null and Uninitialized} means that every summary heap contains 
+a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
+location for uninitialized
+  ($\cfgnt{l}_\mathit{un}$), with corresponding references
+  $\cfgnt{r}_\mathit{null}$ and
+  $\cfgnt{r}_\mathit{un}$, respectively. $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
+  $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. These special references can be used in constraints.
+
+To summarize, the heap summary algorithm creates
+many references that are auxiliary literals or stack literals to
+define the structure of the bipartite graph.  It only uses input heap
+references for constraints expressing potential aliasing. A solver
+reasons over the aliasing relationships, and a satisfying assignment
+uniquely identifies active edges in the graph. Those active edges
+describe a concrete heap and its shape.
+
+For example, if the solver assigns input heap variables $\cfgnt{r}$ and $\cfgnt{r}^\prime$
+such that $\cfgnt{r} = \cfgnt{r}^\prime$ is true, then there exists
+some location $\cfgnt{l}$ and constraints $\phi$ and $\phi^\prime$ such
+that
+\begin{compactitem}
+\item[-] $\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; and
+\item[-] $\lp\phi^\prime\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r}^\prime)$; and
+\item[-] $\phi$ and $\phi^\prime$ hold in the aliasing assignments from the solver.
+\end{compactitem}
+In this way, the graph groups heaps with the conditions under which
+those heaps exist. This representation separates the constraint
+problem from the morphology problem: it is possible to update the heap
+without having to rewrite constraints. Without this separation, it
+would not be possible to lazily initialize heap locations along a
+program path.
+
+\subsection{State Transition Relation}
+
+The initial state of a Javalite program is constructed from its
+surface syntax on the $\cfgnt{P}$ production:
+$\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$. Assuming that
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$ is an empty heap with no references
+or locations and $\eta$ is an empty environment with no
+variables, the initial state is
+$$
+\begin{array}{l}
+\lp\mu 
+\ \cfgnt{L}[\cfgnt{r}_\mathit{null} \mapsto \{\lp\cfgt{true}\ \cfgnt{l}_\mathit{null})\}\rp] 
+           [\cfgnt{r}_\mathit{un} \mapsto \{\lp\cfgt{true}\ \cfgnt{l}_\mathit{un}\rp\}] \\
+\ \cfgnt{R}
+\ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
+\end{array}
+$$
+The first expression in the initial state is to construct a new object
+in the summary heap of type $\cfgnt{C}$. Note that the resulting object is not referenced
+by the input heap since it comes from the new-expression.  Once an
+instance of $\cfgnt{C}$ exists in the summary heap, the method
+$\cfgnt{m}$ of the class is invoked.
+
+In general, the semantics of Javalite are expressed as
+rewrites on strings using pattern matching. Consider the rewrite rule
+for the beginning of a field access instruction in the Javalite
+machine:
+$$
+\mprset{flushleft}
+	\inferrule[Field Access(eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgnt{e}\ \cfgt{\$}\ \cfgnt{f}\rp \ \cfgnt{k}\rp  \rcom 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp 
+	}
+$$
+If the string representing the current state matches the left side, then it
+creates the new string on the right. In this example, the new string
+on the right is now evaluating the expression $\cfgnt{e}$ in the field
+access, and it includes the continuation indicating that it still
+needs to complete the actual field access once the expression is
+evaluated.
+
+Other more complex rules, such as one to create a new instance of a
+class, define constraints on the rewrites and more complex
+transformations on the heap.
+$$
+\mprset{flushleft}
+	\inferrule[New]{
+      \cfgnt{r} = \mathrm{stack}_r\lp \rp\\
+      l = \mathrm{fresh}_l\lp \cfgnt{C}\rp\\\\
+      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{null} \rp ] \\\\
+      \cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \cfgt{true}\ l\rp \}]
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp  \rcom
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+	}
+$$
+In this rule, when the string matches the new-expression, it is rewritten to use
+a new heap location where all of the fields for the new object point to
+$\cfgnt{r}_\mathit{null}$
+and the location map points a new stack reference to that new object.
+
+To show the heap summary algorithm is sound and complete with respect
+to properties proved by GSE, we define a transition relation that
+relates states according GSE and refer to it as $\rgse$ or $p \rgse
+p^\prime$. Similarly we define for the new summary heap algorithm
+$\rsym$ or $q \rsym q^\prime$. For simplicity, both use lazy
+initialization as opposed to lazier or lazier\#.
+
+The full operational semantics for $\rgse$ are in the supplemental
+document. In the next section, we present the rewrite rules specific
+to $\rsym$.
+
+\subsection{Generating Summary Heaps}
+\label{sec:precise}
+The summary
+heap algorithm only
+partitions the heap at points of divergence in the control flow graph
+such as field accesses or writes (execeptional control flow due to null
+pointers) or comparisons of references (program control flow). There
+are three sets of rewrite rules specific to the summary heap
+algorithm: (i) rules to initialize symbolic references, (ii) rules to
+complete field access and field write, and (iii) rules to check
+equality and inequality of references. The other rules are common to
+both $\rsym$ and $\rgse$. The complete set of rules are shown in the
+supplemental attached with the paper.
+
+Initialization of references in GSE ($\rgse$ relation) is a
+non-deterministic choice where the reference in the heap is
+initialized to null, a new instance of the object, or to any type
+compatible object in the input heap (e.g., previously initialized by
+$\rgse$). In contrast, initialization in the $\rsym$ relation creates
+a single summary heap containing all of the possible initialization
+choices.
+
+\input{summarize-precise-incomplete}
+
+\begin{figure*}
+\begin{tabular}[c]{l}
+\scalebox{1.0}{\usebox{\boxPI}} \\
+\end{tabular}
+\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+\label{fig:symInit}
+\end{figure*}
+
+The initialization rules, \figref{fig:symInit}, are invoked whenever a
+field pointing to an uninitialized reference is accessed. The
+interaction with the solver in the definition of the rules is denoted
+by $\mathbb{S}(\phi)$ which returns true if $\phi$ is satisfiable. The
+summarize-end rule becomes active when there is nothing to
+initialize. This condition is determined by the function
+$\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
+\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which returns constraint-location
+pairs where the field $\cfgnt{f}$ is uninitialized.
+\[
+\begin{array}{rcl}
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
+& & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
+& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
+\end{array}
+\]
+A pair in the set means the field in the location maps to a reference
+that then points to $\cfgnt{l}_\mathit{un}$, and that the path to that
+location is feasible on some aliasing assignment. 
+
+% The cardinality of the set, $\theta$ is never
+%greater than one in GSE and the constraint is always satisfiable
+%because all constraints are constant. This property is relaxed in GSE
+%with heap summaries.
+
+In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
+field $f$, the $\mathit{min}_l$ function returns
+$(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
+uninitialized locations in $\Lambda$ to make initialization
+deterministic (i.e., the same heap is always initialized in the same
+way as order determines how many aliases are available in the input heap at any given point in initialization). 
+%The $\mathrm{fresh}_\cfgnt{l}(\cfgnt{C})$ call returns a new location of type $C$. 
+The set $\rho$ contains the set of
+reference-location pairs from the input heap that are potential
+aliases. Minimizing over the set of references in the pre-image ensures
+that any pair in $\rho$ is the reference $\cfgnt{r}_a$ and the location $\cfgnt{l}_a$ materialized at the same time in some prior initialization (i.e., they were once
+$\cfgnt{r}_f$ and $\cfgnt{l}_f$). Aliasing constraints
+in the new summary heap reason over these original creators; otherwise aliasing and local value set
+computation breaks down.  The reference partitions with their
+monotonicity make this determination possible.
+
+There are three sets corresponding to the non-deterministic choices in
+GSE with a fourth that preserves the pre-initialized heap structure.
+Note that the constraints always preserve the access path to the location which is $\phi_x$.
+(i) $\theta_\mathit{null}$ asserts the condition under which
+$\cfgnt{l}_\mathit{null}$ is possible (any time the solver assigns
+values to reference variables in such a way that both $\phi_x$ and $\cfgnt{r}_f =
+\cfgnt{r}_\mathit{null}$ hold). (ii)
+$\theta_\mathit{new}$ is active when $\cfgnt{r}_f$ points to the
+fresh location. This occurs when $\cfgnt{r}_f$ is not new or any other alias. (iii) each member of $\theta_\mathit{alias}$ restricts $\cfgnt{r}_f$ to
+a particular alias in $\rho$, and at the same time, not alias any member of $\rho$
+that was initialized earlier than the current choice (a later
+initialization may indeed also alias the current choice in a valid
+heap as order determines the number of aliasing choices available). And (iv) $\theta_\mathit{orig}$  implements conditional initialization to preserve the
+original heap structure. This property is needed for the bisimulation. 
+These sets are added into the heap on $\cfgnt{r}_f$ after the fields for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
+
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}[c]{c|c|c|c}
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{origHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{l}
+$\rho := \{ (\cfgnt{r}_1^i\ \cfgnt{l}_1 \}$ \\
+$\theta_\mathit{null} := \{ ( \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}\ \cfgnt{l}_\mathit{null}) \}$\\
+$\theta_\mathit{new} := \{ ( \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i\ \cfgnt{l}_2) \}$\\
+$\theta_\mathit{alias} := \{ ( \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i\ \cfgnt{l}_1) \}$\\
+$\theta_\mathit{orig} := \{ \}$ \\
+$\phi_{\mathit{1a}} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null} $ \\
+$\phi_{\mathit{1b}} := \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} $  \\
+$\phi_{\mathit{2a}} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$ \\
+$\phi_{\mathit{2b}} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i$ \\
+$\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i $ \\
+\end{tabular} \\
+(a) & (b) & (c) & (d) \\
+\end{tabular}
+\end{center}
+\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the summarize rule and constraints on the edges.}
+\label{fig:initHeap}
+\end{figure*}
+
+We visualize the initialization process in~\figref{fig:initHeap}. The
+graph in~\figref{fig:initHeap}(a) represents the initial heap. The
+reference superscripts $s$ and $i$ indicate the partition containing the reference.
+ In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a stack
+reference for the $\cfgt{this}$ variable which has two fields $x$
+and $y$ of the same type. Note that when no constraint is specified for a location,
+there is an implicit $\mathit{true}$ constraint. For example, $\cfgnt{r}_0^s$
+points to $\cfgnt{l}_0$ on the constraint $\mathit{true}$. The fields $x$ and
+$y$ point to the uninitialized reference $\cfgnt{r}_\mathit{un}$.
+
+The graph in~\figref{fig:initHeap}(b) represents the summary heap
+after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ field while
+the graph in~\figref{fig:initHeap}(c) represents the symbolic heap
+summary after the initialization of the $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ field
+following the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$. The list
+in~\figref{fig:initHeap}(d) represents the various sets constructed in
+the summarize rule during the initialization of $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. We
+also define values of constraints used as labels in the graph.
+
+Accessing field $x$ from $\cfgnt{l}_0$ creates a new input heap reference $\cfgnt{r}_1^i$ in the
+summary heap shown in~\figref{fig:initHeap}(b). Reference $\cfgnt{r}_1^i$
+points to the $\cfgnt{l}_\mathit{null}$ location under the constraint that
+$\cfgnt{r}_1^i$ is null (constraint $\phi_{1a}$ in  \figref{fig:initHeap}(d)), reference
+$\cfgnt{r}_1^i$ points to location $\cfgnt{l}_1$ under the constraint that $\cfgnt{r}_1^i$
+is not $\mathit{null}$ (constraint $\phi_{1b}$), and fresh location $\cfgnt{l}_1$ of type $C$ 
+(the type of field $\cfgnt{x}$), is added to the heap. There are no aliases because $\cfgnt{l}_1$ 
+is the first location of type $C$ to be initialized.
+
+Following $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$,
+$\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$ is initialized leading to
+the summary heap in~\figref{fig:initHeap}(c). The set $\rho$
+in~\figref{fig:initHeap}(d) contains the one potential aliases
+$\cfgnt{l}_1$ from the previous initialization for
+$\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$. It also shows the
+$\theta$-sets for this initialization and the resulting edge
+labels. Note that the ordering between aliases in
+$\theta_\mathit{alias}$ is insignificant until a third field is
+initialized and there are two potential choices.

@@ -13,7 +13,7 @@ if(x.f == y.f.f)
 
 \subsection{Properties of Reference Theories}
 
-An ideal symbolic model should be sound, complete, and efficient. We define these terms, and their relation to existing symbolic reference models, as follows:
+We posit that an ideal symbolic model should be sound, complete, and efficient. However, achieving these three goals simultaneously has proven difficult for symbolic reference analyses.
 
 \begin{compactdesc}
 \item[Sound]
@@ -28,7 +28,7 @@ After following the false branch, DSE will attempt to follow the true branch, bu
 Other techniques are incomplete in the types of programs they can evaluate. For example, some methods only accept programs where the size of memory required is independent from the program inputs ~\cite{Barnett:2006,Elkarablieh:2009}. Other restrictions include excluding programs with unbounded loops/recursion~\cite{Clarke:2004,Torlak:2014}. Since the computing models supported by these techniques are not Turing-complete, they exclude a wide class of interesting and useful programs. 
 
 \item[Efficient]
-An efficient model of references should support analysis of sufficient complexity to represent real-world programs. Unfortunately, the only available sound and complete reference theories are too computationally inefficient to be useful for problems of practical size. For example, when dereferencing an uninitialized symbolic reference, a number of methods generate separate execution paths for each possible aliasing relationship~\cite{GSE03,KiasanKunit,Cadar:2008}. By branching at each new dereferencing operation, the number of paths created by grows exponentially with the size of the input heap.
+An efficient model of references should support analysis of sufficient complexity to represent real-world programs. Unfortunately, many reference theories are too computationally inefficient to be useful for problems of practical size. For example, when dereferencing an uninitialized symbolic reference, a number of methods generate separate execution paths for each possible aliasing relationship~\cite{GSE03,KiasanKunit,Cadar:2008}. By branching at each new dereferencing operation, the number of paths created by grows exponentially with the size of the input heap.
 
 \end{compactdesc}
 

@@ -1,30 +1,19 @@
-\begin{figure}
-void example( container a,b,c,d,x,y){
-a.f = x;
-b.f = c;
-c.f = d;
-d.f = a;
-if(x.f == y.f.f)
-     abort();\\error!
-}
-\caption{completeness example}
-\label{fig:DSEtest}
-\end{figure}
+
+
+
 
 \subsection{Properties of Reference Theories}
 
-We posit that an ideal symbolic model should be sound, complete, and efficient. However, achieving these three goals simultaneously has proven difficult for symbolic reference analyses.
+We posit that an ideal symbolic memory model should be sound, complete, and efficient. However, achieving these three goals simultaneously has proven difficult for symbolic reference analyses.
 
 \begin{compactdesc}
 \item[Sound]
 During a sound program analysis, all reported program properties are in fact true for the given program. However, ensuring soundness when reasoning about references can be computationally expensive. In order to speed things up, some analysis techniques overapproximate the set of possible program inputs. While this can ease the computational burden, it creates the practical problem of sorting out the incorrect results, which is at least as hard as the original problem in the first place.
 
 \item[Complete] 
-A complete program analysis should support a turing-complete model of computing, and will evaluate all possible program behaviors. However, most proposed symbolic reference models are not complete. Incomplete theories may be classified in one of two ways. First, a theory may underapproximate the space of possible referencing relationships. Second, techniques can underapproximate the domain of all possible programs.
+A complete program analysis should support a turing-complete model of computing, and will evaluate all possible program behaviors. However, many proposed symbolic reference models are not complete. Incomplete theories may be classified in one of two ways. First, a theory may underapproximate the space of possible referencing relationships. Second, techniques can underapproximate the domain of all possible programs.
 
-Techniques that underapproximate references only explore a fragment of the possible input space. This may cause the analysis to miss valid program behaviors. One example of a technique that underapproximates the input space is DSE. Consider the example in \ref{fig:DSEtest}. During DSE, both symbolic and concrete executions occur in parallel. Suppose that for the first pass, the concrete execution picks the following points-to relationships: $a\rightarrow loc_a, b\rightarrow loc_b, c\rightarrow loc_c, d\rightarrow loc_d ,x\rightarrow loc_a,  y\rightarrow loc_b$. When the program reaches the if() statement, symbolic dereferencing of x and y are required. In order to dereference symbol x to get x.f, x is concretized to point to $loc_a$, and symbol x from field f is returned. Dereferencing y to find y.f requires concretizing y to point to $loc_b$, From there, dereferencing b.f gives us the reference d as the final value for y.f.f . Assuming the “false" branch is executed first, the branch condition (x.f != y.f.f) reduces to x!=d, which evaluates to “true" and DSE proceeds until program termination.
-After following the false branch, DSE will attempt to follow the true branch, but the branch condition x==d will evaluate to false, and so DSE will attempt a second pass starting from the beginning with a modified path condition. For the second pass, DSE adds x==d to the path condition from the beginning, to try to get the “true” branch. This time, the concrete execution will choose x to point to $loc_d$. When evaluating the branch condition, x.f will evaluate to a. Since the value for y is unchanged, the read from y.f.f evaluates to d. The branch condition reduces to a==d, which evaluates to false, so the “true” branch cannot be followed. In this instance, DSE will fail to find a path to the error condition. Other common underapproximations include disallowing heaps with aliasing~\cite{Xie:2005,Babic:2007} or recursive data structures~\cite{Dillig:2011}.
-
+Techniques that underapproximate references only explore a fragment of the possible input space. This
 Other techniques are incomplete in the types of programs they can evaluate. For example, some methods only accept programs where the size of memory required is independent from the program inputs ~\cite{Barnett:2006,Elkarablieh:2009}. Other restrictions include excluding programs with unbounded loops/recursion~\cite{Clarke:2004,Torlak:2014}. Since the computing models supported by these techniques are not Turing-complete, they exclude a wide class of interesting and useful programs. 
 
 \item[Efficient]

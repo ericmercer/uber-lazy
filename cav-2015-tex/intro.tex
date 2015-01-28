@@ -16,19 +16,26 @@ dynamic discovery of
 invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
 debugging~\cite{Ma:2011}.
 
+%
+A major reason that path conditions are so useful is that each one represents exactly the set of concrete program inputs that would result in a given execution path. For any given program, a concrete execution will follow the same path as a symbolic execution if and only if the concrete inputs satisfy the path condition. Furthermore, because path conditions are logical predicates, they allow precise reasoning over potentially unbounded sets of program inputs. 
+
+Symbolic execution's reliance on path conditions is both it's greatest strength, and a significant challenge. Since the path condition must be encoded in the form of an SMT problem, symbolic execution is limited by the capabilities of the underlying constraint solver. If the solver does not include a theory for reasoning about a given program operation, then the symbolic execution cannot proceed. Thus, extending the capabilities of symbolic execution to reason about new theories is an area of active research. 
+
+One area of research involves symbolic reasoning for referencing operations. Of primary interest is dereferencing symbolic input references. There have been many proposed solutions for reasoning about symbolic input references, however to date none of them has been able to do so in a manner that preserves symbolic execution's most desirable property, namely the ability to produce a path condition that exactly represents all possible inputs for a given execution path.
+
 % A couple of symExe’s big problems are path explosion and references. 
 
-Two of the main challenges facing current symbolic execution techniques 
-are path explosion and programs accepting references as inputs~\cite{Qu:2011,Chen:2013}.
- The path explosion problem stems from the way that 
-symbolic execution explores a program execution on a per-path basis. For 
-those programs for which there is an exponential number of possible 
-program paths, symbolic execution can be extremely inefficient. 
-References are a problem because symbolic execution requires that the 
-program state be represented by predicates formulated in terms of the 
-program inputs. Formulating such predicates for referencing operations 
-over potentially unbounded inputs has until now remained an open 
-question. 
+%Two of the main challenges facing current symbolic execution techniques 
+%are path explosion and programs accepting references as inputs~\cite{Qu:2011,Chen:2013}.
+% The path explosion problem stems from the way that 
+%symbolic execution explores a program execution on a per-path basis. For 
+%those programs for which there is an exponential number of possible 
+%program paths, symbolic execution can be extremely inefficient. 
+%References are a problem because symbolic execution requires that the 
+%program state be represented by predicates formulated in terms of the 
+%program inputs. Formulating such predicates for referencing operations 
+%over potentially unbounded inputs has until now remained an open 
+%question. 
 
 \begin{figure}
 void example( container a,b,c,d,x,y){
@@ -50,33 +57,48 @@ known as dynamic symbolic execution (DSE). When a DSE tool encounters
 an operation that is beyond the capabilities of its associated constraint 
 solvers, such as dereferencing a symbolic reference, it substitutes a valid 
 concrete result in place of the symbolic expression. However, this process 
-of concretization may cause the analysis to miss valid program behaviors. 
-Consider the example in \ref{fig:DSEtest}. During DSE, both symbolic and 
-concrete executions occur in parallel. Suppose that for the first pass, the 
-concrete execution picks the following points-to relationships: $a\rightarrow 
-loc_a, b\rightarrow loc_b, c\rightarrow loc_c, d\rightarrow loc_d ,x
-\rightarrow loc_a,  y\rightarrow loc_b$. When the program reaches the if() 
-statement, symbolic dereferencing of x and y are required. In order to 
-dereference symbol x to get x.f, x is concretized to point to $loc_a$, and 
-symbol x from field f is returned. Dereferencing y to find y.f requires 
-concretizing y to point to $loc_b$, From there, dereferencing b.f gives us 
-the reference d as the final value for y.f.f . Assuming the “false" branch is 
-executed first, the branch condition (x.f != y.f.f) reduces to x!=d, which 
-evaluates to “true" and DSE proceeds until program termination.
-After following the false branch, DSE will attempt to follow the true branch, 
-but the branch condition x==d will evaluate to false, and so DSE will 
-attempt a second pass starting from the beginning with a modified path 
-condition. For the second pass, DSE adds x==d to the path condition from 
-the beginning, to try to get the “true” branch. This time, the concrete 
-execution will choose x to point to $loc_d$. When evaluating the branch 
-condition, x.f will evaluate to a. Since the value for y is unchanged, the read 
-from y.f.f evaluates to d. The branch condition reduces to a==d, which 
-evaluates to false, so the “true” branch cannot be followed. In this instance, 
-DSE will fail to find a path to the error condition. 
+of concretization introduces approximation into the formerly exact path condition,
+and may even cause the analysis to miss valid program behaviors. 
+
+%\begin{figure}
+%void example( container a,b,c,d,x,y){
+%a.f = x;
+%b.f = c;
+%c.f = d;
+%d.f = a;
+%if(x.f == y.f.f)
+%     abort();\\error!
+%}
+%\caption{completeness example}
+%\label{fig:DSEtest}
+%\end{figure}
+%
+%Consider the example in \ref{fig:DSEtest}. During DSE, both symbolic and 
+%concrete executions occur in parallel. Suppose that for the first pass, the 
+%concrete execution picks the following points-to relationships: $a\rightarrow 
+%loc_a, b\rightarrow loc_b, c\rightarrow loc_c, d\rightarrow loc_d ,x
+%\rightarrow loc_a,  y\rightarrow loc_b$. When the program reaches the if() 
+%statement, symbolic dereferencing of x and y are required. In order to 
+%dereference symbol x to get x.f, x is concretized to point to $loc_a$, and 
+%symbol x from field f is returned. Dereferencing y to find y.f requires 
+%concretizing y to point to $loc_b$, From there, dereferencing b.f gives us 
+%the reference d as the final value for y.f.f . Assuming the “false" branch is 
+%executed first, the branch condition (x.f != y.f.f) reduces to x!=d, which 
+%evaluates to “true" and DSE proceeds until program termination.
+%After following the false branch, DSE will attempt to follow the true branch, 
+%but the branch condition x==d will evaluate to false, and so DSE will 
+%attempt a second pass starting from the beginning with a modified path 
+%condition. For the second pass, DSE adds x==d to the path condition from 
+%the beginning, to try to get the “true” branch. This time, the concrete 
+%execution will choose x to point to $loc_d$. When evaluating the branch 
+%condition, x.f will evaluate to a. Since the value for y is unchanged, the read 
+%from y.f.f evaluates to d. The branch condition reduces to a==d, which 
+%evaluates to false, so the “true” branch cannot be followed. In this instance, 
+%DSE will fail to find a path to the error condition. 
 
 % You can model references by forking the system state, but that makes 
 %path explosion worse.
-An alternative to concretization is to construct the heap in a lazy manner,
+An alternative to concretization is to construct the input heap in a lazy manner,
 deferring materialization of objects on the concrete heap until they
 are needed for the analysis to proceed. The materialization creates
 additional non-deterministic choice points in the symbolic execution
@@ -86,7 +108,10 @@ an alias to a previously initialized symbolic reference.  Symbolic
 execution then follows concrete program semantics for materialized
 heap locations. Although this approach enables the analysis of heap
 manipulating programs, a large number of feasible concrete heap
-configurations are created, exacerbating the path explosion problem.
+configurations are created. Since each configuration requires a separate
+path, GSE induces a path explosion problem while at the 
+same time splitting the symbolic input space and decreasing the 
+utility of the path condition.
 
 % You can solve path explosion by bounding the execution and rolling 
 %everything into one big equation, but then you’re incomplete. Here is an 
@@ -96,8 +121,8 @@ One solution to the path explosion problem is to model the input heap as a
 predicate over a bounded set of locations. This allows the analysis to 
 maintain a single representation for a set of possible heap configurations 
 on each execution path, without case splitting for dereferencing operations. 
-However, by placing an arbitrary bounds on the size of the input heap, the 
-analysis performed by these techniques is not complete.
+However, by placing an arbitrary bounds on the size of the input heap, neither
+the path condition, nor the analysis performed by these techniques is complete.
 
 % This paper introduces a technique that is, to the best knowledge of the 
 %authors, the first sound and complete heap for SymEXE
@@ -107,8 +132,10 @@ respect to the properties provable by symbolic execution}, and models all
 possible heap configurations along a given execution path. To the 
 knowledge of the authors, it is the first technique to do so. 
 
+THIS NEXT BIT NEEDS SOME WORK, STILL:
+
 % Creating this technique required the following key insights:
-These advances were enabled by the following key insights:
+These advances were enabled by the following key insights: 
 
 First, that a complete analysis requires an unconstrained input heap. 
 However, it is unclear from prior work how this might be accomplished.

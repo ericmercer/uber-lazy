@@ -2,8 +2,8 @@
 
 \noindent\textbf{Symbolic Execution} 
 Initial work on symbolic execution largely focused on checking
-properties of imperative programs with primitive primitive
-types~\cite{Clarke:76,King:76}. Limitations of early symbolic execution techniques includes non-primitive data types, path explosion and non-symbolic operations. Subsequent adaptations of symbolic execution have sought to overcome these limitations.
+properties of imperative programs with primitive
+types~\cite{Clarke:76,King:76}. Limitations of early symbolic execution techniques included non-primitive data types, path explosion and non-symbolic operations. Subsequent adaptations have sought to overcome these limitations.
 
 To address the issue of references, several projects have generalized
 the core idea of symbolic execution, enabling it to be applied to
@@ -24,9 +24,12 @@ In the absence of an effective theory of references, DSE has been a natural choi
 Bounded model checking (BMC) techniques seek to avoid the path explosion problem by converting an entire program execution, along with its specifications, into a constraint problem called a verification condition. The advantage in creating a single constraint is that SMT solvers can often reason more efficiently about all paths simultaneously rather than on a case-by-case basis. Many BMC methods include a model for reasoning about references, including those described in ~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However, BMC techniques are not complete for general programs, due to the need to set an execution path-length bound prior to conducting the analysis. By extension, the bounded reference models used in BMC methods are generally not complete. Other limitations include assuming that symbolic references do not alias~\cite{Xie:2005,Babic:2007}, that data structures are not recursive~\cite{Dillig:2011}, or requiring that symbolic references are never dereferenced~\cite{Clarke:2004}.
 
 \noindent\textbf{Symbolic Heap Representations}
-A number of techniques use summary heap representations that are not sound. These models can greatly reduce the complexity of dereferencing queries, but do not allow.
+Due to technological limitations, many early symbolic heap representations focused on reducing the computational complexity of dereferencing queries. By introducing certain heuristics and approximations, the computational burden can be greatly reduced, at the cost of precision. Since the problem of weeding out false positives can be at least as difficult as the program analysis itself, there has been a renewed interest in more precise heap representations. However, these newer methods generally err on the side of under-approximation, producing an analysis that is not complete.
+
+Several GSE techniques~\cite{GSE03,KiasanKunit} form an exception to this rule, presenting an input heap model that is unconstrained and unbounded. However, GSE does not offer a mechanism for representing the set of heaps along an execution path as a unified symbolic value. As a result GSE does not produce a path condition representing the complete set of inputs for a given execution path, negating a significant advantage of symbolic execution. The work presented here overcomes this limitation by using symbolic values to represent the heap.
+
 % a good place to mention procedure summaries, like Yorsh and the Dilligs.
-Our work builds upon a number of prior techniques that use sets of guarded values to represent program state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. The methods presented in~\cite{Sen:2014,Torlak:2014,Yorsh:2008} use value sets to represent all symbolic program state, including references. While symbolic referencing operations could, in principle, be supported with these methods, it is not clear from the published material exactly how that might be accomplished, especially in the case of dereferencing. All of the methods presenting solutions to the dereferencing problem~\cite{Xie:2005,Dillig:2011,Elkarablieh:2009} are not complete, because they require setting a bound on the size of the input heap prior to conducting the analysis.
+The symbolic heap value sets presented in this work build upon a number of prior techniques that use sets of guarded values to represent program state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. The methods presented in~\cite{Sen:2014,Torlak:2014,Yorsh:2008} use value sets to represent all symbolic program state, including references. While symbolic referencing operations could, in principle, be supported with these methods, it is not clear from the published material exactly how that might be accomplished, especially in the case of dereferencing. All of the methods presenting solutions to the dereferencing problem~\cite{Xie:2005,Dillig:2011,Elkarablieh:2009} are not complete, for a variety of reasons which have been enumerated previously.
 
 %\noindent\textbf{A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages Emina Torlak and Ras Bodik. Programming Language Design and Implementation} (PLDI'14)
 %

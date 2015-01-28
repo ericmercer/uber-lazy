@@ -37,18 +37,6 @@ One area of research involves symbolic reasoning for referencing operations. Of 
 %over potentially unbounded inputs has until now remained an open 
 %question. 
 
-\begin{figure}
-void example( container a,b,c,d,x,y){
-a.f = x;
-b.f = c;
-c.f = d;
-d.f = a;
-if(x.f == y.f.f)
-     abort();\\error!
-}
-\caption{completeness example}
-\label{fig:DSEtest}
-\end{figure}
 
 % You can solve dereferencing by concretization, but that’s incomplete. 
 %Here is an example of why this stinks.

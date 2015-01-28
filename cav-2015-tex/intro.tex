@@ -4,9 +4,9 @@
 
 In recent years symbolic execution has provided the basis for various
 software testing and analysis techniques. Symbolic execution
-systematically explores the program execution space using symbolic
-input values, and for each explored path, computes constraints on the
-symbolic inputs to create a \emph{ path condition}.  The path
+systematically explores the program execution space represeing input values symbolically, 
+and for each explored path, it computes constraints on the
+symbolic inputs to create a \emph{ path condition}.  Path
 conditions computed by symbolic execution characterize the observed
 program execution behaviors and have been used as an enabling
 technology for various applications, e.g., regression
@@ -21,7 +21,12 @@ A major reason that path conditions are so useful is that each one represents ex
 
 Symbolic execution's reliance on path conditions is both it's greatest strength, and a significant challenge. Since the path condition must be encoded in the form of an SMT problem, symbolic execution is limited by the capabilities of the underlying constraint solver. If the solver does not include a theory for reasoning about a given program operation, then the symbolic execution cannot proceed. Thus, extending the capabilities of symbolic execution to reason about new theories is an area of active research. 
 
-One area of research involves symbolic reasoning for referencing operations. Of primary interest is dereferencing symbolic input references. There have been many proposed solutions for reasoning about symbolic input references, however to date none of them has been able to do so in a manner that preserves symbolic execution's most desirable property, namely the ability to produce a path condition that exactly represents all possible inputs for a given execution path.
+A primary interest in the research is how to dereference symbolic
+input references in an unknown heap. Despite the many proposed solutions for reasoning
+about symbolic input references and heaps (ADD CITATIONSS), to date, none has
+been able to preserve symbolic execution's most desirable property:
+the ability to produce a path condition that exactly represents all
+possible input heaps for a given execution path.
 
 % A couple of symExe’s big problems are path explosion and references. 
 
@@ -96,10 +101,10 @@ an alias to a previously initialized symbolic reference.  Symbolic
 execution then follows concrete program semantics for materialized
 heap locations. Although this approach enables the analysis of heap
 manipulating programs, a large number of feasible concrete heap
-configurations are created. Since each configuration requires a separate
-path, GSE induces a path explosion problem while at the 
+configurations are created. \emph{Since each configuration requires a separate
+path} (what does this mean), GSE induces a path explosion problem while at the 
 same time splitting the symbolic input space and decreasing the 
-utility of the path condition.
+utility of the path condition. (The last sentence is difficult to undersatnd. Consdier a rewrite).
 
 % You can solve path explosion by bounding the execution and rolling 
 %everything into one big equation, but then you’re incomplete. Here is an 
@@ -114,11 +119,16 @@ the path condition, nor the analysis performed by these techniques is complete.
 
 % This paper introduces a technique that is, to the best knowledge of the 
 %authors, the first sound and complete heap for SymEXE
-This paper introduces a technique for modeling references and their 
-associated operations that is both sound and complete\footnote{with 
-respect to the properties provable by symbolic execution}, and models all 
-possible heap configurations along a given execution path. To the 
-knowledge of the authors, it is the first technique to do so. 
+This paper introduces a technique for modeling references and their
+associated operations that is sound and complete with respect to the
+properties provable by symbolic execution. The technique captures in a
+summary representation all heaps that follow a specific program path
+up to a given point of execution. To the knowledge of the authors, it
+is the first technique to do so.
+
+The technique begins with the notion of an unconstrained input
+heap. As a symblic integer represents all integers at the beginning of
+execution, so does the symbolic input heap.
 
 THIS NEXT BIT NEEDS SOME WORK, STILL:
 

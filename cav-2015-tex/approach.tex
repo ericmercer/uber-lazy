@@ -1,0 +1,217 @@
+\subsection{Generating Summary Heaps}
+\label{sec:precise}
+The summary
+heap algorithm only
+partitions the heap at points of divergence in the control flow graph
+such as field accesses or writes (execeptional control flow due to null
+pointers) or comparisons of references (program control flow). There
+are three sets of rewrite rules specific to the summary heap
+algorithm: (i) rules to initialize symbolic references, (ii) rules to
+complete field access and field write, and (iii) rules to check
+equality and inequality of references. 
+
+
+\input{summarize-precise-incomplete}
+
+\begin{figure*}
+\begin{tabular}[c]{l}
+\scalebox{1.0}{\usebox{\boxPI}} \\
+\end{tabular}
+\caption{Summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+\label{fig:symInit}
+\end{figure*}
+
+The initialization rule in \figref{fig:symInit} is invoked whenever a
+field pointing to an uninitialized reference is accessed. The
+interaction with the solver in the definition of the rules is denoted
+by $\mathbb{S}(\phi)$ which returns true if $\phi$ is satisfiable.
+%The summarize-end rule becomes active when there is nothing to
+%initialize.
+ The check for uninitialized references is determined by the function
+ $\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
+ \{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which returns constraint-location
+ pairs where the field $\cfgnt{f}$ is uninitialized.
+\[
+\begin{array}{rcl}
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\
+& & \ \ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\
+& & \ \ \ \ \ \ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
+\end{array}
+\]
+
+In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
+field $f$, the $\mathit{min}_l$ function returns
+$(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
+uninitialized locations in $\Lambda$ to make initialization
+deterministic.  The set $\rho$ contains the set of reference-location
+pairs from the input heap that are potential aliases.  There are four
+choices: (i) $\theta_\mathit{null}$ asserts the condition under which
+$\cfgnt{l}_\mathit{null}$ is possible, (ii) $\theta_\mathit{new}$ is
+active when $\cfgnt{r}_f$ points to the fresh location, (iii) each
+member of $\theta_\mathit{alias}$ restricts $\cfgnt{r}_f$ to a
+particular alias in $\rho$, and at the same time, not alias any member
+of $\rho$ that was initialized earlier than the current choice, and
+(iv) $\theta_\mathit{orig}$ implements conditional initialization to
+preserve the original heap structure.  These sets are added into the
+heap on $\cfgnt{r}_f$ after the fields for $\cfgnt{l}_f$ are
+initialized to $\cfgnt{r}_\mathit{un}$.
+
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}[c]{c|c|c|c}
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{origHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{l}
+$\rho := \{ (\cfgnt{r}_1^i\ \cfgnt{l}_1 \}$ \\
+$\theta_\mathit{null} := \{ ( \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}\ \cfgnt{l}_\mathit{null}) \}$\\
+$\theta_\mathit{new} := \{ ( \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i\ \cfgnt{l}_2) \}$\\
+$\theta_\mathit{alias} := \{ ( \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i\ \cfgnt{l}_1) \}$\\
+$\theta_\mathit{orig} := \{ \}$ \\
+$\phi_{\mathit{1a}} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null} $ \\
+$\phi_{\mathit{1b}} := \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} $  \\
+$\phi_{\mathit{2a}} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$ \\
+$\phi_{\mathit{2b}} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i$ \\
+$\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i $ \\
+\end{tabular} \\
+(a) & (b) & (c) & (d) \\
+\end{tabular}
+\end{center}
+\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the summarize rule and constraints on the edges.}
+\label{fig:initHeap}
+\end{figure*}
+
+We visualize the initialization process in~\figref{fig:initHeap}. The
+graph in~\figref{fig:initHeap}(a) represents the initial heap. The
+reference superscripts $s$ and $i$ indicate the partition containing
+the reference.  In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a
+stack reference for the $\cfgt{this}$ variable which has two fields
+$x$ and $y$ of the same type. Note that when no constraint is
+specified for a location, there is an implicit $\mathit{true}$
+constraint. For example, $\cfgnt{r}_0^s$ points to $\cfgnt{l}_0$ on
+the constraint $\mathit{true}$. The fields $x$ and $y$ point to the
+uninitialized reference $\cfgnt{r}_\mathit{un}$. The graph
+in~\figref{fig:initHeap}(b) represents the summary heap after the
+initialization of the $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$ field
+while the graph in~\figref{fig:initHeap}(c) represents the symbolic
+heap summary after the initialization of the
+$\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$ field following the
+initialization of $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$. The list
+in~\figref{fig:initHeap}(d) represents the various sets constructed in
+the summarize rule during the initialization of
+$\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. We also define values of
+constraints used as labels in the graph.
+
+
+\input{precise-fig-incomplete}
+
+There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
+the value of a field (field-access) and the other when we write to a
+field (field-write). Both rules first check that the operations can be
+performed on a non-null location.  In the field-access rewrite rule
+in~\figref{fig:fHeap} gets the field type $\cfgnt{C}$ and uses the
+summarize machine, \figref{fig:symInit}, to get a new summary heap
+that is initialized on the field $\cfgnt{f}$. After initialization,
+the summary heap is further modified to include a new stack reference
+pointing to the value set from the read. The new stack reference is
+the return value from the operation. 
+
+
+ \input{value-set-def} 
+
+The value set computation is local: it only considers constraint
+locations on the reference $\cfgnt{r}$. Further, it only includes
+things that are feasible under the current path condition $\phi_g$. It
+also ensures that the access path is valid. There is a constraint
+$\phi$ from the base reference $r$ and a given location. Once a
+location $l$ is selected, the field $\cfgnt{f}$ is accessed to get
+another reference $r^\prime$, and from that reference there is a set
+of locations each with a constraint. The first constraint $\phi$ from
+the base reference plus this second constraint to the actual location
+of the field $\phi^\prime$ comprise the access path. For each member
+of the value set, these constraints together with the global path
+constraint must be satisfied on some aliasing assignment.
+
+
+For field-write in~\figref{fig:fHeap}, after the non-null check and
+strengthening of the global heap constraint, it computes the current
+references associated with the field in every location in
+$\Psi_\cfgnt{x}$. Please note that the reference $\cfgnt{r}_x$ is the
+base reference whose field, $\cfgnt{r}_\mathit{cur}$ is being written
+to while the reference $r$ is the target reference. The set $\Psi_x$
+contains tuples $(\phi\ l\ \cfgnt{r}_\mathit{cur})$ of constraints,
+locations, and references. These tuples represent access chains
+leading from $\cfgnt{r}_x$ to the reference of the field,
+$\cfgnt{r}_\mathit{cur}$. The goal is to change the fields to no
+longer point to $\cfgnt{r}_\mathit{cur}$, but rather fresh references
+that have both the original locations before the write and the
+locations from the write in the value sets (i.e., conditional
+write). Since the target of the write is $r$, the rule checks that the
+location constraint pairs of $\cfgnt{L}(\cfgnt{r})$ are satisfiable
+when accessed through the $\cfgnt{r}_x$ chain in the strengthening
+function.  \input{st-def} Constraints on locations are strengthened
+with new aliasing conditions and those that are feasible with the
+current path constraint are retained.
+
+Strengthening in the field write creates a value set that contains two
+types of locations: those for the case where the write is feasible
+(the first call), and those for the case where it is not (the second
+call).  This is the conditional in the write. In the case that $\phi$
+is true then $\cfgnt{r}_\mathit{cur}$ will point to the constraint
+location pairs of $\cfgnt{L}(\cfgnt{r})$ while if $\phi$ is false then
+$\cfgnt{r}_\mathit{cur}$ will continue to point to the constraint
+location pair it is currently referenced.  As the references are
+immutable, the rule creates fresh references for each
+$\cfgnt{r}_\mathit{cur}$ and points them to the appropriate value
+sets.
+
+\input{precise-eq}
+
+\begin{figure*}
+\begin{center}
+\begin{tabular}[c]{c}
+\scalebox{1.0}{\usebox{\boxPEQ}} \\
+% & \usebox{\boxPEX} \\ \\
+%(a) & (b) \\
+\end{tabular}
+\end{center}
+\caption{The reference compare rewrite rule for true, $\rsym^\mathit{E}$ outcomes.}
+\label{fig:eqs}
+\end{figure*}
+
+
+The rewrite rules to compare two references in the symbolic summary
+heap are shown in~\figref{fig:eqs}. The equals references-true rewrite
+rule returns true when two references $\cfgnt{r}_0$ and $\cfgnt{r}_1$
+\emph{can} be equal. Intutively, $\Phi_\alpha$ contains all
+constraints under which $\cfgnt{r}_0$ and $\cfgnt{r}_1$ may point to
+the same location in the symbolic summary heap. The second set,
+$\Phi_0$, contains constraints under which the reference $\cfgnt{r}_0$
+points to corresponding locations such that the reference
+$\cfgnt{r}_1$ \emph{does not} point to those locations under any
+constraint. Finally, the set, $\Phi_1$, contains constraints under
+which $\cfgnt{r}_1$ points to corresponding locations and
+$\cfgnt{r}_0$ \emph{does not} point to those locations under any
+constraint. We use the three sets of constraints to update the current
+global heap constraint $\phi_g$ and create a new global heap
+constraint $\phi_g^\prime$. We add to $\phi_g$ the disjunction of the
+constraints in $\Phi_\alpha$ to indicate that if any of the
+constraints are satisfiable, then references $\cfgnt{r}_0$ and
+$\cfgnt{r}_1$ can be equal. Furthermore, we conjoin to the global heap
+constraint $\phi_g^\prime$, the conjunctions of negations to the
+constraints in $\Phi_0$ and $\Phi_1$. This indicates for locations
+that are not common to the references, the negations of their
+constraints are satisfiable. The rule does not complete (i.e., is not
+feasible) if the new global constraint is not satisfied on any
+aliasing assignment. In such a case, the $\cfgt{true}$ outcome is not
+possible on any heap in the summary. Before the rewrite rule returns
+$\cfgt{true}$ we check the satisfiability of the updated global heap
+constraint. The reference-false is the logical dual of the rule.
+
+

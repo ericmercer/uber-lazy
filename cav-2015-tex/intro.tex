@@ -21,12 +21,8 @@ A major reason that path conditions are so useful is that each one represents ex
 
 Symbolic execution's reliance on path conditions is both it's greatest strength, and a significant challenge. Since the path condition must be encoded in the form of an SMT problem, symbolic execution is limited by the capabilities of the underlying constraint solver. If the solver does not include a theory for reasoning about a given program operation, then the symbolic execution cannot proceed. Thus, extending the capabilities of symbolic execution to reason about new theories is an area of active research. 
 
-A primary interest in the research is how to dereference symbolic
-input references in an unknown heap. Despite the many proposed solutions for reasoning
-about symbolic input references and heaps (ADD CITATIONSS), to date, none has
-been able to preserve symbolic execution's most desirable property:
-the ability to produce a path condition that exactly represents all
-possible input heaps for a given execution path.
+\subsection{Heaps as Symbolic Values}
+A significant body of research is focused on reasoning about symbolic input references in an unknown input heap. Of particular interest are symbolic dereferencing and updating operations. However, despite many years of intensive research, a definitive solution has remained elusive. To date, none of the proposed techniques has been able to preserve all of symbolic execution's most essential properties, in particular: 1) The ability reason over arbitrary, unbounded, and otherwise unconstrained symbolic input values, and 2) The ability to produce a path condition that exactly represents all possible program values for a given execution path. The most important techniques and their limitations are broadly defined below, while a more detailed evaluation of individual contributions is reserved for the related works section.
 
 % A couple of symExe’s big problems are path explosion and references. 
 
@@ -101,17 +97,27 @@ an alias to a previously initialized symbolic reference.  Symbolic
 execution then follows concrete program semantics for materialized
 heap locations. Although this approach enables the analysis of heap
 manipulating programs, a large number of feasible concrete heap
-configurations are created. \emph{Since each configuration requires a separate
-path} (what does this mean), GSE induces a path explosion problem while at the 
-same time splitting the symbolic input space and decreasing the 
-utility of the path condition. (The last sentence is difficult to undersatnd. Consdier a rewrite).
+configurations are created. This creates two problems: First, since testing each configuration requires following a separate
+execution path to it's termination, GSE induces a path explosion problem. Second, by splitting the 
+symbolic input space between the various aliasing choices, GSE effectively splits the path condition between 
+multiple symbolic states. Since subsequent reference 
+initializations are nondeterministic on the separated execution paths,
+it is not generally possible to merge path conditions once they have been split.
+By splitting paths without allowing the possibility of recombining them,
+GSE is both computationally expensive, and fails to produce
+complete path conditions.
 
 %Attempt to argue for completeness:
-In searching for a solution to the path explosion problem, it is tempting to consider one of the several techniques developed for representing multiple heap shapes within a single predicate. However, in contrast to GSE, these techniques tend to impose constraints on the symbolic input heap. These constraints extend to the path condition, such that it no longer forms a complete representation of all possible input heaps.
+In searching for a solution to the path explosion problem, it is tempting to consider one of the several techniques developed for representing multiple heap shapes within a single predicate. However, these techniques all impose constraints on the symbolic input heap. 
 
 A common constraint is a requirement to specify some arbitrary bound before starting the analysis. For example, the analysis might require that the maximum number of nodes in the heap be specified. This creates a problem, because it's difficult to determine beforehand the right bound to set to ensure completeness, and the analysis may provide no completeness information upon termination. Other limitations prevalent with summary-type heap representations include prohibiting recursive data structures, data structures with loops, or disallowing any type of aliasing whatsoever.
 
-Since these constraints are frequently built in to the core of the underlying representation, it is not often obvious how to remove them. For example, methods that require setting bounds on the node count are usually predicated on a fixed address space model. In a fixed model, symbolic pointer dereferencing is accomplished by first conducting a search for potential aliases of compatible type, then producing an expression based on that set of aliases. Since number of terms in the expression depends on the size of the address space, it seems that dereferencing a pointer in a space with an unbounded number of aliases would require an expression with an unbounded number of terms.
+It is important to note that these constraints are not merely arbitrary parameters chosen for the purposes of preventing infinite recursion. Instead, they are fundamental limitations of the underlying representations. For example, methods that require setting bounds on the size of the input heap are often predicated on a memory model that requires fixing the address space from the beginning of program execution. 
+
+Since these constraints are built in to the core of these techniques, it is not obvious how to remove them. In the case of the fixed address space models, symbolic pointer dereferencing is accomplished by first conducting a search for the set of all potential aliases of compatible type within the address space, then producing an expression based on that set of aliases. Since number of terms in the expression depends on the size of the address space, it seems that dereferencing a pointer in a space with an unbounded number of aliases would require an expression with an unbounded number of terms.
+
+In all cases, these constraints impose hidden qualifications on the validity of the path condition. The path condition is only valid for the set of heaps satisfying the hidden constraints, instead of the complete set of all possible input heaps. The end results are that the symbolic execution may fail to discover valid program behavior, and the validity of any subsequent analysis relying on the exactness of the path condition will be compromised. 
+
 
 % You can solve path explosion by bounding the execution and rolling 
 %everything into one big equation, but then you’re incomplete. Here is an 
@@ -126,17 +132,16 @@ Since these constraints are frequently built in to the core of the underlying re
 
 % This paper introduces a technique that is, to the best knowledge of the 
 %authors, the first sound and complete heap for SymEXE
-This paper introduces a technique for modeling references and their
-associated operations that is sound and complete with respect to the
-properties provable by symbolic execution. The technique captures in a
-summary representation all heaps that follow a specific program path
-up to a given point of execution. To the knowledge of the authors, it
+\subsection{A Definitive Symbolic Heap}
+It is apparent that despite the many proposed solutions, none of them 
+represent the heap as an unconstrained, unbounded, and complete
+symbolic value. In other words, there is not yet a definitive symbolic heap. 
+
+This paper introduces a technique for modeling the symbolic input heap, symbolic references, and their
+associated operations as completely as any other symbolic value. Using this technique, the symbolic input heap is truly a blank slate without any hidden restrictions, and the path condition captures the complete set of all heaps that follow a specific program path up to a given point of execution. To the knowledge of the authors, it
 is the first technique to do so.
 
-The technique begins with the notion of an unconstrained input
-heap. As a symblic integer represents all integers at the beginning of
-execution, so does the symbolic input heap.
-
+\subsection{Contributions}
 THIS NEXT BIT STILL NEEDS SOME WORK:
 
 % Creating this technique required the following key insights:

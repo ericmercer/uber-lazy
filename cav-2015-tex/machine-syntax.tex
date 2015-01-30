@@ -1,5 +1,5 @@
-\begin{figure}
-\begin{center}
+\newsavebox{\boxMachine}
+\savebox{\boxMachine}{
 \cfgstart
 \cfgrule{$\phi$}{($\phi$) 
 \cfgor $\phi \bowtie \phi$ 
@@ -28,8 +28,4 @@
 \cfgor{\lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgt{*} $\rightarrow$ \cfgnt{k}\rp}}
 \cfgorline{\lp\cfgt{begin} \cfgnt{*} \lp \cfgnt{e} ...\rp\ $\rightarrow$ \cfgnt{k}\rp\ 
 \cfgor{\lp\cfgt{pop} $\eta$ \cfgnt{k}\rp}}
-\cfgend
-\end{center}
-\caption{The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
-\label{fig:machine-syntax}
-\end{figure}
+\cfgend}

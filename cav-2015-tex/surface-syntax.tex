@@ -1,5 +1,5 @@
-\begin{figure}
-\begin{center}
+\newsavebox{\boxSurface}
+\savebox{\boxSurface}{
 \cfgstart
 \cfgrule{P}{\lp $\mu$ \lp \cfgnt{C} \cfgnt{m}\rp\rp}
 \cfgrule{$\mu$}{(\cfgnt{CL} ...)}
@@ -24,8 +24,4 @@
 \cfgrule{v}{\cfgnt{r} \cfgor \cfgt{null} \cfgor \cfgt{true} \cfgor \cfgt{false} \cfgor \cfgt{error}}
 \cfgrule{r}{\cfgt{number}}
 %\cfgrule{id}{\cfgt{variable-not-otherwise-mentioned}}
-\cfgend
-\end{center}
-\caption{The Javalite surface syntax.}
-\label{fig:surface-syntax}
-\end{figure}
+\cfgend}

@@ -1,18 +1,36 @@
-A fundamental challenge of using symbolic execution for software
-analysis has been the treatment of dynamically allocated
-data. Generalized symbolic execution (GSE) techniques have addressed
-this challenge by materializing a concrete heap lazily during field
-accesses.  These techniques however, exacerbate the path explosion
-problem.  In this work, we present a summary heap approach which takes
-inspiration from the static analysis domain and defines a bipartite
-graph to encode multiple heaps in single representation, which, unlike
-state-of-the-art static analysis approaches, (i) supports aliasing,
-(ii) does not require rewrite of constraints on heap updates, and
-(iii) can initialize the heap-on-the-fly. We also define a summary
-heap algorithm to perform heap updates during symbolic execution on
-this representation in order to mitigate the path explosion problem in
-GSE techniques. Our approach is sound and complete with respect to the
-properties provable by GSE. A preliminary evaluation of our
-implementation in Java Pathfinder framework shows the summary heap
-enables the initialization of larger, more complex heaps than
-previously possible.
+A fundamental challenge of using symbolic execution for software analysis 
+has been the treatment of dynamically allocated data. The main problems 
+center on dereferencing symbolic data. When dereferencing symbolic values 
+from an unconstrained symbolic input heap, existing methods resort to either 
+approximation or case splitting. Since both options negate significant 
+advantages of symbolic execution techniques, finding a definitive symbolic 
+heap representation has been an open problem. This paper introduces a 
+new technique for representing and manipulating symbolic heaps that (i) 
+reasons over arbitrary, unbounded, and otherwise unconstrained symbolic 
+input values, and (ii) produces a path condition that exactly represents all 
+possible program values for a given execution path. The symbolic heap 
+representation is the first to produce path conditions that are provably sound 
+and complete with respect to all program properties verifiable through 
+symbolic execution, without any restrictions or simplifying assumptions. An 
+evaluation of a proof-of-concept implementation in the Java Pathfinder 
+framework is presented, demonstrating the computational feasibility of the 
+approach.
+
+%A fundamental challenge of using symbolic execution for software
+%analysis has been the treatment of dynamically allocated
+%data. Generalized symbolic execution (GSE) techniques have addressed
+%this challenge by materializing a concrete heap lazily during field
+%accesses.  These techniques however, exacerbate the path explosion
+%problem.  In this work, we present a summary heap approach which takes
+%inspiration from the static analysis domain and defines a bipartite
+%graph to encode multiple heaps in single representation, which, unlike
+%state-of-the-art static analysis approaches, (i) supports aliasing,
+%(ii) does not require rewrite of constraints on heap updates, and
+%(iii) can initialize the heap-on-the-fly. We also define a summary
+%heap algorithm to perform heap updates during symbolic execution on
+%this representation in order to mitigate the path explosion problem in
+%GSE techniques. Our approach is sound and complete with respect to the
+%properties provable by GSE. A preliminary evaluation of our
+%implementation in Java Pathfinder framework shows the summary heap
+%enables the initialization of larger, more complex heaps than
+%previously possible.

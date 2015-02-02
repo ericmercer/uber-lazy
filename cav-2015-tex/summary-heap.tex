@@ -1,4 +1,5 @@
 \section{Summary Heap Framework}
+\label{sec:sh}
 The summary heap algorithm is defined using
 Javalite~\cite{saints-MS}. The small-step semantics of Javalite,
 defined as a syntactic machine using a CESK architecture, are modified
@@ -173,13 +174,3 @@ $\cfgnt{r}_\mathit{null}$
 and the location map points a new stack reference to that new object.
 Notice that references for objects from the new-expression are auxiliary literals
 so they do not appear in any constraint in the summary heap as an aliasing option.
-
-\begin{comment}
-MOVE TO THE PROOF SECTION
-To show the heap summary algorithm is sound and complete with respect
-to properties proved by GSE, a transition relation that
-relates states according GSE is defined as $\rgse$ or $p \rgse
-p^\prime$. Similarly the transition relation for the new summary heap algorithm is given as
-$\rsym$ or $q \rsym q^\prime$ (defined in the next section). For simplicity, both use lazy
-initialization as opposed to lazier or lazier\#. The full operational semantics for $\rgse$ are in the appendix. 
-\end{comment}

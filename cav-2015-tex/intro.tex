@@ -17,12 +17,23 @@ invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
 debugging~\cite{Ma:2011}.
 
 %
-A major reason that path conditions are so useful is that each one represents exactly the set of concrete program inputs that would result in a given execution path. For any given program, a concrete execution will follow the same path as a symbolic execution if and only if the concrete inputs satisfy the path condition. Furthermore, because path conditions are logical predicates, they allow precise reasoning over potentially unbounded sets of program inputs. 
+%Two major factors behind the utility symbolic execution are of path conditions is that each one represents exactly the set of concrete program inputs that would result in a given execution path. For any given program, a concrete execution will follow the same path as a symbolic execution if and only if the concrete inputs satisfy the path condition. 
 
-Symbolic execution's reliance on path conditions is both it's greatest strength, and a significant challenge. Since the path condition must be encoded in the form of an SMT problem, symbolic execution is limited by the capabilities of the underlying constraint solver. If the solver does not include a theory for reasoning about a given program operation, then the symbolic execution cannot proceed. Thus, extending the capabilities of symbolic execution to reason about new theories is an area of active research. 
+%Furthermore, because path conditions are logical predicates, they allow precise reasoning over potentially unbounded sets of program inputs. 
 
-\subsection{Heaps as Symbolic Values}
-A significant body of research is focused on reasoning about symbolic input references in an unknown input heap. Of particular interest are symbolic dereferencing and updating operations. However, despite many years of intensive research, a definitive solution has remained elusive. To date, none of the proposed techniques has been able to preserve all of symbolic execution's most essential properties, in particular: 1) The ability reason over arbitrary, unbounded, and otherwise unconstrained symbolic input values, and 2) The ability to produce a path condition that exactly represents all possible program values for a given execution path. The most important techniques and their limitations are broadly defined below, while a more detailed evaluation of individual contributions is reserved for the related works section.
+%Symbolic execution's reliance on path conditions is both it's greatest strength, and a significant challenge. Since the path condition must be encoded in the form of an SMT problem, symbolic execution is limited by the capabilities of the underlying constraint solver. If the solver does not include a theory for reasoning about a given program operation, then the symbolic execution cannot proceed. Thus, extending the capabilities of symbolic execution to reason about new theories is an area of active research. 
+
+The primary virtue of symbolic execution is precision, being precise in at least two ways. First, the analysis it performs is sound and complete, capable of discovering any observable program behavior without returning any false positives. Second, the path condition is sound and complete, representing exactly the set of concrete program inputs that would result in a given execution path. 
+
+However, symbolic execution's precision extends only as far as the capabilities capabilities of the underlying constraint solver. Thus, extending the capabilities of symbolic execution to reason about new theories is an area of active research. Of particular interest are symbolic dereferencing and updating operations~\cite{Qu:2011,Chen:2013}. Precisely modeling these operations is challenging, because it requires formulating logical predicates over an input domain containing a potentially unbounded number of references. 
+
+Current strategies for symbolic dereferencing require making tradeoffs between the completeness of the analysis and the completeness of the path condition. For example, one simple approach is to terminate execution upon attempting to dereference any symbolic value~\cite{Clarke:2004}. While this preserves the integrity of the path condition, it comes at the cost of an incomplete analysis. Stepping towards a more complete analysis, dynamic symbolic execution (DSE), approximates the results of a symbolic dereferencing by substituting in a valid concrete value~\cite{Sen:2005,Godefroid:2005,Godefroid:POPL07,Tillmann:2008}. This allows a more complete analysis by allowing execution to continue, but the approximation renders the path condition incomplete. Further progress in the analysis direction can be achieved by using value summary representations, where multiple values for a reference may be represented along a single execution path~\cite{Xie:2005,Yorsh:2008,Elkarablieh:2009,Dillig:2011,Torlak:2014,Sen:2014}. Systems using these representations perform analyses that are more complete than standard DSE methods, but their associated dereferencing operations require placing further restrictions on the input heap, such as limiting the number of nodes~\cite{Elkarablieh:2009}, the nature of aliasing relationships~\cite{Xie:2005,Babic:2007}, or the very shape of the heap itself~\cite{Dillig:2011}. Finally, at the opposite end of the spectrum lies generalized symbolic execution (GSE)~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}, which accomplishes a fully complete analysis at the cost of an incomplete path condition. Thus, none of the current techniques provide the option of maintaining both a complete analysis and a complete path condition. This is in stark contrast to symbolic execution over primitive types, which enjoys both properties simultaneously. 
+
+This paper introduces a technique that avoids these problems by preserving the following properties of classical symbolic execution: (i) Inputs are represented by unbounded and unconstrained input symbols. This lack of predetermined constraints is key to avoiding under-approximation, which in turn is required for performing a complete analysis. (ii) Points of nondeterminism are only present at control flow instructions, which is critical for maintaining a complete path condition for a given control flow path. 
+
+
+%associated operations as completely as any other symbolic value. Using this technique, the symbolic input heap is truly a blank slate without any hidden restrictions, and the path condition captures the complete set of all heaps that follow a specific program path up to a given point of execution. To the knowledge of the authors, it
+%is the first technique to do so.
 
 % A couple of symExe’s big problems are path explosion and references. 
 
@@ -40,14 +51,13 @@ A significant body of research is focused on reasoning about symbolic input refe
 
 
 % You can solve dereferencing by concretization, but that’s incomplete. 
-%Here is an example of why this stinks.
-One possible way to cope with the reference problem is to use a technique 
-known as dynamic symbolic execution (DSE). When a DSE tool encounters 
-an operation that is beyond the capabilities of its associated constraint 
-solvers, such as dereferencing a symbolic reference, it substitutes a valid 
-concrete result in place of the symbolic expression. However, this process 
-of concretization introduces approximation into the formerly exact path condition,
-and may even cause the analysis to miss valid program behaviors. 
+%One possible way to cope with the reference problem is to use a technique 
+%known as dynamic symbolic execution (DSE). When a DSE tool encounters 
+%an operation that is beyond the capabilities of its associated constraint 
+%solvers, such as dereferencing a symbolic reference, it substitutes a valid 
+%concrete result in place of the symbolic expression. However, this process 
+%of concretization introduces approximation into the formerly exact path condition,
+%and may even cause the analysis to miss valid program behaviors. 
 
 %\begin{figure}
 %void example( container a,b,c,d,x,y){
@@ -87,41 +97,40 @@ and may even cause the analysis to miss valid program behaviors.
 
 % You can model references by forking the system state, but that makes 
 %path explosion worse.
-An alternative to concretization is to construct the input heap in a lazy manner,
-deferring materialization of objects on the concrete heap until they
-are needed for the analysis to proceed. The materialization creates
-additional non-deterministic choice points in the symbolic execution
-tree by representing the feasible heap configurations as (i) null,
-(ii) an instance of a new reference of a compatible class, and (iii)
-an alias to a previously initialized symbolic reference.  Symbolic
-execution then follows concrete program semantics for materialized
-heap locations. Although this approach enables the analysis of heap
-manipulating programs, a large number of feasible concrete heap
-configurations are created. This creates two problems: First, since testing each configuration requires following a separate
-execution path to it's termination, GSE induces a path explosion problem. Second, by splitting the 
-symbolic input space between the various aliasing choices, GSE effectively splits the path condition between 
-multiple symbolic states. Since subsequent reference 
-initializations are nondeterministic on the separated execution paths,
-it is not generally possible to merge path conditions once they have been split.
-By splitting paths without allowing the possibility of recombining them,
-GSE is both computationally expensive, and fails to produce
-complete path conditions.
+%An alternative to concretization is to construct the input heap in a lazy manner,
+%deferring materialization of objects on the concrete heap until they
+%are needed for the analysis to proceed. The materialization creates
+%additional non-deterministic choice points in the symbolic execution
+%tree by representing the feasible heap configurations as (i) null,
+%(ii) an instance of a new reference of a compatible class, and (iii)
+%an alias to a previously initialized symbolic reference.  Symbolic
+%execution then follows concrete program semantics for materialized
+%heap locations. Although this approach enables the analysis of heap
+%manipulating programs, a large number of feasible concrete heap
+%configurations are created. This creates two problems: First, since testing each configuration requires following a separate
+%execution path to it's termination, GSE induces a path explosion problem. Second, by splitting the 
+%symbolic input space between the various aliasing choices, GSE effectively splits the path condition between 
+%multiple symbolic states. Since subsequent reference 
+%initializations are nondeterministic on the separated execution paths,
+%it is not generally possible to merge path conditions once they have been split.
+%By splitting paths without allowing the possibility of recombining them,
+%GSE is both computationally expensive, and fails to produce
+%complete path conditions.
 
 %Attempt to argue for completeness:
-In searching for a solution to the path explosion problem, it is tempting to consider one of the several techniques developed for representing multiple heap shapes within a single predicate. However, these techniques all impose constraints on the symbolic input heap. 
-
-A common constraint is a requirement to specify some arbitrary bound before starting the analysis. For example, the analysis might require that the maximum number of nodes in the heap be specified. This creates a problem, because it's difficult to determine beforehand the right bound to set to ensure completeness, and the analysis may provide no completeness information upon termination. Other limitations prevalent with summary-type heap representations include prohibiting recursive data structures, data structures with loops, or disallowing any type of aliasing whatsoever.
-
-It is important to note that these constraints are not merely arbitrary parameters chosen for the purposes of preventing infinite recursion. Instead, they are fundamental limitations of the underlying representations. For example, methods that require setting bounds on the size of the input heap are often predicated on a memory model that requires fixing the address space from the beginning of program execution. 
-
-Since these constraints are built in to the core of these techniques, it is not obvious how to remove them. In the case of the fixed address space models, symbolic pointer dereferencing is accomplished by first conducting a search for the set of all potential aliases of compatible type within the address space, then producing an expression based on that set of aliases. Since number of terms in the expression depends on the size of the address space, it seems that dereferencing a pointer in a space with an unbounded number of aliases would require an expression with an unbounded number of terms.
-
-In all cases, these constraints impose hidden qualifications on the validity of the path condition. The path condition is only valid for the set of heaps satisfying the hidden constraints, instead of the complete set of all possible input heaps. The end results are that the symbolic execution may fail to discover valid program behavior, and the validity of any subsequent analysis relying on the exactness of the path condition will be compromised. 
+%In searching for a solution to the path explosion problem, it is tempting to consider one of the several techniques developed for representing multiple heap shapes within a single predicate. However, these techniques all impose constraints on the symbolic input heap. 
+%
+%A common constraint is a requirement to specify some arbitrary bound before starting the analysis. For example, the analysis might require that the maximum number of nodes in the heap be specified. This creates a problem, because it's difficult to determine beforehand the right bound to set to ensure completeness, and the analysis may provide no completeness information upon termination. Other limitations prevalent with summary-type heap representations include prohibiting recursive data structures, data structures with loops, or disallowing any type of aliasing whatsoever.
+%
+%It is important to note that these constraints are not merely arbitrary parameters chosen for the purposes of preventing infinite recursion. Instead, they are fundamental limitations of the underlying representations. For example, methods that require setting bounds on the size of the input heap are often predicated on a memory model that requires fixing the address space from the beginning of program execution. 
+%
+%Since these constraints are built in to the core of these techniques, it is not obvious how to remove them. In the case of the fixed address space models, symbolic pointer dereferencing is accomplished by first conducting a search for the set of all potential aliases of compatible type within the address space, then producing an expression based on that set of aliases. Since number of terms in the expression depends on the size of the address space, it seems that dereferencing a pointer in a space with an unbounded number of aliases would require an expression with an unbounded number of terms.
+%
+%In all cases, these constraints impose hidden qualifications on the validity of the path condition. The path condition is only valid for the set of heaps satisfying the hidden constraints, instead of the complete set of all possible input heaps. The end results are that the symbolic execution may fail to discover valid program behavior, and the validity of any subsequent analysis relying on the exactness of the path condition will be compromised. 
 
 
 % You can solve path explosion by bounding the execution and rolling 
-%everything into one big equation, but then you’re incomplete. Here is an 
-%example why that stinks.
+%everything into one big equation, but then you’re incomplete.\
 %-maybe point out that finding the right bounds is a hard problem
 %One solution to the path explosion problem is to model the input heap as a 
 %predicate over a bounded set of locations. This allows the analysis to 
@@ -132,31 +141,29 @@ In all cases, these constraints impose hidden qualifications on the validity of 
 
 % This paper introduces a technique that is, to the best knowledge of the 
 %authors, the first sound and complete heap for SymEXE
-\subsection{A Definitive Symbolic Heap}
-It is apparent that despite the many proposed solutions, none of them 
-represent the heap as an unconstrained, unbounded, and complete
-symbolic value. In other words, there is not yet a definitive symbolic heap. 
+%\subsection{A Definitive Symbolic Heap}
+%It is apparent that despite the many proposed solutions, none of them 
+%represent the heap as an unconstrained, unbounded, and complete
+%symbolic value. In other words, there is not yet a definitive symbolic heap. 
 
-This paper introduces a technique for modeling the symbolic input heap, symbolic references, and their
-associated operations as completely as any other symbolic value. Using this technique, the symbolic input heap is truly a blank slate without any hidden restrictions, and the path condition captures the complete set of all heaps that follow a specific program path up to a given point of execution. To the knowledge of the authors, it
-is the first technique to do so.
 
-\subsection{Contributions}
-THIS NEXT BIT STILL NEEDS SOME WORK:
+
+%\subsection{Contributions}
+%THIS NEXT BIT STILL NEEDS SOME WORK:
 
 % Creating this technique required the following key insights:
-These advances were enabled by the following key insights: 
-
-First, that a complete analysis requires an unconstrained input heap. 
-However, it is unclear from prior work how this might be accomplished.
-
-Second, that GSE techniques needlessly split during dereferencing 
-operations. If GSE was performing a concretization, as in DSE, then case 
-splitting makes more sense. However, lazy initialization is not a 
-concretization, and is in fact only a partitioning of the input space. 
-
-Third, that we can combine lazy initialization with a compositional heap 
-abstraction to form constraints on a potentially unbounded input heap.
+%These advances were enabled by the following key insights: 
+%
+%First, that a complete analysis requires an unconstrained input heap. 
+%However, it is unclear from prior work how this might be accomplished.
+%
+%Second, that GSE techniques needlessly split during dereferencing 
+%operations. If GSE was performing a concretization, as in DSE, then case 
+%splitting makes more sense. However, lazy initialization is not a 
+%concretization, and is in fact only a partitioning of the input space. 
+%
+%Third, that we can combine lazy initialization with a compositional heap 
+%abstraction to form constraints on a potentially unbounded input heap.
 
 
 % This paper makes the following contributions.

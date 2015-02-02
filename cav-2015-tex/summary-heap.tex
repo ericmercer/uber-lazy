@@ -1,183 +1,127 @@
 \section{Summary Heap Framework}
-The summary heap algorithm is presented using Javalite, an
-executable formalization of a Java-like language~\cite{saints-MS}. Javalite retains 
-the essence of Java and other object-oriented languages but with formalizations 
-in both PLT Redex and Coq so that the outcome of any program has a precise
-and deterministic meaning.
-
-Javalite is a syntactic machine defined as rewrites on a string.  The
-semantics are small-step using the CESK architecture with a (C)ontrol string
-representing the expression being evaluated, an (E)nvironment for
-local variables, a (S)tore for the heap, and a (K)ontinuation for what
-is to be executed next.  In this work we change the semantics of the original
- Javalite machine and its machine syntax to represent (i) GSE~\cite{GSE03}, and (ii) the summary heap algorithm
-presented in this work.
-
-The surface syntax (input) for Javalite is shown 
-in~\figref{fig:surface-syntax}, and the machine syntax (state)
-in~\figref{fig:machine-syntax}. Terminals are in bold face while
-non-terminals are italicized. Ellipses indicate zero or more
-repetitions. Tuples omit the commas for compactness. The language
-itself uses s-expressions for convenience.
+The summary heap algorithm is defined using
+Javalite~\cite{saints-MS}. The small-step semantics of Javalite,
+defined as a syntactic machine using a CESK architecture, are modified
+to perform symbolic execution on a summary heap. The surface (input)
+and machine (state) syntax is shown
+in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
+are italicized. Ellipses indicate zero or more repetitions. Tuples
+omit the commas for compactness. 
 
 \input{surface-syntax}
 \input{machine-syntax}
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}{c}
+\scalebox{0.9}{\usebox{\boxSurface}} \\
+(a) \\\\
+\scalebox{0.9}{\usebox{\boxMachine}} \\
+(b)
+\end{tabular}
+\end{center}
+\caption{Syntax for Javalite. (a) The Javalite surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
+\label{fig:syntax}
+\end{figure}
 
 A Javalite program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
 a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
 where execution starts. The only primitive type in Javalite is
-Boolean. Classes have non-primitive fields, $([\cfgnt{C}\ \cfgnt{f}]\ ...)$, and
-methods, $(\cfgnt{M}\ ...)$.\footnote{Summary heaps are able to support non-primitive fields (see \secref{sec:eval}). They are omitted to focus and simplify the presentation.} Methods are limited to a single
-parameter in our Javalite machine. Expressions, $\cfgnt{e}$,  
+Boolean. For simplicity in presentation, classes have only non-primitive fields, and methods have a single
+parameter. Expressions, $\cfgnt{e}$,  
 include statements, and they
  use '$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate comparison.
 The dot-operator for field access is replaced by '$\cfgt{\$}$', and the dot-operator
 for method invocation is replaced by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no explicit return
-statement in Javalite; rather, the value of the last expression is
+statement; rather, the value of the last expression is
 used as the return value. A variable is always indicated by \cfgnt{x}
-and a value by \cfgnt{v}. A value can be a reference in the heap, $\cfgnt{r}$, or any of the special values shown in~\figref{fig:surface-syntax}. 
-We assume that only
-type correct programs are given as input to the machine.
+and a value by \cfgnt{v}. A value can be a reference in the heap, $\cfgnt{r}$, or any of the special values shown in~\figref{fig:syntax}(a). 
+Only type correct programs are given as input to the machine.
 
-The state of the Javalite machine (\figref{fig:machine-syntax}),
+The state of the Javalite machine,
 $\cfgnt{s}$, includes the program registry, $\mu$, a pair of functions defining the heap
 $\lp\cfgnt{L}\ \cfgnt{R}\rp$, a constraint,
 $\phi$, defined over references in the heap, the environment, $\eta$,
-for local variables, and the continuation $\cfgnt{k}$.\footnote{The registry $\mu$ never changes so it is omitted from the state tuple in the rest of the presentation for compactness.}  The more
+for local variables, and the continuation $\cfgnt{k}$. The registry never changes so it is omitted from the state tuple in the rest of the presentation.  The more
 complex structures, such as the environment and heap, are defined as lists that
-start with empty, \cfgnt{mt}. The rewrite rules that define the
-semantics treat these lists as partial functions. As such,
+start with empty, \cfgnt{mt}. These lists are treated as partial functions so
 $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference $\cfgnt{r}$ associated with variable
 $\cfgnt{x}$. The notation $\eta^\prime = \eta[\cfgnt{x} \mapsto
   \cfgnt{v}]$ defines a new partial function $\eta^\prime$ that is
 the same as $\eta$ except that the variable $\cfgnt{x}$ now maps to
-$\cfgnt{v}$.
-
-The continuation $\cfgnt{k}$ helps accomplish the small-step semantics
-by indicating where the hole, $\cfgt{*}$, is located, by storing
-temporary computations, and by keeping track of the next
+$\cfgnt{v}$. The continuation $\cfgnt{k}$ indicates where the hole, $\cfgt{*}$, is located, stores temporary computation, and keeps track of the next 
 computation. For example, the continuation
 $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp$ indicates
-that the machine is currently computing the expression for the object
+that the machine is evaluating the expression for the object
 reference on which the field $\cfgnt{f}$ is going to be accessed. Once
 the field access is complete, the machine continues with $\cfgnt{k}$.
 
-\subsection{Summary Heaps as Bipartite Graphs}
-A novel contribution of summary heaps for symbolic execution is the
-labeled bipartite graph representation of the heap which enables a
-summary heap to group heaps together that follow the same control flow
-to a given point of execution. The graph structure is able to capture
-group membership and compute value sets using entirely non-recursive
-local lookup. Additionally, updates on the heap do not require
-rewriting the path condition.
-
-The bipartite graph itself consists of references, $\cfgnt{r}$, and
-constraint-location pairs, $\lp\phi\ \cfgnt{l}\rp$. Locations may be 
-altered to perform updates, whereas references are immutable
-once they are added to the graph. The graph is
+A summary heap is a bipartite graph on references, $\cfgnt{r}$, and
+constraint location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is
 expressed in the location map, $\cfgnt{L}$, and the reference map,
 $\cfgnt{R}$. As done with the environment, $\cfgnt{L}$ and $\cfgnt{R}$
 are treated as partial functions where $\cfgnt{L}(r) =
 \{(\phi\ \cfgnt{l})\ ...\}$ is the set of constraint-location pairs in
 the heap associated with the given reference, and
 $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the reference
-associated with the given location-field pair in the heap.  
+associated with the given location-field pair in the heap. References
+in the graph are immutable. Locations, however, are mutated on
+updates. The structure with the immutability of references mean that
+look-ups in the heap are non-recursive and updates do not modify the
+current path condition.
 
-There are several properties of the summary heap enforced by the
-rewrite rules that are invariant and important to the correctness
-proofs in \secref{sec:bisim}: \emph{reference partitions},
-\emph{immutability}, \emph{determinism}, \emph{type
-  consistency}, and \emph{null and uninitialized}.
-
-\emph{Reference partitions}: new references drawn from
-  three distinct partitions (i) $\mathrm{init}_\cfgnt{r}()$ for references for the \emph{input heap}, (ii) $\mathrm{fresh}_\cfgnt{r}()$ for references for \emph{auxiliary literals}, and
-  (iii) $\mathrm{stack}_\cfgnt{r}()$ for references for \emph{stack literals} in the expressions and
-  continuations. The references strictly increase in value on each
-  call, and modular arithmetic is used to determine the partition to
-  which a reference belongs.
+The soundness and completeness proofs rely on a set of invariants that
+are preserved by the small-step semantics during symbolic execution:
+\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
+\emph{type consistency}.
 \begin{compactdesc}
-\item[Input heap:] these references have two
-  interpretations: one as a literal and another as a variable. As a literal it is a node in
-  the summary heap. As a variable it is a term in any number of constraints that label
-  edges in the summary heap. Only input heap references and the
-  special reference $\cfgnt{r}_\mathit{null}$ appear in constraints
-\item[Auxiliary literals:] these references are only used to define additional structure in
-  the bipartite graph and are not part of any constraint and do not appear
-  in any environment, expression, or continuation.
-\item[Stack references:] these references are also used to define additional structure in the bipartite graph but may also appear in the environment, expression, or continuation. These are not part of any constraint.
-\end{compactdesc}
-Reference partitions are a critical piece to the existence proof of a
-bisimilation between the summary heap algorithm and generalized
-symbolic execution (see \secref{sec:bisim}).
-
-\emph{Immutability} means that a reference does not change in the
-location map. It always points to the same set of constraint location
-pairs. This property ensures that constraints never need to be
-rewritten as the program evolves its state.
-
-\emph{Determinism} means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously. In the definition $\cfgnt{L}^\leftarrow$ is the pre-image of the location map.
-$$
-\begin{array}{l}
-\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
-\ \ \ \ (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
-\end{array}
-$$
-Informally, any two constraint location pairs connected to a
-common reference form a contradiction: only one can be true in any
-satisfying assignment. The property ensures that any satisfying assignment
-resolving aliasing relationships results in a deterministic heap: a
-field access returns a single location under that assignment.
-
-\emph{Type consistency} implies that all locations associated with a reference have the same type.
-\[
-\begin{array}{l}
-\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
-\ \ \ \ (\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))
-\end{array}
-\]
-
-\emph{Null and Uninitialized} means that every summary heap contains 
+\item[Reference partitions] means that a reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
+  heap} that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in
+  constraints); $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
+  literals} that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere); and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
+  literals} (these appear in environments, expressions, and continuations).
+\item[Null and Uninitialized] means that every summary heap contains 
 a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
 location for uninitialized
-  ($\cfgnt{l}_\mathit{un}$), with corresponding references
-  $\cfgnt{r}_\mathit{null}$ and
-  $\cfgnt{r}_\mathit{un}$, respectively. $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  ($\cfgnt{l}_\mathit{un}$) with $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
-  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. These special references can be used in constraints.
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
+\item[Immutability] means that a reference does not change in the
+location map, and as a consequence, constraints never need to be
+rewritten as the program evolves its state.
+\item[Determinism] means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
+$
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
+(\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
+$
+where $\cfgnt{L}^\leftarrow$ is the pre-image of $\cfgnt{L}$. 
+\item[Type consistency] means that all locations associated with a reference have the same type:
+$\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
+(\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))$
 
-To summarize, the heap summary algorithm creates
-many references that are auxiliary literals or stack literals to
-define the structure of the bipartite graph.  It only uses input heap
-references for constraints expressing potential aliasing. A solver
-reasons over the aliasing relationships, and a satisfying assignment
-uniquely identifies active edges in the graph. Those active edges
-describe a concrete heap and its shape.
+\end{compactdesc}
 
-For example, if the solver assigns input heap variables $\cfgnt{r}$ and $\cfgnt{r}^\prime$
-such that $\cfgnt{r} = \cfgnt{r}^\prime$ is true, then there exists
-some location $\cfgnt{l}$ and constraints $\phi$ and $\phi^\prime$ such
-that
-\begin{compactitem}
-\item[-] $\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; and
-\item[-] $\lp\phi^\prime\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r}^\prime)$; and
-\item[-] $\phi$ and $\phi^\prime$ hold in the aliasing assignments from the solver.
-\end{compactitem}
-In this way, the graph groups heaps with the conditions under which
-those heaps exist. This representation separates the constraint
-problem from the morphology problem: it is possible to update the heap
-without having to rewrite constraints. Without this separation, it
-would not be possible to lazily initialize heap locations along a
-program path.
+A key insight to the summary heap is that although many auxiliary or
+stack literals are created in symbolic execution with lazy
+initialization, only input heap references appear in constraints
+expressing potential aliasing relationships. A solver reasons over the
+aliasing relationships, and a satisfying assignment uniquely
+identifies active edges in the graph. Those active edges describe a
+representative concrete heap and its shape. For example, if the solver
+assigns input heap variables $\cfgnt{r}$ and $\cfgnt{r}^\prime$ such
+that $\cfgnt{r} = \cfgnt{r}^\prime$ is true, then there exists some
+location $\cfgnt{l}$ and constraints $\phi$ and $\phi^\prime$ such
+that (i) $\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; (ii)
+$\lp\phi^\prime\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r}^\prime)$; and
+(iii) $\phi$ and $\phi^\prime$ hold in the aliasing assignments from
+the solver.  In this way, the graph groups heaps with the conditions
+under which those heaps exist so look-ups are non-recursive and
+updates do not modify the path condition or require rewrites on
+constraints.
 
-\subsection{State Transition Relation}
+\subsection{Semantics}
 
-The initial state of a Javalite program is constructed from its
-surface syntax on the $\cfgnt{P}$ production:
-$\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$. Assuming that
-$\lp\cfgnt{L}\ \cfgnt{R}\rp$ is an empty heap with no references
-or locations and $\eta$ is an empty environment with no
-variables, the initial state is
+Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the initial machine state is
 $$
 \begin{array}{l}
 \lp\mu 
@@ -187,16 +131,13 @@ $$
 \ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
 \end{array}
 $$
-The first expression in the initial state is to construct a new object
-in the summary heap of type $\cfgnt{C}$. Note that the resulting object is not referenced
-by the input heap since it comes from the new-expression.  Once an
-instance of $\cfgnt{C}$ exists in the summary heap, the method
-$\cfgnt{m}$ of the class is invoked.
+The expression in the initial state constructs a new object of type
+$\cfgnt{C}$ and then invokes the method $\cfgnt{m}$ in that
+object. 
 
-In general, the semantics of Javalite are expressed as
+The semantics are expressed as
 rewrites on strings using pattern matching. Consider the rewrite rule
-for the beginning of a field access instruction in the Javalite
-machine:
+for the beginning of a field access instruction:
 $$
 \mprset{flushleft}
 	\inferrule[Field Access(eval)]{}{
@@ -230,15 +171,15 @@ In this rule, when the string matches the new-expression, it is rewritten to use
 a new heap location where all of the fields for the new object point to
 $\cfgnt{r}_\mathit{null}$
 and the location map points a new stack reference to that new object.
+Notice that references for objects from the new-expression are auxiliary literals
+so they do not appear in any constraint in the summary heap as an aliasing option.
 
+\begin{comment}
+MOVE TO THE PROOF SECTION
 To show the heap summary algorithm is sound and complete with respect
-to properties proved by GSE, we define a transition relation that
-relates states according GSE and refer to it as $\rgse$ or $p \rgse
-p^\prime$. Similarly we define for the new summary heap algorithm
-$\rsym$ or $q \rsym q^\prime$. For simplicity, both use lazy
-initialization as opposed to lazier or lazier\#.
-
-The full operational semantics for $\rgse$ are in the supplemental
-document. In the next section, we present the rewrite rules specific
-to $\rsym$.
-
+to properties proved by GSE, a transition relation that
+relates states according GSE is defined as $\rgse$ or $p \rgse
+p^\prime$. Similarly the transition relation for the new summary heap algorithm is given as
+$\rsym$ or $q \rsym q^\prime$ (defined in the next section). For simplicity, both use lazy
+initialization as opposed to lazier or lazier\#. The full operational semantics for $\rgse$ are in the appendix. 
+\end{comment}

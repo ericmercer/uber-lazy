@@ -1,10 +1,9 @@
 \subsection{Generating Symbolic Heaps}
 \label{sec:precise}
 
-The symbolic heap algorithm only partitions the heap at points of
-divergence in the control flow graph such as comparisons of references
-(program control flow) and field dereferences or writes (execeptional
-control flow due to null pointers). There are three sets of rewrite
+The symbolic heap algorithm only partitions the heap at comparison
+operations or for exception handling. 
+There are three sets of rewrite
 rules specific to the symbolic heap algorithm: (i) rules to initialize
 symbolic references, (ii) rules to perform field dereferences and
 writes, and (iii) rules to check equality and inequality of

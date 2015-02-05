@@ -1,10 +1,12 @@
 \section{Summary Heap Framework}
 \label{sec:sh}
+
+\sjp{summary heap or symbolic heap?}
 The summary heap algorithm is defined using
 Javalite~\cite{saints-MS}. The small-step semantics of Javalite,
 defined as a syntactic machine using a CESK architecture, are modified
 to perform symbolic execution on a summary heap. The surface (input)
-and machine (state) syntax is shown
+syntax and machine (state) syntax are shown
 in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
 are italicized. Ellipses indicate zero or more repetitions. Tuples
 omit the commas for compactness. 
@@ -66,14 +68,17 @@ the heap associated with the given reference, and
 $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the reference
 associated with the given location-field pair in the heap. References
 in the graph are immutable. Locations, however, are mutated on
-updates. The structure with the immutability of references mean that
+updates. 
+%The structure with the 
+Immutability of references means that
 look-ups in the heap are non-recursive and updates do not modify the
 current path condition.
 
-The soundness and completeness proofs rely on a set of invariants that
+The soundness and completeness proofs \sjp{in Section...} rely on a set of 
+invariants \sjp{properties of the summary heap?} that
 are preserved by the small-step semantics during symbolic execution:
-\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
-\emph{type consistency}.
+%\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
+%\emph{type consistency}.
 \begin{compactdesc}
 \item[Reference partitions] means that a reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
   heap} that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in
@@ -102,12 +107,13 @@ $\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\p
 
 \end{compactdesc}
 
+\sjp{Up to now, no discussion of lazy initialization - what it is or how it is being used.}
 A key insight to the summary heap is that although many auxiliary or
-stack literals are created in symbolic execution with lazy
-initialization, only input heap references appear in constraints
-expressing potential aliasing relationships. A solver reasons over the
+stack literals are created during symbolic execution with lazy
+initialization, only input heap references appear in the constraints
+expressing potential aliasing relationships. A solver is used to reason over the
 aliasing relationships, and a satisfying assignment uniquely
-identifies active edges in the graph. Those active edges describe a
+identifies \emph{active edges} in the graph -- the set of edges describing a
 representative concrete heap and its shape. For example, if the solver
 assigns input heap variables $\cfgnt{r}$ and $\cfgnt{r}^\prime$ such
 that $\cfgnt{r} = \cfgnt{r}^\prime$ is true, then there exists some

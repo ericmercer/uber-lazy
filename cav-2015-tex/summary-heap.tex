@@ -75,37 +75,35 @@ are preserved by the small-step semantics during symbolic execution:
 \emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
 \emph{type consistency}.
 \begin{compactdesc}
-\item[Reference partitions] means that a reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
-  heap} that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in
-  constraints); $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
-  literals} that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere); and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
-  literals} (these appear in environments, expressions, and continuations).
-\item[Null and Uninitialized] means that every summary heap contains 
-a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
-location for uninitialized
+\item[Reference partitions:] Each reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
+  heap}% that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in constraints)
+  ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
+  literals}% that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere)
+  ; and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
+  literals} %(these appear in environments, expressions, and continuations).
+\item[Null and Uninitialized:] Every summary heap contains 
+two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
   ($\cfgnt{l}_\mathit{un}$) with $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
-\item[Immutability] means that a reference does not change in the
-location map, and as a consequence, constraints never need to be
-rewritten as the program evolves its state.
-\item[Determinism] means that a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
+\item[Immutability:] References do not change once added to the
+location map, eliminating any need for constraint rewriting as the program state evolves.
+\item[Determinism:] A reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
 $
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
 (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
 $
 where $\cfgnt{L}^\leftarrow$ is the pre-image of $\cfgnt{L}$. 
-\item[Type consistency] means that all locations associated with a reference have the same type:
+\item[Type consistency:] All locations associated with a reference have the same type:
 $\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
 (\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))$
 
 \end{compactdesc}
 
-A key insight to the summary heap is that although many auxiliary or
+A key property of the summary heap is that although many auxiliary or
 stack literals are created in symbolic execution with lazy
-initialization, only input heap references appear in constraints
-expressing potential aliasing relationships. A solver reasons over the
+initialization, only input heap references appear in constraints. A solver reasons over the
 aliasing relationships, and a satisfying assignment uniquely
 identifies active edges in the graph. Those active edges describe a
 representative concrete heap and its shape. For example, if the solver

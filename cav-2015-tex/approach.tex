@@ -50,31 +50,70 @@ conditional initialization to preserve the original heap structure.
 These sets are added into the heap on $\cfgnt{r}_f$ after the fields
 for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
 
+%\begin{figure*}[t]
+%\begin{center}
+%\begin{tabular}[c]{c|c|c|c}
+%\begin{tabular}[c]{c}
+%\scalebox{0.81}{\input{origHeap.pdf_t}} \\
+%\end{tabular} &
+%\begin{tabular}[c]{c}
+%\scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
+%\end{tabular} &
+%\begin{tabular}[c]{c}
+%\scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
+%\end{tabular} &
+%\begin{tabular}[c]{l}
+%$\rho := \{ (\cfgnt{r}_1^i\ \cfgnt{l}_1 \}$ \\
+%$\theta_\mathit{null} := \{ ( \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}\ \cfgnt{l}_\mathit{null}) \}$\\
+%$\theta_\mathit{new} := \{ ( \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i\ \cfgnt{l}_2) \}$\\
+%$\theta_\mathit{alias} := \{ ( \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i\ \cfgnt{l}_1) \}$\\
+%$\theta_\mathit{orig} := \{ \}$ \\
+%$\phi_{\mathit{1a}} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null} $ \\
+%$\phi_{\mathit{1b}} := \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} $  \\
+%$\phi_{\mathit{2a}} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$ \\
+%$\phi_{\mathit{2b}} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i$ \\
+%$\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i $ \\
+%\end{tabular} \\
+%(a) & (b) & (c) & (d) \\
+%\end{tabular}
+%\end{center}
+%\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the summarize rule and constraints on the edges.}
+%\label{fig:initHeap}
+%\end{figure*}
+
 \begin{figure*}[t]
 \begin{center}
-\begin{tabular}[c]{c|c|c|c}
-\begin{tabular}[c]{c}
-\scalebox{0.81}{\input{origHeap.pdf_t}} \\
+\begin{tabular}[c]{c|c|c}
+\begin{tabular}[c]{c c}
+\scalebox{0.81}{\input{origHeap.pdf_t}}&  \\
 \end{tabular} &
 \begin{tabular}[c]{c}
 \scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
 \end{tabular} &
 \begin{tabular}[c]{c}
 \scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
-\end{tabular} &
+\end{tabular}\\
+(a) & (b) & (c)\\
+\end{tabular}
+\begin{tabular}[c]{c}
+\begin{tabular}[c]{c c}
+\hline
 \begin{tabular}[c]{l}
-$\rho := \{ (\cfgnt{r}_1^i\ \cfgnt{l}_1 \}$ \\
+$\rho := \{ (\cfgnt{r}_1^i\ \cfgnt{l}_1) \}$ \\
 $\theta_\mathit{null} := \{ ( \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}\ \cfgnt{l}_\mathit{null}) \}$\\
 $\theta_\mathit{new} := \{ ( \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i\ \cfgnt{l}_2) \}$\\
 $\theta_\mathit{alias} := \{ ( \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i\ \cfgnt{l}_1) \}$\\
 $\theta_\mathit{orig} := \{ \}$ \\
+\end{tabular} &
+\begin{tabular}[c]{l}
 $\phi_{\mathit{1a}} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null} $ \\
 $\phi_{\mathit{1b}} := \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} $  \\
 $\phi_{\mathit{2a}} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$ \\
 $\phi_{\mathit{2b}} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i$ \\
 $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i $ \\
+\end{tabular}\\
 \end{tabular} \\
-(a) & (b) & (c) & (d) \\
+(d)
 \end{tabular}
 \end{center}
 \caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the summarize rule and constraints on the edges.}

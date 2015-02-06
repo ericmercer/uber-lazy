@@ -216,3 +216,21 @@ $\cfgt{true}$ we check the satisfiability of the updated global heap
 constraint. The reference-false is the logical dual of the rule.
 
 
+Consider the example in~\figref{fig:initHeap}(c). In order to to check
+if $\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$ are equal we first get the constraint location
+pairs associated with each of the references:
+\[
+\cfgnt{L}(\cfgnt{r}_1^i) = \{ (\phi_{1a}\; \cfgnt{l}_\mathit{null})\; (\phi_{1b}\; \cfgnt{l}_1) \} 
+\]
+\[
+\cfgnt{L}(\cfgnt{r}_2^i) = \{ (\phi_{2a}\; \cfgnt{l}_\mathit{null})\; (\phi_{2b}\; \cfgnt{l}_2)\; (\phi_{2c}\; \cfgnt{l}_1) \} \\
+\]
+\noindent{The three constraint sets are:} 
+\[
+\Phi_\alpha = \{ (\phi_{1a}\; \wedge\; \phi_{2a} ) (\phi_{1b}\; \wedge\; \phi_{2c} ) \}\;
+\Phi_0 = \{ \}\; \Phi_1 = \{ \phi_{2b}\} \\
+\]
+\noindent{Finally the global constraint is} 
+\[
+\phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
+\]

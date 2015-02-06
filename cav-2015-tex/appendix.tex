@@ -22,28 +22,28 @@ machine simply halts if no rewrite is enabled.
 \section{Summary Heap Algorithm}
 
 
-\begin{figure*}[t]
-\begin{center}
-\setlength{\tabcolsep}{60pt}
-\hspace*{-35pt}
-\begin{tabular}[c]{cc}
-\scalebox{1.0}{\usebox{\boxPFAFW}} & 
-%\scalebox{0.91}{\input{faYHeap.pdf_t}} &
-\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\ \\
-(a) & (b)
-\end{tabular}
-\end{center}
-\caption{Field read and write relations with an example heap. (a) Field-access, $\rsym^\mathit{A}$, and field-write, $\rsym^\mathit{W}$, rewrite rules for the $\rsym$ relation. (b) The final heap after $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\ \cfgt{:=}\ \lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp\rp$.}
-\label{fig:fHeap}
-\end{figure*}
+%\begin{figure*}[t]
+%\begin{center}
+%\setlength{\tabcolsep}{60pt}
+%\hspace*{-35pt}
+%\begin{tabular}[c]{cc}
+%\scalebox{1.0}{\usebox{\boxPFAFW}} & 
+%%\scalebox{0.91}{\input{faYHeap.pdf_t}} &
+%\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\ \\
+%(a) & (b)
+%\end{tabular}
+%\end{center}
+%\caption{Field read and write relations with an example heap. (a) Field-access, $\rsym^\mathit{A}$, and field-write, $\rsym^\mathit{W}$, rewrite rules for the $\rsym$ relation. (b) The final heap after $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\ \cfgt{:=}\ \lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp\rp$.}
+%\label{fig:fHeap}
+%\end{figure*}
 
-\begin{figure*}
-\begin{tabular}[c]{l}
-\scalebox{1.0}{\usebox{\boxPI}} \\
-\end{tabular}
-\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
-\label{fig:symInit}
-\end{figure*}
+%\begin{figure*}
+%\begin{tabular}[c]{l}
+%\scalebox{1.0}{\usebox{\boxPI}} \\
+%\end{tabular}
+%\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+%\label{fig:symInit}
+%\end{figure*}
 
 The rewrite rules for field access or field write when a null reference is possible leads to an error state.
 $$
@@ -70,6 +70,6 @@ other branch being the potential non-null
 outcome (shown in the main paper). In the non-null case, the path constraint is updated to
 restrict out all possible null instances.
 
-\input{definitions}
+%\input{definitions}
 
 

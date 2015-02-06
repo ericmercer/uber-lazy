@@ -1,6 +1,8 @@
 \section{Bisimilarity Proof}
 \label{sec:bisim}
-The theoretical result is the existence of a bisimulation between sets of states
+This section establishes the correctness of the~\symtxt{}. Demonstrating correctness is important because many summary heap techniques are correct only when certain, often unstated, assumptions are made. To show the absence of such assumptions, it is necessary to demonstrate soundness and completess with respect to all properties provable by symbolic execution. The proof relies on the observation that a state in symbolic execution can be thought of as representing a set of possible concrete states. Similarly, a state in the~\symtxt{} machine represents a set of possible~\gsetxt{} states. The goal is to show that states in the~\symtxt{} machine behave exactly like the sets of~\gsetxt{} states that they represent.
+
+The main theoretical result establishes the existence of a bisimulation between sets of states
 states related by GSE ($p \rgse p^\prime$)
 and states related by the algorithm in this paper ($q \rsym q^\prime$). The relations are on the universe of \emph{well-formed} states $S$, which have the
 properties in \secref{sec:sh} with the constraint that

@@ -1,0 +1,65 @@
+\begin{figure*}[t]
+\begin{center}
+\mprset{flushleft}
+\begin{mathpar}
+	\inferrule[Field Access]{
+      \{\lp\phi\ \cfgnt{l}\rp\} = \cfgnt{L}\lp\cfgnt{r}\rp\\
+      \cfgnt{l} \neq \cfgnt{l}_\mathit{null}\\
+      \cfgnt{C} = \mathrm{type}\lp\cfgnt{l},\cfgnt{f}\rp\\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rinit^*
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\  \cfgnt{C}\rp \\\\ 
+      \{\lp\phi^\prime\ l^\prime\rp\} = \cfgnt{L}^\prime\lp\cfgnt{R}^\prime\lp l,\cfgnt{f}\rp\rp \\
+      \cfgnt{r}^\prime = \mathrm{stack}_r\lp\rp \\
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rgse^\mathit{A} \\\\
+      \lp \cfgnt{L}^\prime[\cfgnt{r}^\prime \mapsto \lp\phi^\prime\ l^\prime\rp]\ \cfgnt{R}^\prime\ \phi_g^\prime\ \eta\ \cfgnt{r}^\prime\ \cfgnt{k}\rp 
+	}
+\and
+	\inferrule[Field Access (null)]{
+      \{\lp\phi\ \cfgnt{l}\rp\} = \cfgnt{L}\lp\cfgnt{r}\rp\\ 
+      \cfgnt{l} = \cfgnt{l}_\mathit{null}
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp   \rgse^\mathit{A^\prime} \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{error}\ \cfgt{end}\rp 
+	}
+\and
+    \inferrule[Field Write]{
+      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp\\\\
+      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}_x\rp \\
+      \cfgnt{l} \neq \cfgnt{l}_\mathit{null}\\\\
+      \theta = \cfgnt{L}\lp\cfgnt{r}\rp \\
+      \cfgnt{r}^\prime = \mathrm{fresh}_r\lp\rp\\
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp   \rgse^\mathit{W} \\\\
+      \lp \cfgnt{L}[\cfgnt{r}^\prime \mapsto \theta]\ \cfgnt{R}[\lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}^\prime]\ \phi_g\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+    }       
+\and
+	\inferrule[Field Write (null)]{
+      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp\\\\
+      \{\lp\phi\ l\rp\} = \cfgnt{L}\lp\cfgnt{r}_x\rp \\
+      \cfgnt{l} = \cfgnt{l}_\mathit{null}
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rgse^\mathit{W^\prime} \\\\
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{error}\ \cfgt{end}\rp 
+	}
+    \inferrule[Equals (reference-true)]{
+    \cfgnt{L}\lp \cfgnt{r}_0\rp = \cfgnt{L}\lp \cfgnt{r}_1\rp\\
+    \phi^\prime = \lp\phi \wedge r_0 = r_1\rp
+    }{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp  \rgse^\mathit{E} \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp 
+    }
+\and
+    \inferrule[Equals (reference-false)]{
+    \cfgnt{L}\lp \cfgnt{r}_0\rp \neq \cfgnt{L}\lp \cfgnt{r}_1\rp\\
+    \phi^\prime = \lp\phi \wedge r_0 \neq r_1\rp
+   }{
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{r}_0\ \lp \cfgnt{r}_1\ \cfgt{=}\ \cfgt{*} \rightarrow \cfgnt{k}\rp \rp   \rgse^\mathit{E^\prime} \\\\
+    \lp \cfgnt{L}\ \cfgnt{R}\ \phi^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp 
+    }
+
+\end{mathpar}
+\end{center}
+\caption{Generalized symbolic execution with lazy initialization indicated by $\rgse = \rgse^\mathit{A} \cup  \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup \rgse^\mathit{E^\prime} \cup \rgse^\com$.}
+\label{fig:lazy}
+\end{figure*}

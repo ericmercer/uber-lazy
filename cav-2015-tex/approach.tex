@@ -1,9 +1,8 @@
-\subsection{Generating Symbolic Heaps}
+\subsection{Generating and Updating Symbolic Heaps}
 \label{sec:precise}
 
 The symbolic heap algorithm only partitions the heap at comparison
-operations or for exception handling. 
-There are three sets of rewrite
+operations or for exception handling.  There are three sets of rewrite
 rules specific to the symbolic heap algorithm: (i) rules to initialize
 symbolic references, (ii) rules to perform field dereferences and
 writes, and (iii) rules to check equality and inequality of
@@ -108,12 +107,13 @@ also define values of constraints used as labels in the graph.
 There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
 the value of a field (field-access) and the other when we write to a
 field (field-write). Both rules first check that the operations can be
-performed on a non-null location.  In the field-access rewrite rule
-in~\figref{fig:fHeap} gets the field type $\cfgnt{C}$ and uses
-\figref{fig:symInit}, to get a new symbolic heap that is initialized
-on the field $\cfgnt{f}$. The symbolic heap is further modified to
-include a new stack reference pointing to the value set from the read;
-the new stack reference is the return value from the operation.
+performed on a non-null location. The field-access rewrite rule
+in~\figref{fig:fHeap} dereferences a field of type $\cfgnt{C}$ and
+uses \figref{fig:symInit}, to get a new symbolic heap that is
+initialized on the field $\cfgnt{f}$. The symbolic heap is further
+modified to include a new stack reference pointing to the value set
+(possible values of the field) returned during the dereferencing; the
+new stack reference is the return value from the operation.
 
 
  \input{value-set-def} 
@@ -130,15 +130,15 @@ constraint $\phi$ from the base reference plus this second constraint
 to the actual location of the field $\phi^\prime$ comprise the access
 path. For each member of the value set, these constraints together
 with the global path constraint must be satisfied on some aliasing
-assignment. \nsr{neha: this para needs work -- flow and content}
+assignment. % \nsr{neha: this para needs work -- flow and content}
 
 
 For field-write in~\figref{fig:fHeap}, after the non-null check and
 strengthening of the global heap constraint, it computes the current
 references associated with the field in every location in
-$\Psi_\cfgnt{x}$. Please note that the reference $\cfgnt{r}_x$ is the
-base reference whose field, $\cfgnt{r}_\mathit{cur}$ is being written
-to while the reference $r$ is the target reference. The set $\Psi_x$
+$\Psi_\cfgnt{x}$. Note that the reference $\cfgnt{r}_x$ is the base
+reference whose field, $\cfgnt{r}_\mathit{cur}$ is being written to,
+while the reference $r$ is the target reference. The set $\Psi_x$
 contains tuples $(\phi\ l\ \cfgnt{r}_\mathit{cur})$ of constraints,
 locations, and references. These tuples represent access chains
 leading from $\cfgnt{r}_x$ to the reference of the field,
@@ -156,14 +156,13 @@ current path constraint are retained.
 Strengthening in the field write creates a value set that contains two
 types of locations: those for the case where the write is feasible
 (the first call), and those for the case where it is not (the second
-call).  This is the conditional in the write. In the case that $\phi$
-is true then $\cfgnt{r}_\mathit{cur}$ will point to the constraint
-location pairs of $\cfgnt{L}(\cfgnt{r})$ while if $\phi$ is false then
-$\cfgnt{r}_\mathit{cur}$ will continue to point to the constraint
-location pair it is currently referenced.  As the references are
-immutable, the rule creates fresh references for each
-$\cfgnt{r}_\mathit{cur}$ and points them to the appropriate value
-sets.
+call). In the case that $\phi$ is true then $\cfgnt{r}_\mathit{cur}$
+will point to the constraint location pairs of $\cfgnt{L}(\cfgnt{r})$.
+Whereas, if $\phi$ is false then $\cfgnt{r}_\mathit{cur}$ will
+continue to point to the constraint location pair it currently
+references.  As the references are immutable, the rule creates fresh
+references for each $\cfgnt{r}_\mathit{cur}$ and points them to the
+appropriate value sets.
 
 \input{precise-eq}
 
@@ -180,7 +179,7 @@ sets.
 \end{figure*}
 
 
-The rewrite rules to compare two references in the symbolic heap are
+The rewrite rule to compare two references in the symbolic heap is
 shown in~\figref{fig:eqs}. The equals references-true rewrite rule
 returns true when two references $\cfgnt{r}_0$ and $\cfgnt{r}_1$
 \emph{can} be equal. Intutively, $\Phi_\alpha$ contains all

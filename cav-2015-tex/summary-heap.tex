@@ -1,13 +1,16 @@
-\section{Summary Heap Framework}
+\section{Our Approach}
 \label{sec:sh}
-The summary heap algorithm is defined using
-Javalite~\cite{saints-MS}. The small-step semantics of Javalite,
-defined as a syntactic machine using a CESK architecture, are modified
-to perform symbolic execution on a summary heap. The surface (input)
-and machine (state) syntax is shown
+
+The symbolic heap algorithm is defined using
+Javalite~\cite{saints-MS}. Note that the approach is not restricted to
+this language or even Java in general; we use Javalite simply as
+mechanism to describe our approach. The small-step semantics of
+Javalite, defined as a syntactic machine using a CESK architecture,
+are modified to perform symbolic execution on a symbolic heap. The
+surface (input) syntax and machine (state) syntax are shown
 in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
 are italicized. Ellipses indicate zero or more repetitions. Tuples
-omit the commas for compactness. 
+omit the commas for compactness.
 
 \input{surface-syntax}
 \input{machine-syntax}
@@ -56,25 +59,31 @@ that the machine is evaluating the expression for the object
 reference on which the field $\cfgnt{f}$ is going to be accessed. Once
 the field access is complete, the machine continues with $\cfgnt{k}$.
 
-A summary heap is a bipartite graph on references, $\cfgnt{r}$, and
-constraint location pairs, $\lp\phi\ \cfgnt{l}\rp$. The graph is
-expressed in the location map, $\cfgnt{L}$, and the reference map,
-$\cfgnt{R}$. As done with the environment, $\cfgnt{L}$ and $\cfgnt{R}$
-are treated as partial functions where $\cfgnt{L}(r) =
-\{(\phi\ \cfgnt{l})\ ...\}$ is the set of constraint-location pairs in
-the heap associated with the given reference, and
-$\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the reference
-associated with the given location-field pair in the heap. References
-in the graph are immutable. Locations, however, are mutated on
-updates. The structure with the immutability of references mean that
-look-ups in the heap are non-recursive and updates do not modify the
-current path condition.
+\subsection{Symbolic Heap}
 
-The soundness and completeness proofs rely on a set of invariants that
+Our symbolic heap is a field sensitive points-to graph with edges
+annotated with disjunctive formulas describing aliasing
+relationships. We represent the symbolic heap as a bipartite graph on
+references, $\cfgnt{r}$, and constraint location pairs,
+$\lp\phi\ \cfgnt{l}\rp$. The graph is expressed in the location map,
+$\cfgnt{L}$, and the reference map, $\cfgnt{R}$. As done with the
+environment, $\cfgnt{L}$ and $\cfgnt{R}$ are treated as partial
+functions where $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set
+of constraint-location pairs in the heap associated with the given
+reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
+reference associated with the given location-field pair in the
+heap. References in the graph are immutable. Locations, however, are
+mutated on updates.  Immutability of references means that look-ups in
+the heap are non-recursive and updates do not modify the current path
+condition.
+
+The soundness and completeness proofs \sjp{in Section...} rely on a set of 
+invariants \sjp{properties of the symbolic heap?} that
 are preserved by the small-step semantics during symbolic execution:
-\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
-\emph{type consistency}.
+%\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
+%\emph{type consistency}.
 \begin{compactdesc}
+%<<<<<<< HEAD
 \item[Reference partitions:] Each reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
   heap}% that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in constraints)
   ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
@@ -83,6 +92,16 @@ are preserved by the small-step semantics during symbolic execution:
   literals} %(these appear in environments, expressions, and continuations).
 \item[Null and Uninitialized:] Every summary heap contains 
 two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
+%=======
+%\item[Reference partitions] means that a reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
+%  heap} that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in
+%  constraints); $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
+%  literals} that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere); and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
+%  literals} (these appear in environments, expressions, and continuations).
+%\item[Null and Uninitialized] means that every symbolic heap contains 
+%a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
+%location for uninitialized
+%>>>>>>> 49c83f34a0b5afd58adc4b6649b15e2cbc93437c
   ($\cfgnt{l}_\mathit{un}$) with $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
@@ -101,16 +120,21 @@ $\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\p
 
 \end{compactdesc}
 
-A key property of the summary heap is that although many auxiliary or
-stack literals are created in symbolic execution with lazy
-initialization, only input heap references appear in constraints. A solver reasons over the
-aliasing relationships, and a satisfying assignment uniquely
-identifies active edges in the graph. Those active edges describe a
-representative concrete heap and its shape. For example, if the solver
-assigns input heap variables $\cfgnt{r}$ and $\cfgnt{r}^\prime$ such
-that $\cfgnt{r} = \cfgnt{r}^\prime$ is true, then there exists some
-location $\cfgnt{l}$ and constraints $\phi$ and $\phi^\prime$ such
-that (i) $\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; (ii)
+%\sjp{Up to now, no discussion of lazy initialization - what it is or
+%  how it is being used.}  \nsr{A key insight to the summary heap is
+%  that although many auxiliary or stack literals are created during
+%  symbolic execution with lazy initialization, only input heap
+%  references appear in the constraints expressing potential aliasing
+%  relationships.}
+A solver is used to reason over the aliasing relationships, and a
+satisfying assignment uniquely identifies the set of aliasing
+relationships that are representative of a concrete heap and its
+shape. For example, if the solver assigns input heap variables
+$\cfgnt{r}$ and $\cfgnt{r}^\prime$ such that $\cfgnt{r} =
+\cfgnt{r}^\prime$ is true, then there exists some location $\cfgnt{l}$
+and constraints $\phi$ and $\phi^\prime$ such that (i)
+$\lp\phi\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r})$; (ii)
+>>>>>>> 49c83f34a0b5afd58adc4b6649b15e2cbc93437c
 $\lp\phi^\prime\ \cfgnt{l}\rp \in \cfgnt{L}(\cfgnt{r}^\prime)$; and
 (iii) $\phi$ and $\phi^\prime$ hold in the aliasing assignments from
 the solver.  In this way, the graph groups heaps with the conditions
@@ -118,7 +142,7 @@ under which those heaps exist so look-ups are non-recursive and
 updates do not modify the path condition or require rewrites on
 constraints.
 
-\subsection{Semantics}
+\subsection{Semantics of Javalite}
 
 Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the initial machine state is
 $$
@@ -165,10 +189,10 @@ $$
       \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp  \rcom
       \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
 	}
-$$
-In this rule, when the string matches the new-expression, it is rewritten to use
-a new heap location where all of the fields for the new object point to
-$\cfgnt{r}_\mathit{null}$
-and the location map points a new stack reference to that new object.
-Notice that references for objects from the new-expression are auxiliary literals
-so they do not appear in any constraint in the summary heap as an aliasing option.
+$$ In this rule, when the string matches the new-expression, it is
+        rewritten to use a new heap location where all of the fields
+        for the new object point to $\cfgnt{r}_\mathit{null}$ and the
+        location map points a new stack reference to that new object.
+        Note that references for objects from the new-expression are
+        auxiliary literals, so they do not appear in any constraint in
+        the symbolic heap as an aliasing option.

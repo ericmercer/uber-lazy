@@ -40,6 +40,20 @@ SPF includes an implementation of~\gsetxt{} with lazy initialization.
 In recent work, we implemented the  Lazier and Lazier\#
 algorithms in SPF~\cite{Hillery:2014}.
 
+The prototype of our~\symtxt{} algorithm is implemented as a new
+extension to SPF.  In addition to the operations presented in the in
+this paper, the implementation contains support for operations over
+integers.  We are currently working on adding support for floating
+point operations, arrays, and bit-operations.  We use the
+\texttt{jConstraints} library which provides support for handling heap
+constraints~\cite{ase2014-ghilrr,jpf2014-dghirr}. It uses the z3
+solver~\cite{deMouraBjorner08Z3} as the underlying constraint
+solver. We leverage the incremental solving feature in z3 in our
+experiments. We also implement other optimizations that cache and
+re-use solutions to previous constraints. These optimizations are an
+important part of our implementation because only small portions of
+the heap constraint changes from one state to another.
+
 The results of the experiments are presented in Table~\ref{tab:results}. 
 Each row reports the results for the specified $k$-bound 
 for each artifact evaluated. The columns show the total

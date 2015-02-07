@@ -30,34 +30,40 @@ omit the commas for compactness.
 A Javalite program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
 a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
 where execution starts. The only primitive type in Javalite is
-Boolean. For simplicity in presentation, classes have only non-primitive fields, and methods have a single
-parameter. Expressions, $\cfgnt{e}$,  
-include statements, and they
- use '$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate comparison.
-The dot-operator for field access is replaced by '$\cfgt{\$}$', and the dot-operator
-for method invocation is replaced by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no explicit return
-statement; rather, the value of the last expression is
+Boolean. For simplicity in presentation, classes have only
+non-primitive fields, and methods have a single
+parameter. Expressions, $\cfgnt{e}$, include statements, and they use
+'$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate
+comparison.  The dot-operator for field access is replaced by
+'$\cfgt{\$}$', and the dot-operator for method invocation is replaced
+by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no
+explicit return statement; rather, the value of the last expression is
 used as the return value. A variable is always indicated by \cfgnt{x}
-and a value by \cfgnt{v}. A value can be a reference in the heap, $\cfgnt{r}$, or any of the special values shown in~\figref{fig:syntax}(a). 
-Only type correct programs are given as input to the machine.
+and a value by \cfgnt{v}. A value can be a reference in the heap,
+$\cfgnt{r}$, or any of the special values shown
+in~\figref{fig:syntax}(a).  Only type correct programs are given as
+input to the machine.
 
-The state of the Javalite machine,
-$\cfgnt{s}$, includes the program registry, $\mu$, a pair of functions defining the heap
-$\lp\cfgnt{L}\ \cfgnt{R}\rp$, a constraint,
-$\phi$, defined over references in the heap, the environment, $\eta$,
-for local variables, and the continuation $\cfgnt{k}$. The registry never changes so it is omitted from the state tuple in the rest of the presentation.  The more
-complex structures, such as the environment and heap, are defined as lists that
-start with empty, \cfgnt{mt}. These lists are treated as partial functions so
-$\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference $\cfgnt{r}$ associated with variable
-$\cfgnt{x}$. The notation $\eta^\prime = \eta[\cfgnt{x} \mapsto
-  \cfgnt{v}]$ defines a new partial function $\eta^\prime$ that is
-the same as $\eta$ except that the variable $\cfgnt{x}$ now maps to
-$\cfgnt{v}$. The continuation $\cfgnt{k}$ indicates where the hole, $\cfgt{*}$, is located, stores temporary computation, and keeps track of the next 
-computation. For example, the continuation
-$\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp$ indicates
-that the machine is evaluating the expression for the object
-reference on which the field $\cfgnt{f}$ is going to be accessed. Once
-the field access is complete, the machine continues with $\cfgnt{k}$.
+The state of the Javalite machine, $\cfgnt{s}$, includes the program
+registry, $\mu$, a pair of functions defining the heap
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$, a constraint, $\phi$, defined over
+references in the heap, the environment, $\eta$, for local variables,
+and the continuation $\cfgnt{k}$. The registry never changes so it is
+omitted from the state tuple in the rest of the presentation.  The
+more complex structures, such as the environment and heap, are defined
+as lists that start with empty, \cfgnt{mt}. These lists are treated as
+partial functions so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
+$\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
+$\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
+partial function $\eta^\prime$ that is the same as $\eta$ except that
+the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
+$\cfgnt{k}$ indicates where the hole, $\cfgt{*}$, is located, stores
+temporary computation, and keeps track of the next computation. For
+example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
+\rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
+expression for the object reference on which the field $\cfgnt{f}$ is
+going to be accessed. Once the field access is complete, the machine
+continues with $\cfgnt{k}$.
 
 \subsection{Symbolic Heap}
 
@@ -77,9 +83,9 @@ mutated on updates.  Immutability of references means that look-ups in
 the heap are non-recursive and updates do not modify the current path
 condition.
 
-The soundness and completeness proofs in Section~\ref{sec:bisim} rely on a set of 
-properties of the symbolic heap that
-are preserved by the small-step semantics during symbolic execution:
+The soundness and completeness proofs in Section~\ref{sec:bisim} rely
+on certain characteristics of the symbolic heap that are preserved by
+the small-step semantics during symbolic execution:
 %\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
 %\emph{type consistency}.
 \begin{compactdesc}
@@ -194,4 +200,6 @@ $$ In this rule, when the string matches the new-expression, it is
         location map points a new stack reference to that new object.
         Note that references for objects from the new-expression are
         auxiliary literals, so they do not appear in any constraint in
-        the symbolic heap as an aliasing option.
+        the symbolic heap as an aliasing option. The complete set of
+        semantic rules for Javalite are presented
+        in Appendix A.

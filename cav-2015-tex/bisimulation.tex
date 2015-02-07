@@ -16,12 +16,14 @@
 
 The bisimulation proof in this section establishes the soundness and
 completeness of the symbolic heap approach with respect to Generalized
-Symbolic Execution (\gsetxt{}). Intuitively, any properties proven with~\gsetxt{}
-can also be proved using the symbolic heap algorithm.~\gsetxt{} concretizes
-the possible heap configurations along with various aliasing
-relationships when an uninitialized field is dereferenced. The rules
-for initializing and updating the fields in the Javalite semantics for
-\gsetxt{} are shown in the~\appref{app:gse}.
+Symbolic Execution (\gsetxt{}). Intuitively, any properties proven
+with~\gsetxt{} can also be proved using the symbolic heap
+algorithm.~\gsetxt{} concretizes the possible heap configurations
+along with various aliasing relationships when an uninitialized field
+is dereferenced. The rules for initializing and updating the fields in
+the Javalite semantics for \gsetxt{} are shown in Appendix B where as
+the the complete set of rules for the symbolic heap algorithm are
+shown in Appendix C. 
 
 The proof shows the existence of a
 bisimulation between sets of states related by~\gsetxt{} ($p \rgse

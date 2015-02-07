@@ -1,32 +1,83 @@
 \section{Related Work}
 
-\noindent\textbf{Symbolic Execution} 
+
 Initial work on symbolic execution largely focused on checking
 properties of imperative programs with primitive
-types~\cite{Clarke:76,King:76}. Limitations of early symbolic execution techniques included non-primitive data types, path explosion and non-symbolic operations. Subsequent adaptations have sought to overcome these limitations.
-
-To address the issue of references, several projects have generalized
-the core idea of symbolic execution, enabling it to be applied to
-programs with more general types, including references and
-arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. However, these generalized symbolic execution (GSE) techniques work by branching over multiple copies of the system state during dereferencing operations, exacerbating path explosion and fragmenting the path condition. Producing a complete path condition for a single given control flow path would require merging an exponential number of states. Our work leverages the core idea in generalized symbolic execution with lazy initialization using on-the-fly reasoning to model a black-box input heap during
-symbolic execution, but avoids the nondeterminism introduced by GSE by
-constructing a single summary heap and polynomially-sized path condition for each control flow path.
+types~\cite{Clarke:76,King:76}.
+% Limitations of early symbolic execution techniques included non-primitive data types, path explosion and non-symbolic operations. Subsequent adaptations have sought to overcome these limitations.
+Several projects have generalized the core idea of symbolic execution,
+enabling it to be applied to programs with more general types,
+including references and
+arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. However, these
+generalized symbolic execution (GSE) techniques work by branching over
+multiple copies of the system state during dereferencing operations,
+exacerbating path explosion
+% and fragmenting the path condition. Producing a complete path
+%condition for a single given control flow path would require merging
+%an exponential number of states.
+Our work leverages the core idea in generalized symbolic
+execution with lazy initialization using on-the-fly reasoning to model
+a black-box input heap during symbolic execution, but avoids the
+nondeterminism introduced by GSE by constructing a single summary heap
+and polynomially-sized path condition for each control flow path.
 
 Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. While the independently developed techniques in~\cite{Sen:2014,Torlak:2014} use representations similar to the one presented here, none of these techniques address the fundamental issue concerning symbolic heaps, namely dereferencing symbolic input references. For these reasons, we believe these works to be both orthogonal and complimentary to our own.
 
-Dynamic symbolic execution (\dsetxt{}) has emerged as a way to enable symbolic execution to continue on programs that contain elements that cannot be reasoned about symbolically. ~\dsetxt{} works by executing a program using concrete and symbolic engines simultaneously. When the program reaches a statement that cannot be reasoned about symbolically, it substitutes in values from the concrete execution and continues. In the absence of an effective theory of references, DSE has been a natural choice for reasoning about programs that contain them. A number of DSE techniques use concretization when reasoning about references~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. However, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{} underapproximates when it concretizes symbolic values, resulting in an incomplete analysis. The SAGE~\dsetxt{} engine~\cite{Elkarablieh:2009} includes more sophisticated methods for reasoning about references, and can successfully reason about more complicated examples. However, the heap model in SAGE prohibits input-dependent memory allocation. The fixed-memory requirement means that analyses of programs accepting indefinite input heaps may terminate prematurely, even for the class of self-limiting solver-compatible programs. Since symbolic execution is otherwise sound and complete for this class, bounded heap models are, in general, incomplete with respect to symbolic execution. In contrast, the~\symtxt{} model presented in this paper represents a truly unbounded black box. While practical considerations may require that some sort of bounds be placed on the symbolic execution itself, the nature of those bounds need not be dictated by the~\symtxt{}.
+%Dynamic symbolic execution (\dsetxt{}) has emerged as a way to enable
+%symbolic execution to continue on programs that contain elements that
+%cannot be reasoned about symbolically. ~\dsetxt{} works by executing
+%a program using concrete and symbolic engines simultaneously. When
+%the program reaches a statement that cannot be reasoned about
+%symbolically, it substitutes in values from the concrete execution
+%and continues. In the absence of an effective theory of references,
+%DSE has been a natural choice for reasoning about programs that
+%contain them.
 
-\noindent\textbf{Bounded Model Checking}
-Bounded model checking (BMC) techniques seek to avoid the path explosion problem by converting an entire program execution, along with its specifications, into a constraint problem called a verification condition. The advantage in creating a single constraint is that SMT solvers can often reason more efficiently about all paths simultaneously rather than on a case-by-case basis. Many BMC methods include a model for reasoning about references, including those described in~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However, BMC techniques are not complete for general programs, due to the need to set an execution path-length bound prior to conducting the analysis. By extension, the reference models used in BMC methods generally require a predetermined size bound, and and are thus incomplete with respect to symbolic execution. Other limitations include assuming that symbolic references do not alias~\cite{Xie:2005,Babic:2007}, that data structures are not recursive~\cite{Dillig:2011}, or prohibiting dereferencing of black-box input references~\cite{Clarke:2004}.
+A number of dynamic symbolic execution (DSE) techniques either use
+concretization when reasoning about references or require solvers that
+support theories of
+arrays~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. Sometimes,
+however, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{}
+underapproximates the possible heaps configurations when it
+concretizes symbolic values. The SAGE~\dsetxt{}
+engine~\cite{Elkarablieh:2009} includes more sophisticated methods for
+reasoning about references, and can successfully reason about more
+complicated examples. However, the heap model in SAGE prohibits
+input-dependent memory allocation. The fixed-memory requirement means
+that analyses of programs accepting indefinite input heaps may
+terminate prematurely, even for the class of self-limiting
+solver-compatible programs.
 
-\noindent\textbf{Other Symbolic Heap Representations}
-%Due to technological limitations, many early symbolic heap representations focused on reducing the computational complexity of dereferencing queries. By introducing certain heuristics and approximations, the computational burden can be greatly reduced, at the cost of precision. Since the problem of weeding out false positives can be at least as difficult as the program analysis itself, there has been a renewed interest in more precise heap representations. However, these newer methods generally err on the side of under-approximation, producing an analysis that is not complete.
-%
-%Several GSE techniques~\cite{GSE03,KiasanKunit} form an exception to this rule, presenting an input heap model that is unconstrained and unbounded. However, GSE does not offer a mechanism for representing the set of heaps along an execution path as a unified symbolic value. As a result GSE does not produce a path condition representing the complete set of inputs for a given execution path, negating a significant advantage of symbolic execution. The work presented here overcomes this limitation by using symbolic values to represent the heap.
-A number of constraint-based programming techniques are capable of reasoning about heaps~\cite{Degrave:2010,Charreteur:2009,Albert:2013}. Most notably, the technique in~\cite{Albert:2013} is capable of reasoning about dereferencing operations in a per-path set of unknown input heaps. However, no guarantee is made about the precision of the analysis performed, nor is it obvious that such a guarantee is possible for the proposed method.
+Many bounded model checking (BMC) methods include a model for
+reasoning about references, including those described
+in~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However,
+BMC techniques generally need to predetermine bounds of a heap. Other
+limitations include assuming that symbolic references do not
+alias~\cite{Xie:2005,Babic:2007}, that data structures are not
+recursive~\cite{Dillig:2011}, or prohibiting dereferencing of
+black-box input references~\cite{Clarke:2004}.
 
-% a good place to mention procedure summaries, like Yorsh and the Dilligs.
-The symbolic heap value sets presented in this work build upon a number of prior techniques that use sets of guarded values to represent program state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. The methods presented in~\cite{Sen:2014,Torlak:2014,Yorsh:2008} use value sets to represent all symbolic program state, including references. While symbolic referencing operations could, in principle, be supported with these methods, it is not clear from the published material exactly how that might be accomplished, especially when reasoning about dereferencing in a black-box input heap. All of the methods presenting solutions to the dereferencing problem~\cite{Xie:2005,Dillig:2011,Elkarablieh:2009} are not complete, for a variety of reasons which have been previously enumerated.
+A number of constraint-based programming techniques are capable of
+reasoning about
+heaps~\cite{Degrave:2010,Charreteur:2009,Albert:2013}. Most notably,
+the technique in~\cite{Albert:2013} is capable of reasoning about
+dereferencing operations in a per-path set of unknown input
+heaps. However, no guarantees are made about the precision of the
+analysis performed.
+
+The symbolic heap value sets presented in this work build upon a
+number of prior techniques that use sets of guarded values to
+represent program
+state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. The
+methods presented in~\cite{Sen:2014,Torlak:2014,Yorsh:2008} use value
+sets to represent all symbolic program state, including
+references. While symbolic referencing operations could, in principle,
+be supported with these methods, it is not clear from the published
+material exactly how that might be accomplished, especially when
+reasoning about dereferencing in a black-box input heap. All of the
+methods presenting solutions to the dereferencing
+problem~\cite{Xie:2005,Dillig:2011,Elkarablieh:2009} are not complete,
+for a variety of reasons which have been previously enumerated.
 
 %\noindent\textbf{A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages Emina Torlak and Ras Bodik. Programming Language Design and Implementation} (PLDI'14)
 %

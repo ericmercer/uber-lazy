@@ -24,7 +24,7 @@
 						
     \hline
   \end{tabular}}
-  \caption{Comparing the efficiency of the summary heap with the GSE and Lazier\# algorithms.}
+  \caption{Comparing the efficiency of the summary heap with the~\gsetxt{} and Lazier\# algorithms.}
   \label{tab:results}
 \end{table*}
 %\end{figure*}
@@ -36,7 +36,7 @@ data in the context of symbolic execution.
 To perform our evaluation we implemented a prototype of the \symtxt{} 
 algorithm in Symbolic PathFinder (SPF)~\cite{DBLP:journals/ase/PasareanuVBGMR13} 
 and evaluate its efficacy on three Java data structure artifacts.
-SPF includes an implementation of GSE with lazy initialization.
+SPF includes an implementation of~\gsetxt{} with lazy initialization.
 In recent work, we implemented the  Lazier and Lazier\#
 algorithms in SPF~\cite{Hillery:2014}.
 
@@ -88,7 +88,7 @@ The number of paths explored by the \symtxt{} algorithm is strictly
 less than or equal to the number
 of paths explored by \gsetxt{} for all artifacts. As a result,
 fewer test cases will be generated to achieve the same control-flow 
-path coverage when compared to GSE and Lazier\#.
+path coverage when compared to~\gsetxt{} and Lazier\#.
 
 %In summary, the benefits of avoiding
 %initialization-based non-determinism outweigh the increased

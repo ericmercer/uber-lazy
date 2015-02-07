@@ -32,7 +32,7 @@ potentially unbounded number of references.
 The most direct approach to address these challenges is to approximate
 the results of a symbolic deference by substituting in a valid
 concrete value, as is done in dynamic symbolic execution
-(DSE)~\cite{Godefroid:POPL07,Godefroid:2005,Sen:2005,Tillmann:2008}. These
+(\dsetxt{})~\cite{Godefroid:POPL07,Godefroid:2005,Sen:2005,Tillmann:2008}. These
 approaches partition the universe of heaps in the symbolic
 representation but often under-approximate the partitions or require
 array theories in the constraint
@@ -42,7 +42,7 @@ representations, where multiple values for a reference may be
 represented along a single execution
 path~\cite{Dillig:2011,Elkarablieh:2009,Sen:2014,Torlak:2014,Xie:2005,Yorsh:2008}. Systems
 using these representations perform analyses that are more complete
-than standard DSE methods, but their associated dereferencing
+than standard~\dsetxt{} methods, but their associated dereferencing
 operations require placing further restrictions on the input heap,
 such as limiting the number of nodes~\cite{Elkarablieh:2009}, the
 nature of aliasing relationships~\cite{Babic:2007,Xie:2005}, or the
@@ -50,8 +50,8 @@ the use of recursive data structures~\cite{Dillig:2011}.
 
 An alternative approach which does not under-approximate the heap is
 Generalized Symbolic Execution
-(GSE)~\cite{Cadar:2008,KiasanKunit,GSE03,Rosner:2015}.  On symbolic
-dereferencing operations, GSE partitions the input space between the
+(\gsetxt{})~\cite{Cadar:2008,KiasanKunit,GSE03,Rosner:2015}.  On symbolic
+dereferencing operations,~\gsetxt{} partitions the input space between the
 various possible aliasing configurations on-the-fly and also creates
 non-deterministic choice points on the current path in order to
 explore each heap configuration. This approach, however, is
@@ -60,24 +60,24 @@ but instead concretizes all possible heap configurations.
 
 The contribution of this work is a non-trivial adaptation of concepts
 in abstract interpretation to the domain of symbolic execution. The
-result of which, unlike GSE, is the ability to efficiently generate
+result of which, unlike~\gsetxt{}, is the ability to efficiently generate
 and update \emph{symbolic heaps} to produce a single path constraint
 that is sound and complete up to the point of execution. This is
 accomplished by representing the symbolic heap with a field sensitive
 points-to graph with edges annotated with disjunctive formulas
-describing aliasing relationships. Where GSE branches the heap at every
+describing aliasing relationships. Where~\gsetxt{} branches the heap at every
 de-reference, the symbolic heap in this work splits only at reference
 comparison operations or field operations that may throw exceptions.
 
 The correctness of the symbolic heap and its on-the-fly update rules
 for symbolic execution is shown by proving the existence of a
-bisimulation between symbolic heap states and GSE states. From that
+bisimulation between symbolic heap states and~\gsetxt{} states. From that
 result comes the soundness and completeness of the path constraint up
 to the point of execution.  The efficiency of the representation is
 established with an exploratory empirical evaluation within the Java
 PathFinder framework over a classical set of symbolic execution
 benchmarks. The evaluation demonstrates how the symbolic heap scales
-compared to state-of-art GSE algorithms.
+compared to state-of-art~\gsetxt{} algorithms.
 
 This new symbolic heap and update rules for symbolic execution is a
 novel approach for de-referencing and updating heap allocated data
@@ -134,7 +134,7 @@ path condition. For example, one simple approach is to terminate
 execution upon attempting to dereference any symbolic
 value~\cite{Clarke:2004}. While this preserves the integrity of the
 path condition, it comes at the cost of an incomplete analysis. To
-enable a more complete analysis, dynamic symbolic execution (DSE),
+enable a more complete analysis, dynamic symbolic execution (\dsetxt{}),
 approximates the results of a symbolic dereferencing by substituting
 in a valid concrete
 value~\cite{Godefroid:POPL07,Godefroid:2005,Sen:2005,Tillmann:2008}. This
@@ -146,16 +146,16 @@ can be achieved by using value summary representations, where multiple
 values for a reference may be represented along a single execution
 path~\cite{Dillig:2011,Elkarablieh:2009,Sen:2014,Torlak:2014,Xie:2005,Yorsh:2008}. Systems
 using these representations perform analyses that are more complete
-than standard DSE methods, but their associated dereferencing
+than standard~\dsetxt{} methods, but their associated dereferencing
 operations require placing further restrictions on the input heap,
 such as limiting the number of nodes~\cite{Elkarablieh:2009}, the
 nature of aliasing relationships~\cite{Babic:2007,Xie:2005}, or the
 shape of the heap itself~\cite{Dillig:2011}. Finally, at the opposite
 end of the spectrum lies generalized symbolic execution
-(GSE)~\cite{Cadar:2008,KiasanKunit,GSE03,Rosner:2015}, which
+(\gsetxt{})~\cite{Cadar:2008,KiasanKunit,GSE03,Rosner:2015}, which
 accomplishes a fully complete analysis at the cost of an incomplete
 path condition \sjp{not clear what an incomplete path condition
-  is}. On symbolic dereferencing operations, GSE partitions the input
+  is}. On symbolic dereferencing operations,~\gsetxt{} partitions the input
 space between the various possible aliasing configurations
 \sjp{so?}. Thus, none of the current techniques provide the option of
 maintaining both a complete analysis and a complete path
@@ -187,11 +187,11 @@ set of input heaps along any valid program path.
 
 \item\textbf{-} A bisimulation proof establishing the soundness and 
 completeness of the heap summary approach with respect to
-properties provable by GSE.
+properties provable by~\gsetxt{}.
 
 \item\textbf{-} A proof-of-concept implementation and empirical study 
 demonstrating the scalability of the summary heap approach
-compared to other GSE approaches.
+compared to other~\gsetxt{} approaches.
 
 \end{compactdesc}
 \end{comment}

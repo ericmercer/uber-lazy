@@ -9,7 +9,7 @@ Several projects have generalized the core idea of symbolic execution,
 enabling it to be applied to programs with more general types,
 including references and
 arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. However, these
-generalized symbolic execution (GSE) techniques work by branching over
+generalized symbolic execution (\gsetxt{}) techniques work by branching over
 multiple copies of the system state during dereferencing operations,
 exacerbating path explosion.
 % and fragmenting the path condition. Producing a complete path
@@ -18,7 +18,7 @@ exacerbating path explosion.
 Our work leverages the core idea in generalized symbolic
 execution with lazy initialization using on-the-fly reasoning to model
 a black-box input heap during symbolic execution, but avoids the
-nondeterminism introduced by GSE by constructing a single summary heap
+nondeterminism introduced by~\gsetxt{} by constructing a single summary heap
 and polynomially-sized path condition for each control flow path.
 
 Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. While the independently developed techniques in~\cite{Sen:2014,Torlak:2014} use representations similar to the one presented here, none of these techniques address the fundamental issue concerning symbolic heaps, namely dereferencing symbolic input references. For these reasons, we believe these works to be both orthogonal and complimentary to our own.
@@ -33,12 +33,12 @@ Recent progress has been made towards mitigating path explosion via state mergin
 %DSE has been a natural choice for reasoning about programs that
 %contain them.
 
-A number of dynamic symbolic execution (DSE) techniques either use
+A number of dynamic symbolic execution (\dsetxt{}) techniques either use
 concretization when reasoning about references or require solvers that
 support theories of
 arrays~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. Sometimes,
 however, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{}
-underapproximates the possible heaps configurations when it
+under-approximates the possible heaps configurations when it
 concretizes symbolic values. The SAGE~\dsetxt{}
 engine~\cite{Elkarablieh:2009} includes more sophisticated methods for
 reasoning about references, and can successfully reason about more
@@ -141,7 +141,7 @@ for a variety of reasons which have been previously enumerated.
 %
 %What the reviewer said: This was in a general list of “missing” related work.
 %
-%What I think: This paper is about how to handle pointers during dynamic symbolic execution. It handles pointer dereferences much like GSE, by resolving possible aliases at the time of the dereferencing, but does not seem to include the possibility of a “new” choice. One difference is that this method is adapted to allow pointer arithmetic. The memory model is basically a flat address space, without any explicit notion of a heap.
+%What I think: This paper is about how to handle pointers during dynamic symbolic execution. It handles pointer dereferences much like~\gsetxt{}, by resolving possible aliases at the time of the dereferencing, but does not seem to include the possibility of a “new” choice. One difference is that this method is adapted to allow pointer arithmetic. The memory model is basically a flat address space, without any explicit notion of a heap.
 %
 %How this is like SymHeap: It’s a symbolic execution technique that has some facility for linked data structures. Their pointers can be nondeterministic, much like the references in symHeap, and they do conditional writes in a similar fashion as symHeap.
 %
@@ -155,7 +155,7 @@ for a variety of reasons which have been previously enumerated.
 %
 %What the Reviewer Said: There is an alternative way to represent a summary using logical
 %formulas and extra variables [Godefroid 2007]. I wonder how such a
-%representation would work for GSE and heap summarization. Such a
+%representation would work for~\gsetxt{} and heap summarization. Such a
 %representation would not require the complex update algorithm
 %described in the paper. It would be useful if the authors could
 %comment on this and experimentally compare with the technique.

@@ -15,11 +15,12 @@ exacerbating path explosion.
 % and fragmenting the path condition. Producing a complete path
 %condition for a single given control flow path would require merging
 %an exponential number of states.
-Our work leverages the core idea in generalized symbolic
-execution with lazy initialization using on-the-fly reasoning to model
-a black-box input heap during symbolic execution, but avoids the
-nondeterminism introduced by~\gsetxt{} by constructing a single summary heap
-and polynomially-sized path condition for each control flow path.
+Our work leverages the core idea in generalized symbolic execution
+with lazy initialization using on-the-fly reasoning to model a
+black-box input heap during symbolic execution, but avoids the
+nondeterminism introduced by~\gsetxt{} by constructing a single
+symbolic heap and polynomially-sized path condition for each control
+flow path.
 
 Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. While the independently developed techniques in~\cite{Sen:2014,Torlak:2014} use representations similar to the one presented here, none of these techniques address the fundamental issue concerning symbolic heaps, namely dereferencing symbolic input references. For these reasons, we believe these works to be both orthogonal and complimentary to our own.
 

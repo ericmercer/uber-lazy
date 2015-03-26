@@ -67,7 +67,7 @@ reference rule is given.
 The final statement that $\sqsubset$ is a bisimulation is in \thref{th:bisim}.
 
 \begin{theorem}
-If $R \subseteq F\sim(R)$, then $R$ is a bisimulation.
+If $R \subseteq F_\sim(R)$, then $R$ is a bisimulation.
 \label{lem:bisim}
 \end{theorem}
 The proof can be found in any good text on bisimulation.
@@ -83,47 +83,49 @@ The proof can be found in any good text on bisimulation.
 % $$s_\sym^\prime \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
 %\end{lemma}
 
-\begin{lemma}[$\sqsubset$ is a bisimulation for $\rinit$ and $\rsum$]
+\begin{lemma}[Existence of Equivalent Initialized States]
 \label{lem:init}
-If $P \sqsubset q$ and if $\exists q^\prime (q \rsym q^\prime )$ , then $\exists 
+If we have state $q$, and set of states $P$ such that $q \in 2^{S_\mathit{FA}}$ and $P \sqsubset q$, then there exists state $q^+$ and set of states $P^+$ such that $P \sim P^+$, $q \sim q^+$, $P^+ \sqsubset q^+$, and all the relevant fields are initialized.
 \end{lemma}
 
 \begin{proof}
-In order for a state to be equivalent to a set of GSE states, it must be both sound and complete with respect to the set. We will begin the proof by showing completeness, and then finish by demonstrating soundness.
+Our proof strategy is to take arbitrary $q$ and $P$, and then construct $q^+$ and $P^+$ such that $P \sim P^+$, $q \sim q^+$, and all the relevant fields are initialized. We then prove that $P^+ \sqsubset q^+$.
 
-To show completeness, we must show that any state in the set is represented by $s_\sym$. The definition of representation requires the both the existence of a homomorphism, and proof that the homomorphism constraint is satisfiable. To show that a homomorphism exits, take any GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$. By Definition~\ref{representation}, we know $s_\gse = \lp \cfgnt{L}_\gse\ \cfgnt{R}_\gse\ \phi_\gse\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Take any state $s_\gse^\prime$ where $s_\gse \rinit^* s_\gse^\prime$, and state $s_\sym^\prime$ where $s_\sym \rsum^* s_\sym^\prime$. Note that  state $s_\gse^\prime$ has the form: $s_\gse^\prime = \lp \cfgnt{L}_{\gse^\prime}\ \cfgnt{R}_{\gse^\prime}\ \phi_{\gse^\prime}\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$.Take any location, field pair $\lp l_\gse\  \cfgnt{f}\rp$ such that $\lp l_\gse\  \cfgnt{f}\rp \in \cfgnt{R}_{\gse}^\leftarrow$, and let $l_\sym = h(l_\gse)$. We may classify $l_\gse$ into one of three ways, based on the values of the $\cfgnt{R}$ function in each of the states $s_\gse$, $s_\gse^\prime$, $s_\sym$, and $s_\sym^\prime$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
+Let $q$ be any state such that $q \in 2^{S_\mathit{FA}}$, and let $P$ be a set of states such that $P \sqsubset q$. By Definition~\ref{representation}, $q = \lp \cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$. Let $q^+$ be the state such that $q^+ = \lp \cfgnt{L}_{q}^\prime\ \cfgnt{R}_{q}^\prime\ \phi_{q}\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ where $\cfgnt{L}_{q}^\prime$ and  $\cfgnt{R}_{q}^\prime$ are as defined in the $\rsym$ field access rule. Although the $\rsum$ relation does not relate states, we use the notation ${q} \rsum^* q^+$ to show this type of relationship between pairs of states. Let $p$ be any state such that $p \in P$. Define state $p^+$ in a similar fashion as $q^+$, except using the $\rgse$ field access rule. Define $P^+$ to be the set of all possible states like $p^+$: $P^+ = \{\forall {p}^+ | \exists {p} ({p} \sqsubset {q} \wedge ({p} \rinit^* {p}^+) ) \}$, and define $P^{q}$ to be the set of all states represented by $q^+$: $P^{q} = \{\forall {p}^\prime | {p}^\prime \sqsubset {q}^\prime \}$. Since $P^+$ and $q^+$ are simply pre-initialized versions of $P$ and $q$, it follows immediately that $P \sim P^+$ and $q \sim q^+$, and that all the relevant fields are initialized.
 
-Class 1: $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f} ) = \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f} )$ and $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f} ) = \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$.  Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{\gse}(\cfgnt{R}_{\gse} (\cfgnt{l}_\gse,f )) $. In this case, let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $s_\gse \rightharpoonup_h s_\sym$, we may surmise that: 
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$$
+It remains to show that $P^+ \sqsubset q^+$. We will do so by proving that both $P^+ \subset P^q$ and $P^q \subset P^+$. From $p$, take any location, field pair $\lp l_p\  \cfgnt{f}\rp$ such that $\lp l_p\  \cfgnt{f}\rp \in \cfgnt{R}_{p}^\leftarrow$, and let $l_q = h(l_p)$. We may classify $l_p$ into one of three ways, based on the values of the $\cfgnt{R}$ function in each of the states $p$, $p^+$, $q$, and $q^+$, and we may define a function $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ based on that classification.
 
-Class 2: $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f}) = \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$. Since $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$, the Summarize rule must have altered this reference. A reference created by the Summarize rule has a value set $\theta_{all}$ with four subsets: $\theta_{null}$, $\theta_{new}$, $\theta_{alias}$, and $\theta_\mathit{orig}$. Because $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f}) = \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$, we know that the location we want to map to lies in $\theta_\mathit{orig}$. Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{\gse}(\cfgnt{R}_{\gse} (\cfgnt{l}_\gse,f )) $, and let $l_{orig} = h(l_\alpha)$. In this case, we let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $(\phi_a\ l_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f ))$. Let $l_{orig} = h(l_\alpha)$. We can see that by the Summarize rule $ (\phi_b\ l_\mathit{orig})\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$, so therefore:
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$$
+Class 1: $\cfgnt{R}_{p} ( l_{p},  \cfgnt{f} ) = \cfgnt{R}_{p}^\prime ( l_{p},  \cfgnt{f} )$ and $\cfgnt{R}_{s} ( l_{q},  \cfgnt{f} ) = \cfgnt{R}_{q}^\prime ( l_{q},  \cfgnt{f})$.  Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{p}(\cfgnt{R}_{p} (\cfgnt{l}_{p},f )) $. In this case, let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $p \rightharpoonup_h {q}$, we may surmise that: 
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_{p},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime (\cfgnt{l}_{q},f ))$$
 
-Class 3: $\cfgnt{R}_\gse ( l_\gse,  \cfgnt{f}) \neq \cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_\sym,  \cfgnt{f}) \neq \cfgnt{R}_{s^\prime} ( l_\sym,  \cfgnt{f})$. In this case, there are two possibilities: either the new reference $\cfgnt{R}_{\gse^\prime} ( l_\gse,  \cfgnt{f})$ points to some location we've seen before $l_\alpha$, or it points to a previously unobserved location $l_\beta$. By establishing which of these possibilities has happened, we can build $h^\prime$. To construct $h^\prime$, let $l_\alpha$ be any location such that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) $. If there exists $\phi_\alpha$ such that $\lp \phi_\alpha\ l_\alpha \rp \in \cfgnt{L}_{\gse}^\rightarrow $, let $h^\prime(l_\alpha) = h(l_\alpha)$. Otherwise, let $l_\beta$ be the location such that $(\phi_b\ \cfgnt{l}_\beta) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f )) $ and $(\phi_b\ \cfgnt{l}_\beta) \notin \cfgnt{L}_{s}(\cfgnt{R}_{s} (\cfgnt{l}_\sym,f )) $. Now, let $h^\prime(l_\alpha) = l_\beta$. Observe that either way,
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\gse,f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\sym,f ))$$
+Class 2: $\cfgnt{R}_{p} ( l_{p},  \cfgnt{f}) = \cfgnt{R}_{p}^\prime ( l_{p},  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_{q},  \cfgnt{f}) \neq \cfgnt{R}_{q}^\prime ( l_{q},  \cfgnt{f})$. Since $\cfgnt{R}_{s} ( l_{q},  \cfgnt{f}) \neq \cfgnt{R}_{q}^\prime ( l_{q},  \cfgnt{f})$, the Summarize rule must have altered this reference. A reference created by the Summarize rule has a value set $\theta_{all}$ with four subsets: $\theta_{null}$, $\theta_{new}$, $\theta_{alias}$, and $\theta_\mathit{orig}$. Because $\cfgnt{R}_{p} ( l_{p},  \cfgnt{f}) = \cfgnt{R}_{p}^\prime ( l_{p},  \cfgnt{f})$, we know that the location we want to map to lies in $\theta_\mathit{orig}$. Let $l_\alpha$ be the location such that ${(\phi_a\ l_\alpha)} = \cfgnt{L}_{p}(\cfgnt{R}_{p} (\cfgnt{l}_{p},f )) $, and let $l_{orig} = h(l_\alpha)$. In this case, we let $h^\prime(l_\alpha) = h(l_\alpha)$. Since $(\phi_a\ l_\alpha) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_{p},f ))$. Let $l_{orig} = h(l_\alpha)$. We can see that by the Summarize rule $ (\phi_b\ l_\mathit{orig})\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime (\cfgnt{l}_{q},f ))$, so therefore:
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_{p},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime (\cfgnt{l}_{q},f ))$$
 
-Furthemore, since $l_\alpha$ and $l_\beta$ are new locations with uninitialized fields, we know that for any field $f^\prime$, $\{(\phi_p\ \bot)\} = \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\alpha,f^\prime ))$ and $ \{(\phi_p\ \bot)\} = \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_\beta,f^\prime ))$ therefore, we know that:
-$$(\phi_p\ \cfgnt{l}_x) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_\alpha,f^\prime )) \Rightarrow (\phi_q\ h^\prime (\cfgnt{l}_x))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} ( h^\prime(\cfgnt{l}_\alpha),f ))$$
+Class 3: $\cfgnt{R}_{p} ( l_{p},  \cfgnt{f}) \neq \cfgnt{R}_{p}^\prime ( l_{p},  \cfgnt{f})$ and $\cfgnt{R}_{s} ( l_{q},  \cfgnt{f}) \neq \cfgnt{R}_{q}^\prime ( l_{q},  \cfgnt{f})$. In this case, there are two possibilities: either the new reference $\cfgnt{R}_{p}^\prime ( l_{p},  \cfgnt{f})$ points to some location we've seen before $l_\alpha$, or it points to a previously unobserved location $l_\beta$. By establishing which of these possibilities has happened, we can build $h^\prime$. To construct $h^\prime$, let $l_\alpha$ be any location such that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_{p},f )) $. If there exists $\phi_\alpha$ such that $\lp \phi_\alpha\ l_\alpha \rp \in \cfgnt{L}_{p}^\rightarrow $, let $h^\prime(l_\alpha) = h(l_\alpha)$. Otherwise, let $l_\beta$ be the location such that $(\phi_b\ \cfgnt{l}_\beta) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime (\cfgnt{l}_{q},f )) $ and $(\phi_b\ \cfgnt{l}_\beta) \notin \cfgnt{L}_{s}(\cfgnt{R}_{s} (\cfgnt{l}_{q},f )) $. Now, let $h^\prime(l_\alpha) = l_\beta$. Observe that either way,
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_{p},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime (\cfgnt{l}_{q},f ))$$
 
-We have now shown that there exists a mapping $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ for all $\cfgnt{l}_{\gse^\prime} \in \cfgnt{L}_{\gse^\prime}^\rightarrow$ such that:
-$$ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime} (\cfgnt{l}_{\gse^\prime},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_{\gse^\prime},f )) $$
-By Definition~\ref{def:homomorphism} we know that $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$. 
+Furthemore, since $l_\alpha$ and $l_\beta$ are new locations with uninitialized fields, we know that for any field $f^\prime$, $\{(\phi_p\ \bot)\} = \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_\alpha,f^\prime ))$ and $ \{(\phi_p\ \bot)\} = \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime (\cfgnt{l}_\beta,f^\prime ))$ therefore, we know that:
+$$(\phi_p\ \cfgnt{l}_x) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_\alpha,f^\prime )) \Rightarrow (\phi_q\ h^\prime (\cfgnt{l}_x))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{q}^\prime ( h^\prime(\cfgnt{l}_\alpha),f ))$$
 
-It remains to show that $\mathbb{S}( \phi_\sym^\prime \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime) )$. For locations in Class 1, no new conjuncts are added to $\mathbb{HC}(s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime)$, and therefore the satisfiability cannot be changed. For locations in Class 2 or Class 3, the new constraints take either the form $\phi_x \wedge \phi_\mathit{orig}$, or $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$. Constraints of the form  $\phi_x \wedge \phi_\mathit{orig}$ contain terms $\phi_x$ and $\phi_\mathit{orig}$ which were already conjoined to prior heap constraint, so satisfiability is not affected. In constraints of the form $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$, the term $\phi_x$ is conjoined to the prior heap constraint, and all the other terms involve the new variable $r_f$, so satisfiability is not affected. Since the previous heap constraint is satisfiable, and none of the new terms can impact the satisfiability, we know that the new heap constraint must also be satisfiable.
+We have now shown that there exists a mapping $h^\prime: \mathcal{L} \mapsto \mathcal{L}$ for all $\cfgnt{l}_{\gse^\prime} \in \cfgnt{L}_{p}^\prime^\rightarrow$ such that:
+$$ (\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{p}^\prime(\cfgnt{R}_{p}^\prime (\cfgnt{l}_{\gse^\prime},f )) \Rightarrow (\phi_b\ h^\prime (\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (\cfgnt{l}_{\gse^\prime},f )) $$
+By Definition~\ref{def:homomorphism} we know that $p^+ \rightharpoonup_{h^\prime} q^+$. 
 
-Since the heap constraint is satisfiable, we know that $s_\gse^\prime \sqsubset s_\sym^\prime $. We have therefore shown that for some symbolic state $s_\sym$ and an arbitrary GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$ :
+It remains to show that $\mathbb{S}( \phi_\sym^\prime \wedge \mathbb{HC}(p^+ \rightharpoonup_{h} q^+) )$. For locations in Class 1, no new conjuncts are added to $\mathbb{HC}(p^+ \rightharpoonup_{h} q^+)$, and therefore the satisfiability cannot be changed. For locations in Class 2 or Class 3, the new constraints take either the form $\phi_x \wedge \phi_\mathit{orig}$, or $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$. Constraints of the form  $\phi_x \wedge \phi_\mathit{orig}$ contain terms $\phi_x$ and $\phi_\mathit{orig}$ which were already conjoined to prior heap constraint, so satisfiability is not affected. In constraints of the form $\phi_x \wedge (r_f\ op\ r_{a}) \wedge (r_f\ op\ r_{b}) \wedge ...$, the term $\phi_x$ is conjoined to the prior heap constraint, and all the other terms involve the new variable $r_f$, so satisfiability is not affected. Since the previous heap constraint is satisfiable, and none of the new terms can impact the satisfiability, we know that the new heap constraint must also be satisfiable.
+
+Since the heap constraint is satisfiable, we know that $p^+ \sqsubset q^+ $. We have therefore shown that for some symbolic state ${q}$ and an arbitrary GSE state $p$ such that $p \sqsubset {q}$ :
 \begin{equation} 
-(s_\gse \rinit^* s_\gse^\prime \wedge s_\sym \rsum^* s_\sym^\prime) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime 
+(p \rinit^* p^+ \wedge {q} \rsum^* q^+) \Rightarrow p^+ \sqsubset q^+ 
 \end{equation}
 
-We now prove the reverse case, that $s_\sym^*$ represents no infeasible states. Suppose that $s_\sym^\prime$ represents some infeasible state. This means that we represent some GSE state that has some reference r which points somewhere that no place in the feasible set points to. Since we don't change the path condition, all the old references still point exactly to the same places they used to. 
+It follows immediately that $P^+ \subset P^q$. We now prove the reverse case, that $P^q \subset P^+$. Suppose that $q^+$ represents some infeasible state. This means that $q$ represents some GSE state that has some reference r which points somewhere that no place in the feasible set points to. Since the path condition is identical between $q$ and $q^+$, all references common to the two states point exactly to the same places under the same initial conditions. 
 
-So, the problem must be with one of the new references. All of the new references point to either a new location, the null location, the uninitialized location, or some alias. In the Summarize rule, the values and constraints for the new, null, uninitialized, and alias locations are contained in the sets $\theta_{new}$, $\theta_{null}$, $\theta_\mathit{orig}$, and $\theta_{alias}$. Since the null, and uninitialized locations are already accounted for by the homomorphism $s_\gse \rightharpoonup_h s_\sym$, and since a new location was created symmetrically for both $s_\gse^\prime$ and $s_\sym^\prime$, the problem must be with some alias location that is part of $s_\sym$ but not $s_\gse$. This means that there must be a feasible path to a target location that does not exist for any GSE heap. So, pick an arbitrary GSE heap containing the location and field in question. If said target location does not exist, then there is no reference in the GSE heap pointing to that location. In the symbolic heap, the path constraint on the path leading to the undesired target contains an aliasing condition that states that the source reference only points to this target location on condition that the parent reference points there. However, since we already know that no other reference in the GSE heap points there, this condition must be infeasible. Therefore, it is not part of the represented state. We have a contradiction. Therefore, there is no alias that points somewhere it's not supposed to.
+So, the problem must be with one of the references which is present in $q^+$, but not $q$. All of these references point to either a new location, the null location, the uninitialized location, or some alias. In the Summarize rule, the values and constraints for the new, null, uninitialized, and alias locations are contained in the sets $\theta_{new}$, $\theta_{null}$, $\theta_\mathit{orig}$, and $\theta_{alias}$. Since the null, and uninitialized locations are already accounted for by the homomorphism $p \rightharpoonup_h {q}$, and since a new location was created symmetrically for both $p^+$ and $q^+$, the problem must be with some alias location that is part of ${q}$ but not $p$. This means that there must be a feasible path to a target location that does not exist for any GSE heap. So, pick an arbitrary GSE heap containing the location and field in question. If said target location does not exist, then there is no reference in the GSE heap pointing to that location. In the symbolic heap, the path constraint on the path leading to the undesired target contains an aliasing condition that states that the source reference only points to this target location on condition that the parent reference points there. However, since we already know that no other reference in the GSE heap points there, this condition must be infeasible. Therefore, it is not part of the represented state. We have a contradiction. Therefore, there is no alias that points somewhere it's not supposed to.
 
 We have now proven that 
-$$ s_\gse^* \sqsubset s_\sym^*  \Rightarrow  s_\gse^* \in \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
-This fact, combined with our previous result, proves that
-$$s_\sym^*  \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
+$$ {p}^* \sqsubset {q}^*  \Rightarrow  {p}^* \in \{\forall {p}^\prime | \exists {p} ({p} \sqsubset {q} \wedge ({p} \rinit^* {p}^\prime) ) \}$$
+From this result, it is certain that $P^q \subset P^+$. This fact, combined with our previous result, proves that $P^q \cong P^+$. This, with our previous assumption that $P^{q} = \{\forall {p}^\prime | {p}^\prime \sqsubset {q}^\prime \}$, leads us to our final conclusion:
+$$ P^+ \sqsubset q^+$$.
 
 \end{proof}
 
@@ -131,7 +133,7 @@ $$s_\sym^*  \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\
 Choose any P and Q such that P is represented by Q on field access. Choose some P' that P transitions too.
 Pick some p' in P'. By definition, it is related to a p in P. Use that p. Show how that p is related to p'. Then relate to q'.
 
-Arbitrary P' such that P transitions to P'. Reason over each possible P' (how every many choices might exist--Only one for FA). Pick arbitrary p' in one of the sucessor. Do the forward proof. Show connection in q'. Connect to P' since it holds for arbitrary. 
+Arbitrary P' such that P transitions to P'. Reason over each possible P' (how every many choices might exist--Only one for FA). Pick arbitrary p' in one of the successor. Do the forward proof. Show connection in q'. Connect to P' since it holds for arbitrary. 
 
 Repeat process for each possible successor P'
 
@@ -147,13 +149,13 @@ $$
 \end{lemma}
 
 \begin{proof}
-Proof by contradiction: assume $P \sqsubset q \wedge (P\ q) \not\in F_\sim(\sqsubset)$.
+%Proof by contradiction: assume $P \sqsubset q \wedge (P\ q) \not\in F_\sim(\sqsubset)$.
 
-\lemref{lem:succ} ensures at least one successor of $P$ and $q$. Let $p^\prime \in P^\prime$ be any
+By \lemref{lem:init}, we may assume without loss of generality that \cfgnt{r} points to no locations where field \cfgnt{f} is uninitialized. Furthermore, \lemref{lem:succ} ensures at least one successor of $P$ and $q$. Let $p^\prime \in P^\prime$ be any
 state in any successor set and $p \rgse p^\prime$ that state's
 predecessor. Let $q^\prime$ be similarly defined relative to $q$.  The states $p$ and $q$, by virtue of the
 representation relation, are only differentiated by their heaps and
-global constraints since the environment ($\eta$), expression ($r$),
+global constraints since the environment ($\eta$), expression ($\cfgnt{r}$),
 and continuation ($\lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow
 \cfgnt{k}\rp$) are the same in all states 
 (\defref{representation}). 
@@ -166,7 +168,7 @@ expression is $\cfgt{error}$ and the continuation is $\cfgt{end}$. For
 the non-null pointing reference, some care is needed. First each does
 use the same continuation $\cfgnt{k}$ (it is the same for $p$ and $q$
 by $\sqsubset$. As the environment and continuations are the same,
-$r^\prime = \mathrm{stack}_\cfgnt{r}()$, returns the same next largest
+$\cfgnt{r}^\prime = \mathrm{stack}_\cfgnt{r}()$, returns the same next largest
 number of current stake references from the partition. The first
 condition for inclusion in $\sqsubset$, equality between environments,
 expressions, and continuations, is met.
@@ -180,7 +182,7 @@ heaps. First the forward direction.
 \textrm{A{\footnotesize CCESS (NULL)}}}: $p \rightarrow^\ell_\mathit{FA(N)}
 p^\prime$ because $l = l_\mathit{null}$ (\figref{fig:lazy}). As $p$
 is represented in $q$, $\exists q^\prime\ (q
-\rightarrow^\sym_\mathit{FA{N}} q^\prime$ since $l_{\mathit{null}}$
+\rightarrow^\sym_\mathit{FA(N)} q^\prime$ since $l_{\mathit{null}}$
 must be feasible on the reference (\figref{fig:fHeap}). 
 
 The successors $p^\prime$ and $q^\prime$ are only differentiated by
@@ -209,7 +211,7 @@ $(\cfgnt{L}^\prime_q[\cfgnt{r}^\prime \mapsto \mathbb{VS}\lp
   \cfgnt{L}^\prime_q,\cfgnt{R}^\prime_q,\cfgnt{r},\cfgnt{f},\phi^\prime_g\rp
 ]\ \cfgnt{R}^\prime_q)$; each version adding in the
 constraint-location pair or value set respectively on the same
-reference $\cfgnt{r}^\prime$. As $r^\prime$ is a stack reference, and
+reference $\cfgnt{r}^\prime$. As $\cfgnt{r}^\prime$ is a stack reference, and
 identical in both $p^\prime$ and $q^\prime$, and no new locations are
 added to either heap, the existing homomorphism after initialization
 still holds: $p^\prime \rightharpoonup_h q^\prime$.
@@ -217,30 +219,30 @@ still holds: $p^\prime \rightharpoonup_h q^\prime$.
 
  To relate $p^\prime$ and $q^\prime$ on
 $\sqsubset$, it is necessary to create a new homomorphism:
-$(\cfgnt{L}^\prime_p\ \cfgnt{R}^\prime_p) \rightharpoonup_{h^\prime}
-(\cfgnt{L}^\prime_q\ \cfgnt{R}^\prime_q)$. To that end, construct the
+$\gsest^\prime \rightharpoonup_{h^\prime}
+\symst^\prime$. To that end, construct the
 function $h^\prime$ such that $h^\prime = h$.
 
 
-Observe that since $s_\gse \rightharpoonup_{h} s_\sym$, and since $\cfgnt{R}_\gse$ and $\cfgnt{R}_\sym$ are unchanged from states $s_\gse$ to $s_\gse^\prime$ and $s_\sym$ to $s_\sym^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\gse(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_\sym(h^\prime(l),f)$. Let $\{(\phi_\gse^\prime\ l^\prime)\} =  \cfgnt{L}_\gse(\cfgnt{R}_\gse(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym))$ is valid, we know that:
- $$(\phi_\sym \wedge \phi_\sym^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
+Observe that since $p \rightharpoonup_{h} q$, and since $\cfgnt{R}_\gsest$ and $\cfgnt{R}_q$ are unchanged from states $p$ to $p^\prime$ and $q$ to $q^\prime$ respectively, we are guaranteed that $ \cfgnt{r} = \cfgnt{R}_\gsest(l,f) \Rightarrow \cfgnt{r} = \cfgnt{R}_q(h^\prime(l),f)$. Let $\{(\phi_\gsest^\prime\ l^\prime)\} =  \cfgnt{L}_\gsest(\cfgnt{R}_\gsest(l,f))$. Since $\mathbb{S}(\phi_g \wedge \mathbb{HC}(p \rightharpoonup_{h} q))$ is valid, we know that:
+ $$(\phi_q \wedge \phi_q^\prime\ h(l^\prime)) \in \mathbb{VS}\lp \cfgnt{L}_{s},\cfgnt{R}_{s},\cfgnt{r},\cfgnt{f},\phi_g\rp$$ 
 From this, we may deduce that:
-$$ (\phi_\gse\ l) \in \cfgnt{L}_\gse^\prime(\cfgnt{r}^\prime) \Rightarrow (\phi_\sym \wedge \phi_\sym^\prime\ h^\prime(l))\in \cfgnt{L}_\sym^\prime(\cfgnt{r}^\prime)$$
-Since $\cfgnt{r}^\prime$ is the only new addition to $L_\gse^\prime$ and $L_\sym^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime$. Furthermore, since the constraints in $\mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime)$ are constructed using conjuncts already present in $ \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym)$, we are guaranteed that $\mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) \Leftrightarrow \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym)$, and therefore $\mathbb{S}(\phi_g \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime))$. This fact, and the fact that $\eta_{\gse} = \eta_{s} ,\ \cfgnt{e}_{\gse} = \cfgnt{e}_{s} ,\ \cfgnt{k}_{\gse} = \cfgnt{k}_{s}$, means that by Definition~\ref{representation} we know $s_\gse^\prime \sqsubset s_\sym^\prime$. We have now shown that:
+$$ (\phi_\gsest\ l) \in \cfgnt{L}_\gsest^\prime(\cfgnt{r}^\prime) \Rightarrow (\phi_q \wedge \phi_q^\prime\ h^\prime(l))\in \cfgnt{L}_q^\prime(\cfgnt{r}^\prime)$$
+Since $\cfgnt{r}^\prime$ is the only new addition to $L_\gsest^\prime$ and $L_q^\prime$, we now know that the assertion above holds for all $l \in \mathcal{L}$. Thus, we have shown that $p^\prime \rightharpoonup_{h} q^\prime$. Furthermore, since the constraints in $\mathbb{HC}(p^\prime \rightharpoonup_{h^\prime} q^\prime)$ are constructed using conjuncts already present in $ \mathbb{HC}(p \rightharpoonup_{h} q)$, we are guaranteed that $\mathbb{HC}(p^\prime \rightharpoonup_{h^\prime} q^\prime) \Leftrightarrow \mathbb{HC}(p \rightharpoonup_{h} q)$, and therefore $\mathbb{S}(\phi_g \wedge \mathbb{HC}(p^\prime \rightharpoonup_{h^\prime} q^\prime))$. This fact, and the fact that $\eta_\gsest = \eta_{s} ,\ \cfgnt{e}_\gsest = \cfgnt{e}_{s} ,\ \cfgnt{k}_\gsest = \cfgnt{k}_{s}$, means that by Definition~\ref{representation} we know $p^\prime \sqsubset q^\prime$. We have now shown that:
 \begin{equation}
-\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+\forall \Gsest^\prime ( \Gsest \rsgse \Gsest^\prime \Rightarrow \exists q^\prime( (q \rsym q^\prime )\wedge (\Gsest^\prime\ \sqsubset\ q^\prime ))  )
 \end{equation}
 
-Now, suppose that there exists a state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$. Since $s_i^\prime \sqsubset s_\sym^\prime$, then by Definition~\ref{representation}, we know there exists a homomorphism $s_i^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$, and that $\mathbb{S}( \phi_i^\prime \wedge \mathbb{HC}(s_i^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$. From state $s_i^\prime$, construct state $s_i$ such that 
+Now, to prove the reverse direction, choose any state $\gsest^\prime$ such that $\gsest^\prime \sqsubset q^\prime$. Since $\gsest^\prime \sqsubset q^\prime$, then by Definition~\ref{representation}, we know there exists a homomorphism $\gsest^\prime \rightharpoonup_{h^\prime} q^\prime$, and that $\mathbb{S}( \phi_\gsest^\prime \wedge \mathbb{HC}(\gsest^\prime \rightharpoonup_{h^\prime} q^\prime) )$. From state $\gsest^\prime$, construct state $\gsest$ such that 
 \begin{align*}
-s_i &= \lp \cfgnt{L}_{i}\ \cfgnt{R}_{i}\ \phi_i\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp\\
-L_i &= L_{i^\prime} \setminus \{\cfgnt{r}^\prime \}\\
-R_i &= R_{i^\prime}\\
-\phi_i &= \phi_i^\prime
+\gsest &= \lp \cfgnt{L}_\gsest\ \cfgnt{R}_\gsest\ \phi_\gsest\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp\\
+L_\gsest &= L_{\gsest^\prime} \setminus \{\cfgnt{r}^\prime \}\\
+R_\gsest &= R_{\gsest^\prime}\\
+\phi_\gsest &= \phi_\gsest^\prime
 \end{align*}
-Observe that by virtue of the GSE Field Access rule, $s_i \rgse s_i^\prime$. Now, construct function $h_i$ so that $h_i = h^\prime$. Observe that by Definition~\ref{def:homomorphism} $s_i \rightharpoonup_{h_i} s_\sym$,  and that $\mathbb{S}( \phi_i \wedge \mathbb{HC}(s_i \rightharpoonup_{h_i} s_\sym) )$, so $s_i \sqsubset s_\sym$. Therefore:
+Observe that by virtue of the GSE Field Access rule, $\gsest \rgse \gsest^\prime$. Now, construct function $h_\gsest$ so that $h_\gsest = h^\prime$. Observe that by Definition~\ref{def:homomorphism} $\gsest \rightharpoonup_{h_\gsest} q$,  and that $\mathbb{S}( \phi_\gsest \wedge \mathbb{HC}(\gsest \rightharpoonup_{h_\gsest} q) )$, so $\gsest \sqsubset q$. Therefore:
 \begin{equation}
-\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+\forall q^\prime ( q \rsym q^\prime\Rightarrow \exists \Gsest^\prime( (\Gsest \rsgse \Gsest^\prime )\wedge (\Gsest^\prime\ \sqsubset\ q^\prime ))  )
 \end{equation}
  This concludes the proof.
 \end{proof}
@@ -260,7 +262,7 @@ Observe that by virtue of the GSE Field Access rule, $s_i \rgse s_i^\prime$. Now
 
 \begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{W{\footnotesize RITE}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
 If $P \in 2^{S_\mathit{FW}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
-\label{lem:access}
+\label{lem:write}
 $$
 \forall P \in 2^{S_\mathit{FW}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
 $$
@@ -269,25 +271,25 @@ $$
 
 
 \begin{proof}
-Begin by assuming the conditions from Lemma~\ref{lem:write}.
+Begin by assuming the conditions from Lemma~\ref{lem:write}: Take arbitrary state $q \in S$ and set of states $P \in 2^{S_\mathit{FW}}$ such that $P \sqsubset q$.
 
-The first step is to show that there exists a state $s_\sym^\prime$ that is complete with respect to the feasible set. Take state $s_\sym$ and compute state $s_\sym^\prime$ such that $s_\sym \rsym s_\sym^\prime$. Take any GSE state $s_\gse$ such that $s_\gse \sqsubset s_\sym$, and find state $s_\gse^\prime$ such that $s_\gse \rgse s_\gse^\prime$. Let $l_\gse$ be the location such that $\{(\phi_a\ l_\gse )\} = \cfgnt{L}_\gse(\cfgnt{r}_x) $ for some $\phi_a$. To show that $s_\gse^\prime \sqsubset s_\sym^\prime$, we need to demonstrate that there exists a function $h^\prime$ such that $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$, and that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$. Since $s_h \sqsubset s_\sym$, we know that there exists a function $h$ such that $s_\gse \rightharpoonup_{h} s_\sym$. Let $h^\prime = h$. 
+The first step is to prove that the conditions in \eqnref{eqn:BisimulationForwards} hold. Take state $\symst$ and compute state $\symst^\prime$ such that $\symst \rsym \symst^\prime$. Take any GSE state $\gsest$ such that $\gsest \sqsubset \symst$, and find state $\gsest^\prime$ such that $\gsest \rgse \gsest^\prime$. Let $l_\gsest$ be the location such that $\{(\phi_a\ l_\gsest )\} = \cfgnt{L}_\gsest(\cfgnt{r}_x) $ for some $\phi_a$. To show that $\gsest^\prime \sqsubset \symst^\prime$, we need to demonstrate that there exists a function $h^\prime$ such that $\gsest^\prime \rightharpoonup_{h^\prime} \symst^\prime$, and that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(\gsest^\prime \rightharpoonup_{h^\prime} \symst^\prime) )$. Since $s_h \sqsubset \symst$, we know that there exists a function $h$ such that $\gsest \rightharpoonup_{h} \symst$. Let $h^\prime = h$. 
 
-First, we consider how $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$. Let $l_\alpha$ and $l_\beta$ be arbitrary locations in $\cfgnt{L}_{\gse^\prime}^\rightarrow$ such that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime}(\cfgnt{l}_\beta,f ))$, let $\theta = \cfgnt{L}_\sym(\cfgnt{R}_\sym(h(l_\gse),f))$, and let $\theta^\prime =   \cfgnt{L}_\sym^\prime(\cfgnt{R}_\sym^\prime(h(l_\gse),f))$. 
+First, we consider how $\gsest^\prime \rightharpoonup_{h^\prime} \symst^\prime$. Let $l_\alpha$ and $l_\beta$ be arbitrary locations in $\cfgnt{L}_{\gsest^\prime}^\rightarrow$ such that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\gsest^\prime}(\cfgnt{R}_{\gsest^\prime}(\cfgnt{l}_\beta,f ))$, let $\theta = \cfgnt{L}_\symst(\cfgnt{R}_\symst(h(l_\gsest),f))$, and let $\theta^\prime =   \cfgnt{L}_\symst^\prime(\cfgnt{R}_\symst^\prime(h(l_\gsest),f))$. 
 
-Suppose $l_\beta \neq l_\gse$. In this case either $\theta = \theta^\prime$ or $\theta \neq \theta^\prime$ . In the first case, we are guaranteed that the homomorphism works by default. Otherwise, if $\theta \neq \theta^\prime$.  We can see from the construction of the set $X$ in the symbolic Field Write rule that any feasible location in the set $\theta$ must also be in the set $\theta^\prime$. Since $s_\gse \sqsubset s_\sym$, we know that $h(l_\alpha)$ is in $\theta$, and is likewise in $\theta^\prime$. We have now established that in either case where $l_\beta \neq l_\gse$, $(\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$.
+Suppose $l_\beta \neq l_\gsest$. In this case either $\theta = \theta^\prime$ or $\theta \neq \theta^\prime$ . In the first case, we are guaranteed that the homomorphism works by default. Otherwise, if $\theta \neq \theta^\prime$.  We can see from the construction of the set $X$ in the symbolic Field Write rule that any feasible location in the set $\theta$ must also be in the set $\theta^\prime$. Since $\gsest \sqsubset \symst$, we know that $h(l_\alpha)$ is in $\theta$, and is likewise in $\theta^\prime$. We have now established that in either case where $l_\beta \neq l_\gsest$, $(\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$.
 
-On the other hand, suppose $l_\beta = l_\gse$. In this case we know that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime}(\cfgnt{l}_\gse,f ))$. From the GSE field rule, we can surmise that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse}(\cfgnt{r} )$, and since $s_\gse \sqsubset s_\sym$, we know that $(\phi_b\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s}(\cfgnt{r})$ for some constraint $\phi_b$. Using this fact, we can apply the symbolic Field Write rule to infer that $l_\alpha$ must be one of the locations in $\theta^\prime$, and therefore $(\phi_c\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}^\prime(l_\gse,f))$
+On the other hand, suppose $l_\beta = l_\gsest$. In this case we know that $\{(\phi_a\ \cfgnt{l}_\alpha)\} = \cfgnt{L}_{\gsest^\prime}(\cfgnt{R}_{\gsest^\prime}(\cfgnt{l}_\gsest,f ))$. From the GSE field rule, we can surmise that $(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gsest}(\cfgnt{r} )$, and since $\gsest \sqsubset \symst$, we know that $(\phi_b\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s}(\cfgnt{r})$ for some constraint $\phi_b$. Using this fact, we can apply the symbolic Field Write rule to infer that $l_\alpha$ must be one of the locations in $\theta^\prime$, and therefore $(\phi_c\ h(\cfgnt{l}_\alpha)) \in \cfgnt{L}_{s^\prime}(\cfgnt{R}^\prime(l_\gsest,f))$
 
 Thus, for arbitrary $l_\alpha$ and $l_\beta$:
-$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gse^\prime}(\cfgnt{R}_{\gse^\prime}(\cfgnt{l}_\beta,f )) \Rightarrow (\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$$
-Therefore, we have shown that $s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime$.
+$$(\phi_a\ \cfgnt{l}_\alpha) \in \cfgnt{L}_{\gsest^\prime}(\cfgnt{R}_{\gsest^\prime}(\cfgnt{l}_\beta,f )) \Rightarrow (\phi_b\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_{s^\prime}(\cfgnt{R}_{s^\prime} (h(\cfgnt{l}_\beta),f ))$$
+Therefore, we have shown that $\gsest^\prime \rightharpoonup_{h^\prime} \symst^\prime$.
 
-Establishing the fact that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h^\prime} s_\sym^\prime) )$ is left as an exercise to the reader (waving hands in the air).
+Since the path condition is unchanged, and since no new constraints are added to the represented heaps, we are guaranteed that $\mathbb{S}(\phi_{s^\prime} \wedge \mathbb{HC}(\gsest^\prime \rightharpoonup_{h^\prime} \symst^\prime) )$.
 
-By proving the existence of a valid homomorphism, we have shown that for any state $s_\gse^\prime$ such that $s_\gse \rgse s_\gse^\prime$, then the state $s_\sym^\prime$ such that $s_\sym \rsym s_\gse^\prime$ represents $s_\gse^\prime$. Therefore, $\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )$. This concludes the proof of completeness.
+By proving the existence of a valid homomorphism, we have shown that for any state $\gsest^\prime$ such that $\gsest \rgse \gsest^\prime$, then the state $\symst^\prime$ such that $\symst \rsym \gsest^\prime$ represents $\gsest^\prime$. Therefore, $\forall \Gsest^\prime ( \Gsest \rsgse \Gsest^\prime \Rightarrow \exists \symst^\prime( (\symst \rsym \symst^\prime )\wedge (\Gsest^\prime\ \sqsubset\ \symst^\prime ))  )$.
 
-To show that $s_\sym^\prime$ is sound with respect to the feasible set, we use the same argument as in the field read proof: that any state $s_\gse^\prime$ represented by $s_\sym^\prime$ must have a counterpart state $s_\gse$ such that $s_\gse \rgse s_\gse^\prime$ and $s_\gse \sqsubset s_\sym$. Because $s_\sym$ is exact, $s_\gse^\prime$ must be a part of the feasible set. Therefore, $\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )$.
+To prove the reverse direction, we use the same argument as in the field read proof: that any state $\gsest^\prime$ represented by $\symst^\prime$ must have a counterpart state $\gsest$ such that $\gsest \rgse \gsest^\prime$ and $\gsest \sqsubset \symst$. Because $\gsest \sqsubset \symst$ , $\gsest$ must be a member of the set $\Gsest$. Therefore, $\forall \symst^\prime ( \symst \rsym \symst^\prime\Rightarrow \exists \Gsest^\prime( (\Gsest \rsgse \Gsest^\prime )\wedge (\Gsest^\prime\ \sqsubset\ \symst^\prime ))  )$.
 
 \end{proof}
 
@@ -520,7 +522,7 @@ $\rsym$.
 %\end{lemma}
 
 
-\begin{lemma}[\textrm{E{\footnotesize QUALS}} } preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
+\begin{lemma}[\textrm{E{\footnotesize QUALS}} ] preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
 If $P \in 2^{S_\mathit{E}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
 \label{lem:access}
 $$

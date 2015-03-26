@@ -228,7 +228,7 @@ $(P\ q)$ such that
 \label{eqn:BisimulationBackwards}
 \forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( (P \rsgse P^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
 \end{equation}
-The bisimularity relation is the greatest fixed point of the functional.
+The bisimilarity relation is the greatest fixed point of the functional.
 \end{definition}
 
 Note that in the literature it is customary to define bisimulation in
@@ -242,4 +242,31 @@ definition is sufficient for all of the customary properties of
 bisimulation to apply. For a more detailed treatment on the
 application of bisimulation to reduction rule systems see
 \cite{GSE:barbedbisimulation}.
+
+\paragraph{Relationship between bisimulation and fix points}
+
+If you have a lattice $L$, and you have some 
+function $F$ which transforms one point on the lattice into another, then
+$F$ is an endofunction on $L$. For any endofunction $F$, a 
+a post-fixed point of $F$ is any point $x$ where $x < F(x)$, and a pre-fixed 
+point is any point $x$ where $F(x) < x$. The inductively defined set $F_\mathit{ind}$
+is equal to the meet of all the pre-fixed points, and the conductively 
+defined set $F_\mathit{coind}$ is equal to the join of all post-fixed points. 
+$x \leq F_\mathit{coins}$. If $F$ is monotone, then the greatest fixed point $\mathit{gfp}(F)$ 
+is equal to the coinductive set, and the least fixed point $\mathit{lfp}(F)$ is equal to the 
+inductive set.
+
+For some monotone endofunction $F$, the inductive proof principle states that 
+if $F(x) \leq x$, then $\mathit{lfp}(F) \leq x$. Similarly, the coinductive proof 
+principle states that if $x \leq F(x)$, then $x \leq \mathit{gfp}(F)$. 
+
+Because the functional associated to bisimulation $F_\sim$ is monotone over 
+the lattice formed by sets of pairs of states, we may invoke the coinductive proof principle
+to identify post-fixed points of $\mathit{gfp}(F_\sim)$. It can be proved that
+the greatest fixed point of the functional associated to 
+bisimulation is equal to the bisimilarity relation $\sim = \mathit{gfp}(F_\sim)$, that 
+all bisimulations are 
+post-fixed points of $F_\sim$, and all post-fixed points of $F_\sim$ are 
+bisimulations. Thus, we may invoke the coinductive proof principle to show that some relation $R$ is a bisimulation, by proving that $R$ is a pre-fixed point of $F_\sim$: $R \leq F_\sim(R)$.
+ 
 

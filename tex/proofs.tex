@@ -2,13 +2,13 @@
 \subsection{Lemmas}
 
 The goal of this section is to prove that the representation relation,
-$\sqsubset$, is a bisimulation.  A bisimulation is a relation over pairs of states such that whenever two states, $s_\gse$ and
-$s_\sym$, are related in the bisimulation, $s_\gse \sqsubset
-s_\sym$, every successor, from either state, $s_\gse
-\rgse s_\gse^\prime$ or $s_\sym \rsym
-s_\sym^\prime$, has a corresponding mutual successor in the other
+$\sqsubset$, is a bisimulation.  A bisimulation is a relation over pairs of states such that whenever two states, $\gsest$ and
+$\symst$, are related in the bisimulation, $\gsest \sqsubset
+\symst$, every successor, from either state, $\gsest
+\rgse \gsest^\prime$ or $\symst \rsym
+\symst^\prime$, has a corresponding mutual successor in the other
 state such that both of those successors are also related in the
-bisimulation: $s_\gse^\prime \sqsubset s_\sym^\prime$.
+bisimulation: $\gsest^\prime \sqsubset \symst^\prime$.
 
 If $\rsym$ is considered to be a model of the
 $\rgse$ (i.e., a representation of that machine), then the
@@ -73,14 +73,17 @@ If $R \subseteq F_\sim(R)$, then $R$ is a bisimulation.
 The proof can be found in any good text on bisimulation.
 %For the proof, we refer the reader to \cite{Sangiorgi:2011}
 
-\begin{theorem}
+%\begin{theorem}
+%If exists state $\symst$ and set of states $\Gsest$ such that \eqnref{eqn:BisimulationForwards} and \eqnref{eqn:BisimulationBackwards} are satisfied, then:
+%$$(\Gsest \ \symst) \in F_\sim(\sqsubset)$$
+%\label{}
+%\end{theorem}
 
-\end{theorem}
 
 %\begin{lemma}[$\sqsubset$ is a bisimulation for $\rinit$ and $\rsum$]
 %\label{lem:init}
-%If $s_\sym \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$ for symbolic state $s_\sym = \lp \cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$, initial state $s_0$, and control flow path $\pi_n$, and if there exists some intermediate state state $s_\sym^\prime$ such that $(\cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C}) \rsum^* (\cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C})$, then:
-% $$s_\sym^\prime \cong \{\forall s_\gse^\prime | \exists s_\gse (s_\gse \sqsubset s_\sym \wedge (s_\gse \rinit^* s_\gse^\prime) ) \}$$
+%If $\symst \cong \mathbb{FS}(\rightarrow_{\phi},s_0,\pi_n)$ for symbolic state $\symst = \lp \cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \phi_\sym\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$, initial state $s_0$, and control flow path $\pi_n$, and if there exists some intermediate state state $\symst^\prime$ such that $(\cfgnt{L}_\sym\ \cfgnt{R}_{s}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C}) \rsum^* (\cfgnt{L}_{s^\prime}\ \cfgnt{R}_{s^\prime}\ \phi_{s^\prime}\ \cfgnt{r}\ \cfgnt{f} \ \cfgnt{C})$, then:
+% $$\symst^\prime \cong \{\forall \gsest^\prime | \exists \gsest (\gsest \sqsubset \symst \wedge (\gsest \rinit^* \gsest^\prime) ) \}$$
 %\end{lemma}
 
 \begin{lemma}[Existence of Equivalent Initialized States]
@@ -244,19 +247,20 @@ Observe that by virtue of the GSE Field Access rule, $\gsest \rgse \gsest^\prime
 \begin{equation}
 \forall q^\prime ( q \rsym q^\prime\Rightarrow \exists \Gsest^\prime( (\Gsest \rsgse \Gsest^\prime )\wedge (\Gsest^\prime\ \sqsubset\ q^\prime ))  )
 \end{equation}
- This concludes the proof.
+By \defref{bisimulation}, we conclude:
+$$(\Gsest \ \symst) \in F_\sim(\sqsubset)$$
 \end{proof}
 
 %proof for field write
 %\begin{lemma}[Exactness of Field Write Rule]
 %\label{lem:write}
-%If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{FW}$ and $s_\gse \sqsubset s_\sym$, then:
+%If there exists states $\gsest$ and $\symst$ such that $\symst \in \mathcal{FW}$ and $\gsest \sqsubset \symst$, then:
 %\begin{equation}
-%\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\forall \gsest^\prime ( \gsest \rgse \gsest^\prime \Rightarrow \exists \symst^\prime( (\symst \rsym \symst^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 %\end{equation}
 %and
 %\begin{equation}
-%\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\forall \symst^\prime ( \symst \rsym \symst^\prime\Rightarrow \exists \gsest^\prime( (\gsest \rgse \gsest^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 %\end{equation}
 %\end{lemma}
 
@@ -290,6 +294,9 @@ Since the path condition is unchanged, and since no new constraints are added to
 By proving the existence of a valid homomorphism, we have shown that for any state $\gsest^\prime$ such that $\gsest \rgse \gsest^\prime$, then the state $\symst^\prime$ such that $\symst \rsym \gsest^\prime$ represents $\gsest^\prime$. Therefore, $\forall \Gsest^\prime ( \Gsest \rsgse \Gsest^\prime \Rightarrow \exists \symst^\prime( (\symst \rsym \symst^\prime )\wedge (\Gsest^\prime\ \sqsubset\ \symst^\prime ))  )$.
 
 To prove the reverse direction, we use the same argument as in the field read proof: that any state $\gsest^\prime$ represented by $\symst^\prime$ must have a counterpart state $\gsest$ such that $\gsest \rgse \gsest^\prime$ and $\gsest \sqsubset \symst$. Because $\gsest \sqsubset \symst$ , $\gsest$ must be a member of the set $\Gsest$. Therefore, $\forall \symst^\prime ( \symst \rsym \symst^\prime\Rightarrow \exists \Gsest^\prime( (\Gsest \rsgse \Gsest^\prime )\wedge (\Gsest^\prime\ \sqsubset\ \symst^\prime ))  )$.
+
+By \defref{bisimulation}, we conclude:
+$$(\Gsest \ \symst) \in F_\sim(\sqsubset)$$
 
 \end{proof}
 
@@ -391,7 +398,7 @@ access rule, $s \rightarrow_\mathit{FA} s^\prime$,
 is also deterministic.
 \end{lemma}
 \begin{proof}
-Proof by definition of $\rightarrow_\mathit{FA}$ in \figref{fig:sym}.
+Proof by definition of $\rightarrow_\mathit{FA}$ in \figref{fig:fHeap}.
 
 \lemref{lem:S-determ} establishes that the heap in the state on the right side of
 $\rsum^*$ is deterministic if the heap in the state on the left side
@@ -428,16 +435,16 @@ $(\cfgnt{L}^\prime\ \cfgnt{R}^\prime) =
 
 \begin{lemma}[$\rightarrow_\mathit{FW}$ preserves heap determinism]
 \label{lem:FW-determ}
-Given a state, $s_\sym$, with a deterministic heap,
+Given a state, $\symst$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
-\mathrm{heap}(s_\sym)$, the new heap,
+\mathrm{heap}(\symst)$, the new heap,
 $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
-\mathrm{heap}(s_\sym^\prime)$, in any state related by the field
-write rule, $s_\sym \rightarrow_\mathit{FW} s_\sym^\prime$,
+\mathrm{heap}(\symst^\prime)$, in any state related by the field
+write rule, $\symst \rightarrow_\mathit{FW} \symst^\prime$,
 is also deterministic.
 \end{lemma}
 \begin{proof}
-Proof by definition of $\rightarrow_\mathit{FW}$ in \figref{fig:sym}.
+Proof by definition of $\rightarrow_\mathit{FW}$ in \figref{fig:fHeap}.
 
 The $\rightarrow_\mathit{FW}$ rule relies on the $\mathbb{ST}$
 function. Recall from \defref{def:ST} that each constraint in each
@@ -472,12 +479,12 @@ deterministic.
 
 \begin{lemma}[$\rcom$ preserves heap determinism]
 \label{lem:J-determ}
-Given a state, $s_\sym$, with a deterministic heap,
+Given a state, $\symst$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
-\mathrm{heap}(s_\sym)$, the new heap,
+\mathrm{heap}(\symst)$, the new heap,
 $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
-\mathrm{heap}(s_\sym^\prime)$, in any state related by the
-Javalite relation, $s_\sym \rcom s_\sym^\prime$, is
+\mathrm{heap}(\symst^\prime)$, in any state related by the
+Javalite relation, $\symst \rcom \symst^\prime$, is
 also deterministic.
 \end{lemma}
 \begin{proof}
@@ -495,12 +502,12 @@ deterministic.
 
 \begin{theorem}[$\rsym$ preserves heap well-formedness]
 \label{thm:determ}
-Given a state, $s_\sym$, with a deterministic heap,
+Given a state, $\symst$, with a deterministic heap,
 $(\cfgnt{L}_\sym\ \cfgnt{R}_\sym) =
-\mathrm{heap}(s_\sym)$, the new heap,
+\mathrm{heap}(\symst)$, the new heap,
 $(\cfgnt{L}_\sym^\prime\ \cfgnt{R}_\sym^\prime) =
-\mathrm{heap}(s_\sym^\prime)$, in any state related by the
-symbolic relation, $s_\sym \rsym s_\sym^\prime$, is
+\mathrm{heap}(\symst^\prime)$, in any state related by the
+symbolic relation, $\symst \rsym \symst^\prime$, is
 also deterministic.
 \end{theorem}
 \begin{proof}
@@ -511,90 +518,92 @@ $\rsym$.
 
 %\begin{lemma}[Exactness of Reference Compare Rule]
 %\label{lem:compare}
-%If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$, then:
+%If there exists states $\gsest$ and $\symst$ such that $\symst \in \mathcal{RC}$ and $\gsest \sqsubset \symst$, then:
 %\begin{equation}
-%\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\forall \gsest^\prime ( \gsest \rgse \gsest^\prime \Rightarrow \exists \symst^\prime( (\symst \rsym \symst^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 %\end{equation}
 %and
 %\begin{equation}
-%\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\forall \symst^\prime ( \symst \rsym \symst^\prime\Rightarrow \exists \gsest^\prime( (\gsest \rgse \gsest^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 %\end{equation}
 %\end{lemma}
 
 
 \begin{lemma}[\textrm{E{\footnotesize QUALS}} ] preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
 If $P \in 2^{S_\mathit{E}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
-\label{lem:access}
+\label{lem:compare}
 $$
 \forall P \in 2^{S_\mathit{E}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
 $$
 \end{lemma}
 
-There are two rules that apply to state $s_\sym \in 2^{E}$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for brevity we will only show the proofs for the case for the $\cfgt{true}$ branch. 
+There are two rules that apply to states in $2^{E}$, one for the $\cfgt{true}$ branch and one for the $\cfgt{false}$ branch. Since the proofs for both rules are nearly identical, for brevity we will only show the proofs for the case for the $\cfgt{true}$ branch. 
 \begin{proof}
-Assume there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{RC}$ and $s_\gse \sqsubset s_\sym$. Let $s_\sym^\prime$ be any state such that $s_\sym \rsym s_\sym$ and let $\zeta_T = \forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime )$. Since $s_\gse \sqsubset s_\sym$, we know that $s_\gse \in \mathcal{RC}$, and that there exists a homomorphism $s_\gse \rightharpoonup_{h} s_\sym$ such that $\mathbb{S}( \phi_\sym \wedge \mathbb{HC}(s_\gse \rightharpoonup_{h} s_\sym) ) $. We partition $\zeta_T$ based on the values of $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$ as follows: Let
-$$\zeta_t = \zeta_T \setminus \{ s_f | (s_f= \lp \cfgnt{L}_f\ \cfgnt{R}_f\ \phi_\gse\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp) \wedge (\cfgnt{L}_f \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_f \lp \cfgnt{r}_1 \rp ) \}$$
+Assume there exists states $\gsest$ and $\symst$ such that $\symst \in \mathcal{RC}$ and $\gsest \sqsubset \symst$. Let $\symst^\prime$ be any state such that $\symst \rsym \symst$ and let $\zeta_T = \forall \gsest^\prime ( \gsest \rgse \gsest^\prime )$. Since $\gsest \sqsubset \symst$, we know that $\gsest \in \mathcal{RC}$, and that there exists a homomorphism $\gsest \rightharpoonup_{h} \symst$ such that $\mathbb{S}( \phi_\sym \wedge \mathbb{HC}(\gsest \rightharpoonup_{h} \symst) ) $. We partition $\zeta_T$ based on the values of $\cfgnt{L}_\gsest \lp \cfgnt{r}_0\rp$ and $\cfgnt{L}_\gsest \lp \cfgnt{r}_1 \rp$ as follows: Let
+$$\zeta_t = \zeta_T \setminus \{ s_f | (s_f= \lp \cfgnt{L}_f\ \cfgnt{R}_f\ \phi_\gsest\ \eta\ \cfgnt{e}\ \cfgnt{k}\rp) \wedge (\cfgnt{L}_f \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_f \lp \cfgnt{r}_1 \rp ) \}$$
 and let
 $$\zeta_f = \zeta_T \setminus \zeta_t$$ 
 
-Furthermore, there are two possible configurations for $s_\sym^\prime$: $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $ and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $. We now consider the partitions of $\zeta_T$ and configurations of $s_\sym^\prime$ in separate cases.
+Furthermore, there are two possible configurations for $\symst^\prime$: $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $ and $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $. We now consider the partitions of $\zeta_T$ and configurations of $\symst^\prime$ in separate cases.
 
-Case 1: Assume that $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$. 
-Compute state $s_\gse^\prime$ such that $s_\gse \rgse s_\gse^\prime$. In this case, the GSE ``equals - references true" rule applied, therefore $s_\gse^\prime$ is in $\zeta_t$. Observe that by applying Theorem~\ref{thm:mutex}, $\phi_\sym^\prime \wedge \phi_0 \wedge \phi_1$ reduces to $\phi_\sym$. Therefore, $\mathbb{S}( \phi_\sym^\prime \wedge \mathbb{HC}(s_\gse^\prime \rightharpoonup_{h} s_\sym^\prime) ) $ is true, and by extension, $s_\gse^\prime \sqsubset s_\sym^\prime$. Since this relation holds for arbitrary $s_\gse^\prime \in \zeta_t$, we now know that 
+Case 1: Assume that $\cfgnt{L}_\gsest \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gsest \lp \cfgnt{r}_1 \rp$. 
+Compute state $\gsest^\prime$ such that $\gsest \rgse \gsest^\prime$. In this case, the GSE ``equals - references true" rule applied, therefore $\gsest^\prime$ is in $\zeta_t$. Observe that by applying Theorem~\ref{thm:determ}, $\phi_\sym^\prime \wedge \phi_0 \wedge \phi_1$ reduces to $\phi_\sym$. Therefore, $\mathbb{S}( \phi_\sym^\prime \wedge \mathbb{HC}(\gsest^\prime \rightharpoonup_{h} \symst^\prime) ) $ is true, and by extension, $\gsest^\prime \sqsubset \symst^\prime$. Since this relation holds for arbitrary $\gsest^\prime \in \zeta_t$, we now know that 
 \begin{equation}
 \label{eqn:RCForwardsTrue}
-((\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp) \wedge (s_\gse^\prime \in \zeta_t)) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
+((\cfgnt{L}_\gsest \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gsest \lp \cfgnt{r}_1 \rp) \wedge (\gsest^\prime \in \zeta_t)) \Rightarrow \gsest^\prime \sqsubset \symst^\prime
 \end{equation}
 
-Case 2:  Assume that $s_\sym^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $, and define $\theta_\alpha$, $\theta_0$ and $\theta_1$ as in the ``equals (references-true) rule''. Since $\cfgnt{L}_\sym$ and $\cfgnt{R}_\sym$ are unchanged from $s_\sym$, and $\phi_\sym^\prime$ is only a strengthened version of $\phi_\sym$,  we know that
+Case 2:  Assume that $\symst^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp $, and define $\theta_\alpha$, $\theta_0$ and $\theta_1$ as in the ``equals (references-true) rule''. Since $\cfgnt{L}_\sym$ and $\cfgnt{R}_\sym$ are unchanged from $\symst$, and $\phi_\sym^\prime$ is only a strengthened version of $\phi_\sym$,  we know that
 \begin{equation}
 \label{eqn:RCSubset}
-\{s_\gse^\prime | s_\gse^\prime \sqsubset s_\sym^\prime \} \subseteq \{s_\gse^\prime | \exists s_\gse \lp s_\gse \sqsubset s_\sym \rp \wedge s_\gse \rsym s_\gse^\prime\}
+\{\gsest^\prime | \gsest^\prime \sqsubset \symst^\prime \} \subseteq \{\gsest^\prime | \exists \gsest \lp \gsest \sqsubset \symst \rp \wedge \gsest \rsym \gsest^\prime\}
 \end{equation}
-Suppose that there exists state $s_i^\prime$ such that $s_i^\prime \sqsubset s_\sym^\prime$ and $s_i^\prime \notin \zeta_t$. Because of Equation \ref{eqn:RCSubset}, we know that 
-$$s_i^\prime \in \{s_\gse^\prime | \exists s_\gse \lp s_\gse \sqsubset s_\sym\rp \wedge s_\gse \rsym s_\gse^\prime\}$$ 
-Combining this with the assumption that $s_i^\prime \notin \zeta_t$, we must conclude that $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp \neq  \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$. Because of this, and because of Theorem~\ref{thm:mutex}, we know that either all constraints in the set
+Suppose that there exists state $s_i^\prime$ such that $s_i^\prime \sqsubset \symst^\prime$ and $s_i^\prime \notin \zeta_t$. Because of Equation \ref{eqn:RCSubset}, we know that 
+$$s_i^\prime \in \{\gsest^\prime | \exists \gsest \lp \gsest \sqsubset \symst\rp \wedge \gsest \rsym \gsest^\prime\}$$ 
+Combining this with the assumption that $s_i^\prime \notin \zeta_t$, we must conclude that $\cfgnt{L}_\gsest \lp \cfgnt{r}_0\rp \neq  \cfgnt{L}_\gsest \lp \cfgnt{r}_1 \rp$. Because of this, and because of Theorem~\ref{thm:determ}, we know that either all constraints in the set
 $$\{\phi_i \mid \exists \phi_\alpha (\phi_\alpha \in \theta_\alpha)\wedge \phi_i = \lp\phi_\alpha \wedge \phi_0 \wedge \phi_1\rp\}$$ are unsatisfiable, or that at least one constraint in the set
 $$\{\phi_i \mid \exists \phi_\alpha (\phi_\alpha \in \lp \theta_0 \cup \theta_1 \rp)\wedge \lp \phi_i = \phi_\alpha \wedge \phi_0 \wedge \phi_1 \rp\}$$ 
-is valid. Either way, $\mathbb{S}\lp\phi_i^\prime \wedge\phi_0\wedge \phi_1\rp$ is false and $s_\sym^\prime$ does not represent $s_i^\prime$. We have a contradiction. Therefore: 
+is valid. Either way, $\mathbb{S}\lp\phi_i^\prime \wedge\phi_0\wedge \phi_1\rp$ is false and $\symst^\prime$ does not represent $s_i^\prime$. We have a contradiction. Therefore: 
 \begin{equation}
 \label{eqn:RCBackwardsTrue}
-((s_\sym^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp) \wedge (s_\gse^\prime \sqsubset s_\sym^\prime)) \Rightarrow s_\gse^\prime \in \zeta_t
+((\symst^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{true}\ \cfgnt{k}\rp) \wedge (\gsest^\prime \sqsubset \symst^\prime)) \Rightarrow \gsest^\prime \in \zeta_t
 \end{equation}
 
-Case 3: Assume that $\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp$.
+Case 3: Assume that $\cfgnt{L}_\gsest \lp \cfgnt{r}_0\rp \neq \cfgnt{L}_\gsest \lp \cfgnt{r}_1 \rp$.
 This means that the GSE ``equals - references false" rule applies. The proof for the ``equals - references false" rule is highly similar to the proof for Case 1, so we omit it for the sake of brevity. The result for this case is:
 \begin{equation}
 \label{eqn:RCForwardsFalse}
-((\cfgnt{L}_\gse \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gse \lp \cfgnt{r}_1 \rp) \wedge (s_\gse^\prime \in \zeta_t)) \Rightarrow s_\gse^\prime \sqsubset s_\sym^\prime
+((\cfgnt{L}_\gsest \lp \cfgnt{r}_0\rp = \cfgnt{L}_\gsest \lp \cfgnt{r}_1 \rp) \wedge (\gsest^\prime \in \zeta_t)) \Rightarrow \gsest^\prime \sqsubset \symst^\prime
 \end{equation}
 
-Case 4: Assume that $s_\sym^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $.
+Case 4: Assume that $\symst^\prime$ has the form $\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp $.
 The proof for this case is highly similar to the proof for Case 2, so we omit it for the sake of brevity. The result for this case is:
 \begin{equation}
 \label{eqn:RCBackwardsFalse}
-s_\sym^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp \wedge s_\gse^\prime \sqsubset s_\sym^\prime \Rightarrow s_\gse^\prime \in \zeta_f
+\symst^\prime=\lp \cfgnt{L}\ \cfgnt{R}\ \phi_g^\prime\ \eta\ \cfgt{false}\ \cfgnt{k}\rp \wedge \gsest^\prime \sqsubset \symst^\prime \Rightarrow \gsest^\prime \in \zeta_f
 \end{equation}
 
 Since $\zeta_T = \zeta_t \cup \zeta_f$, we can combine Equation \ref{eqn:RCForwardsTrue} with \ref{eqn:RCForwardsFalse} to find that 
 \begin{equation}
-\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+\forall \gsest^\prime ( \gsest \rgse \gsest^\prime \Rightarrow \exists \symst^\prime( (\symst \rsym \symst^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 \end{equation}
 Likewise, we can combine Equation \ref{eqn:RCBackwardsTrue} with Equation \ref{eqn:RCBackwardsFalse} to find that
 \begin{equation}
-\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+\forall \symst^\prime ( \symst \rsym \symst^\prime\Rightarrow \exists \gsest^\prime( (\gsest \rgse \gsest^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 \end{equation}
+By \defref{bisimulation}, we conclude:
+$$(\Gsest \ \symst) \in F_\sim(\sqsubset)$$
 \end{proof}
 
 %\begin{lemma}[Exactness of New Rule]
 %\label{lem:new}
-%If there exists states $s_\gse$ and $s_\sym$ such that $s_\sym \in \mathcal{NW}$ and $s_\gse \sqsubset s_\sym$, then:
+%If there exists states $\gsest$ and $\symst$ such that $\symst \in \mathcal{NW}$ and $\gsest \sqsubset \symst$, then:
 %\begin{equation}
-%\forall s_\gse^\prime ( s_\gse \rgse s_\gse^\prime \Rightarrow \exists s_\sym^\prime( (s_\sym \rsym s_\sym^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\forall \gsest^\prime ( \gsest \rgse \gsest^\prime \Rightarrow \exists \symst^\prime( (\symst \rsym \symst^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 %\end{equation}
 %and
 %\begin{equation}
-%\forall s_\sym^\prime ( s_\sym \rsym s_\sym^\prime\Rightarrow \exists s_\gse^\prime( (s_\gse \rgse s_\gse^\prime )\wedge (s_\gse^\prime\ \sqsubset\ s_\sym^\prime ))  )
+%\forall \symst^\prime ( \symst \rsym \symst^\prime\Rightarrow \exists \gsest^\prime( (\gsest \rgse \gsest^\prime )\wedge (\gsest^\prime\ \sqsubset\ \symst^\prime ))  )
 %\end{equation}
 
 %\end{lemma}
@@ -612,9 +621,10 @@ The representation relation $\sqsubset$ is a bisimulation.
 \end{theorem}
 
 \begin{proof}
-Take any two states $s_\gse$ and $s_\sym$ such that $s_\gse \sqsubset s_\sym$. If $s_\sym \in \mathcal{FA} \cup \mathcal{FW} \cup \mathcal{RC} \cup \mathcal{NW}$, then by Lemmas \ref{lem:access}, \ref{lem:write}, \ref{lem:compare}, and \ref{lem:new} we know Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold. If $s_\sym$ has any other form, the heap is not modified for $s_\gse^\prime$ or $s_\sym^\prime$, so then Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold by default. Thus, Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold for all  $s_\gse$ and $s_\sym$ such that $s_\gse \sqsubset s_\sym$. By Definition \ref{bisimulation}, $\sqsubset$ is a bisimulation.
-
+Take any two states $\gsest$ and $\symst$ such that $\gsest \sqsubset \symst$. If $\symst \in \mathcal{FA} \cup \mathcal{FW} \cup \mathcal{RC}$, then by Lemmas \ref{lem:access}, \ref{lem:write}, and \ref{lem:compare} we know Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold. If $\symst$ has any other form, the heap is not modified for $\gsest^\prime$ or $\symst^\prime$, so then Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold by default. Thus, Equations \ref{eqn:BisimulationForwards} and \ref{eqn:BisimulationBackwards} hold for all  $\gsest$ and $\symst$ such that $\gsest \sqsubset \symst$. By Definition \ref{bisimulation}, $\sqsubset$ is a bisimulation.
 \end{proof}
+
+Note that in the above proof we omit consideration of states in $\mathcal{NW}$, as this case is trivial.
 
 \begin{corollary}
 For any given initial state, the set of possible control flow sequences under the GSE transition relation is exactly the set of possible control flow sequences under the symbolic transition relation.

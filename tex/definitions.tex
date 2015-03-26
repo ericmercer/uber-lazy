@@ -129,7 +129,8 @@ $$
 \begin{array}{l}
  s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
 \ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ \\
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ \\
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
 \end{array}
 $$
@@ -183,17 +184,18 @@ P \sqsubset Q \Longleftrightarrow \forall q \in Q\ (\forall p\ (p \sqsubset q \R
 $$
 \end{definition}
 
-\begin{lemma}[$Q$ is a singleton for $P \sqsubset Q$]
-\label{lem:unique}
-$$
-P \sqsubset Q \Rightarrow \forall q,q^\prime \in Q\ (\forall p\ (p \sqsubset q \Rightarrow p \sqsubset q^\prime)
-$$
-The notation $P \sqsubset q$ is used to indicate that single member of
-the set in the represented relation.
-\end{lemma}
-\begin{proof}
-Please write me?
-\end{proof}
+%\begin{lemma}[$Q$ is a singleton for $P \sqsubset Q$]
+%\label{lem:unique}
+%$$
+%P \sqsubset Q \Rightarrow \forall q,q^\prime \in Q\ (\forall p\ (p \sqsubset q \Rightarrow p \sqsubset q^\prime)
+%$$
+%The notation $P \sqsubset q$ is used to indicate that single member of
+%the set in the represented relation.
+%\end{lemma}
+%\begin{proof}
+%Please write me?
+%\end{proof}
+
 \begin{definition}
 \label{def:meta}
 A state relation $p \rightarrow_x p^\prime$ is extended to sets of states $P \hookrightarrow_x P^\prime$ as
@@ -207,14 +209,14 @@ The $\rgse$ relation over sets of states is $\rsgse = \hookrightarrow_\mathit{FA
 %$$
 \end{definition}
 
-\begin{lemma}[$P$ and $Q$ have same number of successors when $P \sqsubset q$]
-\label{lem:succCount}
-Let $X = \{P^\prime | P \leadsto P^\prime\}$ and $Y = \{q^\prime | q
-\rsym q^\prime\}$: $P \sqsubset q \Rightarrow |X| = |Y|$.
-\end{lemma}
-\begin{proof}
-Please write me?
-\end{proof}
+%\begin{lemma}[$P$ and $Q$ have same number of successors when $P \sqsubset q$]
+%\label{lem:succCount}
+%Let $X = \{P^\prime | P \leadsto P^\prime\}$ and $Y = \{q^\prime | q
+%\rsym q^\prime\}$: $P \sqsubset q \Rightarrow |X| = |Y|$.
+%\end{lemma}
+%\begin{proof}
+%Please write me?
+%\end{proof}
 
 \begin{definition}
 \label{bisimulation}
@@ -239,9 +241,10 @@ reduction rules. Since it is possible to create a union of the two
 rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the
 transitions in the reduction rules in this paper are labeled, this
 definition is sufficient for all of the customary properties of
-bisimulation to apply. For a more detailed treatment on the
-application of bisimulation to reduction rule systems see
-\cite{GSE:barbedbisimulation}.
+bisimulation to apply. 
+%For a more detailed treatment on the
+%application of bisimulation to reduction rule systems see
+%\cite{GSE:barbedbisimulation}.
 
 \paragraph{Relationship between bisimulation and fix points}
 

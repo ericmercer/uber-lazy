@@ -1,12 +1,110 @@
 \section{Introduction}
 
 In recent years symbolic execution has provided the basis for various
+software testing and analysis techniques. Symbolic execution explores
+the program by treating input values as symbolic, and for each
+explored path, it computes a set of feasible constraints on the
+symbolic inputs to create a \emph{path condition}. Path conditions
+computed by symbolic execution characterize the observed program
+execution behaviors and have been used as an enabling technology for
+various applications, e.g., regression
+analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12},
+data structure repair~\cite{KhurshidETAL05RepairingStructurally},
+dynamic discovery of
+invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
+debugging~\cite{Ma:2011}.
+
+The path conditions computed by symbolic execution have two important
+features: 1) they characterize the set of feasible execution paths,
+i.e., infeasible paths are omitted, and 2) each path condition encodes
+the set of concrete program inputs that would cause execution to
+follow the same control flow path. Because path conditions are encoded
+as constraints over program inputs, the reasoning capabilities of
+symbolic execution are limited by the underlying constraint
+solver. Recent work has explored the strengths and limitations of
+tools which leverage constraint solvers, e.g., concolic execution,
+identifying symbolic dereferencing and updating operations as areas
+for potential improvement~\cite{Chen:2013,Qu:2011}.  Precisely
+modeling these operations, however, is challenging because it requires
+formulating logical predicates over an input domain that contains a
+potentially unbounded number of references.
+
+The most direct approach to address these challenges is to approximate
+the results of a symbolic deference by substituting in a valid
+concrete value, as is done in dynamic symbolic execution
+(\dsetxt{})~\cite{Godefroid:POPL07,Godefroid:2005,Sen:2005,Tillmann:2008}. These
+approaches partition the universe of heaps in the symbolic
+representation but often under-approximate the partitions or require
+array theories in the constraint
+solver~\cite{Chen:2013,Elkarablieh:2009}. A more effective approach is
+to partition the reachable heaps by using value summary
+representations, where multiple values for a reference may be
+represented along a single execution
+path~\cite{Dillig:2011,Elkarablieh:2009,Sen:2014,Torlak:2014,Xie:2005,Yorsh:2008}. Systems
+using these representations perform analyses that are more complete
+than standard~\dsetxt{} methods, but their associated dereferencing
+operations require placing further restrictions on the input heap,
+such as limiting the number of nodes~\cite{Elkarablieh:2009}, the
+nature of aliasing relationships~\cite{Babic:2007,Xie:2005}, or the
+the use of recursive data structures~\cite{Dillig:2011}.
+
+An alternative approach which does not under-approximate the heap is
+Generalized Symbolic Execution
+(\gsetxt{})~\cite{Cadar:2008,KiasanKunit,GSE03,Rosner:2015}.  On symbolic
+dereferencing operations,~\gsetxt{} partitions the input space between the
+various possible aliasing configurations on-the-fly and also creates
+non-deterministic choice points on the current path in order to
+explore each heap configuration. This approach, however, is
+inefficient because it does not treat heap allocated data as symbolic,
+but instead concretizes all possible heap configurations.
+
+The contribution of this work is a non-trivial adaptation of concepts
+in abstract interpretation to the domain of symbolic execution. The
+result of which, unlike~\gsetxt{}, is the ability to efficiently generate
+and update \emph{symbolic heaps} to produce a single path constraint
+that is sound and complete up to the point of execution. This is
+accomplished by representing the symbolic heap with a field sensitive
+points-to graph with edges annotated with disjunctive formulas
+describing aliasing relationships. Where~\gsetxt{} branches the heap at every
+de-reference, the symbolic heap in this work splits only at reference
+comparison operations or field operations that may throw exceptions.
+
+The correctness of the symbolic heap and its on-the-fly update rules
+for symbolic execution is shown by proving the existence of a
+bisimulation between symbolic heap states and~\gsetxt{} states. From that
+result comes the soundness and completeness of the path constraint up
+to the point of execution.  The efficiency of the representation is
+established with an exploratory empirical evaluation within the Java
+PathFinder framework over a classical set of symbolic execution
+benchmarks. The evaluation demonstrates how the symbolic heap scales
+compared to state-of-art~\gsetxt{} algorithms.
+
+This new symbolic heap and update rules for symbolic execution is a
+novel approach for de-referencing and updating heap allocated data
+that brings together the best features of previous work while removing
+the limitations of that same work. Although it draws inspiration from
+abstract interpretation by defining a symbolic heap,
+\begin{compactitem}
+  \item it is an exact representation, without over- or under-approximation;
+  \item it imposes no restrictions on the set of heaps that can be defined;
+  \item it does not require the creation of an initial set of input heaps;
+  \item it is not tied to specific constraint solver theories, e.g., arrays; and
+  \item it does not require global constraint rewriting for on-the-fly updates.
+\end{compactitem}
+These several properties set this work apart from other related works.
+
+\begin{comment}
+\section{Introduction}
+
+% SymExe is cool because for reasons x,y, and z
+
+In recent years symbolic execution has provided the basis for various
 software testing and analysis techniques. Symbolic execution
-systematically explores the program execution space using symbolic
-input values, and for each explored path, computes constraints on the
-symbolic inputs to create a \emph{ path condition}.  The path
-conditions computed by symbolic execution characterize the observed
-program execution behaviors and have been used as an enabling
+systematically explores the program execution space representing input
+values symbolically, and for each explored path, it computes
+constraints on the symbolic inputs to create a \emph{ path condition}.
+Path conditions computed by symbolic execution characterize the
+observed program execution behaviors and have been used as an enabling
 technology for various applications, e.g., regression
 analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12},
 data structure repair~\cite{KhurshidETAL05RepairingStructurally},
@@ -14,257 +112,86 @@ dynamic discovery of
 invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
 debugging~\cite{Ma:2011}.
 
-Initial work on symbolic execution largely focused on checking
-properties of programs with primitive
-types~\cite{clarke76TSE,King:76}.  With the advent of object-oriented
-languages, recent work has generalized the core ideas of symbolic
-execution to enable analysis of programs containing complex data
-structures with unbounded domains, i.e., data stored on the
-heap~\cite{Kiasan06,Kiasan07,GSE03}.  These \emph{Generalized Symbolic
-  Execution} (GSE) techniques construct the heap in a lazy manner,
-deferring materialization of objects on the concrete heap until they
-are needed for the analysis to proceed. The materialization creates
-additional non-deterministic choice points in the symbolic execution
-tree by representing the feasible heap configurations as (i) null,
-(ii) an instance of a new reference of a compatible class, and (iii)
-an alias to a previously initialized symbolic reference.  Symbolic
-execution then follows concrete program semantics for materialized
-heap locations. Although this approach enables the analysis of heap
-manipulating programs, a large number of feasible concrete heap
-configurations are created leading to a path explosion.
 
+The path conditions computed by symbolic execution have two important
+characteristics: 1) they characterize the set of feasible execution
+paths, i.e., infeasible paths are omitted, and 2) each path condition
+represents the set of concrete program inputs that would cause
+execution to follow that program path. Because path conditions are
+encoded as constraints over program inputs, the reasoning capabilities
+of symbolic execution are limited by the underlying constraint solver.
+Thus, extending the capabilities of symbolic execution to reason about
+new theories is an area of active research. Of particular interest are
+symbolic dereferencing and updating
+operations~\cite{Chen:2013,Qu:2011}. Precisely modeling these
+operations is challenging, because it requires formulating logical
+predicates over an input domain containing a potentially unbounded
+number of references.
 
-The goal of this work is to mitigate the path explosion problem in GSE
-by grouping multiple heaps together and only partitioning the heaps at
-points of divergence in the control flow graph. Our inspiration is
-found in the domain of static analysis that uses sets of constraints
-over heap locations to encode multiple heaps in a single
-representation. These sets, sometimes known as \emph{value sets} or
-\emph{value summaries}, allow multiple heaps to be represented
-simultaneously with a higher degree of precision than afforded by
-traditional techniques for shape analysis. Some of these previous
-attempts, however, are unable to handle aliasing in heaps due to a
-recursive definition of objects~\cite{Xie:2005}, while others require
-a set of heaps as input and are unable to initialize heaps
-on-the-fly~\cite{Dillig:2011,Tillmann:2008}.  As is typical in static
-analysis, over approximation of the heap representations alleviates
-some of these limitations but often leads to infeasible heaps. Also,
-most static analysis techniques for heap updates require a rewrite of
-the constraint system making it prohibitive for use in the context of
-symbolic execution.
+Current strategies for symbolic dereferencing require making tradeoffs
+between the completeness of the analysis and the completeness of the
+path condition. For example, one simple approach is to terminate
+execution upon attempting to dereference any symbolic
+value~\cite{Clarke:2004}. While this preserves the integrity of the
+path condition, it comes at the cost of an incomplete analysis. To
+enable a more complete analysis, dynamic symbolic execution (\dsetxt{}),
+approximates the results of a symbolic dereferencing by substituting
+in a valid concrete
+value~\cite{Godefroid:POPL07,Godefroid:2005,Sen:2005,Tillmann:2008}. This
+allows execution to continue, but the approximation renders the path
+condition incomplete~\cite{Chen:2013,Elkarablieh:2009}, by effectively
+partitioning the space of input heaps into those where the result of
+the dereferencing matches the concrete execution. Larger partitions
+can be achieved by using value summary representations, where multiple
+values for a reference may be represented along a single execution
+path~\cite{Dillig:2011,Elkarablieh:2009,Sen:2014,Torlak:2014,Xie:2005,Yorsh:2008}. Systems
+using these representations perform analyses that are more complete
+than standard~\dsetxt{} methods, but their associated dereferencing
+operations require placing further restrictions on the input heap,
+such as limiting the number of nodes~\cite{Elkarablieh:2009}, the
+nature of aliasing relationships~\cite{Babic:2007,Xie:2005}, or the
+shape of the heap itself~\cite{Dillig:2011}. Finally, at the opposite
+end of the spectrum lies generalized symbolic execution
+(\gsetxt{})~\cite{Cadar:2008,KiasanKunit,GSE03,Rosner:2015}, which
+accomplishes a fully complete analysis at the cost of an incomplete
+path condition \sjp{not clear what an incomplete path condition
+  is}. On symbolic dereferencing operations,~\gsetxt{} partitions the input
+space between the various possible aliasing configurations
+\sjp{so?}. Thus, none of the current techniques provide the option of
+maintaining both a complete analysis and a complete path
+condition. This is in stark contrast to symbolic execution over
+primitive types, which enjoys both properties simultaneously.
 
-In this work, to effectively represent multiple heaps simultaneously
-in the context of symbolic execution, we define a novel heap
-representation and an algorithm to initialize and update the heap
-on-the-fly. In essence, our summary heap approach supports aliasing,
-does not require constraint rewriting on heap updates, and reduces
-non-determinism in the search space during symbolic execution.
+\sjp{Need to explain that the techniques still operate within some bound for loops, etc.}
 
-We represent the heap as a bipartite graph consisting of references
-and locations. Each reference is able to point to multiple locations,
-where each edge is predicated on constraints over aliasing between
-references. Each location points to a single reference for a given
-field. The use of a bipartite graph affords two key advantages: (i) it
-allows for a non-recursive definition of objects which enables us to
-support aliasing, and (ii) it does not introduce auxiliary variables
-or require rewriting of non-local constraints during updates to the
-heap.
+\sjp{Notion of on-the-fly updates is not here}
 
-The summary heap algorithm defines how the bipartite graph is updated
-during lazy initialization. Unlike GSE, however, the summary heap
-algorithm introduces non-determinism in the search only at points of
-divergence in the control flow graph. These points of non-determinism
-are at field accesses that lead to null-pointer exceptions and at
-comparisons of references. The former represents a divergence due to
-exceptional control flow while the latter is due to program structure.
-The combination of the heap representation and the summary heap
-algorithm enables us to improve the efficiency of symbolic execution
-of heap manipulating programs over state-of-the-art techniques.
+\sjp{Nowhere do we refer to the technique as a summary heap framework or algorithm,
+so the next section with its heading just jumps out of nowhere.}
 
-% The precise heap representation based on a bipartiate graph coupled
-%with this algorithm to perform updates to the heap enable us to
-%successfully mitigate the state space explosion problem in GSE.
-
-
-
-\begin{comment}
-In
-practical terms, any property that can be proved using GSE can also be
-proved using summary heaps, and, any property proved by
-summary heaps can also be proved by GSE. Of course, both require a
-bound on heap reference chains and loops.
-\end{comment}
-
-%Aside from the novelty of the heap summary and its application to
-%symbolic execution, the new data structure appears to ameliorate
-%state explosion in symbolic execution as hoped.
-
-The summary heap algorithm is sound and complete with respect to
-properties that are provable using GSE. This proof is accomplished by
-showing the existence of a bisimulation between states in GSE and
-states in the summary heap algorithm.  A preliminary implementation in
-Java Pathfinder (JPF) shows that in general, the heap summary
-algorithm improves over other state-of-the-art techniques, and in some
-instances, the improvement is remarkable: two-orders of magnitude
-reduction in running time. More importantly though, the heap summary
-enables the initialization of larger more complex heaps than
-previously possible as shown in our results.
-
-
-%, described in this paper, compares the heap summary algorithm on a
-%handful of benchmarks, each representing different degrees of
-%initialization and branching, to GSE with lazy initialization in
-%Symbolic Pathfinder (SPF) and implementation lazier\# also in
-%SPF. The results
-
-\begin{comment}
-We implement the summary heap algorithm as an extension to \emph{Java
-  PathFinder} (JPF) and compare it to GSE with lazy initialization in
-\emph{Symbolic Pathfinder (SPF)} and an implementation of Lazier\#
-initialization in SPF.  The comparison shows on some examples up to a two-order of magnitude
-reduction in the total time taken to explore the same state space
-defined by the bound on the longest heap reference chain.  For these
-examples, we show that where other GSE approaches are unable to
-complete exploration within the provided time bound, the summary heap
-finishes exploration in a few seconds.
-\end{comment}
-
-%shows that it can improve the scalability of symbolic execution of
-%heap manipulating programs X fold over GSE-based analyses while
-%maintaining precision and efficiency.
-
-%preserves the heap
-%configurations and program behaviors 
-
-%complete --> anything prove with GSE you can with heap sound -->
-%preserves the same behaviors in the GSE machine.
-
-%Our analysis improves on existing GSE approaches by reducing
-%the size of the symbolic execution state space explored, thereby
-%improving scalability of symboic execution for heap manipulating
-%software. It improves on existing heap summarization techniques by
-%enabling analysis of arbitrary recursive data structures (no initial
-%heap configuration is required) while avoiding the imprecision
-%introduced by these techniques.
-
-%\nsr{a paragraph that provides a breif summary of the results.. would
-%  be nice if we have numbers for lazier and lazier Sharp as well.}
-
+This paper introduces a technique that avoids these problems by
+preserving the following properties of classical symbolic execution:
+(i) Inputs are represented by unbounded and unconstrained input
+symbols. This lack of predetermined constraints is key to avoiding
+under-approximation, which in turn is required for performing a
+complete analysis. (ii) Points of nondeterminism are only introduced
+at control flow instructions, which is critical for maintaining a
+complete path condition for a given control flow path.
 
 \noindent{This paper makes the following contributions:}
 
 \begin{compactdesc}
 
-%\item\textbf{-} A summary heap that represents sets of concrete heaps
-% without approximation or morphological restrictions.
-
-\item\textbf{-} A non-approximate, morphologically arbitrary, and efficient 
-summary heap representation.
-
-\item\textbf{-} An algorithm to dynamically initialize, summarize, and
-  update the summary heap during symbolic execution.
+\item\textbf{-} The first sound and complete system for reasoning symbolically about the 
+set of input heaps along any valid program path. 
 
 \item\textbf{-} A bisimulation proof establishing the soundness and 
 completeness of the heap summary approach with respect to
-properties provable by GSE.
+properties provable by~\gsetxt{}.
 
 \item\textbf{-} A proof-of-concept implementation and empirical study 
 demonstrating the scalability of the summary heap approach
-compared to other GSE approaches.
+compared to other~\gsetxt{} approaches.
 
 \end{compactdesc}
-
-
-%\begin{compactdesc}
-%
-%\item\textbf{-} A summary heap as a bipartite graph that supports
-%  aliasing and does not require rewriting of constraints.
-%
-%% to handle alias and efficient updates of constraints.
-%
-%\item\textbf{-} A summary heap algorithm to initialize, summarize, and
-%  update the bipartiate graphs during symbolic execution.
-%
-%\item\textbf{-} A proof of the existence of a bisimulation relation to establish
-%  that the heap summary approach is sound and complete with respect to
-%  properties provable by GSE.
-%
-%\item\textbf{-} A proof of concept implementation and small empirical study to demonstrate the scability of the heap summary approach
-%  compared to other GSE approaches.
-%
-%\end{compactdesc}
-
-
-%The rest of this paper defines summary heap and its to symbolic
-%execution. Following the algorithm definition, the existence proof of
-%bisimulation is given with the accompanying corollaries for soundness
-%and completeness. This is followed by the implementation in JPF and
-%the evaluation. The paper ends with the conclusion and future work.
-
-
-%\item{We present a novel inter-procedural analysis technique for 
-%symbolic execution of heap manipulating software which constructs 
-%a precise heap summary.}
-%\item{We use the JavaLite language~\cite{saints-MS} to formalize 
-%the algorithm for constructing and manipulating the heap summary
-%on-the-fly during symbolic execution.}
-%\item{We implement our approach in the Symbolic PathFinder tool and
-%empirically demonstrate that our technique improves
-%the scalability of symbolic execution of heap maninpulating software
-%over GSE, while maintaining efficiency and precision.}
-%\item{We prove that at any given point during symbolic execution, the symbolic 
-%heap represents the exact set of feasible concrete heap structures 
-%for the program under analysis.}
-% \end{description}
-
-%\nsr{needs
-%  some text on the fact we use java lite to formalize the heap
-%  summary, some key characteristicss of the heap such as the fact it
-%  is a bipartiate graph with locations and referneces, properties of
-%  the heap such as the determinism and immutability}
-
-%\nsr{Is any part of the formalism borrowed
-%from the dilligs? Which part are unique?}  \nsr{end on a couple
-%sentences about the various rules that will be talked about in the
-%paper}
-
-%\nsr{The reader should be convinced about our expressiveness
-%  claim here}
-
-%\nsr{a paragraph that provides intution on how we are a bisumulation
-%  with the GSE..reader should be convinced about the precision claim}
-
-\begin{comment}
-\newcommand{\Indstate}[1][1]{\State\hspace{#1\algorithmicindent}}
-
-\begin{figure}
-\begin{center}
-\begin{algorithmic}[1]
-\Procedure{load}{$r,f$}
-\If{$r$ is initialized and $f$ is uninitialized}
-\If{ $f$ has a reference type}
-\State nondeterministically assign to $f$:
-\State  \ \ null  %hacky way to indent.
-\State \ \ non-null
-\EndIf
-\If{$f$ has a primitive type}
-\State assign $f$ a new symbol
-\EndIf
-\EndIf
-\If{$r$ is uninitialized}
-\State nondeterministically assign to $f$:
-\State  \ \ a new symbolic location  %hacky way to indent.
-\State \ \ an existing symbolic location
-\EndIf
-\State\Return $r.f$
-\EndProcedure
-\end{algorithmic}
-\end{center}
-\caption{Lazier\# Initialization}
-\end{figure}
-
-Lazy initialization is a symbolic execution technique where memory structures are created on-demand, as they are required.
 \end{comment}
-
-
-

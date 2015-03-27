@@ -1,72 +1,67 @@
 \section{Related Work}
 \label{related}
 
-In this section we discuss some closely related works, including
-techniques for scaling symbolic execution of programs with complex
-data types and heap summary techniques. Note that there is a huge body
-of work on analyzing programs with heaps in the domain of static
-analysis, testing, and verification.
-
 Initial work on symbolic execution largely focused on checking
-properties of imperative programs with primitive primitive
-types~\cite{Clarke:76,King:76}. Several recent projects generalized
-the core idea of symbolic execution which enabled it to be applied to
-programs with more general types, including references and
-arrays~\cite{GSE03,Godefroid:PLDI05,Sen:FSE05,CadarEngler05EXE,KiasanKunit}.
+properties of imperative programs with primitive
+types~\cite{Clarke:76,King:76}.
+Several projects have generalized the core idea of symbolic execution,
+enabling it to be applied to programs with more general types,
+including references and
+arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. However, these
+generalized symbolic execution (\gsetxt{}) techniques work by branching over
+multiple copies of the system state during dereferencing operations,
+exacerbating path explosion.
 Our work leverages the core idea in generalized symbolic execution
-with lazy initialization to construct the heap on-the-fly during
-symbolic execution, but avoids the nondeterminism introduced by GSE by
-constructing a summary heap and will generally create fewer paths than
-GSE techniques.
+with lazy initialization using on-the-fly reasoning to model a
+black-box input heap during symbolic execution, but avoids the
+nondeterminism introduced by~\gsetxt{} by constructing a single
+symbolic heap and polynomially-sized path condition for each control
+flow path.
 
-Pex is a tool for dynamic symbolic execution for .NET programs. In
-order to handle data structures Pex uses a theory of arrays and does
-not initialization~\cite{Tillmann:2008}.  It is required to have a
-constraint solver that handles the theory for unbounded arrays for
-this approach to be tractable. It would be an interesting comparision
-to perform in future work.
+Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. While the independently developed techniques in~\cite{Sen:2014,Torlak:2014} use representations similar to the one presented here, none of these techniques address the fundamental issue concerning symbolic heaps, namely dereferencing symbolic input references. For these reasons, we believe these works to be both orthogonal and complimentary to our own.
 
-A number of static analysis techniques have been proposed to support
-reasoning about input heap structures. The technique most closely
-related to (and which served as inspiration for) our approach is the
-procedure summary proposed by Dillig et al. to support modular
-reasoning~\cite{Dillig:2011}.  While their method improves path
-sensitivity over standard static analysis methods, it remains limited
-by a statically-generated symbolic input heap and it cannot adapt to
-path-sensitive heap properties of the input heap.
+A number of dynamic symbolic execution (\dsetxt{}) techniques either use
+concretization when reasoning about references or require solvers that
+support theories of
+arrays~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. Sometimes,
+however, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{}
+under-approximates the possible heaps configurations when it
+concretizes symbolic values. The SAGE~\dsetxt{}
+engine~\cite{Elkarablieh:2009} includes more sophisticated methods for
+reasoning about references, and can successfully reason about more
+complicated examples. However, the heap model in SAGE prohibits
+input-dependent memory allocation. The fixed-memory requirement means
+that analyses of programs accepting indefinite input heaps may
+terminate prematurely, even for the class of self-limiting
+solver-compatible programs.
 
-Other techniques have been proposed to model references using sets of
-guarded
-locations~\cite{Xie:2005,Cherem:2007,Dillig:2011,Sen:2014}. These
-sets, sometimes known as value sets or value summaries, allow multiple
-heaps to be represented simultaneously with a higher degree of
-precision than afforded by shape analysis. However, some of these
-previous attempts~\cite{Xie:2005,Cherem:2007} utilize non-local
-recursive definitions for objects.  In our heap representation, object descriptions are
-entirely local, thus avoiding these pitfalls. Other methods
-\cite{Dillig:2011,Sen:2014}, while having local morphological
-representations, do not provide for dynamic exploration of the initial
-heap state.
+Many bounded model checking (BMC) methods include a model for
+reasoning about references, including those described
+in~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However,
+BMC techniques generally need to predetermine bounds of a heap. Other
+limitations include assuming that symbolic references do not
+alias~\cite{Xie:2005,Babic:2007}, that data structures are not
+recursive~\cite{Dillig:2011}, or prohibiting dereferencing of
+black-box input references~\cite{Clarke:2004}.
 
-There is also a large body of work on generating tests for
-object-oriented programs that use a variety of techniques to generate
-heap structures to test object-oriented
-programs~\cite{xie2005symstra,xie2004rostra,boyapati2002korat,artzi2006finding}.
-Another line of work in heap representation lies in identifying
-isomorphic heap structures in order to avoid exploring redundant
-paths~\cite{milicevic2007korat}.  These methods are generally focused
-on the morphology of the heap apart from the external constraint
-problems encountered during program execution, and as such, are
-largely orthogonal to this work. Recent work shows that the need for
-reasoning about heap structures is an important
-problem~\cite{barr2013collecting}. Delta execution is another work
-that combines states for object-oriented programs~\cite{d2008delta}.
+A number of constraint-based programming techniques are capable of
+reasoning about
+heaps~\cite{Degrave:2010,Charreteur:2009,Albert:2013}. Most notably,
+the technique in~\cite{Albert:2013} is capable of reasoning about
+dereferencing operations in a per-path set of unknown input
+heaps. However, no guarantees are made about the precision of the
+analysis performed.
 
-
-%The impact of such an approach is two-fold.  First, these techniques
-%must use approximations to resolve reference inequalities, resulting
-%in false positives in the results. Second, these techniques are
-%incapable of reasoning about heaps with recursive data structures due
-%to the potential for infinite recursion during dereferencing. This
-%means that either a large class of data structures must be avoided,
-%or a large class of behaviors must be ignored.
+The symbolic heap value sets presented in this work build upon a
+number of prior techniques that use sets of guarded values to
+represent program
+state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. The
+methods presented in~\cite{Sen:2014,Torlak:2014,Yorsh:2008} use value
+sets to represent all symbolic program state, including
+references. While symbolic referencing operations could, in principle,
+be supported with these methods, it is not clear from the published
+material exactly how that might be accomplished, especially when
+reasoning about dereferencing in a black-box input heap. All of the
+methods presenting solutions to the dereferencing
+problem~\cite{Xie:2005,Dillig:2011,Elkarablieh:2009} are not complete,
+for a variety of reasons which have been previously enumerated.

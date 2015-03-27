@@ -1,5 +1,5 @@
 \section{Definitions}
-
+\label{sec:defs}
 \begin{definition}
 The set of \textbf{references} $\mathcal{R}$ is defined as the set of natural numbers
  $$\mathcal{R} = \mathbb{N}$$
@@ -68,7 +68,7 @@ important state transition relations are \textbf{GSE} $\rgse$ and
 \textbf{symbolic} $\rsym$. Each of these use a separate relation for
 initialization: $\rinit$ for GSE and $\rsum$ for symbolic. All of
 these transition relations are defined in \figref{fig:lazy},
-\figref{fig:lazyInit}, \figref{fig:sym}, and \figref{fig:symInit}.
+\figref{fig:lazyInit}, \figref{fig:javalite-common}, \figref{fig:eqs}, \figref{fig:fHeap} and \figref{fig:symInit}.
 \end{definition}
 
 \begin{definition}
@@ -90,7 +90,7 @@ A state is \textbf{well formed} if its heap is deterministic, type consistent ac
 Any well-formed state has at least one successor unless the expression is $\cfgnt{v}$ and the continuation is $\cfgt{end}$.
 \end{lemma}
 \begin{proof}
-Please write me!
+Proof of this lemma can be obtained by simple inspection of the rules.
 \end{proof}
 
 At times, it is useful to classify states in terms of patterns that the state strings match. In concrete terms, this is similar to asking what will be the next instruction to execute. For example, we know that left-hand states matching the pattern $ \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ only appear in the Field Access rule.
@@ -242,20 +242,18 @@ rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the
 transitions in the reduction rules in this paper are labeled, this
 definition is sufficient for all of the customary properties of
 bisimulation to apply. 
-%For a more detailed treatment on the
-%application of bisimulation to reduction rule systems see
-%\cite{GSE:barbedbisimulation}.
+For a more detailed treatment on the
+application of bisimulation to reduction rule systems see
+\cite{Sangiorgi:2011}.
 
 \paragraph{Relationship between bisimulation and fix points}
 
-If you have a lattice $L$, and you have some 
-function $F$ which transforms one point on the lattice into another, then
-$F$ is an endofunction on $L$. For any endofunction $F$, a 
+Given a lattice $L$, for any endofunction $F$ over points in $L$, 
 a post-fixed point of $F$ is any point $x$ where $x < F(x)$, and a pre-fixed 
 point is any point $x$ where $F(x) < x$. The inductively defined set $F_\mathit{ind}$
-is equal to the meet of all the pre-fixed points, and the conductively 
+is equal to the meet of all the pre-fixed points, and the coinductively 
 defined set $F_\mathit{coind}$ is equal to the join of all post-fixed points. 
-$x \leq F_\mathit{coins}$. If $F$ is monotone, then the greatest fixed point $\mathit{gfp}(F)$ 
+If $F$ is monotone, then the greatest fixed point $\mathit{gfp}(F)$ 
 is equal to the coinductive set, and the least fixed point $\mathit{lfp}(F)$ is equal to the 
 inductive set.
 
@@ -270,6 +268,7 @@ the greatest fixed point of the functional associated to
 bisimulation is equal to the bisimilarity relation $\sim = \mathit{gfp}(F_\sim)$, that 
 all bisimulations are 
 post-fixed points of $F_\sim$, and all post-fixed points of $F_\sim$ are 
-bisimulations. Thus, we may invoke the coinductive proof principle to show that some relation $R$ is a bisimulation, by proving that $R$ is a pre-fixed point of $F_\sim$: $R \leq F_\sim(R)$.
+bisimulations. Thus, we may invoke the coinductive proof principle to show that some
+ relation $R$ is a bisimulation, by proving that $R$ is a pre-fixed point of $F_\sim$: $R \leq F_\sim(R)$.
  
 

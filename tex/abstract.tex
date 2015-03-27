@@ -1,66 +1,33 @@
+
 A fundamental challenge of using symbolic execution for software
-analysis has been the treatment of dynamically allocated
-data. Generalized symbolic execution (GSE) techniques have addressed
-this challenge by materializing a concrete heap lazily during field
-accesses.  These techniques however, exacerbate the path explosion
-problem.  In this work, we present a summary heap approach which takes
-inspiration from the static analysis domain and defines a bipartite
-graph to encode multiple heaps in single representation, which, unlike
-state-of-the-art static analysis approaches, (i) supports aliasing,
-(ii) does not require rewrite of constraints on heap updates, and
-(iii) can initialize the heap-on-the-fly. We also define a summary
-heap algorithm to perform heap updates during symbolic execution on
-this representation in order to mitigate the path explosion problem in
-GSE techniques. Our approach is sound and complete with respect to the
-properties provable by GSE. A preliminary evaluation of our
-implementation in Java Pathfinder framework shows the summary heap
-enables the initialization of larger, more complex heaps than
-previously possible.
+analysis is the treatment of dynamically allocated data. This paper
+introduces a compact symbolic heap representation based on a field
+sensitive points-to graph with edges annotated with disjunctive
+formulas describing aliasing relationships, along with a set of
+rewrite rules that describe the initialization, dereferencing, and
+update to fields in the symbolic heaps. The symbolic heap supports
+arbitrary recursive data structures and captures all possible heaps
+that follow a common control flow path up to the point of
+execution. An evaluation of a proof-of-concept implementation in the
+Java Pathfinder framework is presented to demonstrate the
+computational feasibility of the approach over several classical
+symbolic execution benchmarks.
 
-\begin{comment}
-A fundamental challenge of using symbolic execution for software
-analysis has been the treatment of dynamically allocated data.
-State-of-the-art techniques have addressed this challenge through
-either (a) the use of summaries that over-approximate possible heaps, or
-(b) by materializing a concrete heap lazily during generalized
-symbolic execution. In this work, we present a novel heap
-initialization and analysis technique which takes inspiration from
-both approaches and constructs precise heap summaries lazily during
-symbolic execution.  Our approach is 1) \emph{scalable}: it reduces the
-points of non-determinism compared to generalized symbolic execution
-and explores each control-flow path only once for any given set of
-isomorphic heaps, 2) \emph{precise}: at any given point during symbolic
-execution, the symbolic heap represents the exact set of feasible
-concrete heap structures for the program under analysis, and 3)
-\emph{expressive}: the symbolic heap can represent recursive data
-structures. We demonstrate the precision and scalability of our
-approach by implementing it as an extension to the Symbolic PathFinder
-framework for analyzing Java programs.
-\end{comment}
 
-%and by using 
-%materializing objects on the concrete heap ``as needed'' and
-%using non-deterministic choice points to explore each feasible
-%concrete heap configuration. 
-
-%Because analysis of the materialized
-%heap locations relies on concrete program semantics, the lazy
-%initialization approach exacerbates the state space explosion
-%problem that limits the scalability of symbolic execution.
-%In this work we present a novel approach for lazy symbolic execution
-%of heap manipulating software which utilizes 
-%a fully symbolic heap constructed on-the-fly during symbolic execution.
-%Our approach is 1) \emph{scalable} -- it does not
-%create the additional points of non-determinism
-%introduced by existing lazy initialization techniques and it explores
-%each execution path only once for any given set of isomorphic heaps,
-%2) \emph{precise} -- at any given point during symbolic execution, 
-%the symbolic heap represents the exact set of feasible
-%concrete heap structures for the program under analysis, and
-%3) \emph{expressive} -- the symbolic heap can represent recursive data structures 
-%and heaps resulting from loops and recursive control structures in the code. 
-%We report on a case-study of an implementation of our technique in the
-%Symbolic PathFinder tool to illustrate its scalability, precision
-%and expressiveness. We also discuss how test case generation -- a common
- %use for symbolic execution results -- can benefit from symbolic
- %execution which uses a fully symbolic heap.
+%A fundamental challenge of using symbolic execution for software
+%analysis is the treatment of dynamically allocated data. Existing
+%static analysis techniques over-approximate the potential heaps,
+%dynamic symbolic execution techniques often under-approximate the
+%heaps, while generalized symbolic execution leads to excessive
+%case-splitting. This paper introduces a compact heap representation,
+%along with heap update rules that (i) allow reads and writes of
+%symbolic references, (ii) do not require constraint rewriting, and
+%(iii) support arbitrary recursive data structures. As such, the
+%representation and update rules capture all possible heaps that
+%follow a common execution path. More importantly, in contrast to
+%existing state-of-the-art techniques, the definition and update rules
+%are unconstrained and not subject to bounds, such as the number of
+%heap locations, aliasing, or memory partitions. An evaluation of a
+%proof-of-concept implementation in the Java Pathfinder framework is
+%presented to demonstrate the computational feasibility of the
+%approach over several classical symbolic execution benchmarks.

@@ -21,7 +21,7 @@ associated with the given location-field pair in the heap.
 
 There are several properties of the summary heap enforced by the
 rewrite rules that are invariant and important to the correctness
-proofs in \secref{sec:bisim}: \emph{reference partitions},
+proofs in \secref{sec:proofs}: \emph{reference partitions},
 \emph{immutability}, \emph{determinism}, \emph{type
   consistency}, and \emph{null and uninitialized}.
 
@@ -44,7 +44,7 @@ proofs in \secref{sec:bisim}: \emph{reference partitions},
 \end{compactdesc}
 Reference partitions are a critical piece to the existence proof of a
 bisimilation between the summary heap algorithm and generalized
-symbolic execution (see \secref{sec:bisim}).
+symbolic execution (see \secref{sec:defs}).
 
 \emph{Immutability} means that a reference does not change in the
 location map. It always points to the same set of constraint location

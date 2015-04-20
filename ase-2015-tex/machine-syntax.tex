@@ -1,0 +1,31 @@
+\newsavebox{\boxMachine}
+\savebox{\boxMachine}{
+\cfgstart
+\cfgrule{$\phi$}{($\phi$) 
+\cfgor $\phi \bowtie \phi$ 
+\cfgor $\neg\phi$
+\cfgor \cfgt{true}
+\cfgor \cfgt{false}
+\cfgor \cfgnt{r} $=$ \cfgnt{r}
+\cfgor \cfgnt{r} $\neq$ \cfgnt{r}}
+\cfgrule{l}{\cfgt{number}}
+\cfgrule{\cfgnt{L}}{(\cfgnt{mt}
+\cfgor (\cfgnt{L}\ [\cfgnt{r} $\rightarrow$ \{($\phi$\ \cfgnt{l})\ ...\}]))}
+\cfgrule{\cfgnt{R}}{(\cfgnt{mt}
+\cfgor (\cfgnt{R}\ [(\cfgnt{l}\ \cfgnt{f}) $\rightarrow$ \cfgnt{r}]))}
+\cfgrule{$\eta$}{(\cfgnt{mt}
+\cfgor ($\eta$\ [\cfgnt{x} $\rightarrow$ \cfgnt{v}]))}
+\cfgrule{s}{\lp$\mu$ \cfgnt{L} \cfgnt{R} $\phi$ $\eta$ \cfgnt{e} \cfgnt{k}\rp}
+\cfgrule{k}{\cfgt{end}
+\cfgor{\lp \cfgt{*} \cfgt{\$} \cfgnt{f} $\rightarrow$ \cfgnt{k}\rp}
+\cfgor{\lp \cfgnt{x} \cfgt{\$} \cfgnt{f}  \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}}
+\cfgorline{\lp \cfgt{*} \cfgt{=} \cfgnt{e} $\rightarrow$ \cfgnt{k}\rp\ 
+\cfgor{\lp \cfgnt{v} \cfgt{=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}
+\cfgor{\lp \cfgt{if} \cfgnt{*} \cfgnt{e} \cfgt{else} \cfgnt{e} $\rightarrow$ \cfgnt{k}\rp}}
+\cfgorline{\lp\cfgt{var} \cfgnt{T} \cfgnt{x} \cfgt{:=} \cfgnt{*} \cfgt{in} \cfgnt{e}  $\rightarrow$ \cfgnt{k}\rp\ 
+\cfgor{\lp \cfgnt{x} \cfgt{:=} \cfgnt{*} $\rightarrow$ \cfgnt{k}\rp}}
+\cfgorline{\lp \cfgt{*} \cfgt{@} \cfgnt{m} \cfgnt{e} $\rightarrow$ \cfgnt{k}\rp\ 
+\cfgor{\lp \cfgnt{v} \cfgt{@} \cfgnt{m} \cfgt{*} $\rightarrow$ \cfgnt{k}\rp}}
+\cfgorline{\lp\cfgt{begin} \cfgnt{*} \lp \cfgnt{e} ...\rp\ $\rightarrow$ \cfgnt{k}\rp\ 
+\cfgor{\lp\cfgt{pop} $\eta$ \cfgnt{k}\rp}}
+\cfgend}

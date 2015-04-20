@@ -1,0 +1,147 @@
+
+
+
+
+\subsection{Properties of Reference Theories}
+
+We posit that an ideal symbolic memory model should be sound, complete, and efficient. However, achieving these three goals simultaneously has proven difficult for symbolic reference analyses.
+
+\begin{compactdesc}
+\item[Sound]
+During a sound program analysis, all reported program properties are in fact true for the given program. However, ensuring soundness when reasoning about references can be computationally expensive. In order to speed things up, some analysis techniques overapproximate the set of possible program inputs. While this can ease the computational burden, it creates the practical problem of sorting out the incorrect results, which is at least as hard as the original problem in the first place.
+
+\item[Complete] 
+A complete program analysis should support a turing-complete model of computing, and will evaluate all possible program behaviors. However, many proposed symbolic reference models are not complete. Incomplete theories may be classified in one of two ways. First, a theory may underapproximate the space of possible referencing relationships. Second, techniques can underapproximate the domain of all possible programs.
+
+Techniques that underapproximate references only explore a fragment of the possible input space. This
+Other techniques are incomplete in the types of programs they can evaluate. For example, some methods only accept programs where the size of memory required is independent from the program inputs ~\cite{Barnett:2006,Elkarablieh:2009}. Other restrictions include excluding programs with unbounded loops/recursion~\cite{Clarke:2004,Torlak:2014}. Since the computing models supported by these techniques are not Turing-complete, they exclude a wide class of interesting and useful programs. 
+
+\item[Efficient]
+An efficient model of references should support analysis of sufficient complexity to represent real-world programs. Unfortunately, many reference theories are too computationally inefficient to be useful for problems of practical size. For example, when dereferencing an uninitialized symbolic reference, a number of methods generate separate execution paths for each possible aliasing relationship~\cite{GSE03,KiasanKunit,Cadar:2008}. By branching at each new dereferencing operation, the number of paths created by grows exponentially with the size of the input heap.
+
+\end{compactdesc}
+
+%
+%\paragraph{Why would you want to do lazy initialization, instead of using pre-generated input heaps?}
+%\begin{compactdesc}
+%\item[Generate a minimal set of independent test inputs:] 
+%If you generate a fixed set of 1000 data structures at the beginning,
+%you don’t know which of those 1000 data structures will actually
+%result in different execution paths. Since many inputs may result in
+%identical execution paths, the “path-independence” of those inputs is
+%uncertain. Consider the case of a linked list, where each node
+%contains two references, one for a data object, and one for the next
+%node in the list. Suppose you want to test a function that makes
+%structural transformations on linked lists. Perhaps your function
+%removes loops, counts the number of nodes, or pops the first node off
+%the list. If you tried every possible linked list as an input to your
+%function, you would find that many of your lists led to identical
+%execution paths, simply because the “data” reference was never
+%accessed. Without lazy initialization, you would have to know
+%beforehand which parts of your data structure will get accessed, and
+%which will not. With lazy initialization, we test only independent
+%sets of inputs, without any prior knowledge of the data structure. In
+%fact, we generate a minimal set of independent test inputs within the
+%given bounds.
+%
+%\item[Make per-path search decisions:] 
+%With lazy initialization, we can make search decisions dynamically
+%based on the machine state. For example, suppose you want to limit the
+%number of nodes that any given execution path might attempt to
+%access. Note that this is very different than bounding the input heap
+%to a set size. Without lazy initialization, you would have to know
+%exactly which reference chains any given execution path will follow
+%beforehand. However, with lazy initialization, it is simple to keep
+%track of the number of nodes that have been accessed at run-time, and
+%limit the size of the lazy-initialized input heap dynamically. Some
+%examples of types of per-path bounding metrics which are possible
+%using lazy initialization include: length of reference chains, number
+%of cycles in the graph, number of nodes accessed by the program, the
+%amount of memory available to the test machine, total number of memory
+%reads/writes. (Note that some of these things may be difficult to
+%relate exactly back to the concrete heaps)
+%
+%\item[Generate test inputs based on per-path execution properties:] 
+%Per-path search bounds can be combined with the test-input generation
+%capability to answer questions like “Which test inputs will generate
+%fewer than 20 memory read operations?”.
+%
+%\item[Cope with certain types of unbounded inputs:] 
+%In some cases, lazy initialization can exactly model program behavior
+%even when the size of the input heap is unbounded. For example,
+%suppose we have a function that pushes a node on to the front of a
+%linked list. In this case, lazy initialization will correctly model
+%all program behaviors for linked lists of arbitrary size.
+%
+%\item[Less work for the programmer:] 
+%You don’t need to generate any special data invariants specific to the
+%analysis. They are generated on-the-fly from invariants written in
+%normal program code.
+%
+%\item[Delay choices about data structures:] 
+%If you are exploring a program with 1000 possible input structures, an
+%execution tree with 1000 leaves will have fewer states that a set of
+%1000 separate paths. Even in the case where all paths are merged into
+%a single path, the constraints on the earlier states will be simpler
+%if you don’t have to distinguish all 1000 possible inputs.
+%\end{compactdesc}
+%
+%\paragraph{There are lots of symbolic heap representations. Why hasn’t anyone done lazy initialization before?}
+%\begin{compactitem}
+%\item[Inductively Defined Symbolic Locations:] 
+%Earlier techniques using similar representations (SATURN, the Dilligs)
+%have been limited by inductively defined symbolic locations. Suppose
+%you were to define symbolic locations as being either a method
+%parameter or a dereferenced symbolic location. This works well in
+%heaps without loops, because dereferenced symbolic location are
+%guaranteed to be “smaller” (closer to the root of the heap) than their
+%targets. However, this inductive definition breaks down in the case of
+%loops. Some recent work uses with non-recursive data structures,
+%(e.g. Koushik’s stuff), but they don’t do lazy initialization.
+%
+%\item[Flat memory models:] 
+%Many prior techniques make no special treatment for object-oriented
+%memory models (Boogie, PEX, etc.). Typically the memory is modeled as
+%a flat address space instead of a more high-level heap. There are many
+%types of interactions that are possible in this memory model, such as
+%pointer arithmetic and array indexing, which are not possible in an
+%object-oriented system. Accounting for these interactions make lazy
+%initialization challenging to implement.
+%
+%\item[Path splitting during memory access:] 
+%Several existing methods for doing lazy initialization during symbolic
+%execution introduce nondeterminism during memory access operations
+%(GSE, Lazier\#, etc.). These new points of nondeterminism contribute
+%to path explosion, rendering these methods infeasible for all but the
+%smallest heap fragments.
+%\end{compactitem}
+%
+%\paragraph{What’s special about using a graph representation? Why not represent the heap as an equation?}
+%\begin{compactdesc}
+%\item[Fewer Solver Calls:] 
+%With a graph-based representation, we can answer structural questions
+%about the heap without consulting the solver. For example, when
+%comparing two references, if the intersection of their value sets is
+%empty, we can surmise that they are in all cases unequal. Some heap
+%properties that may be resolvable from structural properties alone
+%are: equivalence of references, connectivity of heap fragments, upper
+%bounds on pointer chain length, upper bounds on number of objects in
+%the heap, and the absence of loops / aliasing.
+%
+%\item[Non-inductive definition of references:] 
+%A graph-based representation can provide a non-inductive definition of
+%the heap. Equation-based systems for modeling memories tend to
+%introduce lots of auxiliary variables, which can complicate
+%dereferencing and may place restrictions on heap morphology.  
+%\end{compactdesc}
+%
+%\paragraph{What’s special about the “bipartite graph” representation?}
+%\begin{compactdesc}
+%\item[Object-oriented heap:] 
+%Our bipartite graph is a non-recursive model more suited to OO
+%programming than one based on pointers. In many OO programming
+%environments, you don’t have to worry about nasty things like pointer
+%arithmetic, so a cleaner model reduces wasted effort. You might say
+%the bipartite graph is how we’ve modeled a “theory of objects” for
+%heap constraint problems.
+%\end{compactdesc}

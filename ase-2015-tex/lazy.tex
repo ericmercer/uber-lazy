@@ -1,0 +1,27 @@
+\section{Generalized Symbolic Execution}
+\label{app:gse}
+The specialization of Javalite to generalized symbolic execution with
+lazy initialization using the symbolic heap is in
+\figref{fig:lazyInit} for the initialization and \figref{fig:lazy} for
+how the initialization is used. Specifically, the field-access rule in
+\figref{fig:lazy} uses initialization, $\rightarrow_I^*$, to be sure
+the accessed field is instantiated. Initialization in generalized
+symbolic execution never happens for more than one object on any use
+of $\rightarrow_I^*$: $\Lambda$ is either empty or contains exactly
+one location.
+
+An uninitialized object may be lazily initialized
+non-deterministically to null, a new instance of the object, or an to
+an object of the same type also initialized lazily. The
+non-deterministic initialization creates branches in the execution
+tree during state space exploration. 
+
+The $\rgse$ relation is a union over branching points on control flow
+to support the final proof of the existence of a
+bisimulation. Although it is apparent that there is non-determinism in
+initialization, it is not the initialization where control flow
+diverges in program execution. Rather, that occurs at branches and
+exceptions, and that is reflected in the composition of $\rgse$.
+
+\input{initialize-lazy}
+\input{lazy-fig}

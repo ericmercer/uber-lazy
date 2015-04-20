@@ -1,0 +1,199 @@
+\section{Bisimilarity Proof}
+\label{sec:bisim}
+
+%This section establishes the correctness of
+%the~\symtxt{}. Demonstrating correctness is important because many
+%summary heap techniques are correct only when certain, often
+%unstated, assumptions are made. To show the absence of such
+%assumptions, it is necessary to demonstrate soundness and completess
+%with respect to all properties provable by symbolic execution. The
+%proof relies on the observation that a state in symbolic execution
+%can be thought of as representing a set of possible concrete
+%states. Similarly, a state in the~\symtxt{} machine represents a set
+%of possible~\gsetxt{} states. The goal is to show that states in
+%the~\symtxt{} machine behave exactly like the sets of~\gsetxt{}
+%states that they represent.
+
+The bisimulation proof in this section establishes the soundness and
+completeness of the symbolic heap approach with respect to Generalized
+Symbolic Execution (\gsetxt{}). Intuitively, any properties proven
+with~\gsetxt{} can also be proved using the symbolic heap
+algorithm.~\gsetxt{} concretizes the possible heap configurations
+along with various aliasing relationships when an uninitialized field
+is dereferenced. The rules for initializing and updating the fields in
+the Javalite semantics for \gsetxt{} are shown in Appendix B where as
+the the complete set of rules for the symbolic heap algorithm are
+shown in Appendix C. 
+
+The proof shows the existence of a
+bisimulation between sets of states related by~\gsetxt{} ($p \rgse
+p^\prime$) and states related by the symbolic heap and update rules in this paper ($q \rsym
+q^\prime$). The relations are on the universe of \emph{well-formed}
+states $S$, which have the properties in \secref{sec:sh} with the
+constraint that the states are \emph{feasible}: successors exist
+unless at \cfgt{end}. Let $p \rgse p^\prime$ be a union over relations
+for~\gsetxt{} (see appendix): $\rgse = \rgse^\mathit{A} \cup
+\rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup
+\rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup
+\rgse^\mathit{E^\prime} \cup \rcom$, where \emph{A} is a field access
+after evaluating the expression for the base reference $\lp
+\cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp$, \emph{W} is
+a field write after evaluating the expression for the right operand
+$\lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*} \rightarrow
+\cfgnt{k}\rp$, \emph{E} is a reference compare after evaluating the
+left and right operands $\lp \cfgnt{v}\ \cfgt{=}\ \cfgnt{*}
+\rightarrow \cfgnt{k}\rp$, the prime symbol indicates a null reference
+in the operation or a false outcome, and \emph{\com} is everything
+else in the language. Any state relation, say $\rightarrow_x$, is
+trivially extended to sets of states as
+$$
+P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
+$$
+Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of
+states. From this extension, a new meta transition relation is defined
+over sets of states as
+$$
+\rsgse = \hookrightarrow_\gse^\mathit{A}
+\cup \hookrightarrow_\gse^\mathit{A^\prime} \cup \hookrightarrow_\gse^\mathit{W} \cup
+\hookrightarrow_\gse^\mathit{W^\prime} \cup \hookrightarrow_\gse^\mathit{E} \cup \hookrightarrow_\gse^\mathit{E^\prime}
+\cup \hookrightarrow_\com
+$$
+The relation captures the notion of splitting groups of heaps at
+certain operations. For example, suppose we have a set $P$ containing a single state $p$
+with all references uninitialized. If $p$ is a field access state, it has two
+potential successors in~\gsetxt{}: a non-null reference and a null reference. 
+Thus, the $\rsgse$ relation has two successors and divides $P$ into the two outcomes.
+
+The functional equivalence between heaps in states $p$
+and $q$ requires both a mapping to relate the two heaps and a
+constraint on the feasibility of that mapping in the presence of a
+path constraint from symbolic execution. Subscripts indicate state tuple
+members as in $p = (
+\cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$.
+\begin{definition}
+\label{def:homomorphism}
+A \textbf{homomorphism} given the universe of field names $\mathcal{F}$ is 
+$$
+\begin{array}{l}
+ s_p \rightharpoonup_{h} s_q \Leftrightarrow 
+\exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}\ ( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
+\ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow 
+(\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ 
+ )) ) ) ) )
+\end{array}
+$$
+\end{definition}
+\begin{definition}
+\label{def:hc}
+The \textbf{homomorphism constraint} is
+%\begin{align*}
+\[
+\mathbb{HC}(p \rightharpoonup_{h} q) = 
+\bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\}
+\]
+%\end{align*}
+\end{definition}
+Functional equivalence asserts a common structure in the two heaps under certain
+conditions. It is used to relate states in $p \rgse
+p^\prime$ to states in $q \rsym q^\prime$.
+\begin{definition}
+\label{representation}
+States $(p\ q)$ are in the \textbf{representation relation}, $p \sqsubset q$, if and only if, $\eta_p = \eta_q ,\ \cfgnt{e}_p =
+\cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, and there exists a
+homomorphism $p \rightharpoonup_{h} q$
+such that $\mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) )$.
+The represented relation is extended to sets of states $P$ and a single state $q$ as
+$P \sqsubset q \Longleftrightarrow \forall p\ (p \sqsubset q \Rightarrow p \in P)$.
+\end{definition}
+The statement $p \sqsubset q$ ensures that a functionally equivalent
+heap to the one in $p$ is present, by the homomorphism, and valid, by
+the heap constraint and path constraint, in $q$. As the states in $P$
+are only differentiated by heaps and those states are only
+differentiated from $q$ by both the heap and path constraint in $q$,
+$P \sqsubset q$ implies that $q$ is representative of all the states
+in $P$ up to the given point of execution expressed in $\phi_q$.
+\begin{definition}
+\label{bisimulation}
+The \textbf{functional associated to bisimulation} applied to $\sqsubset$, denoted as $F_\sim(\sqsubset)$, is the set of all pairs
+$(P\ q)$ such that
+\begin{equation}
+\label{eqn:BisimulationForwards}
+\forall P^\prime\ ( P \rsgse P^\prime \Rightarrow \exists q^\prime\ ( q \rsym q^\prime \wedge P^\prime\ \sqsubset\ q^\prime))
+\end{equation}
+\begin{equation}
+\label{eqn:BisimulationBackwards}
+\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( P \rsgse P^\prime \wedge P^\prime\ \sqsubset\ q^\prime))
+\end{equation}
+If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsubset)$ is the bisimilarity relation denoted by $\sim$.
+\end{definition}
+Although the functional reasons over a forward and backward
+simulation as typical~ \cite{Sangiorgi:2011}, its use of a meta-relation, $\rsgse$, is unique. 
+
+In the lemma, $S$ is the universe of well-formed states, and the
+set $S_A \subseteq S$ is states at a field access continuation having computed the base reference.
+\begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
+\label{lem:access}
+$$
+\forall P \in 2^{S_\mathit{FA}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))
+$$
+\end{lemma}
+
+\begin{proof}
+Proof by contradiction: assume $P \sqsubset q \wedge (P\ q) \not\in F_\sim(\sqsubset)$.
+
+\noindent\textbf{Sketch}: Choose any $P$ and $q$ at the field access continuation such
+that $P \sqsubset q$. In the forward simulation
+\eqref{eqn:BisimulationForwards}, for each $P^\prime$ such that $P
+\rsgse P^\prime$, pick some $p^\prime \in P^\prime$. By definition $p \rgse
+p^\prime$, $p \in P$, and $p \sqsubset q$. The proof shows the
+existence of $q^\prime$ such that $q \rsym q^\prime$ and $p^\prime
+\sqsubset q^\prime$ using the existing homomorphism in $p \sqsubset q$.
+
+In the backward simulation \eqref{eqn:BisimulationBackwards}, for each
+$q^\prime$ such that $q \rsym q^\prime$, the proof posits the existence of some 
+$p^\prime$ such that $p^\prime \sqsubset q^\prime$. It then uses the
+homomorphism in $p^\prime \sqsubset q^\prime$ to derive a $p$ such
+that $p \rgse p^\prime$ and $p \in P$. The existence of $P^\prime$ is established by the existence of $p^\prime$, and $P \sqsubset q$ makes $P^\prime$ the actual successor of $P$.
+
+As the forward and backward simulations hold for any $p \in P$, $P
+\sqsubset q$ must be in the functional, $F_\sim(\sqsubset)$, which is
+a contradiction.
+\end{proof}
+
+Similar lemmas are proved for field write and equals reference. These
+require additional lemmas on the summarize machine
+$\rightarrow_S$: that it preserves determinism, the
+homomorphism, and the satisfiability of the homomorphism constraint
+
+\begin{theorem}
+\label{th:bisim}
+The relation $\sqsubset$ is a bisimulation: $\sqsubset\ \subseteq\ \sim$
+\end{theorem}
+\begin{proof}
+By definition of bisimilarity. All of the common rules in $\rcom$
+make no changes to the heap, so $P \sqsubset q$ is included in the
+functional. The other rules that affect the heap are supported by lemmas
+such as \lemref{lem:access}.
+\end{proof}
+
+The notation $p \stackrel{n}{\rgse} p^\prime$ denotes that $p^\prime$
+is the $n$-step successor of $p$, when it exists, and $q
+\stackrel{n}{\rsym} q^\prime$ is similarly defined. Completeness and
+soundness fall out of \thref{th:bisim} by inducting
+over $n$. 
+
+\begin{corollary}[$\rsym$ is complete]
+If $P \in 2^{S_\mathit{A}}$ and $q \in S$ are such that $P \sqsubset q$ then for any $p \in P$
+$\forall p^\prime\ (p \stackrel{n}{\rgse} p^\prime \Rightarrow \exists q^\prime\ (q \stackrel{n}{\rsym} q^\prime \wedge p^\prime \sqsubset q^\prime))$
+\end{corollary}
+
+\begin{corollary}[$\rsym$ is sound]
+If $P \in 2^{S_\mathit{A}}$ and $q \in S$ are such that $P \sqsubset q$ then
+$\forall q^\prime\ (q \stackrel{n}{\rsym} q^\prime \Rightarrow \exists p \in P\ (\exists p^\prime\ (p \stackrel{n}{\rgse} p^\prime \wedge p^\prime \sqsubset q^\prime)))$
+\end{corollary}
+
+The relation, $P \sqsubset q$, is readily established in the initial
+state of a given program as there is single initial state, $P_o =
+\{p_o\}$, in any valid Javalite program. The initial state for $\rsym$ is
+then defined as $q_o = p_o$ so $P_o \sqsubset q_o$ trivially holds.

@@ -1,0 +1,272 @@
+\section{Definitions}
+
+\begin{definition}
+The set of \textbf{references} $\mathcal{R}$ is defined as the set of natural numbers
+ $$\mathcal{R} = \mathbb{N}$$
+\end{definition}
+
+In order to make the distinction between different types of references, we partition the set of references using modular arithmetic. Stack references are those references which are created as a result of a field read. The total number of references in a representing state and a represented state are generally not the same. However, the number of references on the stack in either state is always the same. 
+
+\begin{definition}
+The set of \textbf{stack references} $\mathcal{R}_t$ is defined as
+ $$\mathcal{R}_t =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 0\}$$. 
+\end{definition}
+
+Input heap references are references that exist prior to program execution in the symbolic input heap. While this set of references may be infinite, they are discovered one at a time via lazy initialization.
+
+\begin{definition}
+The set of \textbf{input heap references} $\mathcal{R}_h$ is defined as
+ $$\mathcal{R}_h =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 1\}$$. 
+\end{definition}
+
+\begin{definition}
+The set of \textbf{new heap references} $\mathcal{R}_f$ is defined as
+ $$\mathcal{R}_f =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 2\}$$. 
+\end{definition}
+
+\begin{definition}
+For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \textbf{preimage} $f^\leftarrow$ are defined as
+\begin{align}
+ f^\rightarrow &= \{ f(a) \mid a \in A\}\\
+ f^\leftarrow &= \{ a \mid f(a) \in B \}
+ \end{align}
+ The bracket notation $ f^\rightarrow [C] $ is used to denote that the image is drawn from a specific subset:
+ \begin{align}
+ f^\rightarrow [C] &= \{ f(a) \mid a \in C\}\\
+ f^\leftarrow [D] &= \{ a \mid f(a) \in D \}
+ \end{align}
+ Where $C \subset A$ and $D \subset B$
+\end{definition}
+
+A special reference, $\cfgnt{r}_\mathit{un}$, and location,
+$\cfgnt{l}_\mathit{un}$, is introduced to support lazy
+initialization. The '$\mathit{un}$' is to indicate the reference or
+location is uninitialized at the point of execution.
+
+\begin{definition}
+\label{def:state}
+The set of \textbf{states} $\mathcal{S}$ is defined as the set of strings matching the pattern $s$ in \ref{fig:machine-syntax}.
+\end{definition}
+
+\begin{definition}
+\label{def:initstate}
+$\mathcal{S}_0$ is defined as the set of \textbf{initial states}. An
+initial state is a state meeting the following conditions: The range
+of L has exactly three locations: $l_{null}$, $l_{un}$, and $l_0$, the
+function R is defined only for location $l_0$, and for any field $f$,
+$R(l_0,f)$ returns $r_{un}$.
+\end{definition}
+
+The rewrite rules that define the Javalite semantics are presented in
+the supplemental document accompanying the paper.
+
+\begin{definition}
+A \textbf{state transition relation} $\rightarrow_{\Phi}$ is a binary
+relation $\rightarrow_{\Phi}\ \subseteq\ \mathcal{S} \times
+\mathcal{S} $, which relates machine states with successor states. Two
+important state transition relations are \textbf{GSE} $\rgse$ and
+\textbf{symbolic} $\rsym$. Each of these use a separate relation for
+initialization: $\rinit$ for GSE and $\rsum$ for symbolic. All of
+these transition relations are defined in \figref{fig:lazy},
+\figref{fig:lazyInit}, \figref{fig:sym}, and \figref{fig:symInit}.
+\end{definition}
+
+\begin{definition}
+A heap, $(\cfgnt{L}\ \cfgnt{R})$, is \textbf{deterministic} if and only if 
+\[
+\begin{array}{l}
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (\\
+\ \ \ \ (\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
+\end{array}
+\]
+\end{definition}
+
+\begin{definition}
+A state is \textbf{well formed} if its heap is deterministic, type consistent across locations on a common reference, every reference points to a location, and only references from the stack partition are in the environment, expression, or continuation.
+\end{definition}
+
+\begin{lemma}[Successors of well-formed states]
+\label{lem:succ}
+Any well-formed state has at least one successor unless the expression is $\cfgnt{v}$ and the continuation is $\cfgt{end}$.
+\end{lemma}
+\begin{proof}
+Please write me!
+\end{proof}
+
+At times, it is useful to classify states in terms of patterns that the state strings match. In concrete terms, this is similar to asking what will be the next instruction to execute. For example, we know that left-hand states matching the pattern $ \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp$ only appear in the Field Access rule.
+
+\begin{definition}
+The universe of reachable states is $S$. The universe is further partitioned into states that activate different relations.
+\begin{itemize}
+\item Field Access, $S_\mathit{FA} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}_0\rp) \}$
+\item Field Write,  $S_\mathit{FW} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{x},\cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}_0\rp) \}$
+\item Equals, $S_\mathit{EQ} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}_0 (\cfgnt{e} = \cfgnt{r}_0) \wedge \exists r_1, k_1(\cfgnt{k} = \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}_1\rp \}$
+\item New, $S_\mathit{N} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{C}\ (\cfgnt{e} = \lp \cfgt{new}\ \cfgnt{C}\rp) \}$
+\end{itemize} 
+\end{definition}
+
+
+\begin{definition}
+Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = (\cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
+\end{definition}
+
+We will later be concerned with establishing whether one state
+represents another state. We want to say that one state represents
+another state if equivalent paths lead out from each state. This
+path-centric notion of equivalence is known as functional
+equivalence. In establishing functional equivalence between states, it
+is important to determine whether the heaps within the states are
+themselves functionally equivalent. Two heaps are functionally
+equivalent if the same sequence of field accesses in each heap
+produces equivalent results. We define heap functional equivalence
+using a co-inductive definition of homomorphism over the access paths
+in the heaps.
+
+\begin{definition}
+\label{def:homomorphism}
+A \textbf{homomorphism} $s_p \rightharpoonup_{h} s_q$, from state $s_p = ( \cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$ to state $s_q = ( \cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$, is defined as follows: 
+$$
+\begin{array}{l}
+ s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
+\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
+\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
+\end{array}
+$$
+\begin{comment}
+$$
+\begin{array}{l}
+s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
+\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathit{fields}(\mathrm{type}(\cfgnt{l}_\beta))\ ( \\
+\ \ \ \ \ \ \ \ \ \ \ \ \forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f ))\ ( \\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists \phi_\beta\ ((\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f )))))))\\
+\end{array}
+$$
+\end{comment}
+\end{definition}
+
+Since the access paths in any given heap are bound by certain constraints, to preserve control flow equivalence we must establish whether the collection of any constraints in a given heap are collectively feasible. The homomorphism constraint is the conjunction of all constraints in the image of the represented heap in the representer heap.
+
+\begin{definition}
+\label{def:hc}
+Given the homomorphism $s_p \rightharpoonup_{h} s_q$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_p \rightharpoonup_{h} s_q)$ is defined as:
+\begin{align*}
+\mathbb{HC}(s_p \rightharpoonup_{h} s_q) &= \\
+ \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\} 
+\end{align*}
+Where $\cfgnt{L}_p$ and $\cfgnt{L}_q$ are the locations maps from the heaps in $s_p$ and $s_q$.
+\end{definition}
+
+The representation relation combines the previously established
+notions of heap homomorphism and feasibility with the added constraint
+that the variables, expressions, and continuation strings must match
+between the pairs of states.
+
+\begin{definition}
+\label{representation}
+The \textbf{representation relation} $\sqsubset$ is defined as
+follows: given state $s_p = (
+\cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$
+and state $s_q = (
+\cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$,
+$s_p \sqsubset s_q $ if and only if $\eta_p = \eta_q ,\ \cfgnt{e}_p =
+\cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, the heaps are well-formed, and there exists a
+homomorphism $(\cfgnt{L}_p\ \cfgnt{R}_p) \rightharpoonup_{h}
+(\cfgnt{L}_q\ \cfgnt{R}_q)$ such that
+\begin{equation}
+\label{eqn:valid}
+ \mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) ) 
+\end{equation}
+The represented relation is extended to sets of states $P$ and $Q$ as
+$$
+P \sqsubset Q \Longleftrightarrow \forall q \in Q\ (\forall p\ (p \sqsubset q \Rightarrow p \in P))
+$$
+\end{definition}
+
+\begin{lemma}[$Q$ is a singleton for $P \sqsubset Q$]
+\label{lem:unique}
+$$
+P \sqsubset Q \Rightarrow \forall q,q^\prime \in Q\ (\forall p\ (p \sqsubset q \Rightarrow p \sqsubset q^\prime)
+$$
+The notation $P \sqsubset q$ is used to indicate that single member of
+the set in the represented relation.
+\end{lemma}
+\begin{proof}
+Please write me?
+\end{proof}
+\begin{definition}
+\label{def:meta}
+A state relation $p \rightarrow_x p^\prime$ is extended to sets of states $P \hookrightarrow_x P^\prime$ as
+$$
+P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
+$$
+The $\rgse$ relation over sets of states is $\rsgse = \hookrightarrow_\mathit{FA} \cup \hookrightarrow_\mathit{FA(N)} \cup \hookrightarrow_\mathit{FW} \cup \hookrightarrow_\mathit{FW(N)} \cup \hookrightarrow_\mathit{EQ(T)} \cup \hookrightarrow_\mathit{EQ(F)} \cup \hookrightarrow_\com$.%, and 
+%the $\rsym$ relation extended to sets of states is 
+%$$
+%\rssym = \hookrightarrow_\mathit{FA} \cup \hookrightarrow_\mathit{FW} \cup \hookrightarrow_\mathit{EQ}^T \cup \hookrightarrow_\mathit{EQ}^F \cup \hookrightarrow_\com
+%$$
+\end{definition}
+
+\begin{lemma}[$P$ and $Q$ have same number of successors when $P \sqsubset q$]
+\label{lem:succCount}
+Let $X = \{P^\prime | P \leadsto P^\prime\}$ and $Y = \{q^\prime | q
+\rsym q^\prime\}$: $P \sqsubset q \Rightarrow |X| = |Y|$.
+\end{lemma}
+\begin{proof}
+Please write me?
+\end{proof}
+
+\begin{definition}
+\label{bisimulation}
+The functional associated to bisimulation,  $F_\sim$, is a function between binary relations. The functional applied to $\sqsubset$, denoted as $F_\sim(\sqsubset)$, is the set of all pairs
+$(P\ q)$ such that
+\begin{equation}
+\label{eqn:BisimulationForwards}
+\forall P^\prime\ ( P \rsgse P^\prime \Rightarrow \exists q^\prime\ ( (q \rsym q^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
+\end{equation}
+\begin{equation}
+\label{eqn:BisimulationBackwards}
+\forall q^\prime\ ( q \rsym q^\prime\Rightarrow \exists P^\prime\ ( (P \rsgse P^\prime )\wedge (P^\prime\ \sqsubset\ q^\prime )))
+\end{equation}
+The bisimilarity relation is the greatest fixed point of the functional.
+\end{definition}
+
+Note that in the literature it is customary to define bisimulation in
+terms of a single labeled transition system, whereas for the purposes
+of this paper the definition of bisimulation refers to a pair of
+transition relations $\rightarrow_x$ and $\rightarrow_y$ defined by
+reduction rules. Since it is possible to create a union of the two
+rule systems $\rightarrow_x \cup \rightarrow_y$, and since none of the
+transitions in the reduction rules in this paper are labeled, this
+definition is sufficient for all of the customary properties of
+bisimulation to apply. For a more detailed treatment on the
+application of bisimulation to reduction rule systems see
+\cite{GSE:barbedbisimulation}.
+
+\paragraph{Relationship between bisimulation and fix points}
+
+If you have a lattice $L$, and you have some 
+function $F$ which transforms one point on the lattice into another, then
+$F$ is an endofunction on $L$. For any endofunction $F$, a 
+a post-fixed point of $F$ is any point $x$ where $x < F(x)$, and a pre-fixed 
+point is any point $x$ where $F(x) < x$. The inductively defined set $F_\mathit{ind}$
+is equal to the meet of all the pre-fixed points, and the conductively 
+defined set $F_\mathit{coind}$ is equal to the join of all post-fixed points. 
+$x \leq F_\mathit{coins}$. If $F$ is monotone, then the greatest fixed point $\mathit{gfp}(F)$ 
+is equal to the coinductive set, and the least fixed point $\mathit{lfp}(F)$ is equal to the 
+inductive set.
+
+For some monotone endofunction $F$, the inductive proof principle states that 
+if $F(x) \leq x$, then $\mathit{lfp}(F) \leq x$. Similarly, the coinductive proof 
+principle states that if $x \leq F(x)$, then $x \leq \mathit{gfp}(F)$. 
+
+Because the functional associated to bisimulation $F_\sim$ is monotone over 
+the lattice formed by sets of pairs of states, we may invoke the coinductive proof principle
+to identify post-fixed points of $\mathit{gfp}(F_\sim)$. It can be proved that
+the greatest fixed point of the functional associated to 
+bisimulation is equal to the bisimilarity relation $\sim = \mathit{gfp}(F_\sim)$, that 
+all bisimulations are 
+post-fixed points of $F_\sim$, and all post-fixed points of $F_\sim$ are 
+bisimulations. Thus, we may invoke the coinductive proof principle to show that some relation $R$ is a bisimulation, by proving that $R$ is a pre-fixed point of $F_\sim$: $R \leq F_\sim(R)$.
+ 
+

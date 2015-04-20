@@ -1,0 +1,50 @@
+\section{Overview}
+In this section, the general concepts behind symbolic execution are first introduced in the context of primitive value types. The initial framework is then extended to include symbolic references and the symbolic input heap.
+
+
+\subsection{Symbolic Execution}
+At it’s foundation, symbolic execution is about finding relationships between program variables by means of constraints in the form of predicates over symbolic program inputs.
+
+%here, we'll give a simple example for how symbolic execution works.
+
+The path condition represents a set of valid concrete program inputs. Concrete executions with program inputs satisfying the path condition will result in a trace identical to that followed by the symbolic execution. Conversely, any concrete execution with an initial state not satisfying the path condition will follow a different path. In this manner, the path condition is an exact representation of all program inputs along a given execution path. 
+
+\subsection{Symbolic Input Heap}
+Directly in this vein, our references, and indeed our heap as a whole are essentially predicates describing relationships between program variables and the symbolic input heap. These predicates are formed by compositions of heap operations that occur over the course of program execution. As with any symbolic execution technique, equality conditions between heap predicates form constraints, which accumulate along a program execution path in the form of a path condition. 
+
+The symbolic input heap represents the unconstrained, unbounded set of possible input heap configurations. Input references represent handles to arbitrary locations within the input heap. The heap at any moment in program execution is represented as a compositional expression over the initial input heap and input references. 
+
+%At this point, we’d introduce the symbolic heap and associated operations at a purely symbolic level. We’d have a few heap operations, such as a field read, field write, and reference comparison, along with the symbolic heap and references represented by single-letter symbols. The set-up would look something like this:
+
+Let A and B be symbolic heaps, p and q be symbolic references, and i be a field index. Note that A,B,x, and y are predicates, while f is a literal. A field read operation is a function mapping a heap, reference, and a field index to a reference: 
+$$ \mathit{read}: (H \times R \times F) \rightarrow R$$
+(Where H R and F are the domains of heaps, references, and fields, respectively)
+
+A field write operation is a function mapping a heap, a reference, a field index, and another reference to a heap:
+$$\mathit{write}: (H \times R \times F \times R) \rightarrow H$$
+
+We would then show a very simple program example, along with the classical symbolic execution tree to illustrate how the symbolic heap works. The example might look something like this:
+
+suppose we have a program that looks like this:
+
+\begin{figure}
+void getData( container v )\{
+
+container x = v.data;
+
+this.data = x;
+
+\}
+\caption{}
+\end{figure}
+
+The initial program state looks like this:
+ $$\{heap = A, this = a, v = b, x = null , PC = phi\}$$
+
+After the line “container x = v.data;", the system state will be:
+$$\{heap = A , this = a, v = b, x = read(A,b,data), PC = phi\}$$
+
+After the line “this.data = x;”, the system state is:
+$$\{heap = write(A,a,data,read(A,b,data)), v = b, x = read(A,b,data), PC = phi\}$$
+ 
+It is important to note that the symbolic input heap itself is static and unchanging from the start of program execution. This is true whether or not the program is single or multi-threaded. In this context, the term "lazy initialization" is somewhat of a misnomer. The process of lazy initialization does in no way alter the symbolic input heap, but instead establishes a partition over the space of possible input heaps without changing or constraining that input heap in any way. 

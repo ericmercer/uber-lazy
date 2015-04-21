@@ -11,10 +11,12 @@ references.
 
 \input{summarize-precise-incomplete}
 
-\begin{figure*}
+\begin{figure*}[t]
+\begin{center}
 \begin{tabular}[c]{l}
 \scalebox{1.0}{\usebox{\boxPI}} \\
 \end{tabular}
+\end{center}
 \caption{Initializing fields, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
 \label{fig:symInit}
 \end{figure*}
@@ -29,7 +31,9 @@ $\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
 pairs where the field $\cfgnt{f}$ is uninitialized.
 \[
 \begin{array}{rcl}
-\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\ & &
+ \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\ & &
+ \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
 \end{array}
 \]
 
@@ -111,6 +115,16 @@ also define values of constraints used as labels in the graph.
 
 
 \input{precise-fig-incomplete}
+
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}[c]{l}
+\scalebox{1.0}{\usebox{\boxPFAFW}} \\
+\end{tabular}
+\end{center}
+\caption{Field read and write relations: Field-access, $\rsym^\mathit{A}$, and field-write, $\rsym^\mathit{W}$, rewrite rules for the $\rsym$ relation.}
+\label{fig:fHeap}
+\end{figure*}
 
 There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
 the value of a field (field-access) and the other when we write to a

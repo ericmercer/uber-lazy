@@ -6,17 +6,22 @@
   \scalebox{0.88}{\begin{tabular}{| c | c | r | r | r | r | r | r | r | r | r |}
   \hline
    \multirow{2}{*}{Method }&\multirow{2}{*}{ $k$ }
-   &\multicolumn{3}{|c|}{Time (seconds)} &\multicolumn{3}{|c|}{States} &\multicolumn{3}{|c|}{ Paths }\\
-								&	&\gsetxt{} & L\#		&SH		&\gsetxt{}	& L\# & SH&\gsetxt{}	& L\# 	& SH\\
+   &\multicolumn{3}{c|}{Time (seconds)} &\multicolumn{3}{c|}{States} &\multicolumn{3}{c|}{ Paths }\\
+								&	&\gsetxt{} & L\#		&SL		&\gsetxt{}	& L\# & SL&\gsetxt{}	& L\# 	& SL\\
    \hline
     \multirow{3}{*}{LinkedList }			&3	& 0.91	& 1.21	& 0.69	& 2465	& 2844	& 99		&1656	& 1269	& 25\\
    		 						& 4	& 2.92	& 3.35	& 0.91	& 25774	& 29977	& 155	&17485	& 13550	& 39\\
    								& 5	& 20.78	& 19.47	& 1.59	& 341164	& 400296	& 223	&232743	& 181849	& 56\\
 								& 6	& 280.56	& 299.19	& 2.36	&5447980	&6437201	& 303	&3731094	&2933027	& 76\\
+								& 7	& -		& -		& 5.07	& -		&-		& 395	&-		&-		& 99\\
+								& 8	& -		& -		& 17.49	& -		&-		& 499	&-		&-		& 125\\
+								& 9	& -		& -		& 63.96	& -		&-		& 615	&-		&-		& 154\\
+								& 10	& -		& -		& 206.93	& -		&-		& 743	&-		&-		& 186\\
     \hline
     \multirow{3}{*}{BinarySearchTree }	& 1	& 0.26	& 0.28	& 0.36	& 19		& 23		& 29		& 6		& 6		& 6\\
    		 						& 2	& 0.83	& 1.28	& 0.93	& 143	& 143	& 145	& 43		& 42		& 33\\
    								& 3	& 20.63	& 25.55	& 4.03	& 1953	& 1703	& 1485	& 515	& 515	& 328\\
+								& 4	& -		& -		& 410.89	& -		&-		& 73635	&-		&-		& 15563\\
     \hline
       \multirow{3}{*}{TreeMap}			& 1	& 0.47	& 0.52	& 0.77	& 65		& 70		& 215	& 11		& 11		& 11\\
    		 						& 2	& 8.99	& 9.73	& 4.72	& 1009	& 942	& 3219	& 127	& 122	& 73\\
@@ -27,6 +32,7 @@
   \caption{Comparing the efficiency of the symbolic heap with the~\gsetxt{} and Lazier\# algorithms.}
   \label{tab:results}
 \end{table*}
+
 %\end{figure*}
 
 %\subsection{Analysis}
@@ -52,7 +58,13 @@ solver. We leverage the incremental solving feature in z3 in our
 experiments. We also implement other optimizations that cache and
 re-use solutions to previous constraints. These optimizations are an
 important part of our implementation because only small portions of
-the heap constraint changes from one state to another.
+the heap constraint changes from one state to another. 
+\bah{The solver optimizations used in the \symtxt{} are not applicable to \gsetxt{}-style techniques, as they do not generate or solve any heap-related constraints. Even with the solver optimizations these techniques would have the same performance characteristics. The overhead in \gsetxt{} arises from case-splitting (generating states) rather than solver time. }
+
+
+\bah{The benchmarks all include invariants and traversals of data structures. The chosen benchmarks have a high proportion of heap-related operations, putting maximum focus on the heap analysis methods under investigation. They are included to provide evidence of the general computational efficiency of the SH approach. In future work we plan to evaluate it on a more diverse set of benchmarks. The BinarySearchTree test uses the class of the same name from Alan Weiss' book titled ``Data Structures and Algorithm Analysis in Java''. The test method first asserts a repOk() invariant, before conducting a traversal to find an arbitrary integer key in the tree. The TreeMap method comes from the standard java.util library, and is an implementation of a balanced red/black tree. This method asserts a repOk() invariant, before traversing the tree. The LinkedList test starts by asserting a repOk() invariant, which checks for loops in the linked list using Floyd’s cycle-finding algorithm. The linked list is then traversed using a contains() method that attempts to locate an arbitrary reference key in the list.}
+
+\bah{All benchmarks were performed with respect to a given k-bounds. k-bounding limits the length of reference chains to some user-defined integer k. k-bounding was chosen because it provides a fair means of comparison of all the techniques under investigation. More details on k-bounding can be found in~\cite{Deng:2007}.}
 
 The results of the experiments are presented in Table~\ref{tab:results}. 
 Each row reports the results for the specified $k$-bound 

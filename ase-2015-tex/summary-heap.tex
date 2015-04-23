@@ -200,6 +200,25 @@ $$ In this rule, when the string matches the new-expression, it is
         location map points a new stack reference to that new object.
         Note that references for objects from the new-expression are
         auxiliary literals, so they do not appear in any constraint in
-        the symbolic heap as an aliasing option. The complete set of
-        semantic rules for Javalite are presented
-        in Appendix A.
+        the symbolic heap as an aliasing option. 
+        
+ \input{javalite-common}
+
+\figref{fig:javalite-common} defines
+the rewrite relations for the portion of the Javalite language
+semantics that are common to both generalized symbolic execution and
+the symbolic heap algorithm. The relation $\rcom$ includes all of these
+rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
+the heap, and are largely concerned with argument evaluation in an
+expected way. It is assumed that only type safe programs are input to
+the machine so there is no type checking or error conditions. The
+machine simply halts if no rewrite is enabled.
+\bah{
+\input{lazy}	
+}
+\input{precise-fig}
+
+\input{summarize-precise}
+
+
+        

@@ -58,8 +58,8 @@ explore each heap configuration. This approach, however, is
 inefficient because it does not treat heap allocated data as symbolic,
 but instead concretizes all possible heap configurations.
 
-The contribution of this work is a non-trivial adaptation of concepts
-in abstract interpretation to the domain of symbolic execution. The
+\bah{The contribution of this work is a method for modeling and solving systems 
+of constraints over a symbolic input heap.} The
 result of which, unlike~\gsetxt{}, is the ability to efficiently generate
 and update \emph{symbolic heaps} to produce a single path constraint
 that is sound and complete up to the point of execution. This is
@@ -182,8 +182,9 @@ complete path condition for a given control flow path.
 
 \begin{compactdesc}
 
-\item\textbf{-} The first sound and complete system for reasoning symbolically about the 
-set of input heaps along any valid program path. 
+\item\textbf{-} A system for reasoning symbolically about the 
+set of input heaps along any valid program path that is sound
+and complete with respect to symbolic execution. 
 
 \item\textbf{-} A bisimulation proof establishing the soundness and 
 completeness of the heap summary approach with respect to

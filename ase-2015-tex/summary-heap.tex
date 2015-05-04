@@ -1,69 +1,5 @@
-\section{Our Approach}
+\section{Prelimiaries}
 \label{sec:sh}
-
-The symbolic heap algorithm is defined using
-Javalite~\cite{saints-MS}. Note that the approach is not restricted to
-this language or even Java in general; we use Javalite simply as
-mechanism to describe our approach. The small-step semantics of
-Javalite, defined as a syntactic machine using a CESK architecture,
-are modified to perform symbolic execution on a symbolic heap. The
-surface (input) syntax and machine (state) syntax are shown
-in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
-are italicized. Ellipses indicate zero or more repetitions. Tuples
-omit the commas for compactness.
-
-\input{surface-syntax}
-\input{machine-syntax}
-\begin{figure}[t]
-\begin{center}
-\begin{tabular}{c}
-\scalebox{0.9}{\usebox{\boxSurface}} \\
-(a) \\\\
-\scalebox{0.9}{\usebox{\boxMachine}} \\
-(b)
-\end{tabular}
-\end{center}
-\caption{Syntax for Javalite. (a) The Javalite surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
-\label{fig:syntax}
-\end{figure}
-
-A Javalite program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
-a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
-where execution starts. The only primitive type in Javalite is
-Boolean. For simplicity in presentation, classes have only
-non-primitive fields, and methods have a single
-parameter. Expressions, $\cfgnt{e}$, include statements, and they use
-'$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate
-comparison.  The dot-operator for field access is replaced by
-'$\cfgt{\$}$', and the dot-operator for method invocation is replaced
-by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no
-explicit return statement; rather, the value of the last expression is
-used as the return value. A variable is always indicated by \cfgnt{x}
-and a value by \cfgnt{v}. A value can be a reference in the heap,
-$\cfgnt{r}$, or any of the special values shown
-in~\figref{fig:syntax}(a).  Only type correct programs are given as
-input to the machine.
-
-The state of the Javalite machine, $\cfgnt{s}$, includes the program
-registry, $\mu$, a pair of functions defining the heap
-$\lp\cfgnt{L}\ \cfgnt{R}\rp$, a constraint, $\phi$, defined over
-references in the heap, the environment, $\eta$, for local variables,
-and the continuation $\cfgnt{k}$. The registry never changes so it is
-omitted from the state tuple in the rest of the presentation.  The
-more complex structures, such as the environment and heap, are defined
-as lists that start with empty, \cfgnt{mt}. These lists are treated as
-partial functions so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
-$\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
-$\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
-partial function $\eta^\prime$ that is the same as $\eta$ except that
-the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
-$\cfgnt{k}$ indicates where the hole, $\cfgt{*}$, is located, stores
-temporary computation, and keeps track of the next computation. For
-example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
-\rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
-expression for the object reference on which the field $\cfgnt{f}$ is
-going to be accessed. Once the field access is complete, the machine
-continues with $\cfgnt{k}$.
 
 \subsection{Symbolic Heap}
 
@@ -79,17 +15,26 @@ of constraint-location pairs in the heap associated with the given
 reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
 reference associated with the given location-field pair in the
 heap. References in the graph are immutable. Locations, however, are
-mutated on updates.  Immutability of references means that look-ups in
-the heap are non-recursive and updates do not modify the current path
-condition.
+mutated on updates.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[scale=0.2]{../figs/simple_heap_scratch.png}
+\end{center}
+\caption{Example Heap (scratch image, not for publication!)}
+\label{fig:exampleHeap}
+\end{figure}
+
+\bah{\figref{fig:exampleHeap} shows an example symbolic heap. References are 
+represented by circles and locations are represented by squares. Arrows leaving
+references correspond to the value sets returned by the $\cfgnt{L}$ function, and 
+arrows leaving the squares correspond to the $\cfgnt{R}$ function.}
 
 The soundness and completeness proofs in Section~\ref{sec:bisim} rely
 on certain characteristics of the symbolic heap that are preserved by
 the small-step semantics during symbolic execution:
-%\emph{reference partitions}, \emph{null and uninitialized}, \emph{immutability}, \emph{determinism}, and
-%\emph{type consistency}.
+
 \begin{compactdesc}
-%<<<<<<< HEAD
 \item[Reference partitions:] Each reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
   heap}% that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in constraints)
   ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
@@ -98,16 +43,6 @@ the small-step semantics during symbolic execution:
   literals} %(these appear in environments, expressions, and continuations).
 \item[Null and Uninitialized:] Every symbolic heap contains 
 two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
-%=======
-%\item[Reference partitions] means that a reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
-%  heap} that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in
-%  constraints); $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
-%  literals} that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere); and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
-%  literals} (these appear in environments, expressions, and continuations).
-%\item[Null and Uninitialized] means that every symbolic heap contains 
-%a special location for null ($\cfgnt{l}_\mathit{null}$), and a special
-%location for uninitialized
-%>>>>>>> 49c83f34a0b5afd58adc4b6649b15e2cbc93437c
   ($\cfgnt{l}_\mathit{un}$) with $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
@@ -147,7 +82,72 @@ under which those heaps exist so look-ups are non-recursive and
 updates do not modify the path condition or require rewrites on
 constraints.
 
-\subsection{Semantics of Javalite}
+
+\subsection{Semantics}
+
+In this work, symbolic execution semantics are is defined using
+a small-step operational semantics similar to the one presented 
+in~\cite{saints-MS}. The small-step semantics,
+defined as a syntactic machine using a CESK architecture~\cite{Felleisen:1992},
+are modified to perform symbolic execution on a symbolic heap. The
+surface (input) syntax and machine (state) syntax are shown
+in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
+are italicized. Ellipses indicate zero or more repetitions. Tuples
+omit the commas for compactness.
+
+\input{surface-syntax}
+\input{machine-syntax}
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}{c}
+\scalebox{0.9}{\usebox{\boxSurface}} \\
+(a) \\\\
+\scalebox{0.9}{\usebox{\boxMachine}} \\
+(b)
+\end{tabular}
+\end{center}
+\caption{Syntax for Javalite. (a) The Javalite surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
+\label{fig:syntax}
+\end{figure}
+
+A program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
+a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
+where execution starts. The only primitive type in Javalite is
+Boolean. For simplicity in presentation, classes have only
+non-primitive fields, and methods have a single
+parameter. Expressions, $\cfgnt{e}$, include statements, and they use
+'$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate
+comparison.  The dot-operator for field access is replaced by
+'$\cfgt{\$}$', and the dot-operator for method invocation is replaced
+by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no
+explicit return statement; rather, the value of the last expression is
+used as the return value. A variable is always indicated by \cfgnt{x}
+and a value by \cfgnt{v}. A value can be a reference in the heap,
+$\cfgnt{r}$, or any of the special values shown
+in~\figref{fig:syntax}(a).  Only type correct programs are given as
+input to the machine.
+
+The state of the machine, $\cfgnt{s}$, includes the program
+registry, $\mu$, a pair of functions defining the heap
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$, a constraint, $\phi$, defined over
+references in the heap, the environment, $\eta$, for local variables,
+and the continuation $\cfgnt{k}$. The registry never changes so it is
+omitted from the state tuple in the rest of the presentation.  The
+more complex structures, such as the environment and heap, are defined
+as lists that start with empty, \cfgnt{mt}. These lists are treated as
+partial functions so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
+$\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
+$\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
+partial function $\eta^\prime$ that is the same as $\eta$ except that
+the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
+$\cfgnt{k}$ indicates where the hole, $\cfgt{*}$, is located, stores
+temporary computation, and keeps track of the next computation. For
+example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
+\rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
+expression for the object reference on which the field $\cfgnt{f}$ is
+going to be accessed. Once the field access is complete, the machine
+continues with $\cfgnt{k}$.
+
 
 Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the initial machine state is
 $$
@@ -205,7 +205,7 @@ $$ In this rule, when the string matches the new-expression, it is
  \input{javalite-common}
 
 \figref{fig:javalite-common} defines
-the rewrite relations for the portion of the Javalite language
+the rewrite relations for the portion of the language
 semantics that are common to both generalized symbolic execution and
 the symbolic heap algorithm. The relation $\rcom$ includes all of these
 rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
@@ -213,9 +213,9 @@ the heap, and are largely concerned with argument evaluation in an
 expected way. It is assumed that only type safe programs are input to
 the machine so there is no type checking or error conditions. The
 machine simply halts if no rewrite is enabled.
-\bah{
+
 \input{lazy}	
-}
+
 \input{precise-fig}
 
 \input{summarize-precise}

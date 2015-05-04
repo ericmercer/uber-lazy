@@ -1,10 +1,10 @@
 \subsection{Generalized Symbolic Execution}
 \label{app:gse}
-The specialization of Javalite to generalized symbolic execution with
-lazy initialization using the symbolic heap is in
+The rules to generalized symbolic execution with
+lazy initialization using the symbolic heap are in
 \figref{fig:lazyInit} for the initialization and \figref{fig:lazy} for
 how the initialization is used. Specifically, the field-access rule in
-\figref{fig:lazy} uses initialization, $\rightarrow_I^*$, to be sure
+\figref{fig:lazy} uses initialization, $\rightarrow_I^*$, to ensure
 the accessed field is instantiated. Initialization in generalized
 symbolic execution never happens for more than one object on any use
 of $\rightarrow_I^*$: $\Lambda$ is either empty or contains exactly

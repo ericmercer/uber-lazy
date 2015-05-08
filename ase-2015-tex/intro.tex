@@ -54,12 +54,12 @@ Generalized Symbolic Execution
 dereferencing operations,~\gsetxt{} partitions the input space between the
 various possible aliasing configurations on-the-fly and also creates
 non-deterministic choice points on the current path in order to
-explore each heap configuration. This approach, however, is
-inefficient because it does not treat heap allocated data as symbolic,
-but instead concretizes all possible heap configurations.
+explore each heap configuration. \bah{This approach, however, is
+inefficient because it initiates a new search path for every possible heap configuration.
+The resulting path growth is exponential in the number of dereferencing operations.}
 
-\bah{The contribution of this work is a method for modeling and solving systems 
-of constraints over a symbolic input heap.} The
+The contribution of this work is a method for modeling and solving systems 
+of constraints over a symbolic input heap.The
 result of which, unlike~\gsetxt{}, is the ability to efficiently generate
 and update \emph{symbolic heaps} to produce a single path constraint
 that is sound and complete up to the point of execution. This is

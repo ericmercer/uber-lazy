@@ -283,3 +283,29 @@ pairs associated with each of the references:
 \[
 \phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
 \]
+
+\subsection{Applying Method Invariants}
+Assume-type invariants are achievable by using a simple ITE structure: if(precondition) then testmethod() else failAssume(). Any paths which which reach the failAssume() method call are ignored. Assert-type postconditions are accomplished using the standard Java assert() keyword. Failed assertions will cause an uncaught exception which may cause the search to optionally terminate or backtrack. 
+
+Application of complex method invariants is facilitated by repOk-style methods as described in~\cite{boyapati2002korat}.
+
+
+\subsection{Symbolic Input Heap}
+The methods described above are useful for determining the current symbolic heap along an execution path, but they are also easily generalized for to tracking the symbolic input heap. For a given execution path, the symbolic input heap represents the constraints defining set of all heaps that would result in that path. At the start of program execution the symbolic input heap is unconstrained, admitting the set of all possible heaps. As symbolic execution proceeds and the path condition grows, the symbolic input heap becomes more constrained, representing a subset of the space of possible inputs. The symbolic input heap can be determined by maintaining a record of all lazy initializations separately from the main symbolic heap. Each lazy initialization produces a new reference $r^\prime$ and location $l_x$ which are added to special initial reference and location maps $R_i$ and $L_i$. These input heap mappings are updated only by lazy initializations and changes to the path condition, but are not affected by other forms of heap updates, such as new allocations or writes. 
+
+\subsection{Heap Preconditions and Postconditions}
+For many types of analysis, such as modular analysis and change impact analysis, it is desirable to determine method preconditions and postconditions. Determination of both preconditions and postconditions is facilitated by the symbolic heap. The symbolic heap at the final state on an execution path is equivalent to a per-path postcondition, a constraint describing the complete set of output heaps that are possible for that execution path. Likewise, the symbolic input heap at a terminal state is the precondition for that path. For a self-limiting program, the set of feasible path-terminal symbolic heaps forms the strongest postcondition, and the set of input heaps forms the weakest precondition. 
+
+\subsection{Heap Concretization}
+%-what is concretization
+%-Valuations
+%-Each valuation causes exactly one constraint per reference to evaluate to Òtrue"
+While a symbolic heap represents a set of possible heap configurations, it is often useful to be able to extract a single heap instance from that set of possible heaps. The process of extracting concrete values from symbolic values is commonly known as concretization. The symbolic heap may be concretized by utilizing the solution provided by the SMT solver when it decides the satisfiability of the path condition. The SMT solver provides the solution in the form of a valuation, which is an assignment of numerical values to each of the variables in the path condition. In the case of the symbolic heap, the numeric values assigned to reference variables can be thought of as the physical memory addresses to which each of the references is pointing. 
+
+The symbolic heap is concretized by applying the solution valuation to each of the constraints in every value set in $\cfgnt{L}$. The assignments from the solution valuation will cause the constraint equations to evaluate to either true or false. By the determinism property of the symbolic heap, for each reference in $L$, exactly one constraint will evaluate to true, while all others will evaluate to false. The location associated with that constraint is then selected for the reference to point to in the resulting concrete heap. 
+
+\subsection{Test input generation}
+%What is test-case generation?
+%How we use the symbolic input heap to generate test cases.
+%-concretize the symbolic input heap
+A common application for symbolic execution is test-input generation. By concretizing the symbolic input heap at any point during program execution, a concrete test input may be generated for the current execution path. Since each unique execution path is explored exactly once, it is possible to generate a set of test inputs that covers every unique execution path by concretizing the symbolic input heap at the end of each path. For the class of self-limiting programs, this set of test inputs is optimal with regards to the number of cases required to achieve total feasible path coverage. 

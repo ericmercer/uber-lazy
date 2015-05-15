@@ -202,12 +202,11 @@ $$ In this rule, when the string matches the new-expression, it is
         auxiliary literals, so they do not appear in any constraint in
         the symbolic heap as an aliasing option. 
         
- \input{javalite-common}
-
-\figref{fig:javalite-common} defines
-the rewrite relations for the portion of the language
+% \input{javalite-common}
+%
+The rewrite relations for the portion of the language
 semantics that are common to both generalized symbolic execution and
-the symbolic heap algorithm. The relation $\rcom$ includes all of these
+the symbolic heap algorithm may be found in \cite{Hillery:2015}. The relation $\rcom$ includes all of these
 rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
 the heap, and are largely concerned with argument evaluation in an
 expected way. It is assumed that only type safe programs are input to
@@ -216,9 +215,13 @@ machine simply halts if no rewrite is enabled.
 
 \input{lazy}	
 
-\input{precise-fig}
+%\input{precise-fig}
 
 \input{summarize-precise}
+
+
+
+
 
 
         

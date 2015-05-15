@@ -1,19 +1,5 @@
 
-A fundamental challenge of using symbolic execution for software
-analysis is the treatment of dynamically allocated data. Existing 
-techniques either underapproximate the space of possible inputs, 
-or are computationally infeasible. This paper
-introduces a compact symbolic heap representation based on a field
-sensitive points-to graph with edges annotated with disjunctive
-formulas describing aliasing relationships, along with a set of
-rewrite rules that describe the initialization, dereferencing, and
-update to fields in the symbolic heaps. The symbolic heap supports
-arbitrary recursive data structures and captures all possible heaps
-that follow a common control flow path up to the point of
-execution. An evaluation of a proof-of-concept implementation in the
-Java Pathfinder framework is presented to demonstrate the
-computational feasibility of the approach over several classical
-symbolic execution benchmarks.
+A fundamental challenge of using symbolic execution for software analysis is the treatment of dynamically allocated data. Existing techniques either underapproximate the space of possible inputs or are computationally infeasible. For example, dynamic symbolic execution (DSE) handles symbolic dereferencing by substituting in a value from a valid concrete execution. Generalized symbolic execution (GSE) initiates a new search path for every possible aliasing configuration. This paper introduces a method for de-referencing and manipulating values in a true block-box symbolic input heap that overcomes the limitations of previous methods. The symbolic heap supports arbitrary recursive data structures and captures all possible heaps that follow a common control flow path up to the point of execution. Computation of complex preconditions and postconditions is supported, as well as automatic generation of test inputs. An evaluation of a proof-of-concept implementation in the Java Pathfinder framework is presented to demonstrate the computational feasibility of the approach over several classical symbolic execution benchmarks.
 
 
 %A fundamental challenge of using symbolic execution for software

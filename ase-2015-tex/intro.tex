@@ -54,9 +54,9 @@ Generalized Symbolic Execution
 dereferencing operations,~\gsetxt{} partitions the input space between the
 various possible aliasing configurations on-the-fly and also creates
 non-deterministic choice points on the current path in order to
-explore each heap configuration. \bah{This approach, however, is
+explore each heap configuration. This approach, however, is
 inefficient because it initiates a new search path for every possible heap configuration.
-The resulting path growth is exponential in the number of dereferencing operations.}
+The resulting path growth is exponential in the number of dereferencing operations.
 
 The contribution of this work is a method for modeling and solving systems 
 of constraints over a symbolic input heap.The
@@ -82,16 +82,17 @@ compared to state-of-art~\gsetxt{} algorithms.
 This new symbolic heap and update rules for symbolic execution is a
 novel approach for de-referencing and updating heap allocated data
 that brings together the best features of previous work while removing
-the limitations of that same work. Although it draws inspiration from
-abstract interpretation by defining a symbolic heap,
+the limitations of that same work. The symbolic heap has the following 
+properties:
 \begin{compactitem}
-  \item it is an exact representation, without over- or under-approximation;
-  \item it imposes no restrictions on the set of heaps that can be defined;
-  \item it does not require the creation of an initial set of input heaps;
-  \item it is not tied to specific constraint solver theories, e.g., arrays; and
-  \item it does not require global constraint rewriting for on-the-fly updates.
+  \item constraints are neither over- or under-approximated;
+  \item it does not restrict the set of heaps that can be defined;
+  \item it does not require explicit construction of heap inputs;
+  \item automatically computes path pre- and postconditions;
+  \item generates path-coverage-optimal sets of test input heaps;
+  \item it supports complex user-defined heap structure invariants 
 \end{compactitem}
-These several properties set this work apart from other related works.
+
 
 \begin{comment}
 \section{Introduction}

@@ -287,7 +287,7 @@ pairs associated with each of the references:
 \subsection{Applying Method Invariants}
 Assume-type invariants are achievable by using a simple ITE structure: if(precondition) then testmethod() else failAssume(). Any paths which which reach the failAssume() method call are ignored. Assert-type postconditions are accomplished using the standard Java assert() keyword. Failed assertions will cause an uncaught exception which may cause the search to optionally terminate or backtrack. 
 
-Application of complex method invariants is facilitated by repOk-style methods as described in~\cite{boyapati2002korat}.
+Application of complex method invariants is facilitated by $\mathtt{repOk}$-style methods as described in~\cite{boyapati2002korat}.
 
 
 \subsection{Symbolic Input Heap}
@@ -309,3 +309,7 @@ The symbolic heap is concretized by applying the solution valuation to each of t
 %How we use the symbolic input heap to generate test cases.
 %-concretize the symbolic input heap
 A common application for symbolic execution is test-input generation. By concretizing the symbolic input heap at any point during program execution, a concrete test input may be generated for the current execution path. Since each unique execution path is explored exactly once, it is possible to generate a set of test inputs that covers every unique execution path by concretizing the symbolic input heap at the end of each path. For the class of self-limiting programs, this set of test inputs is optimal with regards to the number of cases required to achieve total feasible path coverage. 
+
+\subsection{Limitations}
+This paper presents a symbolic heap that is both sound and complete with respect to the properties verifiable through symbolic execution. However, when the symbolic heap is used in conjunction with any analysis method, it is subject the limitations inherent to the underlying technique. For example, for programs that do not exhibit self-limiting behavior, as a practical matter symbolic execution generally requires some sort of bounds to limit infinite loops and recursion. This means that some sort of constraint will invariably be imposed by the symbolic execution engine, impacting the heap as it would any other symbolic value.  In this case, the advantage of our method is that these constraints may be freely chosen to suit the purposes of the analysis at hand, rather than being imposed by a limitation of the heap representation.
+

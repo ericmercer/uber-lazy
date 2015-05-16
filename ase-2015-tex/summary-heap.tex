@@ -48,10 +48,14 @@ the small-step semantics during symbolic execution:
   ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
   literals}% that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere)
   ; and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
-  literals} %(these appear in environments, expressions, and continuations).
+  literals}. %(these appear in environments, expressions, and continuations).
+  Only input heap references appear in constraints to express potential aliasing.
+  Auxiliary literals and stack references are used to define additional structure in the bipartite graph but only stack references can appear in environments, expressions, or continuations.
 \item[Null and Uninitialized:] Every symbolic heap contains 
 two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
-  ($\cfgnt{l}_\mathit{un}$) with $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  ($\cfgnt{l}_\mathit{un}$)  with corresponding references 
+  $\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un} 
+  where $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
   $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
@@ -206,7 +210,9 @@ $$ In this rule, when the string matches the new-expression, it is
         rewritten to use a new heap location where all of the fields
         for the new object point to $\cfgnt{r}_\mathit{null}$ and the
         location map points a new stack reference to that new object.
-        Note that references for objects from the new-expression are
+        New heap locations returned from \mathrm{fresh}_l are monotonically
+        increasing.
+        Also note that references for objects from the new-expression are
         auxiliary literals, so they do not appear in any constraint in
         the symbolic heap as an aliasing option. 
         

@@ -41,11 +41,12 @@ pairs where the field $\cfgnt{f}$ is uninitialized.
 \]
 
 In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
-field $f$, the $\mathit{min}_l$ function returns
+field $f$, the $\mathrm{min}_l$ function returns
 $(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
 uninitialized locations in $\Lambda$ to make initialization
 deterministic.  The set $\rho$ contains reference-location pairs that
-represent potential aliases. There are four cases encoded in the
+represent potential aliases, where $\mathrm{isInit}\lp\rp$ ensures that the references are initialized. 
+There are four cases encoded in the
 symbolic heap: (i) $\theta_\mathit{null}$ represents the condition
 where $\cfgnt{l}_\mathit{null}$ is possible, (ii)
 $\theta_\mathit{new}$ represents the case where $\cfgnt{r}_f$ points
@@ -203,7 +204,7 @@ location constraint pairs of $\cfgnt{L}(\cfgnt{r})$ are satisfiable
 when accessed through the $\cfgnt{r}_x$ chain in the strengthening
 function.  \input{st-def} Constraints on locations are strengthened
 with new aliasing conditions and those that are feasible with the
-current path constraint are retained.
+current path condition are retained.
 
 Strengthening in the field write creates a value set that contains two
 types of locations: those for the case where the write is feasible
@@ -243,9 +244,8 @@ corresponding locations such that the reference $\cfgnt{r}_1$
 constraint. Finally, the set, $\Phi_1$, contains constraints under
 which $\cfgnt{r}_1$ points to corresponding locations and
 $\cfgnt{r}_0$ \emph{does not} point to those locations under any
-constraint. We use the three sets of constraints to update the current
-global heap constraint $\phi_g$ and create a new global heap
-constraint $\phi_g^\prime$. We add to $\phi_g$ the disjunction of the
+constraint. We use the three sets of constraints to create a new path condition \phi_g^\prime$
+as an update of the current path condition $\phi_g$. We add to $\phi_g$ the disjunction of the
 constraints in $\Phi_\alpha$ to indicate that if any of the
 constraints are satisfiable, then references $\cfgnt{r}_0$ and
 $\cfgnt{r}_1$ can be equal. Furthermore, we conjoin to the global heap

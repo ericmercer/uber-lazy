@@ -175,19 +175,14 @@ new stack reference is the return value from the operation.
 
  \input{value-set-def} 
 
-The value set computation is local: it only considers constraint
-locations on the reference $\cfgnt{r}$. Further, it only includes
-constraints that are feasible under the current path condition
-$\phi_g$. It also ensures that the access path is valid. There is a
-constraint $\phi$ from the base reference $r$ and a given
-location. Once a location $l$ is selected its field $\cfgnt{f}$ is
-accessed to get another reference $r^\prime$, and from that reference
-there is a set of locations each with a constraint. The first
-constraint $\phi$ from the base reference plus this second constraint
-to the actual location of the field $\phi^\prime$ comprise the access
-path. For each member of the value set, these constraints together
-with the global path constraint must be satisfied on some aliasing
-assignment. % \nsr{neha: this para needs work -- flow and content}
+For a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the value set function computes 
+the set of locations that the field could dereference to, paired with a local and valid access path constraint
+that is feasible under the current path condition $\phi_g$.
+The access path constraint is the union of two local constraints: 
+the constraint $\phi$ from dereferencing $\cfgnt{r}$ to location $\cfgnt{l}$, 
+and the constraint $\phi^\prime$ from dereferencing the field $\cfgnt{f}$ of the location $\cfgnt{l}$ to the actual location of the field, $\cfgnt{l}^\prime$. 
+This access path constraint, paired with location $\cfgnt{l}^\prime$, is a member of the value set only if its union with the path condition is satisfiable, ensuring that the access path is valid and feasible under the path condition.
+ % \nsr{neha: this para needs work -- flow and content tao: worked on the flow}
 
 
 For field-write in~\figref{fig:fHeap}, after the non-null check and

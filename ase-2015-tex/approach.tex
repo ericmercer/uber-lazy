@@ -41,11 +41,12 @@ pairs where the field $\cfgnt{f}$ is uninitialized.
 \]
 
 In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
-field $f$, the $\mathit{min}_l$ function returns
+field $f$, the $\mathrm{min}_l$ function returns
 $(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
 uninitialized locations in $\Lambda$ to make initialization
 deterministic.  The set $\rho$ contains reference-location pairs that
-represent potential aliases. There are four cases encoded in the
+represent potential aliases, where $\mathrm{isInit}\lp\rp$ ensures that the references are initialized. 
+There are four cases encoded in the
 symbolic heap: (i) $\theta_\mathit{null}$ represents the condition
 where $\cfgnt{l}_\mathit{null}$ is possible, (ii)
 $\theta_\mathit{new}$ represents the case where $\cfgnt{r}_f$ points

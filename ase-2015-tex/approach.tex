@@ -284,14 +284,30 @@ pairs associated with each of the references:
 \phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
 \]
 
-\subsection{Applying Method Invariants}
-Assume-type invariants are achievable by using a simple ITE structure: if(precondition) then testmethod() else failAssume(). Any paths which which reach the failAssume() method call are ignored. Assert-type postconditions are accomplished using the standard Java assert() keyword. Failed assertions will cause an uncaught exception which may cause the search to optionally terminate or backtrack. 
+\subsection{Applying Assertions}
+In symbolic execution, a typical program-verification test setup follows a three-step sequence: 1) assume a precondition, 2) analyze the method under test, and 3) assert a postcondition. The black-box nature of the symbolic input heap enables complex assertions to be applied to heap-manipulating programs directly in the native programming environment, without special annotations or instrumentastion predicates to guide the solver. The Java benchmark methods in~\secref{sec:evaluation} all follow the same basic structure, shown in \figref{fig:testcode}. Assume-type preconditions are implemented by using a simple if-then-else structure. Paths that pass the precondition check go on to execute the test method, while paths fail will reach the preconditionFalse() method, and may be discarded in a post processing step. Assert-type postconditions are accomplished using the standard Java $\cfgt{assert}$ keyword. Failed assertions trigger an exception which causes the analysis to optionally terminate or backtrack. Application of complex assertions is facilitated by $\mathtt{repOk}$-style methods as described in~\cite{boyapati2002korat}.
 
-Application of complex method invariants is facilitated by $\mathtt{repOk}$-style methods as described in~\cite{boyapati2002korat}.
-
+\lstset{
+language=Java,
+%float,
+%caption= {Standard Test Setup}
+morekeywords=[1]{assert}
+}
+\begin{figure}
+\begin{lstlisting}[]
+if( precondition() ){
+	testMethod();
+	assert postcondition();
+}else{
+	preconditionFalse();
+}
+\end{lstlisting}
+\caption{Standard Benchmark Framework}
+\label{fig:testcode}
+\end{figure}
 
 \subsection{Symbolic Input Heap}
-The methods described above are useful for determining the current symbolic heap along an execution path, but they are also easily generalized for to tracking the symbolic input heap. For a given execution path, the symbolic input heap represents the constraints defining set of all heaps that would result in that path. At the start of program execution the symbolic input heap is unconstrained, admitting the set of all possible heaps. As symbolic execution proceeds and the path condition grows, the symbolic input heap becomes more constrained, representing a subset of the space of possible inputs. The symbolic input heap can be determined by maintaining a record of all lazy initializations separately from the main symbolic heap. Each lazy initialization produces a new reference $r^\prime$ and location $l_x$ which are added to special initial reference and location maps $R_i$ and $L_i$. These input heap mappings are updated only by lazy initializations and changes to the path condition, but are not affected by other forms of heap updates, such as new allocations or writes. 
+The symbolic heap semantics described in this paper are useful for determining the current symbolic heap along an execution path, but they are also easily generalized to the symbolic input heap. For a given execution path, the symbolic input heap represents the constraints defining set of all heaps that would result in that path. At the start of program execution the symbolic input heap is unconstrained, admitting the set of all possible heaps. As symbolic execution proceeds and the path condition grows, the symbolic input heap becomes more constrained, representing a subset of the space of possible inputs. The symbolic input heap can be determined by maintaining a record of all lazy initializations separately from the main symbolic heap. Each lazy initialization produces a new reference $r^\prime$ and location $l_x$ which are added to special initial reference and location maps $R_i$ and $L_i$. These input heap mappings are updated only by lazy initializations and changes to the path condition, but are not affected by other forms of heap updates, such as new allocations or writes. 
 
 \subsection{Heap Preconditions and Postconditions}
 For many types of analysis, such as modular analysis and change impact analysis, it is desirable to determine method preconditions and postconditions. Determination of both preconditions and postconditions is facilitated by the symbolic heap. The symbolic heap at the final state on an execution path is equivalent to a per-path postcondition, a constraint describing the complete set of output heaps that are possible for that execution path. Likewise, the symbolic input heap at a terminal state is the precondition for that path. For a self-limiting program, the set of feasible path-terminal symbolic heaps forms the strongest postcondition, and the set of input heaps forms the weakest precondition. 
@@ -300,9 +316,9 @@ For many types of analysis, such as modular analysis and change impact analysis,
 %-what is concretization
 %-Valuations
 %-Each valuation causes exactly one constraint per reference to evaluate to Òtrue"
-While a symbolic heap represents a set of possible heap configurations, it is often useful to be able to extract a single heap instance from that set of possible heaps. The process of extracting concrete values from symbolic values is commonly known as concretization. The symbolic heap may be concretized by utilizing the solution provided by the SMT solver when it decides the satisfiability of the path condition. The SMT solver provides the solution in the form of a valuation, which is an assignment of numerical values to each of the variables in the path condition. In the case of the symbolic heap, the numeric values assigned to reference variables can be thought of as the physical memory addresses to which each of the references is pointing. 
+When an SMT solver decides that a path condition is satisfiable, it provides a solution in the form of a valuation, which is an assignment of numerical values to each of the variables in the path condition. In the case of the symbolic heap, the reference variable valuations can be thought of as the physical memory addresses to which each of the references is pointing. This information can be used to perform a concretization of the symbolic heap, reducing it to a single concrete member of the set of heaps it represents.
 
-The symbolic heap is concretized by applying the solution valuation to each of the constraints in every value set in $\cfgnt{L}$. The assignments from the solution valuation will cause the constraint equations to evaluate to either true or false. By the determinism property of the symbolic heap, for each reference in $L$, exactly one constraint will evaluate to true, while all others will evaluate to false. The location associated with that constraint is then selected for the reference to point to in the resulting concrete heap. 
+The symbolic heap is concretized by using the valuation to assign values to the variables of the constraints in the value sets in $\cfgnt{L}$. The assignments from the solution valuation will cause the constraint equations to evaluate to either true or false. By the determinism property of the symbolic heap, for each reference in $L$, exactly one constraint will evaluate to true, while all others will evaluate to false. The location associated with that constraint is then selected for the reference to point to in the resulting concrete heap. 
 
 \subsection{Test input generation}
 %What is test-case generation?

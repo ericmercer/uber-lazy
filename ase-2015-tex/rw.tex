@@ -37,7 +37,9 @@ Recent progress has been made towards mitigating path explosion via state mergin
 A number of dynamic symbolic execution (\dsetxt{}) techniques either use
 concretization when reasoning about references or require solvers that
 support theories of
-arrays~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. Sometimes,
+arrays~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. 
+These methods can be used to achieve much greater program
+coverage than classical symbolic execution alone. Sometimes,
 however, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{}
 under-approximates the possible heaps configurations when it
 concretizes symbolic values. The SAGE~\dsetxt{}

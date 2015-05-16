@@ -3,6 +3,9 @@
 
 \subsection{Symbolic Heap}
 
+
+
+
 Our symbolic heap is a field sensitive points-to graph with edges
 annotated with disjunctive formulas describing aliasing
 relationships. We represent the symbolic heap as a bipartite graph on
@@ -10,12 +13,17 @@ references, $\cfgnt{r}$, and constraint location pairs,
 $\lp\phi\ \cfgnt{l}\rp$. The graph is expressed in the location map,
 $\cfgnt{L}$, and the reference map, $\cfgnt{R}$. As done with the
 environment, $\cfgnt{L}$ and $\cfgnt{R}$ are treated as partial
-functions where $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set
-of constraint-location pairs in the heap associated with the given
-reference, and $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
+functions. $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set
+of constraint-location pairs (value set) in the heap associated with the given
+reference. The constraint associated with each location is a guard
+representing the conditions under which the associated reference
+maps to the given location. By definition, any location appears 
+at most once in any given value set. Unions of value sets containing
+the same location are resolved by forming a disjunction of the constraints
+from each set. $\cfgnt{R}(\cfgnt{l},\cfgnt{f}) = \cfgnt{r}$ is the
 reference associated with the given location-field pair in the
 heap. References in the graph are immutable. Locations, however, are
-mutated on updates.
+mutated on updates. 
 
 \begin{figure}[t]
 \begin{center}

@@ -60,7 +60,10 @@ re-use solutions to previous constraints. These optimizations are an
 important part of our implementation because only small portions of
 the heap constraint changes from one state to another. 
 The solver optimizations used in the \symtxt{} are not applicable to \gsetxt{}-style techniques, as they do not generate or solve any heap-related constraints. Even with the solver optimizations these techniques would have the same performance characteristics. The overhead in \gsetxt{} arises from case-splitting (generating states) rather than solver time. 
-
+The implementation is capable of calculating per-path preconditions 
+and postconditions, as well as path-coverage-optimal sets of 
+test input heaps. A standalone version of the system, independent
+from JPF is also under development~\cite{heapsolver2015}.
 
 The benchmarks all include invariants and traversals of data structures. The chosen benchmarks have a high proportion of heap-related operations, putting maximum focus on the heap analysis methods under investigation. They are included to provide evidence of the general computational efficiency of the SH approach. In future work we plan to evaluate it on a more diverse set of benchmarks. The BinarySearchTree test uses the class of the same name from Alan Weiss' book titled ``Data Structures and Algorithm Analysis in Java''. The test method first asserts a repOk() invariant, before conducting a traversal to find an arbitrary integer key in the tree. The TreeMap method comes from the standard java.util library, and is an implementation of a balanced red/black tree. This method asserts a repOk() invariant, before traversing the tree. The LinkedList test starts by asserting a repOk() invariant, which checks for loops in the linked list using Floyd’s cycle-finding algorithm. The linked list is then traversed using a contains() method that attempts to locate an arbitrary reference key in the list.
 

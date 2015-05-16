@@ -21,9 +21,9 @@ with~\gsetxt{} can also be proved using the symbolic heap
 algorithm.~\gsetxt{} concretizes the possible heap configurations
 along with various aliasing relationships when an uninitialized field
 is dereferenced. The rules for initializing and updating the fields in
-the Javalite semantics for \gsetxt{} are shown in Appendix B where as
-the the complete set of rules for the symbolic heap algorithm are
-shown in Appendix C. 
+the machine's semantics for \gsetxt{} as well as
+the the complete set of rules for the symbolic heap algorithm can
+be found in ~\cite{Hillery:2015}. 
 
 The proof shows the existence of a
 bisimulation between sets of states related by~\gsetxt{} ($p \rgse
@@ -195,5 +195,5 @@ $\forall q^\prime\ (q \stackrel{n}{\rsym} q^\prime \Rightarrow \exists p \in P\ 
 
 The relation, $P \sqsubset q$, is readily established in the initial
 state of a given program as there is single initial state, $P_o =
-\{p_o\}$, in any valid Javalite program. The initial state for $\rsym$ is
+\{p_o\}$, in any valid program. The initial state for $\rsym$ is
 then defined as $q_o = p_o$ so $P_o \sqsubset q_o$ trivially holds.

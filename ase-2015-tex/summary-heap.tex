@@ -110,15 +110,14 @@ omit the commas for compactness.
 (b)
 \end{tabular}
 \end{center}
-\caption{Syntax for Javalite. (a) The Javalite surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
+\caption{ (a) The surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
 \label{fig:syntax}
 \end{figure}
 
 A program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
 a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
-where execution starts. The only primitive type in Javalite is
-Boolean. For simplicity in presentation, classes have only
-non-primitive fields, and methods have a single
+where execution starts. For simplicity in presentation, booleans are the only primitive type, 
+classes have only non-primitive fields, and methods have a single
 parameter. Expressions, $\cfgnt{e}$, include statements, and they use
 '$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate
 comparison.  The dot-operator for field access is replaced by

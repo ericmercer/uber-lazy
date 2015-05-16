@@ -132,7 +132,8 @@ input to the machine.
 
 The state of the machine, $\cfgnt{s}$, includes the program
 registry, $\mu$, a pair of functions defining the heap
-$\lp\cfgnt{L}\ \cfgnt{R}\rp$, the path condition, $\phi$, a constraint defined over
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$, represented in the syntactic machine as singly linked lists of mappings, 
+the path condition, $\phi$, a constraint defined over
 references in the heap, the environment, $\eta$, for local variables,
 and the continuation $\cfgnt{k}$. The registry never changes so it is
 omitted from the state tuple in the rest of the presentation.  The
@@ -143,8 +144,8 @@ $\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
 $\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
 partial function $\eta^\prime$ that is the same as $\eta$ except that
 the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
-$\cfgnt{k}$ indicates where the hole, $\cfgt{*}$, is located, stores
-temporary computation, and keeps track of the next computation. For
+$\cfgnt{k}$ indicates with $\cfgnt{*} where the expression $\cfgnt{e}$ came from, stores
+temporary computation, and keeps track of the next continuation. For
 example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
 \rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
 expression for the object reference on which the field $\cfgnt{f}$ is

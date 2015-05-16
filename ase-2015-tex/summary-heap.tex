@@ -3,9 +3,11 @@
 
 \subsection{Symbolic Heap}
 
+In symbolic execution, the program state is represented symbolically, as a function of the program’s inputs. That is to say, the values stored in the memory locations accessed by the program are represented as expressions where the only free variables are the program input parameters. Determining the symbolic state is relatively simple for programs that perform linear manipulations of numeric input parameters. However, the task becomes more challenging for programs that accept references as inputs, in part because it is not obvious exactly how many program input parameters there are. For example, consider the case of dereferencing an input reference that points to an object that itself contains multiple fields. Should each of those field values be included as program input parameters? What if some of the fields contain references? It would seem as if dereferencing symbolic input references opens the door to a potentially unbounded number of parameters. 
 
-
-
+%Our solution treats the heap as a hidden input parameter to every program.
+%expressed completely in terms of a black-box symbolic input heap
+%and the input reference parameters.
 Our symbolic heap is a field sensitive points-to graph with edges
 annotated with disjunctive formulas describing aliasing
 relationships. We represent the symbolic heap as a bipartite graph on

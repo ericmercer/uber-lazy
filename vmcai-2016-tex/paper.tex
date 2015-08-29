@@ -1,0 +1,85 @@
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+\documentclass{llncs}
+%
+%\usepackage{makeidx}  % allows for indexgeneration
+%
+\usepackage{paralist}
+\usepackage{mathpartir}
+\usepackage{comment}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{cite}
+
+\input{cfg-commands}
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\thref}[1]{Theorem~\ref{#1}}
+\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+\newcommand{\defref}[1]{Definition~\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+
+\newcommand{\sym}{\ensuremath{\varsigma}}
+\newcommand{\gse}{\ensuremath{g}}
+\newcommand{\rsym}{\ensuremath{\rightarrow_\sym}}
+\newcommand{\rssym}{\ensuremath{\leadsto_\sym}}
+\newcommand{\rgse}{\ensuremath{\rightarrow_\gse}}
+\newcommand{\rsgse}{\ensuremath{\leadsto_\gse}}
+\newcommand{\rsum}{\ensuremath{\rightarrow_S}}
+\newcommand{\rinit}{\ensuremath{\rightarrow_I}}
+\newcommand{\com}{\ensuremath{J}}
+\newcommand{\rcom}{\ensuremath{\rightarrow_\com}}
+
+\newcommand{\sjp}[1]{\textcolor{blue}{#1}}
+
+\newcommand{\symtxt}{symbolic heap}
+\newcommand{\gsetxt}{GSE}
+\newcommand{\dsetxt}{DSE}
+
+\newcommand{\nsr}[1]{\textcolor{red}{#1}}
+
+
+\begin{document}
+%
+\title{Exact Heap Summaries from Symbolic Execution}
+%
+\author{Benjamin Hillery\inst{1} \and 
+        Eric Mercer\inst{1} \and 
+        Neha Rungta\inst{2} \and 
+        Suzette Person\inst{3}}
+%
+\institute{Brigham Young University, Provo UT, USA
+\and
+NASA Ames, Mountain View CA, USA
+\and
+University of Nebraska, Lincoln NE, USA
+}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+\input{abstract}
+\keywords{symbolic execution, symbolic references, constraint-based reasoning}
+\end{abstract}
+
+\input{intro}
+\input{summary-heap}
+\input{approach}
+\input{bisimulation}
+\input{evaluation}
+\input{rw}
+\input{conclusion}
+
+\bibliographystyle{splncs03}
+\bibliography{../bib/paper,../bib/DiSE}
+\appendix
+\input{appendix}
+
+\end{document}

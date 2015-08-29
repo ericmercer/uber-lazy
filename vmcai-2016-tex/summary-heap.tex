@@ -1,0 +1,224 @@
+\section{Prelimiaries}
+\label{sec:sh}
+
+\subsection{Symbolic Heap}
+
+%Determining the symbolic state is relatively simple for programs that perform linear manipulations of numeric input parameters. However, the task becomes more challenging for programs that accept references as inputs, in part because it is not obvious exactly how many program input parameters there are. For example, consider the case of dereferencing an input reference that points to an object that itself contains multiple fields. Should each of those field values be included as program input parameters? What if some of the fields contain references? It would seem as if dereferencing symbolic input references opens the door to a potentially unbounded number of parameters. 
+
+%Our solution treats the heap as a hidden input parameter to every program.
+%expressed completely in terms of a black-box symbolic input heap
+%and the input reference parameters.
+The collective state of all symbolic program reference values
+is known as the \emph{symbolic heap}. Our symbolic heap 
+is a field sensitive points-to graph with edges
+annotated with disjunctive formulas describing aliasing
+relationships. We represent the symbolic heap as a bipartite graph on
+references, $\cfgnt{r}$, and constraint location pairs,
+$\lp\phi\ \cfgnt{l}\rp$. The graph is expressed in the location map,
+$\cfgnt{L}$, and the reference map, $\cfgnt{R}$. As done with the
+environment, $\cfgnt{L}$ and $\cfgnt{R}$ are treated as partial
+functions. $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set
+of constraint-location pairs (value set) in the heap associated with the given
+reference. The constraint associated with each location is a guard
+representing the conditions under which the associated reference
+maps to the given location. By definition, any location appears 
+at most once in any given value set. Unions of value sets containing
+the same location are resolved by forming a disjunction of the constraints
+from each set. $\cfgnt{R}(\cfgnt{l}, \cfgnt{f}) = \cfgnt{r}$ is the
+reference associated with the given location-field pair in the
+heap. References in the graph are immutable. Locations, however, are
+mutated on updates. 
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[scale=0.5]{../figs/simple_heap_scratch.pdf}
+\end{center}
+\caption{Example Symbolic Heap}
+\label{fig:exampleHeap}
+\end{figure}
+
+\figref{fig:exampleHeap} shows an example symbolic heap. References are 
+represented by circles and locations are represented by squares. Arrows leaving
+references correspond to the value sets returned by the $\cfgnt{L}$ function, and 
+arrows leaving the squares correspond to the $\cfgnt{R}$ function.
+
+The soundness and completeness proofs in Section~\ref{sec:bisim} rely
+on certain characteristics of the symbolic heap that are preserved by
+the small-step semantics during symbolic execution:
+
+\begin{compactdesc}
+\item[Reference partitions:] Each reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
+  heap}% that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in constraints)
+  ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
+  literals}% that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere)
+  ; and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
+  literals}. %(these appear in environments, expressions, and continuations).
+  Only input heap references appear in constraints to express potential aliasing.
+  Auxiliary literals and stack references are used to define additional structure in the bipartite graph but only stack references can appear in environments, expressions, or continuations.
+\item[Null and Uninitialized:] Every symbolic heap contains 
+two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
+  ($\cfgnt{l}_\mathit{un}$)  with corresponding references 
+  $\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un}$ 
+  where $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
+  $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
+\item[Immutability:] References do not change once added to the
+location map, eliminating any need for constraint rewriting as the program state evolves.
+\item[Determinism:] A reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
+$
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
+(\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
+$
+where $\cfgnt{L}^\leftarrow$ is the pre-image of $\cfgnt{L}$. 
+\item[Type consistency:] All locations associated with a reference have the same type:
+$\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
+(\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))$
+
+\end{compactdesc}
+
+
+\subsection{Symbolic Execution Semantics}
+
+Symbolic execution semantics are is defined using
+a small-step operational semantics similar to the one presented 
+in~\cite{saints-MS}. The small-step semantics,
+defined as a syntactic machine using a CESK architecture~\cite{Felleisen:1992},
+are modified to perform symbolic execution on a symbolic heap. The
+surface (input) syntax and machine (state) syntax are shown
+in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
+are italicized. Ellipses indicate zero or more repetitions. Tuples
+omit the commas for compactness.
+
+\input{surface-syntax}
+\input{machine-syntax}
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}{c}
+\scalebox{0.9}{\usebox{\boxSurface}} \\
+(a) \\\\
+\scalebox{0.9}{\usebox{\boxMachine}} \\
+(b)
+\end{tabular}
+\end{center}
+\caption{ (a) The surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
+\label{fig:syntax}
+\end{figure}
+
+A program, $\cfgnt{P}$, is a registry of classes, $\mu$, with
+a tuple indicating a class, $\cfgnt{C}$, and a method, $\cfgnt{m}$,
+where execution starts. For simplicity in presentation, booleans are the only primitive type, 
+classes have only non-primitive fields, and methods have a single
+parameter. Expressions, $\cfgnt{e}$, include statements, and they use
+'$\cfgt{:=}$' to indicate assignment and '$\cfgt{=}$' to indicate
+comparison.  The dot-operator for field access is replaced by
+'$\cfgt{\$}$', and the dot-operator for method invocation is replaced
+by '$\cfgt{@}$' since '.' is reserved in PLT Redex. There is no
+explicit return statement; rather, the value of the last expression is
+used as the return value. A variable is always indicated by \cfgnt{x}
+and a value by \cfgnt{v}. A value can be a reference in the heap,
+$\cfgnt{r}$, or any of the special values shown
+in~\figref{fig:syntax}(a).  Only type correct programs are given as
+input to the machine.
+
+The state of the machine, $\cfgnt{s}$, includes the program
+registry, $\mu$, a pair of functions defining the heap
+$\lp\cfgnt{L}\ \cfgnt{R}\rp$, 
+the path condition, $\phi$, a constraint defined over
+references in the heap, the environment, $\eta$, for local variables,
+and the continuation $\cfgnt{k}$. The registry never changes so it is
+omitted from the state tuple in the rest of the presentation.  The
+more complex structures, such as the environment and heap, are defined
+as singly linked lists of mappings that start with empty, \cfgnt{mt}. These lists are treated as
+partial functions so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
+$\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
+$\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
+partial function $\eta^\prime$ that is the same as $\eta$ except that
+the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
+$\cfgnt{k}$ indicates with $\cfgnt{*}$ where the expression $\cfgnt{e}$ came from, stores
+temporary computation, and keeps track of the next continuation. For
+example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
+\rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
+expression for the object reference on which the field $\cfgnt{f}$ is
+going to be accessed. Once the field access is complete, the machine
+continues with $\cfgnt{k}$.
+
+
+Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the initial machine state is
+$$
+\begin{array}{l}
+\lp\mu 
+\ \cfgnt{L}[\cfgnt{r}_\mathit{null} \mapsto \{\lp\cfgt{true}\ \cfgnt{l}_\mathit{null})\}\rp] 
+           [\cfgnt{r}_\mathit{un} \mapsto \{\lp\cfgt{true}\ \cfgnt{l}_\mathit{un}\rp\}] \\
+\ \cfgnt{R}
+\ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
+\end{array}
+$$
+The expression in the initial state constructs a new object of type
+$\cfgnt{C}$ and then invokes the method $\cfgnt{m}$ in that
+object. 
+
+The semantics are expressed as
+rewrites on strings using pattern matching. Consider the rewrite rule
+for the beginning of a field access instruction:
+$$
+\mprset{flushleft}
+	\inferrule[Field Access(eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgnt{e}\ \cfgt{\$}\ \cfgnt{f}\rp \ \cfgnt{k}\rp  \rcom 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp 
+	}
+$$
+If the string representing the current state matches the left side, then it
+creates the new string on the right. In this example, the new string
+on the right is now evaluating the expression $\cfgnt{e}$ in the field
+access, and it includes the continuation indicating that it still
+needs to complete the actual field access once the expression is
+evaluated.
+
+Other more complex rules, such as one to create a new instance of a
+class, define constraints on the rewrites and more complex
+transformations on the heap.
+$$
+\mprset{flushleft}
+	\inferrule[New]{
+      \cfgnt{r} = \mathrm{stack}_r\lp \rp\\
+      l = \mathrm{fresh}_l\lp \cfgnt{C}\rp\\\\
+      \cfgnt{R}^\prime = \cfgnt{R}[\forall \cfgnt{f} \in \mathit{fields}\lp \mathrm{C}\rp \ \lp \lp l\ \cfgnt{f}\rp  \mapsto \cfgnt{r}_\mathit{null} \rp ] \\\\
+      \cfgnt{L}^\prime = \cfgnt{L}[\cfgnt{r} \mapsto \{\lp \cfgt{true}\ l\rp \}]
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgt{new}\ \cfgnt{C}\rp \ \cfgnt{k}\rp  \rcom
+      \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \phi\ \eta\ \cfgnt{r}\ \cfgnt{k}\rp 
+	}
+$$ In this rule, when the string matches the new-expression, it is
+        rewritten to use a new heap location where all of the fields
+        for the new object point to $\cfgnt{r}_\mathit{null}$ and the
+        location map points a new stack reference to that new object.
+        New heap locations returned from $\mathrm{fresh}_l$ are monotonically
+        increasing.
+        Also note that references for objects from the new-expression are
+        auxiliary literals, so they do not appear in any constraint in
+        the symbolic heap as an aliasing option. 
+        
+% \input{javalite-common}
+%
+The rewrite relations for the portion of the language
+semantics that are common to both generalized symbolic execution and
+the symbolic heap algorithm may be found in \cite{Hillery:2015}. The relation $\rcom$ includes all of these
+rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
+the heap, and are largely concerned with argument evaluation in an
+expected way. It is assumed that only type safe programs are input to
+the machine so there is no type checking or error conditions. The
+machine simply halts if no rewrite is enabled.
+
+\input{lazy}	
+
+%\input{precise-fig}
+
+\input{summarize-precise}
+
+
+
+
+
+
+        

@@ -1,0 +1,75 @@
+\section{Rules for Javalite}\label{app:javalite}
+
+\input{javalite-common}
+
+The surface syntax and the machine syntax for the Javalite syntactic
+machine are in the main paper. \figref{fig:javalite-common} defines
+the rewrite relations for the portion of the Javalite language
+semantics that are common to both generalized symbolic execution and
+the symbolic heap algorithm. The relation $\rcom$ includes all of these
+rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
+the heap, and are largely concerned with argument evaluation in an
+expected way. It is assumed that only type safe programs are input to
+the machine so there is no type checking or error conditions. The
+machine simply halts if no rewrite is enabled.
+
+%% Includes its section definition
+%\input{lazy}	//this one's also in summary-heap.tex
+
+%\input{precise-fig}
+
+%\input{summarize-precise}
+
+\section{Symbolic Heap Algorithm}
+
+
+%\begin{figure*}[t]
+%\begin{center}
+%\setlength{\tabcolsep}{60pt}
+%\hspace*{-35pt}
+%\begin{tabular}[c]{cc}
+%\scalebox{1.0}{\usebox{\boxPFAFW}} & 
+%%\scalebox{0.91}{\input{faYHeap.pdf_t}} &
+%\scalebox{0.91}{\input{fwXHeap.pdf_t}} \\ \\
+%(a) & (b)
+%\end{tabular}
+%\end{center}
+%\caption{Field read and write relations with an example heap. (a) Field-access, $\rsym^\mathit{A}$, and field-write, $\rsym^\mathit{W}$, rewrite rules for the $\rsym$ relation. (b) The final heap after $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\ \cfgt{:=}\ \lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp\rp$.}
+%\label{fig:fHeap}
+%\end{figure*}
+
+%\begin{figure*}
+%\begin{tabular}[c]{l}
+%\scalebox{1.0}{\usebox{\boxPI}} \\
+%\end{tabular}
+%\caption{The summary machine, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+%\label{fig:symInit}
+%\end{figure*}
+
+The rewrite rules for field access or field write when a null reference is possible leads to an error state.
+$$
+\begin{array}{c}
+	\inferrule[Field Access (NULL)]{
+      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp l = l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp  \rsym^\mathit{A^\prime}
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{error}\ \cfgt{end} \rp
+	} \\
+\\
+	\inferrule[Field Write (NULL)]{
+      \cfgnt{r}_x = \eta\lp \cfgnt{x}\rp \\
+      \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}_x\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp
+    }{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgnt{r}\ \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}\rp \rp  \rsym^\mathit{F^\prime}
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi_g\ \eta\ \cfgt{error}\ \cfgt{end}\rp
+	}	
+\end{array}
+$$ The rules reflect a branch in the control flow for the symbolic
+heap algorithm: one branch being the feasible null outcome (shown
+here), and the other branch being the potential non-null outcome
+(shown in the main paper). In the non-null case, the path constraint
+is updated to restrict out all possible null instances.
+
+%\input{definitions}
+
+

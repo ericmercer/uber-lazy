@@ -23,8 +23,8 @@ references.
 \label{fig:symInit}
 \end{figure*}
 
-The initialization rule in \figref{fig:symInit} is invoked whenever a
-field within an uninitialized reference is accessed. The interaction
+The initialization rule in \figref{fig:symInit} is invoked whenever 
+an uninitialized field is accessed. The interaction
 with the solver in the definition of the rules is denoted by
 $\mathbb{S}(\phi)$ which returns true if $\phi$ is satisfiable.  The
 check for uninitialized references is determined by the function
@@ -92,7 +92,7 @@ $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt
 (d)
 \end{tabular}
 \end{center}
-\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the summarize rule and constraints on the edges.}
+\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the initialization rule and constraints on the edges.}
 \label{fig:initHeap}
 \end{figure*}
 

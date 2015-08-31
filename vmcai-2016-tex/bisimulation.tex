@@ -64,9 +64,9 @@ A \textbf{homomorphism}, given the universe of field indices $\mathcal{F}$ and t
 $$
 \begin{array}{l}
  s_p \rightharpoonup_{h} s_q \Leftrightarrow 
-\exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}\ ( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
+\exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}\ ( \forall \phi_\alpha\ (\\ 
 \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow \\
-\ \ \ \ \ \ \ \ (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ 
+\ \ \ \ \ \ \ \ \exists \phi_\beta\ ( (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ 
  )) ) ) ) )
 \end{array}
 $$
@@ -91,7 +91,7 @@ States $(p\ q)$ are in the \textbf{representation relation}, $p \sqsubset q$, if
 homomorphism $p \rightharpoonup_{h} q$
 such that $\mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) )$.
 The represented relation is extended to sets of states $P$ and a single state $q$ as
-$P \sqsubset q \Longleftrightarrow \forall p\ (p \sqsubset q \Rightarrow p \in P)$.
+$P \sqsubset q \Longleftrightarrow \forall p\ (p \sqsubset q \Leftrightarrow p \in P)$.
 \end{definition}
 The statement $p \sqsubset q$ ensures that a functionally equivalent
 heap to the one in $p$ is present, by the homomorphism, and valid, by
@@ -120,7 +120,7 @@ simulation as typical~ \cite{Sangiorgi:2011}, its use of a meta-relation, $\rsgs
 In the lemma, $S$ is the universe of well-formed states, and the
 set $S_A \subseteq S$ is states at a field access continuation having computed the base reference.
 \begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
-If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisumlation.
+If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisimulation.
 \label{lem:access}
 $$
 \forall P \in 2^{S_\mathit{FA}}\ (P \sqsubset q \Rightarrow (P\ q) \in F_\sim(\sqsubset))

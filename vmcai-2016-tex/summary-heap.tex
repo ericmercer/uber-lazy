@@ -121,11 +121,10 @@ $\cfgnt{r}$, or any of the special values shown
 in~\figref{fig:syntax}(a).  Only type correct programs are given as
 input to the machine.
 
-The state of the machine, $\cfgnt{s}$, includes the program
-registry, $\mu$, a pair of functions defining the heap
-$\lp\cfgnt{L}\ \cfgnt{R}\rp$, 
-the path condition, $\phi$, a constraint defined over
-references in the heap, the environment, $\eta$, for local variables,
+The machine state $\cfgnt{s}$ includes the program
+registry $\mu$, a pair of functions $\lp\cfgnt{L}\ \cfgnt{R}\rp$ which defines the heap, 
+the path condition $\phi$ which is a constraint defined over
+references in the heap, the environment  $\eta$ which maps local variables to references,
 and the continuation $\cfgnt{k}$. The registry never changes so it is
 omitted from the state tuple in the rest of the presentation.  The
 more complex structures, such as the environment and heap, are defined

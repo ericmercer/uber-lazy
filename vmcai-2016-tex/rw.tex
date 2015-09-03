@@ -1,10 +1,19 @@
 \section{Related Work}
 \label{sec:related}
 
-Initial work on symbolic execution largely focused on checking
-properties of imperative programs with primitive
-types~\cite{Clarke:76,King:76}.
-% Limitations of early symbolic execution techniques included non-primitive data types, path explosion and non-symbolic operations. Subsequent adaptations have sought to overcome these limitations.
+\subsection{Program Analysis using Symbolic Heaps}
+The symbolic heap methods in this work build upon a
+number of prior program analysis techniques that use sets of guarded values to
+represent program
+state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. 
+The method was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005,Yorsh:2008}, where value sets were used to 
+represent aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps.
+
+Recently, value sets have been adapted for use in symbolic execution, for the purposes of state merging ~\cite{Sen:2014,Torlak:2014} and invariant detection~\cite{Ferrara:2014}. While these methods demonstrate the utility of value sets in combination with symbolic execution, none of these techniques address dereferencing of symbolic input references. Since dereferencing is a fundamental problem treated in this paper, we believe these other works to be both orthogonal and complimentary to our own.
+
+\subsection{Other Heap Representations in Symbolic Execution}
+%Need to talk about GSE, DSE, SAGE, PEX
+%GSE
 Several projects have generalized the core idea of symbolic execution,
 enabling it to be applied to programs with more general types,
 including references and
@@ -12,165 +21,68 @@ arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. However, these
 generalized symbolic execution (\gsetxt{}) techniques work by branching over
 multiple copies of the system state during dereferencing operations,
 exacerbating path explosion.
-% and fragmenting the path condition. Producing a complete path
-%condition for a single given control flow path would require merging
-%an exponential number of states.
-Our work leverages the core idea in generalized symbolic execution
-with lazy initialization using on-the-fly reasoning to model a
-black-box input heap during symbolic execution, but avoids the
-nondeterminism introduced by~\gsetxt{} by constructing a single
-symbolic heap and polynomially-sized path condition for each control
-flow path.
 
-Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. While the independently developed techniques in~\cite{Sen:2014,Torlak:2014} use representations similar to the one presented here, none of these techniques address the fundamental issue concerning symbolic heaps, namely dereferencing symbolic input references. For these reasons, we believe these works to be both orthogonal and complimentary to our own.
-
-%Dynamic symbolic execution (\dsetxt{}) has emerged as a way to enable
-%symbolic execution to continue on programs that contain elements that
-%cannot be reasoned about symbolically. ~\dsetxt{} works by executing
-%a program using concrete and symbolic engines simultaneously. When
-%the program reaches a statement that cannot be reasoned about
-%symbolically, it substitutes in values from the concrete execution
-%and continues. In the absence of an effective theory of references,
-%DSE has been a natural choice for reasoning about programs that
-%contain them.
-
-A number of dynamic symbolic execution (\dsetxt{}) techniques either use
-concretization when reasoning about references or require solvers that
-support theories of
-arrays~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}. 
-These methods can be used to achieve much greater program
-coverage than classical symbolic execution alone. Sometimes,
+%DSE
+Dynamic symbolic execution (\dsetxt{}) techniques may use
+concretization when reasoning about references~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}, enabling much greater program
+coverage than classical symbolic execution alone. In particular, PEX~\cite{Tillmann:2008}
+has demonstrated a high degree of utility in a wide variety of 
+practical verification scenarios. Sometimes,
 however, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{}
 under-approximates the possible heaps configurations when it
 concretizes symbolic values. The SAGE~\dsetxt{}
 engine~\cite{Elkarablieh:2009} includes more sophisticated methods for
-reasoning about references, and can successfully reason about more
-complicated examples. However, the heap model in SAGE prohibits
-input-dependent memory allocation. The fixed-memory requirement means
-that analyses of programs accepting indefinite input heaps may
-terminate prematurely, even for the class of self-limiting
-solver-compatible programs.
+reasoning symbolically about references, and can successfully handle
+complicated examples. However, SAGE uses a
+theory of fixed-length arrays to model the heap, and is thus incomplete
+for programs with input-dependent memory allocation. We believe that the 
+techniques presented in this work can be used to extend practical tools 
+like PEX for applications requiring formal correctness guarantees.
 
-Many bounded model checking (BMC) methods include a model for
-reasoning about references, including those described
-in~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However,
-BMC techniques generally need to predetermine bounds of a heap. Other
-limitations include assuming that symbolic references do not
-alias~\cite{Xie:2005,Babic:2007}, that data structures are not
-recursive~\cite{Dillig:2011}, or prohibiting dereferencing of
-black-box input references~\cite{Clarke:2004}.
 
-A number of constraint-based programming techniques are capable of
-reasoning about
-heaps~\cite{Degrave:2010,Charreteur:2009,Albert:2013}. Most notably,
-the technique in~\cite{Albert:2013} is capable of reasoning about
-dereferencing operations in a per-path set of unknown input
-heaps. However, no guarantees are made about the precision of the
-analysis performed.
+\subsection{Formal Results on Symbolic Heaps}
+The symbolic heap used by SAGE~\cite{Elkarablieh:2009} was shown to be sound and complete for programs with input-independent memory allocation. Our method is sound and complete for all states reached by symbolic execution. 
 
-The symbolic heap value sets presented in this work build upon a
-number of prior techniques that use sets of guarded values to
-represent program
-state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. The
-methods presented in~\cite{Sen:2014,Torlak:2014,Yorsh:2008} use value
-sets to represent all symbolic program state, including
-references. While symbolic referencing operations could, in principle,
-be supported with these methods, it is not clear from the published
-material exactly how that might be accomplished, especially when
-reasoning about dereferencing in a black-box input heap. All of the
-methods presenting solutions to the dereferencing
-problem~\cite{Xie:2005,Dillig:2011,Elkarablieh:2009} are not complete,
-for a variety of reasons which have been previously enumerated.
+Recently, several separation logic solvers have been proven to be sound and complete for heaps with linked lists, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. In contrast, our method is sound and complete without restriction on data structures, and requires no explicit invariants, but our result is restricted to the properties provable by symbolic execution. 
 
-%\noindent\textbf{A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages Emina Torlak and Ras Bodik. Programming Language Design and Implementation} (PLDI'14)
+The heap in~\cite{Dillig:2011} was proven to be monotonic with respect to the number of valid solutions. 
+
+Some heap methods, such as those used by VC generators, may be sound and complete if the correct bounds are chosen. However, choosing the bounds is at least as hard as analyzing the program. 
+
+
+
+
+
+%Odds and ends leftover from last time:
+
+%Our work leverages the core idea in generalized symbolic execution
+%with lazy initialization using on-the-fly reasoning to model a
+%black-box input heap during symbolic execution, but avoids the
+%nondeterminism introduced by~\gsetxt{} by constructing a single
+%symbolic heap and polynomially-sized path condition for each control
+%flow path.
 %
-%\noindent{\textbf{What the reviewers said:} \emph{"the paper [Torlak et al. 2014] definitely shows how to apply the same compact representation to symbolic execution."}
+%Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. 
 %
-%\noindent\textbf{What I think:} They aren’t really breaking any ground with the heap representation here. It’s pretty much the same thing as what was in SATURN. The main focus of the paper is on a VM for mixed symbolic-concrete programming languages. It’s probably worth citing, if only as part of a list of similar techniques.
 %
-%\noindent\textbf{How this is similar to SymHeap:}
+
 %
-%\noindent\textbf{How this is different from SymHeap:}
-%\begin{compactenum}
-%\item They don’t do lazy initialization. \emph{"The shape of all data structures remains concrete during SVM evaluation."}
-%\item There are no real bounding mechanisms, and they assume that programs are self-finitizing.
-%\begin{compactitem}
-%\item They don’t really handle recursion or loops.
-%\item They can’t make any sort of heap-specific bounds
-%\item They try to sell this as a feature, by the way, by claiming that they don’t “artificially finitize executions by explicitly bounding the depth of recursion.” That’s the nicest cover-up for a program that fails to terminate I’ve ever heard.
-%\end{compactitem}
-%\item Their representation is different. Although, they have value
-%  sets, I don’t see a bipartite graph, locations, fields, etc. This is
-%  worrisome since the reviewer was certain this is the same
-%  representation as ours.
-%\item They do weird domain-specific programming languages instead of our java-like language.
-%\end{compactenum}
+%Many bounded model checking (BMC) methods include a model for
+%reasoning about references, including those described
+%in~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However,
+%BMC techniques generally need to predetermine bounds of a heap. Other
+%limitations include assuming that symbolic references do not
+%alias~\cite{Xie:2005,Babic:2007}, that data structures are not
+%recursive~\cite{Dillig:2011}, or prohibiting dereferencing of
+%black-box input references~\cite{Clarke:2004}.
 %
-%Generating precise and concise procedure summaries, POPL’2008
+%A number of constraint-based programming techniques are capable of
+%reasoning about
+%heaps~\cite{Degrave:2010,Charreteur:2009,Albert:2013}. Most notably,
+%the technique in~\cite{Albert:2013} is capable of reasoning about
+%dereferencing operations in a per-path set of unknown input
+%heaps. However, no guarantees are made about the precision of the
+%analysis performed.
 %
-%What the reviewer said: This was in a general list of “missing” related work
 %
-%What I think: This paper is about procedure summaries. It looks like they are concerned with a more general type of problem than we are with the heap, and that the heap-related stuff is a specialization of their framework. It’s worth citing, as an example of a global access-path style representation.
 %
-%How this is similar to SymHeap:
-%1) Uses sets of guarded values, which they call micr-transformers. Their “micro-transformers” can be made to look lot like our references. A dereferencing operation may be performed using a “composition of micro-transformers”.
-%
-%How this is different from SymHeap: 
-%1) The heap is stored as global access paths, related directly to variables. Thus, they don’t have any explicit local representation of the heap, and determining reachability is impossible without consulting the solver.
-%
-%2) Potential aliasing relationships are determined in a path-insensitive manner, prior to program execution, by means of power sets.
-%
-%3) It doesn’t look like they do lazy initialization. The size of parameter sets is fixed at the beginning of the program
-%
-%Boogie: A Modular Reusable Verifier for Object-Oriented Programs FMCO'2005
-%
-%What the reviewer said: This was in a list of “missing” related work, categorized as “work on precise memory models for verification-condition generation”.
-%
-%What I think: Boogie doesn’t have a built-in heap encoding. It uses a 2d array to model the heap, and compiles the entire program-correctness problem into a single constraint equation, which it ships off to a constraint solver. It’s a very different sort of analysis. Worth mentioning as part of a list of verification-condition generators, but not for anything else.
-%
-%Structural Abstractions of Software Verification Conditions, CAV'2007
-%
-%What the reviewer said: This was in a list of “missing” related work, categorized as “work on precise memory models for verification-condition generation”.
-%
-%What I think: As far as heap representation goes, this doesn’t look very interesting. Like most VC generators, they assume that input pointers don’t alias. This is a little interesting from a solving standpoint, because they turn the VC into a tree that they then perform structural operations on without consulting a solver. This is reminiscent of how we can do some heap operations without consulting the solver.
-%
-%A Tool for Checking ANSI-C programs, TACAS'04
-%
-%What the reviewer said: This was in a general list of “missing” related work.
-%
-%What I think: This is one of Clarke’s papers on bounded model checking. It couldn’t hurt to cite it, but it’s not super-related.
-%
-%Precise Pointer reasoning for Dynamic test Generation, ISSTA'2009
-%
-%What the reviewer said: This was in a general list of “missing” related work.
-%
-%What I think: This paper is about how to handle pointers during dynamic symbolic execution. It handles pointer dereferences much like~\gsetxt{}, by resolving possible aliases at the time of the dereferencing, but does not seem to include the possibility of a “new” choice. One difference is that this method is adapted to allow pointer arithmetic. The memory model is basically a flat address space, without any explicit notion of a heap.
-%
-%How this is like SymHeap: It’s a symbolic execution technique that has some facility for linked data structures. Their pointers can be nondeterministic, much like the references in symHeap, and they do conditional writes in a similar fashion as symHeap.
-%
-%Why this is different from SymHeap:
-%
-%1 )The memory model is completely different. It’s an addressable array instead of an object-oriented heap. There are no facilities for heap-specific operations like k- or n-bounding. 
-%
-%2) They have a fixed set of memory locations from the onset. There is no concept of lazy initialization to some “new” reference.
-%
-%Compositional dynamic test generation. Patrice Godefroid. 2007.
-%
-%What the Reviewer Said: There is an alternative way to represent a summary using logical
-%formulas and extra variables [Godefroid 2007]. I wonder how such a
-%representation would work for~\gsetxt{} and heap summarization. Such a
-%representation would not require the complex update algorithm
-%described in the paper. It would be useful if the authors could
-%comment on this and experimentally compare with the technique.
-%
-%What I think: The SMART approach in Godefroid’s paper is sound but not complete. That is to say, every bug it finds is a real bug, but it is not guaranteed to account for all possible program paths. Given the incomplete of their method, the fact that their representation is simpler is unsurprising.
-%
-%MultiSE: Multi-Path Symbolic Execution using Value Summaries [Sen et al. 2014]
-%
-%What the reviewer said: The reviewer claimed that the technique presented in this paper uses the same heap representation as us.
-%
-%What I think: This paper uses essentially the same representation as the Dilligs. In fact, I think in many ways the Dillig’s work is more sophisticated than the treatment presented here.
-%
-%How It’s similar to SymHeap: It’s symbolic execution, with a heap. Their heap has value sets like ours does, and their write operation looks like ours.
-%
-%How it’s different from SymHeap: They don’t do lazy initialization. They use BDDs to represent expressions. Their graph isn’t bipartite.

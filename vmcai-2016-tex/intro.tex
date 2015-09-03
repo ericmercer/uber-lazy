@@ -17,9 +17,9 @@ formulating logical predicates over an input domain that contains a
 potentially unbounded number of references.
 
 A promising approach to this problem has been to
-to partition the reachable heaps by using \emph{symbolic heap}
-representations, where multiple values for a reference may be
-represented along a single execution
+to partition the reachable heaps by using sets of guarded values.
+These \emph{symbolic heap}
+representations represent multiple values for a reference along a single execution
 path~\cite{Dillig:2011,Elkarablieh:2009,Sen:2014,Torlak:2014,Xie:2005,Yorsh:2008}. However, it remains an open question whether or not these methods can be used to exactly model all possible program behaviors in the case of an arbitrary input.
 
 The contribution of this work is to build on these previous efforts, by demonstrating how to dereference pointers in an unknown symbolic input heap, thereby proving that value-summary representations are sound and complete with respect to properties provable by symbolic execution. A proof-of-concept implementation also demonstrates the efficiency of value-summary representations, as compared to the previous best-known exact analysis method.  

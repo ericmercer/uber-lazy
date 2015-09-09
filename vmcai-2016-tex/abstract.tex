@@ -1,21 +1,5 @@
+A recent trend in symbolic execution of object-oriented programs is the modeling of references as sets of guarded values, enabling multiple heap shapes to be represented in a single state. A fundamental problem with using these guarded value sets is the creation of test inputs for programs accepting symbolic reference input parameters. Although several solutions have been proposed, none have been proven to be sound and complete with respect to the properties provable by generalized symbolic execution (GSE). This work presents a method for initializing reference inputs in a black-box symbolic input heap that exactly preserves GSE semantics. A correctness proof for the initialization scheme is provided, as well as the results of an empirical evaluation of a proof-of-concept implementation. The initialization technique can be used to ensure that guarded value set based symbolic execution engines operate in a provably correct manner with regards to symbolic references.
 
-A fundamental challenge of using symbolic execution for software analysis is the treatment of dynamically allocated data. Existing techniques either underapproximate the space of possible inputs or are computationally infeasible. For example, dynamic symbolic execution (DSE) handles symbolic dereferencing by substituting in a value from a valid concrete execution. Generalized symbolic execution (GSE) initiates a new search path for every possible aliasing configuration. This paper introduces a method for de-referencing and manipulating values in a true block-box symbolic input heap that overcomes the limitations of previous methods. The symbolic heap supports arbitrary recursive data structures and captures all possible heaps that follow a common control flow path. Computation of complex preconditions and postconditions is supported, as well as automatic generation of test inputs. An evaluation of a proof-of-concept implementation in the Java Pathfinder framework is presented to demonstrate the computational feasibility of the approach over several classical symbolic execution benchmarks.
 
+%A fundamental challenge of using symbolic execution for software analysis is the treatment of dynamically allocated data. Existing techniques either underapproximate the space of possible inputs or are computationally infeasible. For example, dynamic symbolic execution (DSE) handles symbolic dereferencing by substituting in a value from a valid concrete execution. Generalized symbolic execution (GSE) initiates a new search path for every possible aliasing configuration. This paper introduces a method for de-referencing and manipulating values in a true block-box symbolic input heap that overcomes the limitations of previous methods. The symbolic heap supports arbitrary recursive data structures and captures all possible heaps that follow a common control flow path. Computation of complex preconditions and postconditions is supported, as well as automatic generation of test inputs. An evaluation of a proof-of-concept implementation in the Java Pathfinder framework is presented to demonstrate the computational feasibility of the approach over several classical symbolic execution benchmarks.
 
-%A fundamental challenge of using symbolic execution for software
-%analysis is the treatment of dynamically allocated data. Existing
-%static analysis techniques over-approximate the potential heaps,
-%dynamic symbolic execution techniques often under-approximate the
-%heaps, while generalized symbolic execution leads to excessive
-%case-splitting. This paper introduces a compact heap representation,
-%along with heap update rules that (i) allow reads and writes of
-%symbolic references, (ii) do not require constraint rewriting, and
-%(iii) support arbitrary recursive data structures. As such, the
-%representation and update rules capture all possible heaps that
-%follow a common execution path. More importantly, in contrast to
-%existing state-of-the-art techniques, the definition and update rules
-%are unconstrained and not subject to bounds, such as the number of
-%heap locations, aliasing, or memory partitions. An evaluation of a
-%proof-of-concept implementation in the Java Pathfinder framework is
-%presented to demonstrate the computational feasibility of the
-%approach over several classical symbolic execution benchmarks.

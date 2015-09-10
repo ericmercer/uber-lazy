@@ -1,9 +1,16 @@
-\section{Generating and Updating Symbolic Heaps}
+\section{Symbolic Initialization}
 \label{sec:precise}
+Although the case-splitting methods used in~\gsetxt{} can be applied
+to guarded value sets, a direct implementation would run into the same
+path explosion problems. This work presents a new initialization scheme which avoids the
+nondeterminism introduced by~\gsetxt{}. Called \emph{\symtxt{}}, this scheme leverages the core idea in generalized symbolic execution
+with lazy initialization, using on-the-fly reasoning to model a
+black-box input heap during symbolic execution. Unlike~\gsetxt{}, \symtxt{} constructs a single
+symbolic heap and polynomially-sized path condition for each control
+flow path.
 
-Unlike~\gsetxt{}, the symbolic heap algorithm only partitions the heap at comparison
-operations or for exception handling.  There are three sets of rewrite
-rules specific to the symbolic heap algorithm: (i) rules to initialize
+There are three sets of rewrite
+rules specific to the~\symtxt{} algorithm: (i) rules to initialize
 symbolic references, (ii) rules to perform field dereferences and
 writes, and (iii) rules to check equality and inequality of
 references.

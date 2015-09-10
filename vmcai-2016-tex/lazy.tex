@@ -1,5 +1,13 @@
 \subsection{Generalized Symbolic Execution}
 \label{app:gse}
+Several projects have generalized the core idea of symbolic execution,
+enabling it to be applied to programs with more general types,
+including references and
+arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. These
+generalized symbolic execution (\gsetxt{}) techniques work by branching over
+multiple copies of the system state during dereferencing operations, creating
+new location symbols on an as-needed basis in a process called~\emph{lazy initialization}.
+
 The rules to generalized symbolic execution with
 lazy initialization using the symbolic heap are in
 \figref{fig:lazyInit} for the initialization and \figref{fig:lazy} for

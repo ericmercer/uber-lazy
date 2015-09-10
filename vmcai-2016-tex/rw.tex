@@ -1,17 +1,17 @@
 \section{Related Work}
 \label{sec:related}
-
-\subsection{Program Analysis using Symbolic Heaps}
+%
+%\subsection{Program Analysis using Symbolic Heaps}
 The symbolic heap methods in this work build upon a
-number of prior program analysis techniques that use sets of guarded values to
+number of prior program analysis techniques that use guarded value sets to
 represent program
 state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. 
 The method was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005,Yorsh:2008}, where value sets were used to 
 represent aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps.
 
 Recently, value sets have been adapted for use in symbolic execution, for the purposes of state merging ~\cite{Sen:2014,Torlak:2014} and invariant detection~\cite{Ferrara:2014}. While these methods demonstrate the utility of value sets in combination with symbolic execution, none of these techniques address dereferencing of symbolic input references. Since dereferencing is a fundamental problem treated in this paper, we believe these other works to be both orthogonal and complimentary to our own.
-
-\subsection{Other Heap Representations in Symbolic Execution}
+%
+%\subsection{Other Heap Representations in Symbolic Execution}
 %Need to talk about GSE, DSE, SAGE, PEX
 %GSE
 Several projects have generalized the core idea of symbolic execution,
@@ -39,8 +39,8 @@ for programs with input-dependent memory allocation. We believe that the
 techniques presented in this work can be used to extend practical tools 
 like PEX for applications requiring formal correctness guarantees.
 
-
-\subsection{Formal Results on Symbolic Heaps}
+%
+%\subsection{Formal Results on Symbolic Heaps}
 The symbolic heap used by SAGE~\cite{Elkarablieh:2009} was shown to be sound and complete for programs with input-independent memory allocation. Our method is sound and complete for all states reached by symbolic execution. 
 
 Recently, several separation logic solvers have been proven to be sound and complete for heaps with linked lists, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. In contrast, our method is sound and complete without restriction on data structures, and requires no explicit invariants, but our result is restricted to the properties provable by symbolic execution. 

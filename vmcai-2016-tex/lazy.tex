@@ -17,7 +17,7 @@ The~\gsetxt{} initialization rules preserve several important properties of the 
   ; and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
   literals}.
   Only input heap references appear in constraints to express potential aliasing.
-  Auxiliary literals and stack references are used to define additional structure in the bipartite graph but only stack references can appear in environments, expressions, or continuations. Changes to $R$ are monotonically increasing, eliminating any need for constraint rewriting as the program state evolves.
+  Auxiliary literals and stack references are used to define additional structure in the heap but only stack references can appear in environments, expressions, or continuations. Changes to $R$ are monotonically increasing, eliminating any need for constraint rewriting as the program state evolves.
 A reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
 $
 \forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (

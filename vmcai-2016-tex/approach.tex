@@ -115,8 +115,7 @@ heap after the initialization of the
 $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$ field following the
 initialization of $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$. The list
 in~\figref{fig:initHeap}(d) represents the various sets constructed in
-initialization rule for $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. We
-also define values of constraints used as labels in the graph.
+the initialization $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. 
 
 
 \input{precise-fig-incomplete}
@@ -138,7 +137,7 @@ performed on a non-null location. The field-access rewrite rule
 in~\figref{fig:fHeap} dereferences a field of type $\cfgnt{C}$ and
 uses \figref{fig:symInit}, to get a new symbolic heap that is
 initialized on the field $\cfgnt{f}$. The symbolic heap is further
-modified to include a new stack reference pointing to the value set
+modified to include a new stack reference pointing to the guarded value set
 (possible values of the field) returned during the dereferencing; the
 new stack reference is the return value from the operation.
 

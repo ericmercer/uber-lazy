@@ -4,7 +4,7 @@
 
 \subsection{Symbolic Execution}
 
-Symbolic execution semantics are is defined using
+Symbolic execution semantics are defined using
 a small-step operational semantics similar to the one presented 
 in~\cite{saints-MS}. The small-step semantics,
 defined as a syntactic machine using a CESK architecture~\cite{Felleisen:1992},
@@ -64,7 +64,7 @@ heap. The environment  $\eta$ maps local variables to references.
 
 Conceptually, the symbolic heap may be thought of as a bipartite graph. \figref{fig:exampleHeap} shows an example symbolic heap graph. References are 
 represented by circles and locations are represented by squares. Arrows leaving
-references correspond to the value sets returned by the $\cfgnt{L}$ function, and 
+references correspond to the guarded value sets returned by the $\cfgnt{L}$ function, and 
 arrows leaving the squares correspond to the $\cfgnt{R}$ function.
 
 The machine state $\cfgnt{s}$ includes the program
@@ -78,7 +78,7 @@ $\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
 $\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
 partial function $\eta^\prime$ that is the same as $\eta$ except that
 the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
-$\cfgnt{k}$ indicates with $\cfgnt{*}$ where the expression $\cfgnt{e}$ came from, stores
+$\cfgnt{k}$ indicates with the symbol $\cfgnt{*}$ where the expression $\cfgnt{e}$ came from, stores
 temporary computation, and keeps track of the next continuation. For
 example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
 \rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
@@ -89,8 +89,8 @@ continues with $\cfgnt{k}$.
 Execution begins with the initial machine state. The expression for the initial state constructs a new object of type
 $\cfgnt{C}$ and then invokes the method $\cfgnt{m}$ in that
 object. The initial symbolic heap contains 
-two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
-  ($\cfgnt{l}_\mathit{un}$)  with corresponding references 
+two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized
+  ($\cfgnt{l}_\mathit{un}$),  with corresponding references 
   $\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un}$ 
   where $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
   \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
@@ -160,8 +160,8 @@ the symbolic heap algorithm may be found in \cite{Hillery:2015}. The relation $\
 rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
 the heap, and are largely concerned with argument evaluation in an
 expected way. It is assumed that only type safe programs are input to
-the machine so there is no type checking or error conditions. The
-machine simply halts if no rewrite is enabled.
+the machine so there is no type checking. The
+machine halts if no rewrite is enabled.
 
 \input{lazy}	
 

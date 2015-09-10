@@ -45,7 +45,7 @@ $\cfgnt{r}$, or any of the special values shown
 in~\figref{fig:syntax}(a).  Only type correct programs are given as
 input to the machine.
 
-A \emph{symbolic heap} is a tuple $(\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta)$, where the~\emph{location map} $\cfgnt{L}$,~\emph{reference map} $\cfgnt{R}$, and~\emph{environment} $\eta$ are partial functions, and the~\emph{path condition} $\phi$ is a predicate over the program variables. Given reference $r$, $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the set of constraint-location pairs (guarded value set) in the heap associated with $r$. The constraint  associated with each location is a guard
+A \emph{symbolic heap} is a tuple $(\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta)$, where the~\emph{location map} $\cfgnt{L}$,~\emph{reference map} $\cfgnt{R}$, and~\emph{environment} $\eta$ are partial functions, and the~\emph{path condition} $\phi$ is a predicate over the program variables. Given reference $r$, $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the guarded value set in the heap associated with $r$. The constraint  associated with each location is a guard
 representing the conditions under which the associated reference
 maps to the given location. By definition, any location appears 
 at most once in any given value set. Unions of value sets containing
@@ -84,10 +84,19 @@ example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
 \rightarrow \cfgnt{k}\rp$ indicates that the machine is evaluating the
 expression for the object reference on which the field $\cfgnt{f}$ is
 going to be accessed. Once the field access is complete, the machine
-continues with $\cfgnt{k}$.
+continues with $\cfgnt{k}$.  
 
-
-Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the initial machine state is
+Execution begins with the initial machine state. The expression for the initial state constructs a new object of type
+$\cfgnt{C}$ and then invokes the method $\cfgnt{m}$ in that
+object. The initial symbolic heap contains 
+two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
+  ($\cfgnt{l}_\mathit{un}$)  with corresponding references 
+  $\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un}$ 
+  where $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
+  $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
+  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
+Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the expression for the initial machine state is
 $$
 \begin{array}{l}
 \lp\mu 
@@ -97,27 +106,26 @@ $$
 \ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
 \end{array}
 $$
-The expression in the initial state constructs a new object of type
-$\cfgnt{C}$ and then invokes the method $\cfgnt{m}$ in that
-object. 
+
+
 
 The semantics are expressed as
 rewrites on strings using pattern matching. 
-%Consider the rewrite rule
-%for the beginning of a field access instruction:
-%$$
-%\mprset{flushleft}
-%	\inferrule[Field Access(eval)]{}{
-%      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgnt{e}\ \cfgt{\$}\ \cfgnt{f}\rp \ \cfgnt{k}\rp  \rcom 
-%      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp 
-%	}
-%$$
-%If the string representing the current state matches the left side, then it
-%creates the new string on the right. In this example, the new string
-%on the right is now evaluating the expression $\cfgnt{e}$ in the field
-%access, and it includes the continuation indicating that it still
-%needs to complete the actual field access once the expression is
-%evaluated.
+Consider the rewrite rule
+for the beginning of a field access instruction:
+$$
+\mprset{flushleft}
+	\inferrule[Field Access(eval)]{}{
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \lp \cfgnt{e}\ \cfgt{\$}\ \cfgnt{f}\rp \ \cfgnt{k}\rp  \rcom 
+      \lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}\rp \rp 
+	}
+$$
+If the string representing the current state matches the left side, then it
+creates the new string on the right. In this example, the new string
+on the right is now evaluating the expression $\cfgnt{e}$ in the field
+access, and it includes the continuation indicating that it still
+needs to complete the actual field access once the expression is
+evaluated.
 %
 %Other more complex rules, such as one to create a new instance of a
 %class, define constraints on the rewrites and more complex
@@ -145,6 +153,7 @@ rewrites on strings using pattern matching.
 %        
 % \input{javalite-common}
 %
+
 The rewrite relations for the portion of the language
 semantics that are common to both generalized symbolic execution and
 the symbolic heap algorithm may be found in \cite{Hillery:2015}. The relation $\rcom$ includes all of these
@@ -161,48 +170,12 @@ machine simply halts if no rewrite is enabled.
 \input{summarize-precise}
 
 
-\subsection{Symbolic Heap}
-
 %Determining the symbolic state is relatively simple for programs that perform linear manipulations of numeric input parameters. However, the task becomes more challenging for programs that accept references as inputs, in part because it is not obvious exactly how many program input parameters there are. For example, consider the case of dereferencing an input reference that points to an object that itself contains multiple fields. Should each of those field values be included as program input parameters? What if some of the fields contain references? It would seem as if dereferencing symbolic input references opens the door to a potentially unbounded number of parameters. 
 
 %Our solution treats the heap as a hidden input parameter to every program.
 %expressed completely in terms of a black-box symbolic input heap
 %and the input reference parameters.
 
-
-Certain characteristics of the symbolic heap are preserved by
-the small-step semantics during symbolic execution:
-
-\begin{compactdesc}
-\item[Reference partitions:] Each reference belongs to one of three partitions: $\mathrm{init}_\cfgnt{r}()$ for the \emph{input
-  heap}% that includes $\cfgnt{r}_\mathit{null}$ (these are created by lazy initialization and are the only references that appear as variables in constraints)
-  ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
-  literals}% that includes $\cfgnt{r}_\mathit{un}$ (these add structure but do not appear elsewhere)
-  ; and $\mathrm{stack}_\cfgnt{r}()$ for \emph{stack
-  literals}. %(these appear in environments, expressions, and continuations).
-  Only input heap references appear in constraints to express potential aliasing.
-  Auxiliary literals and stack references are used to define additional structure in the bipartite graph but only stack references can appear in environments, expressions, or continuations.
-\item[Null and Uninitialized:] Every symbolic heap contains 
-two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized,
-  ($\cfgnt{l}_\mathit{un}$)  with corresponding references 
-  $\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un}$ 
-  where $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
-  \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
-  $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
-  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
-\item[Immutability:] References do not change once added to the
-location map, eliminating any need for constraint rewriting as the program state evolves.
-\item[Determinism:] A reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
-$
-\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
-(\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
-$
-where $\cfgnt{L}^\leftarrow$ is the pre-image of $\cfgnt{L}$. 
-\item[Type consistency:] All locations associated with a reference have the same type:
-$\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
-(\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))$
-
-\end{compactdesc}
 
 
 

@@ -29,8 +29,8 @@ with the solver in the definition of the rules is denoted by
 $\mathbb{S}(\phi)$ which returns true if $\phi$ is satisfiable.  The
 check for uninitialized references is determined by the function
 $\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
-\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which returns constraint-location
-pairs where the field $\cfgnt{f}$ is uninitialized.
+\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which a returns guarded value set 
+containing those locations where the field $\cfgnt{f}$ is uninitialized.
 \[
 \begin{array}{rcl}
 \mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\ & &
@@ -146,8 +146,8 @@ new stack reference is the return value from the operation.
  \input{value-set-def} 
 
 For a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the value set function computes 
-the set of locations that the field could dereference to, paired with a local and valid access path constraint
-that is feasible under the current path condition $\phi_g$.
+the guarded value set of locations and access path constraints
+that are feasible under the current path condition $\phi_g$.
 The access path constraint is the union of two local constraints: 
 the constraint $\phi$ from dereferencing $\cfgnt{r}$ to location $\cfgnt{l}$, 
 and the constraint $\phi^\prime$ from dereferencing the field $\cfgnt{f}$ of the location $\cfgnt{l}$ to the actual location of the field, $\cfgnt{l}^\prime$. 
@@ -169,7 +169,7 @@ longer point to $\cfgnt{r}_\mathit{cur}$, but rather fresh references
 that have both the original locations before the write and the
 locations from the write in the value sets (i.e., conditional
 write). Since the target of the write is $r$, the rule checks that the
-location constraint pairs of $\cfgnt{L}(\cfgnt{r})$ are satisfiable
+constraints of the guarded value set $\cfgnt{L}(\cfgnt{r})$ are satisfiable
 when accessed through the $\cfgnt{r}_x$ chain in the strengthening
 function.  \input{st-def} Constraints on locations are strengthened
 with new aliasing conditions and those that are feasible with the
@@ -179,7 +179,7 @@ Strengthening in the field write creates a value set that contains two
 types of locations: those for the case where the write is feasible
 (the first call), and those for the case where it is not (the second
 call). In the case that $\phi$ is true then $\cfgnt{r}_\mathit{cur}$
-will point to the constraint location pairs of $\cfgnt{L}(\cfgnt{r})$.
+will point to the guarded value set $\cfgnt{L}(\cfgnt{r})$.
 Whereas, if $\phi$ is false then $\cfgnt{r}_\mathit{cur}$ will
 continue to point to the constraint location pair it currently
 references.  As the references are immutable, the rule creates fresh
@@ -230,8 +230,8 @@ constraint. The reference-false is the logical dual of the rule.
 
 
 Consider the example in~\figref{fig:initHeap}(c). In order to to check
-if $\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$ are equal we first get the constraint location
-pairs associated with each of the references:
+if $\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$ are equal we first get the 
+guarded value set associated with each of the references:
 \[
 \cfgnt{L}(\cfgnt{r}_1^i) = \{ (\phi_{1a}\; \cfgnt{l}_\mathit{null})\; (\phi_{1b}\; \cfgnt{l}_1) \} 
 \]

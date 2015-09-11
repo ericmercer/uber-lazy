@@ -42,9 +42,9 @@ case-splitting methods currently in use. It is possible
 that the benefit of decreasing the number of paths explored is
 offset by the increased complexity of the resulting path condition. 
 
-To resolve this question, we implemented a prototype of the \symtxt{} 
-algorithm in Symbolic PathFinder (SPF)~\cite{DBLP:journals/ase/PasareanuVBGMR13} 
-and evaluate its efficacy on Java data structure artifacts.
+To resolve this question, a prototype of the \symtxt{} 
+algorithm was developed in the Symbolic PathFinder (SPF)~\cite{DBLP:journals/ase/PasareanuVBGMR13} framework
+to evaluate its efficacy on Java data structure artifacts.
 %SPF includes an implementation of~\gsetxt{} with lazy initialization.
 %In recent work, we implemented the  Lazier and Lazier\#
 %algorithms in SPF~\cite{Hillery:2014}.
@@ -67,8 +67,8 @@ for each artifact evaluated. The columns show the total
 time in seconds, states explored, and paths generated for
 each algorithm. The headings \gsetxt{}, L\#, and SH correspond
 to the Generalized Symbolic Execution, Lazier\#, and \symtxt{}
-algorithms, respectively. Note that we omit the results for
-the Lazier algorithm because they are nearly identical to the Lazier\#
+algorithms, respectively. The results for
+the Lazier algorithm are omitted because they are nearly identical to the Lazier\#
 results for these artifacts. A table entry of  '-' indicates the analysis
 exceeded the allotted time bound of 1 hour.
 

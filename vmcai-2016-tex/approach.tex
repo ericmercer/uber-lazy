@@ -105,7 +105,7 @@ $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt
 
 
 
-We visualize the initialization process in~\figref{fig:initHeap}. The
+\figref{fig:initHeap} illustrates the initialization process. The
 graph in~\figref{fig:initHeap}(a) represents the initial heap. The
 reference superscripts $s$ and $i$ indicate the partition containing
 the reference.  In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a
@@ -138,7 +138,7 @@ the initialization $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$.
 \end{figure*}
 
 There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
-the value of a field (field-access) and the other when we write to a
+the value of a field (field-access) and the other for writing to a
 field (field-write). Both rules first check that the operations can be
 performed on a non-null location. The field-access rewrite rule
 in~\figref{fig:fHeap} dereferences a field of type $\cfgnt{C}$ and
@@ -219,24 +219,23 @@ corresponding locations such that the reference $\cfgnt{r}_1$
 constraint. Finally, the set, $\Phi_1$, contains constraints under
 which $\cfgnt{r}_1$ points to corresponding locations and
 $\cfgnt{r}_0$ \emph{does not} point to those locations under any
-constraint. We use the three sets of constraints to create a new path condition $\phi_g^\prime$
-as an update of the current path condition $\phi_g$. We add to $\phi_g$ the disjunction of the
+constraint. The three sets of constraints are used to create a new path condition $\phi_g^\prime$
+as an update of the current path condition $\phi_g$.  The update is accomplished by first taking the disjunction of the
 constraints in $\Phi_\alpha$ to indicate that if any of the
 constraints are satisfiable, then references $\cfgnt{r}_0$ and
-$\cfgnt{r}_1$ can be equal. Furthermore, we conjoin to the global heap
-constraint $\phi_g^\prime$, the conjunctions of negations to the
-constraints in $\Phi_0$ and $\Phi_1$. This indicates for locations
+$\cfgnt{r}_1$ can be equal. This disjunction is then conjoined with $\phi_g$ to form $\phi_g^\prime$. Furthermore, the conjunctions of negations to the
+constraints in $\Phi_0$ and $\Phi_1$ is conjoined with $\phi_g^\prime$. This indicates for locations
 that are not common to the references, the negations of their
 constraints are satisfiable. The rule does not complete (i.e., is not
 feasible) if the new global constraint is not satisfied on any
 aliasing assignment. In such a case, the $\cfgt{true}$ outcome is not
 possible on any symbolic heap. Before the rewrite rule returns
-$\cfgt{true}$ we check the satisfiability of the updated global heap
+$\cfgt{true}$, it verifies the satisfiability of the updated global heap
 constraint. The reference-false is the logical dual of the rule.
 
 
-Consider the example in~\figref{fig:initHeap}(c). In order to to check
-if $\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$ are equal we first get the 
+Consider the example in~\figref{fig:initHeap}(c). In order to compare
+$\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$, the Equals rule gets the 
 guarded value set associated with each of the references:
 \[
 \cfgnt{L}(\cfgnt{r}_1^i) = \{ (\phi_{1a}\; \cfgnt{l}_\mathit{null})\; (\phi_{1b}\; \cfgnt{l}_1) \} 

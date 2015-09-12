@@ -1,19 +1,26 @@
 \section{Conclusion}
 
-This work presents a
-heap representation for symbolic execution that maintains exactness,
-represents arbitrary heap structures without restrictions on aliasing
-relationships, and supports dynamic on-the-fly initialization of heap
-structures. This unique combination of capabilities enables the
-symbolic heap algorithm to outperform state-of-the-art symbolic
-execution techniques, and in some cases, the performance gains are
-considerable. The performance gains in symbolic execution
-may naturally benefit a variety of analyses based on symbolic
-execution, for example, verification of properties, especially those
-related to the heap, test case generation, program evolution
-techniques such as directed incremental symbolic
-execution~\cite{person:pldi2011}, and other back-end analyses. Potential future work includes evaluating the impact of analyses that rely on
-symbolic execution.
+In this work we present a \symtxt{} algorithm for uninitialized
+references in a fully symbolic heap. Where GSE lazily instantiates
+uninitialized references to either NULL, a new instance of the correct
+type, or an alias to a previously initialized object, the symbolic
+initialization in this work creates a guarded value set expressing all
+of these eventualities in the same symbolic heap. We prove that the
+\symtxt{} algorithm is sound and complete with respect to properties
+provable by GSE.
+
+An initial implementation of the technique has been done within the
+Java PathFinder framework. The \symtxt{} algorithm outperforms
+state-of-the-art case-splitting based symbolic execution techniques,
+and in some cases, the performance gains are considerable in a set of
+Java data structure artifacts. The performance gains in symbolic
+execution may naturally benefit a variety of analyses based on
+symbolic execution, for example, verification of properties,
+especially those related to the heap, test case generation, program
+evolution techniques such as directed incremental symbolic
+execution~\cite{person:pldi2011}, and other back-end
+analyses. Potential future work includes evaluating the impact of
+analyses that rely on symbolic execution.
 
 \begin{comment}
 

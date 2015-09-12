@@ -22,14 +22,13 @@ the field-access rule in \figref{fig:lazy} uses initialization,
 $\rightarrow_I^*$, to ensure the accessed field is
 instantiated. Initialization in generalized symbolic execution never
 happens for more than one object on any use of $\rightarrow_I^*$:
-$\Lambda$ is either empty or contains exactly one location. The rest of the rules in \figref{fig:lazy} do not initialize, but they are included to elucidate how symbolic initialization differs from GSE with lazy initialization. 
+$\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case spits when it instantiates: each choice is a new unique heap. The rest of the rules in \figref{fig:lazy} do not initialize, but they are included to elucidate how symbolic initialization differs from GSE with lazy initialization. 
 
 
 The $\rgse$ relation defined in \figref{fig:lazy} is a union over branching points on control flow
 to support the final proof of the existence of a
 bisimulation. Although it is apparent that there is non-determinism in
-initialization, it is not the initialization where control flow
-diverges in program execution. Rather, that occurs at branches and NULL-exceptions, and that is reflected in the composition of $\rgse$.
+initialization at the first reference access partitioning the search space, control flow branches at comparisons and NULL-exceptions. This property is reflected in the composition of $\rgse$.
 
 \input{initialize-lazy}
 \input{lazy-fig}

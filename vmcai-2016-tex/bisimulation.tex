@@ -1,17 +1,12 @@
 \section{Correctness}
 \label{sec:bisim}
-A major drawback of previous methods for creating test inputs for
-symbolic heaps has been a lack of completeness. Incomplete heap
-representations may not create a set of inputs that represents
+
+Incomplete heap representations may not create a set of inputs that represents
 the entire space of possible inputs. By missing some possible
 inputs, the subsequent analysis may fail to recognize 
-possible program behaviors. 
-
-The theorems in this section establish the soundness and
-completeness of the symbolic heap approach with respect to Generalized
-Symbolic Execution (\gsetxt{}). Intuitively, the theorems imply that any properties proven
-with~\gsetxt{} can also be proved using the symbolic heap
-algorithm. The proofs for the theorems, as well as
+possible program behaviors. The theorems in this section establish the soundness and
+completeness of symbolic initialization with respect to classical GSE with lazy initialization. Intuitively, the theorems imply that any properties proven
+with~\gsetxt{} can also be proved using symbolic initialization. The proofs for the theorems, as well as
 the complete set of semantic rules for~\gsetxt{} and~\symtxt{} can
 be found in ~\cite{Hillery:2015}. 
 

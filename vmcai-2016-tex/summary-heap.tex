@@ -1,15 +1,61 @@
-\section{Prelimiaries}
-\label{sec:sh}
+\section{A Symbolic Heap}
+A \emph{symbolic heap} is a tuple
+$(\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta)$, where the~\emph{location map}
+$\cfgnt{L}$,~\emph{reference map} $\cfgnt{R}$, and~\emph{environment}
+$\eta$ are partial functions, and the~\emph{path condition} $\phi$ is
+a predicate over the program variables. Given reference $r$,
+$\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the guarded value set
+in the heap associated with $r$. The constraint associated with each
+location is a guard representing the conditions under which the
+associated reference maps to the given location. By definition, any
+location appears at most once in any given value set. Unions of value
+sets containing the same location are resolved by forming a
+disjunction of the constraints from each set. $\cfgnt{R}(\cfgnt{l},
+\cfgnt{f}) = \cfgnt{r}$ is the reference associated with the given
+location-field pair in the heap. 
 
+\begin{figure}[t]
+\begin{center}
+\includegraphics[scale=0.5]{../figs/simple_heap_scratch.pdf}
+\end{center}
+\caption{Example Symbolic Heap}
+\label{fig:exampleHeap}
+\end{figure}
 
-\subsection{Symbolic Execution}
+Conceptually, the symbolic heap may be thought of as a bipartite
+graph. \figref{fig:exampleHeap} shows an example symbolic heap
+graph. References are represented by circles and locations are
+represented by squares. Arrows leaving references correspond to the
+guarded value sets returned by the $\cfgnt{L}$ function, and arrows
+leaving the squares correspond to the $\cfgnt{R}$ function. The
+reference $\cfgnt{r}_1$ has has two members in it guarded value set,
+so the location pointed to by $\cfgnt{r}_1$ depends on its aliasing
+relationship to $\cfgnt{r}_0$.
 
-Symbolic execution semantics are defined using
-a small-step operational semantics similar to the one presented 
-in~\cite{saints-MS}. The small-step semantics,
-defined as a syntactic machine using a CESK architecture~\cite{Felleisen:1992},
-are modified to perform symbolic execution on a symbolic heap. The
-surface (input) syntax and machine (state) syntax are shown
+The reference $\cfgnt{r}_\mathit{un}$ is a special reference to
+indicate something that has yet to be initialized. In general,every
+symbolic heap contains two special locations, null
+($\cfgnt{l}_\mathit{null}$), and uninitialized
+($\cfgnt{l}_\mathit{un}$), with corresponding references
+$\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un}$ where
+$\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
+\{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
+$\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
+\{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$.
+
+For well-formed symbolic heaps, a reference in $(\cfgnt{L}\ \cfgnt{R})$ cannot point to multiple locations simultaneously: 
+$
+\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
+(\cfgnt{l} \neq \cfgnt{l}^\prime \vee \phi \neq \phi^\prime) \Rightarrow (\phi \wedge \phi^\prime = \cfgt{false}))
+$
+where $\cfgnt{L}^\leftarrow$ is the pre-image of $\cfgnt{L}$. Also, for a well-formed heap, all locations associated with a reference have the same type:
+$\forall \cfgnt{r} \in \cfgnt{L}^\leftarrow\ (\forall (\phi\ \cfgnt{l}),(\phi^\prime\ \cfgnt{l}^\prime) \in \cfgnt{L}(r)\ (
+(\mathrm{Type}\lp\cfgnt{l}\rp = \mathrm{Type}\lp\cfgnt{l}^\prime\rp)))$
+
+\section{Operational Semantics}
+This paper defines symbolic initialization using
+a small-step operational semantics in the context of a syntactic machine with a CESK architecture~\cite{Felleisen:1992, saints-MS}. The
+surface (input) syntax and machine (state) syntax (which omits the symbolic heap definition previously given and the environment) are shown
 in~\figref{fig:syntax}. Terminals are in bold face while non-terminals
 are italicized. Ellipses indicate zero or more repetitions. Tuples
 omit the commas for compactness.
@@ -45,39 +91,16 @@ $\cfgnt{r}$, or any of the special values shown
 in~\figref{fig:syntax}(a).  Only type correct programs are given as
 input to the machine.
 
-A \emph{symbolic heap} is a tuple $(\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta)$, where the~\emph{location map} $\cfgnt{L}$,~\emph{reference map} $\cfgnt{R}$, and~\emph{environment} $\eta$ are partial functions, and the~\emph{path condition} $\phi$ is a predicate over the program variables. Given reference $r$, $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the guarded value set in the heap associated with $r$. The constraint  associated with each location is a guard
-representing the conditions under which the associated reference
-maps to the given location. By definition, any location appears 
-at most once in any given value set. Unions of value sets containing
-the same location are resolved by forming a disjunction of the constraints
-from each set. $\cfgnt{R}(\cfgnt{l}, \cfgnt{f}) = \cfgnt{r}$ is the
-reference associated with the given location-field pair in the
-heap. The environment  $\eta$ maps local variables to references.
-
-\begin{figure}[t]
-\begin{center}
-\includegraphics[scale=0.5]{../figs/simple_heap_scratch.pdf}
-\end{center}
-\caption{Example Symbolic Heap}
-\label{fig:exampleHeap}
-\end{figure}
-
-Conceptually, the symbolic heap may be thought of as a bipartite graph. \figref{fig:exampleHeap} shows an example symbolic heap graph. References are 
-represented by circles and locations are represented by squares. Arrows leaving
-references correspond to the guarded value sets returned by the $\cfgnt{L}$ function, and 
-arrows leaving the squares correspond to the $\cfgnt{R}$ function.
 
 The machine state $\cfgnt{s}$ includes the program
-registry $\mu$, the symbolic heap,
-and the continuation $\cfgnt{k}$. The registry never changes so it is
-omitted from the state tuple in the rest of the presentation.  The
-more complex structures, such as the environment and heap, are defined
-as singly linked lists of mappings that start with empty, \cfgnt{mt}. These lists are treated as
-partial functions so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
+registry $\mu$, the symbolic heap, the global path constraint, the environment $\eta$, the current expression (i.e., program), and the continuation $\cfgnt{k}$. The registry never changes so it is
+omitted from the state tuple in the rest of the presentation. The environment is a partial function so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
 $\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
 $\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
 partial function $\eta^\prime$ that is the same as $\eta$ except that
-the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. The continuation
+the variable $\cfgnt{x}$ now maps to $\cfgnt{v}$. This notation is used with symbolic heaps as well. 
+
+The continuation
 $\cfgnt{k}$ indicates with the symbol $\cfgnt{*}$ where the expression $\cfgnt{e}$ came from, stores
 temporary computation, and keeps track of the next continuation. For
 example, the continuation $\lp\cfgt{*}\ \cfgt{\$}\ \cfgnt{f}
@@ -86,16 +109,6 @@ expression for the object reference on which the field $\cfgnt{f}$ is
 going to be accessed. Once the field access is complete, the machine
 continues with $\cfgnt{k}$.  
 
-Execution begins with the initial machine state. The expression for the initial state constructs a new object of type
-$\cfgnt{C}$ and then invokes the method $\cfgnt{m}$ in that
-object. The initial symbolic heap contains 
-two special locations, null ($\cfgnt{l}_\mathit{null}$), and uninitialized
-  ($\cfgnt{l}_\mathit{un}$),  with corresponding references 
-  $\cfgnt{r}_\mathit{null}$ and $\cfgnt{r}_\mathit{un}$ 
-  where $\cfgnt{L}(\cfgnt{r}_\mathit{null}) =
-  \{(\cfgt{true}\ \cfgnt{l}_\mathit{null})\}$ and
-  $\cfgnt{L}(\cfgnt{r}_\mathit{un}) =
-  \{(\cfgt{true}\ \cfgnt{l}_\mathit{un})\}$. 
 Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the expression for the initial machine state is
 $$
 \begin{array}{l}
@@ -106,9 +119,6 @@ $$
 \ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
 \end{array}
 $$
-
-
-
 The semantics are expressed as
 rewrites on strings using pattern matching. 
 Consider the rewrite rule
@@ -154,14 +164,15 @@ evaluated.
 % \input{javalite-common}
 %
 
-The rewrite relations for the portion of the language
-semantics that are common to both generalized symbolic execution and
-the symbolic heap algorithm may be found in \cite{Hillery:2015}. The relation $\rcom$ includes all of these
-rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
+The rewrite relations for the more mundane portions of the language
+that do not update the symbolic heap are in the appendix with more details in 
+\cite{Hillery:2015}. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
 the heap, and are largely concerned with argument evaluation in an
 expected way. It is assumed that only type safe programs are input to
 the machine so there is no type checking. The
-machine halts if no rewrite is enabled.
+machine halts if no rewrite is enabled. In the rest of this paper the relation $s \rcom
+s^\prime$ indicates that two states are related by these more
+mundane rules.
 
 \input{lazy}	
 

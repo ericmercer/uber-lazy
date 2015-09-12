@@ -33,7 +33,7 @@ so the location pointed to by $\cfgnt{r}_1$ depends on its aliasing
 relationship to $\cfgnt{r}_0$.
 
 The reference $\cfgnt{r}_\mathit{un}$ is a special reference to
-indicate something that has yet to be initialized. In general,every
+indicate something that has yet to be initialized. In general, every
 symbolic heap contains two special locations, null
 ($\cfgnt{l}_\mathit{null}$), and uninitialized
 ($\cfgnt{l}_\mathit{un}$), with corresponding references
@@ -71,7 +71,7 @@ omit the commas for compactness.
 (b)
 \end{tabular}
 \end{center}
-\caption{ (a) The surface syntax. (b) The machine syntax with $\bowtie\ \in \{\wedge,\vee,\Rightarrow\}$.}
+\caption{ (a) The surface syntax. (b) The machine syntax.}
 \label{fig:syntax}
 \end{figure}
 
@@ -109,6 +109,7 @@ expression for the object reference on which the field $\cfgnt{f}$ is
 going to be accessed. Once the field access is complete, the machine
 continues with $\cfgnt{k}$.  
 
+\begin{comment}
 Given an input program $\lp\mu\ \lp\cfgnt{C}\ \cfgnt{m}\rp\rp$, the expression for the initial machine state is
 $$
 \begin{array}{l}
@@ -119,6 +120,8 @@ $$
 \ \cfgt{true}\ \eta\  \lp\lp\cfgt{new}\ \cfgnt{C}\rp\ \cfgt{@}\ \cfgnt{m}\ \cfgt{true}\rp\rp\ \cfgt{end}\rp
 \end{array}
 $$
+\end{comment}
+
 The semantics are expressed as
 rewrites on strings using pattern matching. 
 Consider the rewrite rule

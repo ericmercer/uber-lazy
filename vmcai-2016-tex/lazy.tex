@@ -13,18 +13,13 @@ The lazy initialization rules for GSE on the symbolic heap are in
   only input heap references appear in constraints to express potential aliasing, and only stack references appear in environments, expressions, or continuations.  Finally, the \emph{isInit} function is true for initialized references from the input heap (i.e., potential aliases). 
 
 How the lazy
-initialization is used is defined in \figref{fig:lazy}. Specifically,
-the field-access rule in \figref{fig:lazy} uses initialization,
-$\rightarrow_I^*$, to ensure the accessed field is
-instantiated. Initialization in generalized symbolic execution never
+initialization is used is defined in \figref{fig:lazy} with the $\rgse$ relation collecting all the rules into a single relation on states. This relation is used later by the proof. GSE initialization takes place on the field-access rule in \figref{fig:lazy},
+using the $\rightarrow_I^*$ relation from \figref{fig:lazyInit}, to ensure the accessed field is
+instantiated. Initialization in GSE never
 happens for more than one object on any use of $\rightarrow_I^*$:
-$\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case spits when it instantiates: each choice is a new unique heap. The rest of the rules in \figref{fig:lazy} do not initialize, but they are included to elucidate how symbolic initialization differs from GSE with lazy initialization. In particular, there is no branching in the search space on reference compare for GSE because references point to a single location. The new symbolic initialization using guarded value sets in the next section changes this behavior. 
+the set $\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case spits when it instantiates: each choice is a new unique heap. This changes in the next section with the new symbolic initialization that collects all the choices into a single heap using guarded value sets.
 
-
-The $\rgse$ relation defined in \figref{fig:lazy} is a union over branching points on control flow
-to support the final proof of the existence of a
-bisimulation. Although it is apparent that there is non-determinism in
-initialization at the first access to an uninitialized reference, control flow branches at comparisons and NULL-exceptions. This property is reflected in the composition of $\rgse$.
+The rest of the rules in \figref{fig:lazy} do not initialize, but they are included to elucidate how symbolic initialization differs from GSE with lazy initialization. In particular, there is no branching in the search space on reference compare for GSE because references point to a single location after initialization. The new symbolic initialization using guarded value sets in this papers changes this behavior. 
 
 \input{initialize-lazy}
 \input{lazy-fig}

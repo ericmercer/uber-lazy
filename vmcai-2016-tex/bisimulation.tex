@@ -1,16 +1,22 @@
 \section{Correctness}
 \label{sec:bisim}
+%A major drawback of previous methods for creating test inputs for
+%symbolic heaps has been a lack of completeness. Incomplete heap
+%representations may not create a set of inputs that represents
+%the entire space of possible inputs. By missing some possible
+%inputs, the subsequent analysis may fail to recognize 
+%possible program behaviors. 
 
-Incomplete heap representations may not create a set of inputs that represents
-the entire space of possible inputs. By missing some possible
-inputs, the subsequent analysis may fail to recognize 
-possible program behaviors. The theorems in this section establish the soundness and
-completeness of symbolic initialization with respect to classical GSE with lazy initialization. Intuitively, the theorems imply that any properties proven
-with~\gsetxt{} can also be proved using symbolic initialization. The proofs for the theorems, as well as
+The theorems in this section establish the soundness and
+completeness of the symbolic heap approach with respect to Generalized
+Symbolic Execution (\gsetxt{}). Intuitively, the theorems imply that any properties proven
+with~\gsetxt{} can also be proved using the symbolic heap
+algorithm. What follows is a brief description of the requisite terminology,
+followed by the theorem statements. The proofs for the theorems, as well as
 the complete set of semantic rules for~\gsetxt{} and~\symtxt{} can
 be found in ~\cite{Hillery:2015}. 
 
-The proof shows the existence of a
+The theorems assert the existence of a
 bisimulation between sets of states related by~\gsetxt{} ($p \rgse
 p^\prime$) and states related by the symbolic heap and update rules in this paper ($q \rsym
 q^\prime$). The relations are on the universe of \emph{well-formed}

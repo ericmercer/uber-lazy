@@ -1,8 +1,14 @@
 \section{Symbolic Initialization}
 \label{sec:precise}
-Although the case-splitting methods used in~\gsetxt{} can be applied
-to guarded value sets, a direct implementation would run into the same
-path explosion problems. This work presents a new initialization scheme which avoids the
+%Although the lazy initialization method used in~\gsetxt{} can be applied
+%to guarded value sets, a direct case-splitting implementation would run into the same
+%path explosion problems as~\gstetxt{}. A more desirable approach would be to create a new~\symtxt{} scheme that uses the state merging properties inherent to guarded value sets in order to avoid creating new paths during dereferencing operations. To accomplish this in a manner equivalent to~\gsetxt{}, uninitialized reference values must be initialized to guarded value sets that exactly reproduce the behavior of the individual~\gsetxt{} paths. Since~\gsetxt{} either chooses a new reference, a null reference, or an alias to an existing reference during lazy initialization, it seems obvious that these should be the locations represented in the guarded value set produced by~\symtxt{}. Although choosing the appropriate locations is straightforward, choosing the guards is more complicated. Since lazy initialization does not alter the path condition, it provides few clues as to what guards might be used. Thus, choosing the appropriate guards is the key obstacle in creating the desired~\symtxt{} scheme.
+%
+%If the exact nature of the guards is opaque, a few of the requirements may be divined by observing the properties of references. Since in a concrete heap, no reference points to two locations at the same time, the guards in any value set must be mutually exclusive. Also, since every reference points somewhere~\footnote{Even so-called dangling pointers can be thought of as pointing to unallocated memory.}, the set of guards must be collectively exhaustive. Furthermore, the fact that the input heap may contain a practically unbounded number of distinct references indicates that the value domain of the variables used in the guards should be similarly unbounded. 
+
+%We don't really care about the locations where the references are stored, only whether references alias or not.
+
+This work presents a new initialization scheme which avoids the
 nondeterminism introduced by~\gsetxt{}. Called \emph{\symtxt{}}, this scheme leverages the core idea in generalized symbolic execution
 with lazy initialization, using on-the-fly reasoning to model a
 black-box input heap during symbolic execution. Unlike~\gsetxt{}, \symtxt{} constructs a single
@@ -30,22 +36,6 @@ references.
 \label{fig:symInit}
 \end{figure*}
 
-The initialization rule in \figref{fig:symInit} is invoked whenever 
-an uninitialized field is accessed. The interaction
-with the solver in the definition of the rules is denoted by
-$\mathbb{S}(\phi)$ which returns true if $\phi$ is satisfiable.  The
-check for uninitialized references is determined by the function
-$\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
-\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ which a returns guarded value set 
-containing those locations where the field $\cfgnt{f}$ is uninitialized.
-\[
-\begin{array}{rcl}
-\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \\ & &
- \ \ \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \\ & &
- \ \ \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
-\end{array}
-\]
-
 In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
 field $f$, the $\mathrm{min}_l$ function returns
 $(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
@@ -53,15 +43,16 @@ uninitialized locations in $\Lambda$ to make initialization
 deterministic.  The set $\rho$ contains reference-location pairs that
 represent potential aliases, where $\mathrm{isInit}\lp\rp$ ensures that the references are initialized. 
 There are four cases encoded in the
-symbolic heap: (i) $\theta_\mathit{null}$ represents the condition
+symbolic heap. The first three correspond to the three types of choices made during lazy initialization: (i) $\theta_\mathit{null}$ represents the condition
 where $\cfgnt{l}_\mathit{null}$ is possible, (ii)
 $\theta_\mathit{new}$ represents the case where $\cfgnt{r}_f$ points
 to a fresh location, (iii) each member of $\theta_\mathit{alias}$
 restricts $\cfgnt{r}_f$ to a particular alias in $\rho$, and at the
 same time, not alias any member of $\rho$ that was initialized earlier
-than the current choice, and (iv) $\theta_\mathit{orig}$ implements
-conditional initialization to preserve the original heap structure.
-These sets are added into the heap on $\cfgnt{r}_f$ after the fields
+than the current choice. 
+
+Unlike the first three cases, which correspond directly to~\gsetxt{} initialization rules, case (iv) is unique to~\symtxt{}. In this case, $\theta_\mathit{orig}$ implements conditional initialization to preserve the original heap structure. This step is necessary in order to maintain homomorphism\footnote{Homomorphism is an important property relied on by the correctness proof.} between symbolic heaps created using~\symtxt{} and the~\gsetxt{} heaps they are intended to represent. 
+The sets from each of the four cases are added into the heap on $\cfgnt{r}_f$ after the fields
 for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
 
 \begin{figure*}[t]
@@ -103,8 +94,6 @@ $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt
 \label{fig:initHeap}
 \end{figure*}
 
-
-
 \figref{fig:initHeap} illustrates the initialization process. The
 graph in~\figref{fig:initHeap}(a) represents the initial heap. The
 reference superscripts $s$ and $i$ indicate the partition containing
@@ -137,7 +126,8 @@ the initialization $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$.
 \label{fig:fHeap}
 \end{figure*}
 
-There are two rewrite rules in~\figref{fig:fHeap}(a), one for reading
+
+There are two rewrite rules in~\figref{fig:fHeap}, one for reading
 the value of a field (field-access) and the other for writing to a
 field (field-write). Both rules first check that the operations can be
 performed on a non-null location. The field-access rewrite rule
@@ -146,8 +136,7 @@ uses \figref{fig:symInit}, to get a new symbolic heap that is
 initialized on the field $\cfgnt{f}$. The symbolic heap is further
 modified to include a new stack reference pointing to the guarded value set
 (possible values of the field) returned during the dereferencing; the
-new stack reference is the return value from the operation.
-
+new stack reference is the return value from the $\mathbb{VS}$ operation.
 
  \input{value-set-def} 
 

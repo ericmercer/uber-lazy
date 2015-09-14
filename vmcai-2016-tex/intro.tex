@@ -1,21 +1,5 @@
 \section{Introduction}
 
-
-
-
-%In recent years symbolic execution has provided the basis for various
-%software testing and analysis techniques, e.g., regression
-%analysis~\cite{backes:2012,Godefroid:SAS11,Person:FSE08,person:pldi2011,Ramos:2011,Yang:ISSTA12},
-%data structure repair~\cite{KhurshidETAL05RepairingStructurally},
-%dynamic discovery of
-%invariants~\cite{CsallnerETAL08DySy,Zhang:ISSTA14}, and
-%debugging~\cite{Ma:2011}.
-%
-%Recent work has explored the strengths and limitations of
-%tools which leverage constraint solvers, e.g., concolic execution,
-%identifying symbolic dereferencing and updating operations as areas
-%for potential improvement~\cite{Chen:2013,Qu:2011}.  
-
 In symbolic execution, the values of program variables are represented
 as constraints over the program's inputs. During the course of an
 execution, a program variable may assume a number of possible values
@@ -72,12 +56,16 @@ no extra GSE heaps.
 
 A proof-of-concept implementation of symbolic initialization is
 reported in this paper. The implementation is for Java in the Java
-Pathfinder tool. It demonstrates the efficiency of~\symtxt{}, as
-compared to existing~\gsetxt{} methods. Although guarded value
+Pathfinder tool. It demonstrates on a standard set of benchmarks for GSE evaluation (\cite{PAPERSESTABLISHINGBENCHMARKSET}) an increase in the number of heaps that can be analyzed when compared to existing ~\gsetxt{} methods. Although guarded value
 sets require extra interaction with an SMT solver, the
 savings in representing multiple heap shapes in a single
-structure overcomes the cost of the solver calls. In fact, the
+structure can overcome the cost of the solver calls. For the tree structures in the standard benchmarks, the
 comparison shows an exponential increase in the number of heaps that
-can be analyzed in a set of benchmark examples, meaning that other
+can be analyzed, meaning that other
 approaches based on~\gsetxt\ fail to complete in the allotted time.
 
+In summary, this paper presents a new initialization technique that
+enables the use of guarded value sets in heap representations in a
+sound and complete manner. Such a result means that any analysis using
+this initialization technique can be assured of precision with regard
+to \gsetxt{} semantics \cite{THINGSTHATBENEFIT}. This includes generating concrete heaps for test input generation.

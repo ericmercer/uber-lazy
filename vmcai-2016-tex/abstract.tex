@@ -9,13 +9,11 @@ analyses.
 %parameters.
 Although several solutions have been proposed, none have been proven
 to be sound and complete with respect to the heap properties provable
-by generalized symbolic execution (GSE) given certain user-defined
-bounds. This work presents a method for initializing input references
+by generalized symbolic execution (GSE). This work presents a method for initializing input references
 in a symbolic input heap using guarded value sets that exactly
 preserves GSE semantics. A correctness proof for the initialization
-scheme is provided, as well as the results of an empirical evaluation
-of a proof-of-concept implementation showing a real increase in the
-size and number of analyzed heaps compared to existing GSE
+scheme is provided with a proof-of-concept implementation. Results from an empirical evaluation on a standard set of \gsetxt{} benchmarks show an increase in the
+size and number of analyzed heaps over existing GSE
 representations. The initialization technique can be used to ensure
 that guarded value set based symbolic execution engines operate in a
 provably correct manner with regards to symbolic references as well as

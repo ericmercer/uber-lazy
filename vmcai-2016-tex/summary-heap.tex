@@ -3,9 +3,9 @@ A \emph{symbolic heap}, as defined in this work, is a tuple
 $(\cfgnt{L}\ \cfgnt{R}\ \phi\ \eta)$, where the~\emph{location map}
 $\cfgnt{L}$,~\emph{reference map} $\cfgnt{R}$, and~\emph{environment}
 $\eta$ are partial functions, and the~\emph{path condition} $\phi$ is
-a predicate over the program variables. Given reference $r$,
+a predicate over the program variables. Given reference $r$ in the heap,
 $\cfgnt{L}(r) = \{(\phi\ \cfgnt{l})\ ...\}$ is the guarded value set
-in the heap associated with $r$. The constraint associated with each
+associated with $r$. The constraint associated with each
 location is a guard representing the conditions under which the
 associated reference maps to the given location. By definition, any
 location appears at most once in any given value set. Unions of value
@@ -28,7 +28,7 @@ graph. References are represented by circles and locations are
 represented by squares. Arrows leaving references correspond to the
 guarded value sets returned by the $\cfgnt{L}$ function, and arrows
 leaving the squares correspond to the $\cfgnt{R}$ function. The
-reference $\cfgnt{r}_1$ has has two members in it guarded value set,
+reference $\cfgnt{r}_1$ in the figure has two members in its guarded value set,
 so the location pointed to by $\cfgnt{r}_1$ depends on its aliasing
 relationship to $\cfgnt{r}_0$.
 
@@ -88,8 +88,7 @@ explicit return statement; rather, the value of the last expression is
 used as the return value. A variable is always indicated by \cfgnt{x}
 and a value by \cfgnt{v}. A value can be a reference in the heap,
 $\cfgnt{r}$, or any of the special values shown
-in~\figref{fig:syntax}(a).  Only type correct programs are given as
-input to the machine.
+in~\figref{fig:syntax}(a).  
 
 
 The machine state $\cfgnt{s}$ includes the program

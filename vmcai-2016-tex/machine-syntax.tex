@@ -1,6 +1,13 @@
 \newsavebox{\boxMachine}
 \savebox{\boxMachine}{
 \cfgstart
+\cfgrule{$\phi$}{($\phi$) 
+\cfgor $\phi \bowtie \phi$ 
+\cfgor $\neg\phi$
+\cfgor \cfgt{true}
+\cfgor \cfgt{false}
+\cfgor \cfgnt{r} $=$ \cfgnt{r}
+\cfgor \cfgnt{r} $\neq$ \cfgnt{r}}
 \cfgrule{s}{\lp$\mu$ \cfgnt{L} \cfgnt{R} $\phi$ $\eta$ \cfgnt{e} \cfgnt{k}\rp}
 \cfgrule{k}{\cfgt{end}
 \cfgor{\lp \cfgt{*} \cfgt{\$} \cfgnt{f} $\rightarrow$ \cfgnt{k}\rp}

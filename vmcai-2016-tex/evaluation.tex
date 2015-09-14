@@ -43,17 +43,10 @@ framework. In addition to the operations presented in this paper, the
 implementation contains support for operations over integers,
 calculating per-path preconditions and postconditions, as well as
 generating test input heaps that exercise all feasible control flow
-paths. We are currently working on adding support for floating point
-operations, arrays, and bit-operations. The \symtxt{} implementation
-uses the \texttt{jConstraints}
-library~\cite{ase2014-ghilrr,jpf2014-dghirr} to encode the heap
-constraints and the z3 solver~\cite{deMouraBjorner08Z3} as the
-underlying constraint solver. We leverage the incremental solving
-feature in z3 in our experiments. We also implement other
-optimizations that cache and re-use solutions to previous
-constraints. These optimizations are an important part of our
-implementation because only small portions of the heap constraint
-change during execution.
+paths. Future work is adding support for floating point
+operations, arrays, and bit-operations.
+
+The \symtxt{} implementation uses \texttt{jConstraints} with the z3 solver \cite{ase2014-ghilrr,jpf2014-dghirr,deMouraBjorner08Z3}. The implementation takes advantage of incremental solving and employs caching for performance since only small portions of the heap constraint changes during the search.
 
 SPF includes an implementation of~\gsetxt{} with lazy initialization.
 In recent work, we implemented the Lazier and Lazier\# algorithms in

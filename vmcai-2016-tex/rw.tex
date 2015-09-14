@@ -5,7 +5,7 @@
 The symbolic heap methods in this work build upon a
 number of prior program analysis techniques that use guarded value sets to
 represent program
-state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. 
+state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. In particular, the field write and equals reference compare are not much different than what is already in these works. The real contribution of \symtxt\ is the initialization part of the field access rules which preserves the \gsetxt\ semantics.
 The method was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005,Yorsh:2008}, where value sets were used to 
 represent aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps.
 

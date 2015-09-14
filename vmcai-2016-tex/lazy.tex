@@ -1,6 +1,6 @@
 \section{GSE}
 \label{app:gse}
-GSE semantics are defined here to give insight to the new symbolic initialization approach and support the proof that the new approach preserves GSE behaviors. GSE and its variants have the same non-deterministic choice given a reference to an uninitialized object; that reference can point to null, a new instance of an object with the correct type, or to an object of the same type that has been instantiated previously by GSE \cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. The objects instantiated for new instances are referred to as the \emph{input heap}. Only these objects comprise the potential alias set when GSE encounters references to uninitialized objects. In general, the GSE search space branches at uninitialized objects, and the number of branches depends on the size of the input heap.
+This section introduces \gsetxt\ semantics on which \symtxt\ builds. GSE and its variants have the same non-deterministic choice given a reference to an uninitialized object; that reference can point to null, a new instance of an object with the correct type, or to an object of the same type that has been instantiated previously by GSE \cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. The objects instantiated for new instances are referred to as the \emph{input heap}. Only these objects comprise the potential alias set when GSE encounters references to uninitialized objects. In general, the GSE search space branches at uninitialized objects, and the number of branches depends on the size of the input heap.
 
 The lazy initialization rules for GSE on the symbolic heap are in
 \figref{fig:lazyInit}: NULL, new, and alias. The rules rely on fresh references and locations that strictly increase so it is possible to minimize over a set to find the first created. Further, references are partitioned to support latter proofs: $\mathrm{init}_\cfgnt{r}()$ for the input
@@ -17,7 +17,7 @@ initialization is used is defined in \figref{fig:lazy} with the $\rgse$ relation
 using the $\rightarrow_I^*$ relation from \figref{fig:lazyInit}, to ensure the accessed field is
 instantiated. Initialization in GSE never
 happens for more than one object on any use of $\rightarrow_I^*$:
-the set $\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case spits when it instantiates: each choice is a new unique heap. This changes in the next section with the new symbolic initialization that collects all the choices into a single heap using guarded value sets.
+the set $\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case splits when it instantiates: each choice is a new unique heap. This changes in the next section with the new symbolic initialization that collects all the choices into a single heap using guarded value sets.
 
 The rest of the rules in \figref{fig:lazy} do not initialize, but they are included to elucidate how symbolic initialization differs from GSE with lazy initialization. In particular, there is no branching in the search space on reference compare for GSE because references point to a single location after initialization. The new symbolic initialization using guarded value sets in this papers changes this behavior. 
 

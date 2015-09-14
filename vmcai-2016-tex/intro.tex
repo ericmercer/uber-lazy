@@ -32,8 +32,8 @@ references~\cite{Chen:2013,Qu:2011}. Generalized symbolic execution
 (\gsetxt{}), and its variants, provide an accurate
 solution, but they quickly produce an overwhelming number of execution
 paths for all but the simplest heap shapes \cite{GSE03,Deng:2007}. Efforts to
-extend~\gsetxt{} principles to guarded value sets have failed to
-produce provably equivalent results \cite{LISTEFFORTS}. Thus, despite
+extend~\gsetxt{} principles to guarded value sets have yet to
+produce provably equivalent results \cite{LISTOFEFFORTS}. Thus, despite
 the advantages of using guarded value sets, it remains an open
 question to how they can be used in symbolic execution to automatically
 model all possible program behaviors in the case of an arbitrary input
@@ -56,7 +56,7 @@ no extra GSE heaps.
 
 A proof-of-concept implementation of symbolic initialization is
 reported in this paper. The implementation is for Java in the Java
-Pathfinder tool. It demonstrates on a standard set of benchmarks for GSE evaluation (\cite{PAPERSESTABLISHINGBENCHMARKSET}) an increase in the number of heaps that can be analyzed when compared to existing ~\gsetxt{} methods. Although guarded value
+Pathfinder tool. It demonstrates on a command set of data structure benchmarks for GSE evaluation (\cite{PAPERSESTABLISHINGBENCHMARKSET}) an increase in the number of heaps that can be analyzed when compared to existing ~\gsetxt{} methods. Although guarded value
 sets require extra interaction with an SMT solver, the
 savings in representing multiple heap shapes in a single
 structure can overcome the cost of the solver calls. For the tree structures in the standard benchmarks, the

@@ -35,10 +35,10 @@ $\lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgnt{*} \rightarrow
 left and right operands $\lp \cfgnt{v}\ \cfgt{=}\ \cfgnt{*}
 \rightarrow \cfgnt{k}\rp$, the prime symbol indicates a null reference
 in the operation or a false outcome, and \emph{\com} is everything
-else in the language. Any state relation, say $\rightarrow_x$, is
+else in the language. Any state relation, say $\rightarrow_x^Y$, is
 trivially extended to sets of states as
 $$
-P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Leftrightarrow p^\prime \in P^\prime))
+P \hookrightarrow_x^Y P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x^Y p^\prime \Leftrightarrow p^\prime \in P^\prime))
 $$
 Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of
 states. From this extension, a new meta transition relation is defined
@@ -84,7 +84,7 @@ The \textbf{homomorphism constraint} is
 \]
 %\end{align*}
 \end{definition}
-Functional equivalence asserts a common structure in the two heaps under certain
+The notation $\cfgnt{L}_p^\rightarrow$ denotes the image of $\cfgnt{L}_p$. Functional equivalence asserts a common structure in the two heaps under certain
 conditions. It is used to relate states in $p \rgse
 p^\prime$ to states in $q \rsym q^\prime$.
 \begin{definition}
@@ -117,8 +117,8 @@ $(P\ q)$ such that
 \end{equation}
 If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsubset)$ is the bisimilarity relation denoted by $\sim$.
 \end{definition}
-Although the functional reasons over a forward and backward
-simulation as typical~ \cite{Sangiorgi:2011}, its use of a meta-relation, $\rsgse$, is unique. 
+Other than the use of a meta-relation, $\rsgse$, \defref{bisimulation} reasons over the typical forward and backward
+simulation~\cite{Sangiorgi:2011}.
 
 In the following lemma, $S$ is the universe of well-formed states, and $S_{FA} \subseteq S$ is the set of states at a field access continuation having computed the base reference.
 \begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]

@@ -38,49 +38,46 @@ merging~\cite{Sen:2014}, and for determining
 invariants~\cite{Ferrara:2014,Torlak:2014}.
 
 A common hurdle to using guarded value sets is the treatment of
-symbolic heap inputs. For many applications, it is desirable to model
-the input heap as unconstrained, with operations over the input
-references providing the only means of divining its
-structure. Precisely modeling operations on unconstrained heap inputs
+\emph{symbolic} heap inputs. A symbolic heap input refers to a portion of the heap that is yet unconstrained, meaning that it is able to take on any shape. For many applications, such a symbolic heap input is desirable for modeling sets of heaps in the analysis: the operations on the heap discovered in the analysis further constrain the symbolic heap input
+structure.
+
+Precisely modeling operations on unconstrained heaps
 is challenging because it requires formulating logical predicates over
 an input domain that contains a potentially unbounded number of hidden
 references~\cite{Chen:2013,Qu:2011}. Generalized symbolic execution
-(\gsetxt{}) methods~\cite{GSE03,Deng:2007} provide an accurate
+(\gsetxt{}), and its variants, provide an accurate
 solution, but they quickly produce an overwhelming number of execution
-paths for all but the simplest heap shapes. Efforts to
+paths for all but the simplest heap shapes \cite{GSE03,Deng:2007}. Efforts to
 extend~\gsetxt{} principles to guarded value sets have failed to
 produce provably equivalent results \cite{LISTEFFORTS}. Thus, despite
 the advantages of using guarded value sets, it remains an open
-question how they can be used in symbolic execution to automatically
+question to how they can be used in symbolic execution to automatically
 model all possible program behaviors in the case of an arbitrary input
 heap.
 
-The contribution of this work is a symbolic initialization scheme for
-uninitialized references in a fully symbolic heap. Where GSE lazily
+The contribution of this work is \emph{symbolic initialization} for 
+uninitialized references in a fully symbolic heap. Where \gsetxt\ lazily
 instantiates uninitialized references to either NULL, a new instance
-of the correct type, or an alias to a previously initialized object,
-the symbolic initialization in this work creates a guarded value set
-expressing all of these eventualities in the same symbolic heap. Where
-GSE branches the search space on each choice, symbolic initialization
-does not. Symbolic initialization only branches on reference compares,
-partitioning the symbolic heap to indicate heaps where the references
+of the correct type, or an alias to a previously initialized object, \symtxt\ creates a guarded value set
+expressing all of these eventualities in a single symbolic heap. Where
+\gsetxt\ branches the search space on each choice, \symtxt{} does not. Symbolic initialization only branches on reference compares; thus it creates equivalence classes over heaps and only partitions those classes at compares to indicate heaps where the references
 alias and heaps where the references do not.
 
-This paper includes a proof that symbolic initialization is sound and
-complete with respect to properties provable by GSE. Such a result is
-important because it means that symbolic initialization can be used to
+This paper includes a proof that \symtxt\ is sound and
+complete with respect to properties provable by \gsetxt. Such a result is
+important because it means that \symtxt\ can be used to
 create test inputs for other analyses in a way that is provably
-correct with regards to GSE: there are no missing heaps and there are
-no extra heaps.
+correct with regards to \gsetxt: there are no missing \gsetxt\ heaps and there are
+no extra GSE heaps.
 
 A proof-of-concept implementation of symbolic initialization is
 reported in this paper. The implementation is for Java in the Java
 Pathfinder tool. It demonstrates the efficiency of~\symtxt{}, as
-compared to existing~\gsetxt{} methods. The use of the guarded value
-sets does require extra interaction with an SMT solver, but the
+compared to existing~\gsetxt{} methods. Although guarded value
+sets require extra interaction with an SMT solver, the
 savings in representing multiple heap shapes in a single
-representation overcomes the cost of the solver calls. In fact, the
+structure overcomes the cost of the solver calls. In fact, the
 comparison shows an exponential increase in the number of heaps that
-can be analyzed in a set of benchmark examples meaning that other
-approaches based on~\gsetxt\ fail to complete.
+can be analyzed in a set of benchmark examples, meaning that other
+approaches based on~\gsetxt\ fail to complete in the allotted time.
 

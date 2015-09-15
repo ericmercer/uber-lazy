@@ -57,7 +57,7 @@ no extra GSE heaps.
 
 A proof-of-concept implementation of symbolic initialization is
 reported in this paper. The implementation is for Java in the Java
-Pathfinder tool. It demonstrates on a common set of data structure benchmarks for GSE evaluation~\cite{Deng:2006,Deng:2007,boyapati2002korat,Ferrara:2014,Rosner:2015} an increase in the number of heaps that can be analyzed when compared to existing ~\gsetxt{} methods. Although guarded value
+Pathfinder tool. It demonstrates on a common set of data structure benchmarks for GSE evaluation~\cite{Deng:2006,Deng:2007,boyapati2002korat,Ferrara:2014,Rosner:2015} an increase in the number of heaps that can be analyzed when compared to existing~\gsetxt{} methods. Although guarded value
 sets require extra interaction with an SMT solver, the
 savings in representing multiple heap shapes in a single
 structure can overcome the cost of the solver calls. For the tree structures in the standard benchmarks, the
@@ -65,8 +65,8 @@ comparison shows an exponential increase in the number of heaps that
 can be analyzed, meaning that other
 approaches based on~\gsetxt\ fail to complete in the allotted time.
 
-In summary, this paper presents a new initialization technique that
+In summary, this paper presents a new initialization technique called symbolic initialization that
 enables the use of guarded value sets in heap representations in a
-sound and complete manner. Such a result means that any analysis using
-this initialization technique can be assured of precision with regard
-to \gsetxt{} semantics \cite{THINGSTHATBENEFIT}. This includes generating concrete heaps for test input generation.
+sound and complete manner. Such a result means that guarded 
+value set-based analysis methods~\cite{Ferrara:2014,Torlak:2014,Sen:2014,Xie:2005,Dillig:2011,Yorsh:2008} can use symbolic initialization to be assured of precision with regard
+to~\gsetxt{} semantics. This includes generating concrete heaps for test input generation.

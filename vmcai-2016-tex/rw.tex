@@ -5,49 +5,29 @@
 The symbolic heap methods in this work build upon a
 number of prior program analysis techniques that use guarded value sets to
 represent program
-state~\cite{Sen:2014,Torlak:2014,Yorsh:2008,Xie:2005,Dillig:2011,Elkarablieh:2009}. In particular, the field write and equals reference compare are not much different than what is already in these works. The real contribution of \symtxt\ is the initialization part of the field access rules which preserves the \gsetxt\ semantics.
-The method was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005,Yorsh:2008}, where value sets were used to 
-represent aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps.
+state~\cite{Sen:2014,Torlak:2014,Xie:2005,Dillig:2011,Elkarablieh:2009}. 
+The method was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005}, where value sets were used to 
+initialize aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps, but was instead limited to heaps without recursive data structures. 
 
-Recently, value sets have been adapted for use in symbolic execution, for the purposes of state merging ~\cite{Sen:2014,Torlak:2014} and invariant detection~\cite{Ferrara:2014}. While these methods demonstrate the utility of value sets in combination with symbolic execution, none of these techniques address dereferencing of symbolic input references. Since dereferencing is a fundamental problem treated in this paper, these other works may be considered both orthogonal and complimentary to~\symtxt{}.
+Recently, value sets have been adapted for use in symbolic execution, for the purposes of state merging ~\cite{Sen:2014,Torlak:2014} and invariant detection~\cite{Ferrara:2014}. These methods demonstrate the utility of value sets in combination with symbolic execution. However, none of these techniques address the dereferencing of symbolic input references. Since dereferencing is a fundamental problem treated in this paper, these other works may be considered both orthogonal and complimentary to~\symtxt{}.
 
 %\subsection{Other Heap Representations in Symbolic Execution}
 %Need to talk about GSE, DSE, SAGE, PEX
 %GSE
-Several projects have generalized the core idea of symbolic execution,
-enabling it to be applied to programs with more general types,
+Symbolic initialization also draws inspiration from lazy initialization, the core idea of generalized symbolic execution (\gsetxt{})\cite{GSE03}. Several projects have used lazy initialization to conduct symbolic execution on programs with more general types,
 including references and
-arrays~\cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. However, these
-generalized symbolic execution (\gsetxt{}) techniques work by branching over
+arrays~\cite{KiasanKunit,Cadar:2008,Deng:2007,Rosner:2015,Blackshear:2013,Filieri:2015}. However, \gsetxt{} techniques branch over
 multiple copies of the system state during dereferencing operations,
 exacerbating path explosion.
 
+%Other projects have used non value-set based symbolic heap representations, including dynamic symbolic execution engines, and separation logic based solvers. 
+
 %DSE
-Dynamic symbolic execution (\dsetxt{}) techniques may use
-concretization when reasoning about references~\cite{Godefroid:2005,Sen:2005,Godefroid:POPL07,Tillmann:2008}, enabling much greater program
-coverage than classical symbolic execution alone. In particular, PEX~\cite{Tillmann:2008}
-has demonstrated a high degree of utility in a wide variety of 
-practical verification scenarios. Sometimes,
-however, as demonstrated in~\cite{Elkarablieh:2009},~\dsetxt{}
-under-approximates the possible heaps configurations when it
-concretizes symbolic values. The SAGE~\dsetxt{}
-engine~\cite{Elkarablieh:2009} includes more sophisticated methods for
-reasoning symbolically about references, and can successfully handle
-complicated examples. However, SAGE uses a
-theory of fixed-length arrays to model the heap, and is thus incomplete
-for programs with input-dependent memory allocation. It is hoped that the 
-techniques presented in this work can be used to extend practical tools 
-like PEX for applications requiring formal correctness guarantees.
+A number of dynamic symbolic execution (\dsetxt{}) methods use some form 
+of symbolic heap representation, including PEX~\cite{Tillmann:2008} and SAGE~\cite{Elkarablieh:2009}. These~\dsetxt{} methods have shown a high degree of utility in practical applications with a wide variety of real-world programs. However, PEX and SAGE use array theories to represent program state instead of guarded value sets. The use of array theories impacts the completeness of SAGE, which was proven complete only for programs whose memory allocations are independent of their inputs. We are unaware of any completeness results regarding PEX, but we suspect that a proof would require the same qualifications as SAGE. 
 
-%
-%\subsection{Formal Results on Symbolic Heaps}
-The symbolic heap used by SAGE~\cite{Elkarablieh:2009} was shown to be sound and complete for programs with input-independent memory allocation.~\symtxt{} is sound and complete for all states reached by symbolic execution. 
+Several separation logic solvers have been proven to be sound and complete for heaps with linked lists~\cite{Navarro:2011,Cook:2011,Berdine:2005}, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. Separation logic solvers can also reason about entailment, which is presently beyond the scope of~\symtxt{}. However,~\symtxt{} is sound and complete without restriction on data structures, and requires no explicit invariants.
 
-Recently, several separation logic solvers have been proven to be sound and complete for heaps with linked lists, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. In contrast,~\symtxt{} is sound and complete without restriction on data structures, and requires no explicit invariants, but this result is restricted to the properties provable by symbolic execution. 
-
-The heap in~\cite{Dillig:2011} was proven to be monotonic with respect to the number of valid solutions. 
-
-Some heap methods, such as those used by VC generators, may be sound and complete if the correct bounds are chosen. However, choosing the bounds is at least as hard as analyzing the program. 
 
 
 

@@ -5,8 +5,8 @@
 The symbolic heap methods in this work build upon a
 number of prior program analysis techniques that use guarded value sets to
 represent program
-state~\cite{Sen:2014,Torlak:2014,Xie:2005,Dillig:2011,Elkarablieh:2009}. 
-The method was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005}, where value sets were used to 
+state~\cite{Sen:2014,Torlak:2014,Xie:2005,Dillig:2011,Elkarablieh:2009}. In particular, the field write and equals reference compare rules are similar to methods appearing in these works. The real contribution of \symtxt\ is the initialization part of the field access rules which preserves the \gsetxt\ semantics.
+Guarded value set heap initialization was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005}, where value sets were used to 
 initialize aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps, but was instead limited to heaps without recursive data structures. 
 
 Recently, value sets have been adapted for use in symbolic execution, for the purposes of state merging ~\cite{Sen:2014,Torlak:2014} and invariant detection~\cite{Ferrara:2014}. These methods demonstrate the utility of value sets in combination with symbolic execution. However, none of these techniques address the dereferencing of symbolic input references. Since dereferencing is a fundamental problem treated in this paper, these other works may be considered both orthogonal and complimentary to~\symtxt{}.

@@ -10,7 +10,7 @@
 The theorems in this section establish the soundness and
 completeness of the symbolic heap approach with respect to Generalized
 Symbolic Execution (\gsetxt{}). Intuitively, the theorems imply that any properties proven
-with~\gsetxt{} can also be proved using the symbolic heap
+with~\gsetxt{} can also be proved using the~\symtxt{}
 algorithm. What follows is a brief description of the requisite terminology,
 followed by the theorem statements. The proofs for the theorems, as well as
 the complete set of semantic rules for~\gsetxt{} and~\symtxt{} can
@@ -20,7 +20,7 @@ The theorems assert the existence of a
 bisimulation between sets of states related by~\gsetxt{} ($p \rgse
 p^\prime$) and states related by the symbolic heap and update rules in this paper ($q \rsym
 q^\prime$). The relations are on the universe of \emph{well-formed}
-states $S$, which have the properties in \secref{sec:sh} with the
+states $S$, which have the properties in \secref{sec:symheap} with the
 constraint that the states are \emph{feasible}: successors exist
 unless at \cfgt{end}. Let $p \rgse p^\prime$ be a union over relations
 for~\gsetxt{} (see~\cite{Hillery:2015}): $\rgse = \rgse^\mathit{A} \cup
@@ -38,7 +38,7 @@ in the operation or a false outcome, and \emph{\com} is everything
 else in the language. Any state relation, say $\rightarrow_x^Y$, is
 trivially extended to sets of states as
 $$
-P \hookrightarrow_x^Y P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x^Y p^\prime \Leftrightarrow p^\prime \in P^\prime))
+P \hookrightarrow_x^Y P^\prime \defeq \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x^Y p^\prime \Leftrightarrow p^\prime \in P^\prime))
 $$
 Let $\hookrightarrow_\gse$ be the extension of $\rgse$ to sets of
 states. From this extension, a new meta transition relation is defined
@@ -66,7 +66,7 @@ members as in $p = (
 A \textbf{homomorphism}, given the universe of field indices $\mathcal{F}$ and the universe of locations $\mathcal{L}$, is 
 $$
 \begin{array}{l}
- s_p \rightharpoonup_{h} s_q \Leftrightarrow 
+ s_p \rightharpoonup_{h} s_q \defeq
 \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}\ ( \forall \phi_\alpha\ (\\ 
 \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow \\
 \ \ \ \ \ \ \ \ \exists \phi_\beta\ ( (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ 
@@ -79,7 +79,7 @@ $$
 The \textbf{homomorphism constraint} is
 %\begin{align*}
 \[
-\mathbb{HC}(p \rightharpoonup_{h} q) = 
+\mathbb{HC}(p \rightharpoonup_{h} q) \defeq
 \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\}
 \]
 %\end{align*}
@@ -94,7 +94,7 @@ States $(p\ q)$ are in the \textbf{representation relation}, $p \sqsubset q$, if
 homomorphism $p \rightharpoonup_{h} q$
 such that $\mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) )$.
 The represented relation is extended to sets of states $P$ and a single state $q$ as
-$P \sqsubset q \Longleftrightarrow \forall p\ (p \sqsubset q \Leftrightarrow p \in P)$.
+$P \sqsubset q \defeq \forall p\ (p \sqsubset q \Leftrightarrow p \in P)$.
 \end{definition}
 The statement $p \sqsubset q$ ensures that a functionally equivalent
 heap to the one in $p$ is present, by the homomorphism, and valid, by

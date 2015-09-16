@@ -1,0 +1,64 @@
+\section{Related Work}
+\label{sec:related}
+%
+%\subsection{Program Analysis using Symbolic Heaps}
+The symbolic heap methods in this work build upon a
+number of prior program analysis techniques that use guarded value sets to
+represent program
+state~\cite{Sen:2014,Torlak:2014,Xie:2005,Dillig:2011,Elkarablieh:2009}. In particular, the field write and equals reference compare rules are similar to methods appearing in these works. The real contribution of \symtxt\ is the initialization part of the field access rules which preserves the \gsetxt\ semantics.
+Guarded value set heap initialization was pioneered in Verification-Condition Generator (VCG) style techniques such as ~\cite{Xie:2005}, where value sets were used to 
+initialize aliasing-free tree-like heaps. The work in~\cite{Dillig:2011} relaxed the aliasing restrictions by using a pre-computed set of symbolic input heaps, but was instead limited to heaps without recursive data structures. 
+
+Recently, value sets have been adapted for use in symbolic execution, for the purposes of state merging ~\cite{Sen:2014,Torlak:2014} and invariant detection~\cite{Ferrara:2014}. These methods demonstrate the utility of value sets in combination with symbolic execution. However, none of these techniques address the dereferencing of symbolic input references. Since dereferencing is a fundamental problem treated in this paper, these other works may be considered both orthogonal and complimentary to~\symtxt{}.
+
+%\subsection{Other Heap Representations in Symbolic Execution}
+%Need to talk about GSE, DSE, SAGE, PEX
+%GSE
+Symbolic initialization also draws inspiration from lazy initialization, the core idea of generalized symbolic execution (\gsetxt{})\cite{GSE03}. Several projects have used lazy initialization to conduct symbolic execution on programs with more general types,
+including references and
+arrays~\cite{KiasanKunit,Cadar:2008,Blackshear:2013,Filieri:2015}. Improvements to the basic lazy initialization algorithm have been proposed, including delaying aliasing choices~\cite{Deng:2007}, or checking initializations against invariants as they occur~\cite{Braione:2015,Rosner:2015}. However, these \gsetxt{} techniques branch over
+multiple copies of the system state during dereferencing operations,
+exacerbating path explosion.
+
+%Other projects have used non value-set based symbolic heap representations, including dynamic symbolic execution engines, and separation logic based solvers. 
+
+%DSE
+A number of dynamic symbolic execution (\dsetxt{}) methods use some form 
+of symbolic heap representation, including PEX~\cite{Tillmann:2008} and SAGE~\cite{Elkarablieh:2009}. These~\dsetxt{} methods have shown a high degree of utility in practical applications with a wide variety of real-world programs. PEX and SAGE use array theories to represent program state instead of guarded value sets.
+SAGE has been proven complete for programs whose memory allocations are independent of their inputs. This work is complementary to PEX and SAGE, and we believe could be leveraged to further improve those tools. 
+
+Several separation logic solvers have been proven to be sound and complete for heaps with linked lists~\cite{Navarro:2011,Cook:2011,Berdine:2005}, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. Separation logic solvers can also reason about entailment which is a subject of future work for symbolic initialization. Solutions in separation logic do not lend themselves to test case generation,  a goal of this work. 
+
+%Odds and ends leftover from last time:
+
+%Our work leverages the core idea in generalized symbolic execution
+%with lazy initialization using on-the-fly reasoning to model a
+%black-box input heap during symbolic execution, but avoids the
+%nondeterminism introduced by~\gsetxt{} by constructing a single
+%symbolic heap and polynomially-sized path condition for each control
+%flow path.
+%
+%Recent progress has been made towards mitigating path explosion via state merging~\cite{Kuznetsov:2012,Sen:2014,Torlak:2014}. 
+%
+%
+
+%
+%Many bounded model checking (BMC) methods include a model for
+%reasoning about references, including those described
+%in~\cite{Clarke:2004,Barnett:2006,Xie:2005,Babic:2007,Dillig:2011}. However,
+%BMC techniques generally need to predetermine bounds of a heap. Other
+%limitations include assuming that symbolic references do not
+%alias~\cite{Xie:2005,Babic:2007}, that data structures are not
+%recursive~\cite{Dillig:2011}, or prohibiting dereferencing of
+%black-box input references~\cite{Clarke:2004}.
+%
+%A number of constraint-based programming techniques are capable of
+%reasoning about
+%heaps~\cite{Degrave:2010,Charreteur:2009,Albert:2013}. Most notably,
+%the technique in~\cite{Albert:2013} is capable of reasoning about
+%dereferencing operations in a per-path set of unknown input
+%heaps. However, no guarantees are made about the precision of the
+%analysis performed.
+%
+%
+%

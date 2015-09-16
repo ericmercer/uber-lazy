@@ -33,7 +33,7 @@
 \newcommand{\Gsest}{\ensuremath{P}}
 \newcommand{\symst}{\ensuremath{q}}
 
-\newcommand{\symtxt}{summary heap}
+\newcommand{\symtxt}{symbolic initialization}
 \newcommand{\gsetxt}{GSE}
 \newcommand{\dsetxt}{DSE}
 
@@ -161,34 +161,27 @@
 
 
 \input{intro}
-%\input{motivation}
-\input{javalite}
-\input{heap}
-%\input{lazy}
-\input{precise}
-\input{operations}
-%\input{bisimulation}
+%\input{javalite}
+%\input{heap}
+%\input{precise}
+%\input{operations}
 
-\section{Common Rules for Javalite}
+\input{summary-heap}
+\input{approach}
+
+
+\section{Common Rules for Symbolic Execution}
 \input{javalite-common}
 
-The surface syntax and the machine syntax for the Javalite syntactic
-machine are in the main paper. \figref{fig:javalite-common} defines
-the rewrite relations for the portion of the Javalite language
+\figref{fig:javalite-common} defines
+the rewrite relations for the portion of the language
 semantics that are common to both generalized symbolic execution and
-the summary heap algorithm. The relation $\rcom$ includes all of these
+the~\symtxt{} algorithm. The relation $\rcom$ includes all of these
 rules. Excepting \textrm{N{\footnotesize EW}}, the rules do not update
 the heap, and are largely concerned with argument evaluation in an
 expected way. It is assumed that only type safe programs are input to
 the machine so there is no type checking or error conditions. The
 machine simply halts if no rewrite is enabled.
-
-%% Includes its section definition
-\input{lazy}	
-
-%\input{precise-fig}
-
-%\input{summarize-precise}
 
 The rewrite rules for field access or field write when a null reference is possible leads to an error state.
 $$
@@ -217,10 +210,15 @@ restrict out all possible null instances.
 
 \input{definitions}
 \input{proofs}
-\input{results}
+
+
 \input{evaluation}
-\input{related}
+\input{rw}
 \input{conclusion}
+%\input{results}
+%\input{evaluation}
+%\input{related}
+%\input{conclusion}
 
 
 %\input{stateDescriptions}

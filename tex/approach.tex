@@ -1,0 +1,248 @@
+\section{Symbolic Initialization}
+\label{sec:precise}
+%Although the lazy initialization method used in~\gsetxt{} can be applied
+%to guarded value sets, a direct case-splitting implementation would run into the same
+%path explosion problems as~\gstetxt{}. A more desirable approach would be to create a new~\symtxt{} scheme that uses the state merging properties inherent to guarded value sets in order to avoid creating new paths during dereferencing operations. To accomplish this in a manner equivalent to~\gsetxt{}, uninitialized reference values must be initialized to guarded value sets that exactly reproduce the behavior of the individual~\gsetxt{} paths. Since~\gsetxt{} either chooses a new reference, a null reference, or an alias to an existing reference during lazy initialization, it seems obvious that these should be the locations represented in the guarded value set produced by~\symtxt{}. Although choosing the appropriate locations is straightforward, choosing the guards is more complicated. Since lazy initialization does not alter the path condition, it provides few clues as to what guards might be used. Thus, choosing the appropriate guards is the key obstacle in creating the desired~\symtxt{} scheme.
+%
+%If the exact nature of the guards is opaque, a few of the requirements may be divined by observing the properties of references. Since in a concrete heap, no reference points to two locations at the same time, the guards in any value set must be mutually exclusive. Also, since every reference points somewhere~\footnote{Even so-called dangling pointers can be thought of as pointing to unallocated memory.}, the set of guards must be collectively exhaustive. Furthermore, the fact that the input heap may contain a practically unbounded number of distinct references indicates that the value domain of the variables used in the guards should be similarly unbounded. 
+
+%We don't really care about the locations where the references are stored, only whether references alias or not.
+
+This work presents a new initialization scheme which avoids the
+nondeterminism introduced by~\gsetxt{}. Called \emph{\symtxt{}}, this scheme leverages the core idea in generalized symbolic execution
+with lazy initialization, using on-the-fly reasoning to model a
+black-box input heap during symbolic execution. Unlike~\gsetxt{}, \symtxt{} constructs a single
+symbolic heap and polynomially-sized path condition for each control
+flow path.
+
+There are three sets of rewrite
+rules specific to the~\symtxt{} algorithm: (i) rules to initialize
+symbolic references, (ii) rules to perform field dereferences and
+writes, and (iii) rules to check equality and inequality of
+references. Rules relating to (ii) and (iii) are similar to previously proposed methods utilizing guarded value sets \cite{Sen:2014,Dillig:2011}. The rules for (i) are novel in how they  preserve \gsetxt\ semantics.
+
+\input{summarize-precise-incomplete}
+
+\begin{figure*}[t]
+\centering
+%\begin{center}
+\begin{tabular}[c]{l}
+\scalebox{1.0}{\usebox{\boxPI}} \\
+
+\end{tabular}
+%\end{center}
+
+\caption{Initializing fields, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+\label{fig:symInit}
+\end{figure*}
+
+In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
+field $f$, the $\mathrm{min}_l$ function returns
+$(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
+uninitialized locations in $\Lambda$ to make initialization
+deterministic.  The set $\rho$ contains reference-location pairs that
+represent potential aliases, where $\mathrm{isInit}\lp\rp$ ensures that the references are initialized. 
+There are four cases encoded in the
+symbolic heap. The first three correspond to the three types of choices made during lazy initialization: (i) $\theta_\mathit{null}$ represents the condition
+where $\cfgnt{l}_\mathit{null}$ is possible, (ii)
+$\theta_\mathit{new}$ represents the case where $\cfgnt{r}_f$ points
+to a fresh location, (iii) each member of $\theta_\mathit{alias}$
+restricts $\cfgnt{r}_f$ to a particular alias in $\rho$, and at the
+same time, not alias any member of $\rho$ that was initialized earlier
+than the current choice. 
+
+Unlike the first three cases, which correspond directly to~\gsetxt{} initialization rules, case (iv) is unique to~\symtxt{}. In this case, $\theta_\mathit{orig}$ implements conditional initialization to preserve the original heap structure. This step is necessary in order to maintain homomorphism\footnote{Homomorphism is an important property relied on by the correctness proof.} between symbolic heaps created using~\symtxt{} and the~\gsetxt{} heaps they are intended to represent. 
+The sets from each of the four cases are added into the heap on $\cfgnt{r}_f$ after the fields
+for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
+
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}[c]{c|c|c}
+\begin{tabular}[c]{c c}
+\scalebox{0.81}{\input{origHeap.pdf_t}}&  \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeXHeap.pdf_t}} \\
+\end{tabular} &
+\begin{tabular}[c]{c}
+\scalebox{0.81}{\input{summarizeYHeap.pdf_t}} \\
+\end{tabular}\\
+(a) & (b) & (c)\\
+\end{tabular}
+\begin{tabular}[c]{c}
+\begin{tabular}[c]{c c}
+\hline
+\begin{tabular}[c]{l}
+$\rho := \{ (\cfgnt{r}_1^i\ \cfgnt{l}_1) \}$ \\
+$\theta_\mathit{null} := \{ ( \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}\ \cfgnt{l}_\mathit{null}) \}$\\
+$\theta_\mathit{new} := \{ ( \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i\ \cfgnt{l}_2) \}$\\
+$\theta_\mathit{alias} := \{ ( \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i\ \cfgnt{l}_1) \}$\\
+$\theta_\mathit{orig} := \{ \}$ \\
+\end{tabular} &
+\begin{tabular}[c]{l}
+$\phi_{\mathit{1a}} := \cfgnt{r}_1^i = \cfgnt{r}_\mathit{null} $ \\
+$\phi_{\mathit{1b}} := \cfgnt{r}_1^i \neq \cfgnt{r}_\mathit{null} $  \\
+$\phi_{\mathit{2a}} := \cfgnt{r}_2^i = \cfgnt{r}_\mathit{null}$ \\
+$\phi_{\mathit{2b}} := \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i \neq \cfgnt{r}_1^i$ \\
+$\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt{r}_2^i = \cfgnt{r}_1^i $ \\
+\end{tabular}\\
+\end{tabular} \\
+(d)
+\end{tabular}
+\end{center}
+\caption{An example that initializes $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ and $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$. (a) Initial heap structure. (b) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{x}\rp$ is initialized. (c) After $\lp\cfgt{this}\  \cfgt{\$}\ \cfgnt{y}\rp$ is initialized. (d) Sets in the initialization rule and constraints on the edges.}
+\label{fig:initHeap}
+\end{figure*}
+
+\figref{fig:initHeap} illustrates the initialization process. The
+graph in~\figref{fig:initHeap}(a) represents the initial heap. The
+reference superscripts $s$ and $i$ indicate the partition containing
+the reference.  In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a
+stack reference for the $\cfgt{this}$ variable which has two fields
+$x$ and $y$ of the same type. Note that when no constraint is
+specified for a location, there is an implicit $\mathit{true}$
+constraint. For example, $\cfgnt{r}_0^s$ points to $\cfgnt{l}_0$ on
+the constraint $\mathit{true}$. The fields $x$ and $y$ point to the
+uninitialized reference $\cfgnt{r}_\mathit{un}$. The graph
+in~\figref{fig:initHeap}(b) represents the symbolic heap after the
+initialization of the $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$ field
+while the graph in~\figref{fig:initHeap}(c) represents the symbolic
+heap after the initialization of the
+$\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$ field following the
+initialization of $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$. The list
+in~\figref{fig:initHeap}(d) represents the various sets constructed in
+the initialization $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. 
+
+
+\input{precise-fig-incomplete}
+
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}[c]{l}
+\scalebox{1.0}{\usebox{\boxPFAFW}} \\
+\end{tabular}
+\end{center}
+\caption{Field read and write relations: Field-access, $\rsym^\mathit{A}$, and field-write, $\rsym^\mathit{W}$, rewrite rules for the $\rsym$ relation.}
+\label{fig:fHeap}
+\end{figure*}
+
+
+There are two rewrite rules in~\figref{fig:fHeap}, one for reading
+the value of a field (field-access) and the other for writing to a
+field (field-write). Both rules first check that the operations can be
+performed on a non-null location. The field-access rewrite rule
+in~\figref{fig:fHeap} dereferences a field of type $\cfgnt{C}$ and
+uses \figref{fig:symInit}, to get a new symbolic heap that is
+initialized on the field $\cfgnt{f}$. The symbolic heap is further
+modified to include a new stack reference pointing to the guarded value set
+(possible values of the field) returned during the dereferencing; the
+new stack reference is the return value from the $\mathbb{VS}$ operation.
+
+ \input{value-set-def} 
+
+For a reference $\cfgnt{r}$ and field $\cfgnt{f}$, the value set function computes 
+the guarded value set of locations and access path constraints
+that are feasible under the current path condition $\phi_g$.
+The access path constraint is the union of two local constraints: 
+the constraint $\phi$ from dereferencing $\cfgnt{r}$ to location $\cfgnt{l}$, 
+and the constraint $\phi^\prime$ from dereferencing the field $\cfgnt{f}$ of the location $\cfgnt{l}$ to the actual location of the field, $\cfgnt{l}^\prime$. 
+This access path constraint, paired with location $\cfgnt{l}^\prime$, is a member of the value set only if its union with the path condition is satisfiable, ensuring that the access path is valid and feasible under the path condition.
+ % \nsr{neha: this para needs work -- flow and content tao: worked on the flow}
+
+
+For field-write in~\figref{fig:fHeap}, after the non-null check and
+strengthening of the global heap constraint, it computes the current
+references associated with the field in every location in
+$\Psi_\cfgnt{x}$. Note that the reference $\cfgnt{r}_x$ is the base
+reference whose field, $\cfgnt{r}_\mathit{cur}$ is being written to,
+while the reference $r$ is the target reference. The set $\Psi_x$
+contains tuples $(\phi\ l\ \cfgnt{r}_\mathit{cur})$ of constraints,
+locations, and references. These tuples represent access chains
+leading from $\cfgnt{r}_x$ to the reference of the field,
+$\cfgnt{r}_\mathit{cur}$. The goal is to change the fields to no
+longer point to $\cfgnt{r}_\mathit{cur}$, but rather fresh references
+that have both the original locations before the write and the
+locations from the write in the value sets (i.e., conditional
+write). Since the target of the write is $r$, the rule checks that the
+constraints of the guarded value set $\cfgnt{L}(\cfgnt{r})$ are satisfiable
+when accessed through the $\cfgnt{r}_x$ chain in the strengthening
+function.  \input{st-def} Constraints on locations are strengthened
+with new aliasing conditions and those that are feasible with the
+current path condition are retained.
+
+Strengthening in the field write creates a value set that contains two
+types of locations: those for the case where the write is feasible
+(the first call), and those for the case where it is not (the second
+call). In the case that $\phi$ is true then $\cfgnt{r}_\mathit{cur}$
+will point to the guarded value set $\cfgnt{L}(\cfgnt{r})$.
+Whereas, if $\phi$ is false then $\cfgnt{r}_\mathit{cur}$ will
+continue to point to the constraint location pair it currently
+references.  As the references are immutable, the rule creates fresh
+references for each $\cfgnt{r}_\mathit{cur}$ and points them to the
+appropriate value sets.
+
+\input{precise-eq}
+
+\begin{figure*}
+\begin{center}
+\begin{tabular}[c]{c}
+\scalebox{1.0}{\usebox{\boxPEQ}} \\
+% & \usebox{\boxPEX} \\ \\
+%(a) & (b) \\
+\end{tabular}
+\end{center}
+\caption{The reference compare rewrite rule for true, $\rsym^\mathit{E}$ outcomes.}
+\label{fig:eqs}
+\end{figure*}
+
+
+The rewrite rule to compare two references in the symbolic heap is
+shown in~\figref{fig:eqs}. The equals references-true rewrite rule
+returns true when two references $\cfgnt{r}_0$ and $\cfgnt{r}_1$
+\emph{can} be equal. Intutively, $\Phi_\alpha$ contains all
+constraints under which $\cfgnt{r}_0$ and $\cfgnt{r}_1$ may point to
+the same location in the symbolic heap. The second set, $\Phi_0$,
+contains constraints under which the reference $\cfgnt{r}_0$ points to
+corresponding locations such that the reference $\cfgnt{r}_1$
+\emph{does not} point to those locations under any
+constraint. Finally, the set, $\Phi_1$, contains constraints under
+which $\cfgnt{r}_1$ points to corresponding locations and
+$\cfgnt{r}_0$ \emph{does not} point to those locations under any
+constraint. The three sets of constraints are used to create a new path condition $\phi_g^\prime$
+as an update of the current path condition $\phi_g$.  The update is accomplished by first taking the disjunction of the
+constraints in $\Phi_\alpha$ to indicate that if any of the
+constraints are satisfiable, then references $\cfgnt{r}_0$ and
+$\cfgnt{r}_1$ can be equal. This disjunction is then conjoined with $\phi_g$ to form $\phi_g^\prime$. Furthermore, the conjunctions of negations to the
+constraints in $\Phi_0$ and $\Phi_1$ is conjoined with $\phi_g^\prime$. This indicates for locations
+that are not common to the references, the negations of their
+constraints are satisfiable. The rule does not complete (i.e., is not
+feasible) if the new global constraint is not satisfied on any
+aliasing assignment. In such a case, the $\cfgt{true}$ outcome is not
+possible on any symbolic heap. Before the rewrite rule returns
+$\cfgt{true}$, it verifies the satisfiability of the updated global heap
+constraint. The reference-false is the logical dual of the rule.
+
+
+Consider the example in~\figref{fig:initHeap}(c). In order to compare
+$\cfgnt{r}_1^i$ and $\cfgnt{r}_2^i$, the Equals rule gets the 
+guarded value set associated with each of the references:
+\[
+\cfgnt{L}(\cfgnt{r}_1^i) = \{ (\phi_{1a}\; \cfgnt{l}_\mathit{null})\; (\phi_{1b}\; \cfgnt{l}_1) \} 
+\]
+\[
+\cfgnt{L}(\cfgnt{r}_2^i) = \{ (\phi_{2a}\; \cfgnt{l}_\mathit{null})\; (\phi_{2b}\; \cfgnt{l}_2)\; (\phi_{2c}\; \cfgnt{l}_1) \} \\
+\]
+\noindent{The three constraint sets are:} 
+\[
+\Phi_\alpha = \{ (\phi_{1a}\; \wedge\; \phi_{2a} ) (\phi_{1b}\; \wedge\; \phi_{2c} ) \}\;
+\Phi_0 = \{ \}\; \Phi_1 = \{ \phi_{2b}\} \\
+\]
+\noindent{Finally the global constraint is} 
+\[
+\phi^\prime = \mathit{true} \wedge [ (\phi_{1a}\; \wedge\; \phi_{2a} )\vee (\phi_{1b}\; \wedge\; \phi_{2c} ) ] \wedge \neg\phi_{2b} 
+\]
+
+
+
+
+

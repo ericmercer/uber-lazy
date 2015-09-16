@@ -16,7 +16,7 @@ Recently, value sets have been adapted for use in symbolic execution, for the pu
 %GSE
 Symbolic initialization also draws inspiration from lazy initialization, the core idea of generalized symbolic execution (\gsetxt{})\cite{GSE03}. Several projects have used lazy initialization to conduct symbolic execution on programs with more general types,
 including references and
-arrays~\cite{KiasanKunit,Cadar:2008,Deng:2007,Rosner:2015,Blackshear:2013,Filieri:2015}. However, \gsetxt{} techniques branch over
+arrays~\cite{KiasanKunit,Cadar:2008,Blackshear:2013,Filieri:2015}. Improvements to the basic lazy initialization algorithm have been proposed, including delaying aliasing choices~\cite{Deng:2007}, or checking initializations against invariants as they occur~\cite{Braione:2015,Rosner:2015}. However, these \gsetxt{} techniques branch over
 multiple copies of the system state during dereferencing operations,
 exacerbating path explosion.
 
@@ -27,7 +27,7 @@ A number of dynamic symbolic execution (\dsetxt{}) methods use some form
 of symbolic heap representation, including PEX~\cite{Tillmann:2008} and SAGE~\cite{Elkarablieh:2009}. These~\dsetxt{} methods have shown a high degree of utility in practical applications with a wide variety of real-world programs. PEX and SAGE use array theories to represent program state instead of guarded value sets.
 SAGE has been proven complete for programs whose memory allocations are independent of their inputs. This work is complementary to PEX and SAGE, and we believe could be leveraged to further improve those tools. 
 
-Several separation logic solvers have been proven to be sound and complete for heaps with linked lists~\cite{Navarro:2011,Cook:2011,Berdine:2005}, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. Separation logic solvers can also reason about entailment which is a subject of future work for symbolic initialization. Solutions in separation logic do not lend themselves to test case generation is  goal in this work. 
+Several separation logic solvers have been proven to be sound and complete for heaps with linked lists~\cite{Navarro:2011,Cook:2011,Berdine:2005}, trees~\cite{Piskac:2014}, or data structures satisfying user-supplied invariants~\cite{Brotherston:2014}. Separation logic solvers can also reason about entailment which is a subject of future work for symbolic initialization. Solutions in separation logic do not lend themselves to test case generation,  a goal of this work. 
 
 %Odds and ends leftover from last time:
 

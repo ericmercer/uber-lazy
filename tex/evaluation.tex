@@ -37,7 +37,7 @@
 %\end{figure*}
 
 %\subsection{Analysis}
-The \symtxt{} algorithm is implemented as an extension to the Symbolic
+The~\symtxt{} algorithm is implemented as an extension to the Symbolic
 PathFinder (SPF)~\cite{DBLP:journals/ase/PasareanuVBGMR13}
 framework. In addition to the operations presented in this paper, the
 implementation contains support for operations over integers,
@@ -46,7 +46,7 @@ generating test input heaps that exercise all feasible control flow
 paths. Future work is adding support for floating point
 operations, arrays, and bit-operations.
 
-The \symtxt{} implementation uses \texttt{jConstraints} with the z3 solver \cite{ase2014-ghilrr,jpf2014-dghirr,deMouraBjorner08Z3}. The implementation takes advantage of incremental solving and employs caching for performance since only small portions of the heap constraint changes during the search.
+The~\symtxt{} implementation uses the z3 solver with ~\texttt{jConstraints}~\cite{ase2014-ghilrr,jpf2014-dghirr,deMouraBjorner08Z3}. The implementation takes advantage of incremental solving and employs caching for performance since only small portions of the heap constraint changes during the search.
 
 SPF includes an implementation of~\gsetxt{} with lazy initialization.
 In recent work, we implemented the Lazier and Lazier\# algorithms in

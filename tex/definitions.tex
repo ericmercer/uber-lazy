@@ -2,38 +2,38 @@
 \label{sec:defs}
 \begin{definition}
 The set of \textbf{references} $\mathcal{R}$ is defined as the set of natural numbers
- $$\mathcal{R} = \mathbb{N}$$
+ $$\mathcal{R} \defeq{} \mathbb{N}$$
 \end{definition}
 
 In order to make the distinction between different types of references, we partition the set of references using modular arithmetic. Stack references are those references which are created as a result of a field read. The total number of references in a representing state and a represented state are generally not the same. However, the number of references on the stack in either state is always the same. 
 
 \begin{definition}
 The set of \textbf{stack references} $\mathcal{R}_t$ is defined as
- $$\mathcal{R}_t =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 0\}$$. 
+ $$\mathcal{R}_t \defeq{}\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 0\}$$
 \end{definition}
 
 Input heap references are references that exist prior to program execution in the symbolic input heap. While this set of references may be infinite, they are discovered one at a time via lazy initialization.
 
 \begin{definition}
 The set of \textbf{input heap references} $\mathcal{R}_h$ is defined as
- $$\mathcal{R}_h =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 1\}$$. 
+ $$\mathcal{R}_h \defeq{}\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 1\}$$
 \end{definition}
 
 \begin{definition}
 The set of \textbf{new heap references} $\mathcal{R}_f$ is defined as
- $$\mathcal{R}_f =\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 2\}$$. 
+ $$\mathcal{R}_f \defeq{}\{i \in \mathbb{N} \mid ( i\ \bmod\ 3 ) = 2\}$$ 
 \end{definition}
 
 \begin{definition}
 For a given function $f:A \mapsto B$, the \textbf{image} $f^\rightarrow$ and \textbf{preimage} $f^\leftarrow$ are defined as
 \begin{align}
- f^\rightarrow &= \{ f(a) \mid a \in A\}\\
- f^\leftarrow &= \{ a \mid f(a) \in B \}
+ f^\rightarrow &\defeq{} \{ f(a) \mid a \in A\}\\
+ f^\leftarrow &\defeq{} \{ a \mid f(a) \in B \}
  \end{align}
  The bracket notation $ f^\rightarrow [C] $ is used to denote that the image is drawn from a specific subset:
  \begin{align}
- f^\rightarrow [C] &= \{ f(a) \mid a \in C\}\\
- f^\leftarrow [D] &= \{ a \mid f(a) \in D \}
+ f^\rightarrow [C] &\defeq{} \{ f(a) \mid a \in C\}\\
+ f^\leftarrow [D] &\defeq{} \{ a \mid f(a) \in D \}
  \end{align}
  Where $C \subset A$ and $D \subset B$
 \end{definition}
@@ -45,7 +45,7 @@ location is uninitialized at the point of execution.
 
 \begin{definition}
 \label{def:state}
-The set of \textbf{states} $\mathcal{S}$ is defined as the set of strings matching the pattern $s$ in \ref{fig:machine-syntax}.
+The set of \textbf{states} $\mathcal{S}$ is defined as the set of strings matching the pattern $s$ in \figref{fig:syntax}(b).
 \end{definition}
 
 \begin{definition}
@@ -98,16 +98,16 @@ At times, it is useful to classify states in terms of patterns that the state st
 \begin{definition}
 The universe of reachable states is $S$. The universe is further partitioned into states that activate different relations.
 \begin{itemize}
-\item Field Access, $S_\mathit{FA} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}_0\rp) \}$
-\item Field Write,  $S_\mathit{FW} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{x},\cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}_0\rp) \}$
-\item Equals, $S_\mathit{EQ} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}_0 (\cfgnt{e} = \cfgnt{r}_0) \wedge \exists r_1, k_1(\cfgnt{k} = \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}_1\rp \}$
-\item New, $S_\mathit{N} = \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{C}\ (\cfgnt{e} = \lp \cfgt{new}\ \cfgnt{C}\rp) \}$
+\item Field Access, $S_\mathit{FA} \defeq{} \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgt{*}\ \cfgt{\$}\ \cfgnt{f} \rightarrow \cfgnt{k}_0\rp) \}$
+\item Field Write,  $S_\mathit{FW} \defeq{} \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}\ (\cfgnt{e} = \cfgnt{r}) \wedge \exists \cfgnt{x},\cfgnt{f},\cfgnt{k}_0\ (\cfgnt{k} = \lp \cfgnt{x}\ \cfgt{\$}\ \cfgnt{f}\ \cfgt{:=}\ \cfgt{*}\ \rightarrow\ \cfgnt{k}_0\rp) \}$
+\item Equals, $S_\mathit{EQ} \defeq{} \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{r}_0 (\cfgnt{e} = \cfgnt{r}_0) \wedge \exists r_1, k_1(\cfgnt{k} = \lp \cfgnt{r}_1\; \cfgt{=}\; \cfgt{*} \rightarrow \cfgnt{k}_1\rp \}$
+\item New, $S_\mathit{N} \defeq{} \{\lp \cfgnt{L}\ \cfgnt{R}\ \phi\ \eta\ \cfgnt{e}\ \cfgnt{k} \rp \in S \mid \exists \cfgnt{C}\ (\cfgnt{e} = \lp \cfgt{new}\ \cfgnt{C}\rp) \}$
 \end{itemize} 
 \end{definition}
 
 
 \begin{definition}
-Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = (\cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \pi_n = \mathbb{CF}(\Pi_n) = (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
+Given a sequence of states $$\Pi_n = s_0,s_1,...,s_n$$ where $$s_i = (\cfgnt{L}_i\ \cfgnt{R}_i\ \phi_i\ \eta_i\ \cfgnt{e}_i\ \cfgnt{k}_i )$$ the \textbf{control flow sequence} of $\Pi_n$ is the defined as the sequence of tuples $$ \mathbb{CF}(\Pi_n) \defeq{} (\eta_0\ \cfgnt{e}_0\ \cfgnt{k}_0),(\eta_1\ \cfgnt{e}_1\ \cfgnt{k}_1),...,(\eta_n\ \cfgnt{e}_n\ \cfgnt{k}_n)$$
 \end{definition}
 
 We will later be concerned with establishing whether one state
@@ -124,39 +124,31 @@ in the heaps.
 
 \begin{definition}
 \label{def:homomorphism}
-A \textbf{homomorphism} $s_p \rightharpoonup_{h} s_q$, from state $s_p = ( \cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$ to state $s_q = ( \cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$, is defined as follows: 
+A \textbf{homomorphism}, given the universe of field indices $\mathcal{F}$ and the universe of locations $\mathcal{L}$, is 
 $$
 \begin{array}{l}
- s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
-\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}( \exists \phi_\alpha\ (\exists \phi_\beta\ ( \\ 
-\ \ \ \ \ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow \\
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ \\
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  )) ) ) ) )
+ s_p \rightharpoonup_{h} s_q\ \defeq \ 
+\exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\alpha\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathcal{F}\ ( \forall \phi_\alpha\ (\\ 
+\ \ \ \ \ \ \ \ (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f )) \Rightarrow \\
+\ \ \ \ \ \ \ \ \exists \phi_\beta\ ( (\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f ))\ 
+ )) ) ) ) )
 \end{array}
 $$
-\begin{comment}
-$$
-\begin{array}{l}
-s_p \rightharpoonup_{h} s_q \Leftrightarrow \\
-\ \ \ \ \exists h: \mathcal{L} \mapsto \mathcal{L}\ (\forall \cfgnt{l}_\beta\ (\forall f \in \mathit{fields}(\mathrm{type}(\cfgnt{l}_\beta))\ ( \\
-\ \ \ \ \ \ \ \ \ \ \ \ \forall (\phi_\alpha\ \cfgnt{l}_\alpha) \in \cfgnt{L}_p(\cfgnt{R}_p (\cfgnt{l}_\beta,f ))\ ( \\
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \exists \phi_\beta\ ((\phi_\beta\ h(\cfgnt{l}_\alpha))\in \cfgnt{L}_q(\cfgnt{R}_q (h(\cfgnt{l}_\beta),f )))))))\\
-\end{array}
-$$
-\end{comment}
 \end{definition}
 
 Since the access paths in any given heap are bound by certain constraints, to preserve control flow equivalence we must establish whether the collection of any constraints in a given heap are collectively feasible. The homomorphism constraint is the conjunction of all constraints in the image of the represented heap in the representer heap.
 
 \begin{definition}
 \label{def:hc}
-Given the homomorphism $s_p \rightharpoonup_{h} s_q$, the \textbf{homomorphism constraint} $\mathbb{HC}(s_p \rightharpoonup_{h} s_q)$ is defined as:
-\begin{align*}
-\mathbb{HC}(s_p \rightharpoonup_{h} s_q) &= \\
- \bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\} 
-\end{align*}
-Where $\cfgnt{L}_p$ and $\cfgnt{L}_q$ are the locations maps from the heaps in $s_p$ and $s_q$.
+The \textbf{homomorphism constraint} is
+%\begin{align*}
+\[
+\mathbb{HC}(p \rightharpoonup_{h} q) \defeq
+\bigwedge \{ \phi_b\ | \exists (\phi_a\ l) \in \cfgnt{L}_p^\rightarrow ( (\phi_b\ h(l)) \in \cfgnt{L}_q^\rightarrow)\}
+\]
+%\end{align*}
 \end{definition}
+
 
 The representation relation combines the previously established
 notions of heap homomorphism and feasibility with the added constraint
@@ -165,24 +157,14 @@ between the pairs of states.
 
 \begin{definition}
 \label{representation}
-The \textbf{representation relation} $\sqsubset$ is defined as
-follows: given state $s_p = (
-\cfgnt{L}_p\ \cfgnt{R}_p\ \phi_p\ \eta_p\ \cfgnt{e}_p\ \cfgnt{k}_p )$
-and state $s_q = (
-\cfgnt{L}_q\ \cfgnt{R}_q\ \phi_q\ \eta_q\ \cfgnt{e}_q\ \cfgnt{k}_q )$,
-$s_p \sqsubset s_q $ if and only if $\eta_p = \eta_q ,\ \cfgnt{e}_p =
-\cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, the heaps are well-formed, and there exists a
-homomorphism $(\cfgnt{L}_p\ \cfgnt{R}_p) \rightharpoonup_{h}
-(\cfgnt{L}_q\ \cfgnt{R}_q)$ such that
-\begin{equation}
-\label{eqn:valid}
- \mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) ) 
-\end{equation}
-The represented relation is extended to sets of states $P$ and $Q$ as
-$$
-P \sqsubset Q \Longleftrightarrow \forall q \in Q\ (\forall p\ (p \sqsubset q \Rightarrow p \in P))
-$$
+States $(p\ q)$ are in the \textbf{representation relation}, $p \sqsubset q$, if and only if, $\eta_p = \eta_q ,\ \cfgnt{e}_p =
+\cfgnt{e}_q ,\ \cfgnt{k}_p = \cfgnt{k}_q$, and there exists a
+homomorphism $p \rightharpoonup_{h} q$
+such that $\mathbb{S}( \phi_q \wedge \mathbb{HC}(s_p \rightharpoonup_{h} s_q) )$.
+The represented relation is extended to sets of states $P$ and a single state $q$ as
+$P \sqsubset q \defeq \forall p\ (p \sqsubset q \Leftrightarrow p \in P)$.
 \end{definition}
+
 
 %\begin{lemma}[$Q$ is a singleton for $P \sqsubset Q$]
 %\label{lem:unique}
@@ -198,9 +180,9 @@ $$
 
 \begin{definition}
 \label{def:meta}
-A state relation $p \rightarrow_x p^\prime$ is extended to sets of states $P \hookrightarrow_x P^\prime$ as
+Any state relation, say $\rightarrow_x^Y$, is extended to sets of states as
 $$
-P \hookrightarrow_x P^\prime \Longleftrightarrow \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x p^\prime \Rightarrow p^\prime \in P^\prime))
+P \hookrightarrow_x^Y P^\prime \defeq \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x^Y p^\prime \Leftrightarrow p^\prime \in P^\prime))
 $$
 The $\rgse$ relation over sets of states is $\rsgse = \hookrightarrow_\mathit{FA} \cup \hookrightarrow_\mathit{FA(N)} \cup \hookrightarrow_\mathit{FW} \cup \hookrightarrow_\mathit{FW(N)} \cup \hookrightarrow_\mathit{EQ(T)} \cup \hookrightarrow_\mathit{EQ(F)} \cup \hookrightarrow_\com$.%, and 
 %the $\rsym$ relation extended to sets of states is 

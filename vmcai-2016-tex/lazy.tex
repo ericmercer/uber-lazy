@@ -1,6 +1,16 @@
 \section{GSE}
 \label{app:gse}
-This section introduces \gsetxt\ semantics on which \symtxt\ builds. GSE and its variants have the same non-deterministic choice given a reference to an uninitialized object; that reference can point to null, a new instance of an object with the correct type, or to an object of the same type that has been instantiated previously by GSE \cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. The objects instantiated for new instances are referred to as the \emph{input heap}. Only these objects comprise the potential alias set when GSE encounters references to uninitialized objects. In general, the GSE search space branches at uninitialized objects, and the number of branches depends on the size of the input heap.
+This section introduces \gsetxt\ semantics on which \symtxt\ builds. GSE and its variants have the same non-deterministic choice given a reference to an uninitialized object; that reference can point to null, a new instance of an object with the correct type, or to an object of the same type that has been instantiated previously by GSE \cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. The objects instantiated for new instances are referred to as the \emph{input heap}. Only these objects comprise the potential alias set when GSE encounters references to uninitialized objects. In general, the GSE search space branches at uninitialized objects, and the number of branches depends on the size of the input heap. The function
+$\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
+\{\lp\phi\ \cfgnt{l}\rp\ ...\}$ returns constraint-location
+pairs where the field $\cfgnt{f}$ is uninitialized.
+
+\[
+\begin{array}{rcl}
+\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
+\end{array}
+\]
+
 
 The lazy initialization rules for GSE on the symbolic heap are in
 \figref{fig:lazyInit}: NULL, new, and alias. The rules rely on fresh references and locations that strictly increase so it is possible to minimize over a set to find the first created. Further, references are partitioned to support latter proofs: $\mathrm{init}_\cfgnt{r}()$ for the input

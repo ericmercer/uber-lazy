@@ -6,7 +6,7 @@
 \begin{mathpar}
 	\inferrule[Field Access]{
       \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp \\\\
-      \theta = \{ \phi \mid \lp \phi\ l_\mathit{null} \rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
+      \theta = \{ \phi \mid \lp \phi\ l_\mathit{null}\rp \in \cfgnt{L}\lp\cfgnt{r}\rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
       \phi_g^\prime = \phi_g \wedge (\wedge_{\phi \in \theta} \neg \phi) \\\\
       \{\cfgnt{C}\} = \{\cfgnt{C} \mid \exists \lp \phi\ l\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp\ \lp\cfgnt{C} = \mathrm{type}\lp \cfgnt{l},\cfgnt{f}\rp\rp\} \\\\
       \lp \cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \rsum^* \lp \cfgnt{L}^\prime\ \cfgnt{R}^\prime\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp \\
@@ -19,7 +19,7 @@
 	\inferrule[Field Write]{
       \cfgnt{r}_x = \eta\lp\cfgnt{x}\rp \\
       \exists \lp \phi\ l\rp \in \cfgnt{L}\lp \cfgnt{r}_x\rp\ \lp l \neq l_{\mathit{null}} \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \rp \\\\
-      \theta = \{ \phi \mid \lp \phi\ l_\mathit{null} \rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
+      \theta = \{ \phi \mid \lp \phi\ l_\mathit{null} \rp \in \cfgnt{L}\lp\cfgnt{r}_x\rp \wedge \mathbb{S}\lp \phi \wedge \phi_g\rp \} \\\\
       \phi_g^\prime = \phi_g \wedge (\wedge_{\phi \in \theta} \neg \phi) \\\\
       \Psi_x =\{\lp \phi\ l\ \cfgnt{r}_\mathit{cur} \rp  \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}_x\rp  \wedge \cfgnt{r}_\mathit{cur} = \cfgnt{R}\lp l,\cfgnt{f}\rp  \}\\\\
       X = \{ \lp l\ \theta \rp  \mid \exists \phi\ \lp \lp \phi\ l\ \cfgnt{r}_\mathit{cur} \rp \in \Psi_x \wedge \theta = \mathbb{ST}\lp \cfgnt{L},\cfgnt{r},\phi,\phi_g^\prime\rp  \cup \mathbb{ST}\lp \cfgnt{L},\cfgnt{r}_\mathit{cur},\neg\phi,\phi_g^\prime\rp \rp  \}\\\\

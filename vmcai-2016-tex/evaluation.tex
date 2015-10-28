@@ -1,6 +1,50 @@
 \section{Evaluation}
 \label{sec:evaluation}
 %\begin{figure*}[t]
+%\end{figure*}
+
+%\subsection{Analysis}
+The \symtxt{} algorithm is implemented as an extension to the Symbolic
+PathFinder (SPF)
+framework~\cite{DBLP:journals/ase/PasareanuVBGMR13}. In addition to the operations presented in this paper, the
+implementation contains support for operations over integers,
+calculating per-path preconditions and postconditions, as well as
+generating test input heaps that exercise all feasible control flow
+paths. Future work is adding support for floating point
+operations, arrays, and bit-operations.
+
+The \symtxt{} implementation uses \texttt{jConstraints} with the z3 solver \cite{ase2014-ghilrr,jpf2014-dghirr,deMouraBjorner08Z3}. The implementation takes advantage of incremental solving and employs caching for performance since only small portions of the heap constraint change during the search.
+
+SPF includes an implementation of~\gsetxt{} with lazy initialization.
+In recent work, we implemented the Lazier and Lazier\# algorithms in
+SPF~\cite{Hillery:2014}; these constitute the state of art approaches
+to case-splitting based lazy initialization techniques. The goal of our
+experiment is to evaluate the efficacy of our approach with respect to these
+other techniques for symbolic execution of programs
+with unbounded complex data input. The empirical study tries to answer the following research question:
+How does the cost of the \symtxt{} algorithm compare with that of the \gsetxt{} and Lazier\# algorithms?
+
+The \emph{independent} variable in the study is the $k$-bound;
+$k$-bounding bounds the length of a reference chain from the root of
+the heap~\cite{Deng:2006}.  The study selects three dependent variables and
+measures: (i) time, (ii) states explored, and (iii)
+paths generated. The \emph{time} is the total time taken by each
+algorithm to explore the symbolic execution tree as well as total
+constraint solving time. The \emph{states explored} represents the
+number of nodes in the symbolic execution tree, and the \emph{paths
+  generated} represents the number of unique paths in the symbolic
+execution tree.
+
+The data structures evaluated are a standard set that is commonly used in
+analyses involving heap-manipulating
+programs~\cite{Deng:2006,Deng:2007,boyapati2002korat,Ferrara:2014,Rosner:2015},
+including a linked list, binary search tree, and red/black tree. The actual tests
+use a repOk() method (a class invariant) for data structures in
+object-oriented code to generate valid inputs for the methods under
+test via symbolic execution~\cite{boyapati2002korat,visser2004test}. Note that this
+allows us to have precision in checking properties of the heap that is
+not possible in static analysis based techniques (i.e., the symbolic execution generated heaps satisfy the repOK() invariant)~\cite{Dillig:2011}.
+
 \begin{table*} [t]
   \centering
   \caption{Comparing \symtxt{} with the~\gsetxt{} and Lazier\# algorithms.}
@@ -34,90 +78,39 @@
   \label{tab:results}
 \end{table*}
 
-%\end{figure*}
-
-%\subsection{Analysis}
-The \symtxt{} algorithm is implemented as an extension to the Symbolic
-PathFinder (SPF)~\cite{DBLP:journals/ase/PasareanuVBGMR13}
-framework. In addition to the operations presented in this paper, the
-implementation contains support for operations over integers,
-calculating per-path preconditions and postconditions, as well as
-generating test input heaps that exercise all feasible control flow
-paths. Future work is adding support for floating point
-operations, arrays, and bit-operations.
-
-The \symtxt{} implementation uses \texttt{jConstraints} with the z3 solver \cite{ase2014-ghilrr,jpf2014-dghirr,deMouraBjorner08Z3}. The implementation takes advantage of incremental solving and employs caching for performance since only small portions of the heap constraint changes during the search.
-
-SPF includes an implementation of~\gsetxt{} with lazy initialization.
-In recent work, we implemented the Lazier and Lazier\# algorithms in
-SPF~\cite{Hillery:2014}; these constitute the state of art approaches
-case-splitting based lazy initialization techniques. The goal of our
-experiment is to evaluate the efficacy of our approach with respect to
-other state-of-the-art techniques for symbolic execution of programs
-with unbounded complex data input. We empirically evaluate the
-\symtxt{} algorithm by considering the following research question:
-How does the cost of the \symtxt{} algorithm (SL) compare with that of
-\gsetxt{} (GSE), Lazier, Lazier\# (L\#) algorithms?
-
-The \emph{independent} variable in our study is the $k$-bound;
-$k$-bounding bounds the length of a reference chain from the root of
-the heap~\cite{Kiasan06}.  We select three dependent variables and
-measures for our study: (i) time, (ii) states explored, and (iii)
-paths generated. The \emph{time} is the total time taken by each
-algorithm to explore the symbolic execution tree as well as total
-constraint solving time. The \emph{states explored} represents the
-number of nodes in the symbolic execution tree, and the \emph{paths
-  generated} represents the number of unique paths in the symbolic
-execution tree.
-
-The data structures evaluated are a standard set commonly used in
-analyses involving heap-manipulating
-programs~\cite{Deng:2006,Deng:2007,boyapati2002korat,Ferrara:2014,Rosner:2015},
-including a linked list, binary search tree, and red/black tree. We
-use a repOk() method (a class invariant) for data structures in
-object-oriented code~\cite{boyapati2002korat}. The repOk() methods
-provide a mechanism to generate valid inputs for the methods under
-test; symbolic execution has been used to generate test inputs using
-repOk() methods in~\cite{visser2004test}. In this work, we define and
-use repOk() methods to generate valid heaps with the appropriate
-$k$-bounds before executing the methods under test. Note that this
-allows us to have precision in checking properties of the heap that is
-not possible in static analysis based techniques~\cite{Dillig:2011}.
 
 The results of the experiments are presented in
 Table~\ref{tab:results}.  Each row reports the results for the
 specified $k$-bound for each artifact evaluated. The columns show the
 total time in seconds, states explored, and paths generated for each
 algorithm. The headings \gsetxt{}, L\#, and SL correspond to the GSE,
-Lazier\#, and \symtxt{} algorithms, respectively. The results for the
-Lazier algorithm are omitted because they are nearly identical to the
-Lazier\# results for these artifacts. A table entry of '-' indicates
+Lazier\#, and \symtxt{} algorithms, respectively. A table entry of '-' indicates
 the analysis exceeded the allotted time bound of 1 hour.
 
 The number of possible non-isomorphic heap configurations grows
 exponentially for case-splitting techniques with a monotonic increase
-in $k$, resulting a corresponding exponential increase in analysis
-times . This is evident in all the examples in
+in $k$, resulting in a corresponding exponential increase in analysis
+times. This is evident in all the examples in
 Table~\ref{tab:results}. The GSE and L\# algorithms are unable to
 finish exploration in a time bound of one hour for $k\geq 7$ for the
 LinkedList, $k\geq 4$ for the BinarySearchTree, and $k\geq 3$ for the
 TreeMap examples. The improvement in analysis time for the \symtxt{}
 over the state of the art case splitting techniques range from $4.8x$
 for BinarySearchTree at $k$=3, to $118x$ for LinkedList at $k$=6. In
-fact, for some $k$-bounds a number of experiments complete exploration
+fact, for some $k$-bounds, a number of experiments complete exploration
 using the \symtxt{} algorithm in a few seconds whereas \gsetxt{} or
 Lazier\# are unable to finish, e.g., BinarySearchTree for $k$=4 and
 LinkedList for $k$=8. 
 
-The number of path explored by \symtxt{} algorithm are strictly less
+The number of path explored by the \symtxt{} algorithm are strictly less
 than or equal to the number of paths explored by \gsetxt{} for all the
-evaluated artifacts. We can use this result to do more efficient test
-case generation. From a generated path and corresponding symbolic heap
-we can use the solutions provided by the constraint solver to
-instantiate a set of concrete heaps to provide as test input. These
+evaluated artifacts. This result means it is possible to do more efficient test
+case generation by using the generated path and corresponding symbolic heap
+solutions provided by the constraint solver to
+instantiate a set of concrete heaps. These heaps
 provide a smaller test suite to achieve control-flow path coverage as
 compared to GSE and Lazier\#. Note that the ability to perform test
-input generation is another advantage of \symtxt{} technique over
+input generation is another advantage of the \symtxt{} technique over
 static analysis approaches.
 
 The number of states varies between algorithms, for example, \gsetxt{}
@@ -125,10 +118,10 @@ has additional points of nondeterminism during field reads, but in
 contrast reference compares are completely deterministic. Thus, in
 example programs with large numbers of reference compares, such as
 TreeMap, state counts for Lazier\# and the \symtxt{} algorithm may
-exceed those for \gsetxt{}. We observed that the additional states
+exceed those for \gsetxt{}. Observe that the additional states
 generated by the summary heap algorithm are unsatisfiable at the point
 of reference compares; this is why they do not contribute any
-additional branches in the final symbolic execution tree. Furthermore,
+additional branches in the final symbolic execution tree. More critically,
 the larger state count and the corresponding satisfiability checks on
 the constraint solver does not increase the overall runtime of the
 technique.
@@ -137,7 +130,7 @@ In summary, the benefits of avoiding case-splitting based
 non-determinism outweigh the increased complexity in the constraints
 over heaps due to the advances made in SMT solvers in these
 examples. In fact, the \symtxt{} algorithm can analyze certain types
-of programs with orders of magnitude greater efficiency than with
+of programs with orders of magnitude greater efficiency than that of
 \gsetxt{} or Lazier\#, while covering exactly the same feasible
 control flow paths in the program.
 

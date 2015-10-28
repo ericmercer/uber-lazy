@@ -32,15 +32,13 @@ references. Rules relating to (ii) and (iii) are similar to previously proposed 
 \end{tabular}
 %\end{center}
 
-\caption{Initializing fields, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime \rsum s^\prime$.}
+\caption{Initializing fields, $s ::= \lp\cfgnt{L}\ \cfgnt{R}\ \cfgnt{r}\ \cfgnt{f}\ \cfgnt{C}\rp$, with $s\rsum^*s^\prime =  s \rsum \cdots \rsum s^\prime$.}
 \label{fig:symInit}
 \end{figure*}
 
-In~\figref{fig:symInit}, given the uninitialized set $\Lambda$ for
+In~\figref{fig:symInit}, similar to before, given the uninitialized set $\Lambda$ for
 field $f$, the $\mathrm{min}_l$ function returns
-$(\phi_x\ \cfgnt{l}_x)$ based on a lexicographical ordering of
-uninitialized locations in $\Lambda$ to make initialization
-deterministic.  The set $\rho$ contains reference-location pairs that
+$(\phi_x\ \cfgnt{l}_x)$ which represents the earliest created uninitialized location in that set.  The set $\rho$ contains reference-location pairs that
 represent potential aliases, where $\mathrm{isInit}\lp\rp$ ensures that the references are initialized. 
 There are four cases encoded in the
 symbolic heap. The first three correspond to the three types of choices made during lazy initialization: (i) $\theta_\mathit{null}$ represents the condition
@@ -51,7 +49,7 @@ restricts $\cfgnt{r}_f$ to a particular alias in $\rho$, and at the
 same time, not alias any member of $\rho$ that was initialized earlier
 than the current choice. 
 
-Unlike the first three cases, which correspond directly to~\gsetxt{} initialization rules, case (iv) is unique to~\symtxt{}. In this case, $\theta_\mathit{orig}$ implements conditional initialization to preserve the original heap structure. This step is necessary in order to maintain homomorphism\footnote{Homomorphism is an important property relied on by the correctness proof.} between symbolic heaps created using~\symtxt{} and the~\gsetxt{} heaps they are intended to represent. 
+Unlike the first three cases, which correspond directly to~\gsetxt{} initialization rules, $\theta_\mathit{orig}$, case (iv), is unique to~\symtxt{}. In this case, $\theta_\mathit{orig}$ implements conditional initialization to preserve the original heap structure. This step is necessary in order to maintain \emph{homomorphism} (i.e., equivalent shapes) between symbolic heaps created using~\symtxt{} and the~\gsetxt{} heaps they are intended to represent. 
 The sets from each of the four cases are added into the heap on $\cfgnt{r}_f$ after the fields
 for $\cfgnt{l}_f$ are initialized to $\cfgnt{r}_\mathit{un}$.
 
@@ -97,7 +95,7 @@ $\phi_{\mathit{2c}} :=  \cfgnt{r}_2^i \neq \cfgnt{r}_\mathit{null} \wedge \cfgnt
 \figref{fig:initHeap} illustrates the initialization process. The
 graph in~\figref{fig:initHeap}(a) represents the initial heap. The
 reference superscripts $s$ and $i$ indicate the partition containing
-the reference.  In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a
+the reference: input, auxiliary, or stack.  In~\figref{fig:initHeap}, $\cfgnt{r}_0^s$ represents a
 stack reference for the $\cfgt{this}$ variable which has two fields
 $x$ and $y$ of the same type. Note that when no constraint is
 specified for a location, there is an implicit $\mathit{true}$
@@ -111,7 +109,7 @@ heap after the initialization of the
 $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$ field following the
 initialization of $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{x}\rp$. The list
 in~\figref{fig:initHeap}(d) represents the various sets constructed in
-the initialization $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. 
+the initialization for $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$. 
 
 
 \input{precise-fig-incomplete}
@@ -127,12 +125,12 @@ the initialization $\lp\cfgt{this}\ \cfgt{\$}\ \cfgnt{y}\rp$.
 \end{figure*}
 
 
-Certain rewrite rules depend on auxiliary on the relations in \defref{def:VS} and \defref{def:ST}, such as those in~\figref{fig:fHeap}. There are two rewrite rules in~\figref{fig:fHeap}, one for reading
+There are two rewrite rules in~\figref{fig:fHeap}, one for reading
 the value of a field (field-access) and the other for writing to a
 field (field-write). Both rules first check that the operations can be
 performed on a non-null location. The field-access rewrite rule
-in~\figref{fig:fHeap} dereferences a field of type $\cfgnt{C}$ and
-uses \figref{fig:symInit}, to get a new symbolic heap that is
+in~\figref{fig:fHeap} dereferences a field of type $\cfgnt{C}$, recall that the heaps are type consistent and programs are type safe, and
+uses the $\rsum^*$ relation from \figref{fig:symInit}, to get a new symbolic heap that is
 initialized on the field $\cfgnt{f}$. The symbolic heap is further
 modified to include a new stack reference pointing to the guarded value set
 (possible values of the field) returned during the dereferencing; the
@@ -170,10 +168,10 @@ function.  \input{st-def} Constraints on locations are strengthened
 with new aliasing conditions and those that are feasible with the
 current path condition are retained.
 
-Strengthening in the field write creates a value set that contains two
+Strengthening in the field write creates a value set, \cfgnt{X},  that contains two
 types of locations: those for the case where the write is feasible
-(the first call), and those for the case where it is not (the second
-call). In the case that $\phi$ is true then $\cfgnt{r}_\mathit{cur}$
+(the first call in \cfgnt{X}), and those for the case where it is not (the second
+call in \cfgnt{X}). In the case that $\phi$ is true then $\cfgnt{r}_\mathit{cur}$
 will point to the guarded value set $\cfgnt{L}(\cfgnt{r})$.
 Whereas, if $\phi$ is false then $\cfgnt{r}_\mathit{cur}$ will
 continue to point to the constraint location pair it currently
@@ -199,7 +197,7 @@ appropriate value sets.
 The rewrite rule to compare two references in the symbolic heap is
 shown in~\figref{fig:eqs}. The equals references-true rewrite rule
 returns true when two references $\cfgnt{r}_0$ and $\cfgnt{r}_1$
-\emph{can} be equal. Intutively, $\Phi_\alpha$ contains all
+\emph{can be equal}. Intuitively, $\Phi_\alpha$ contains all
 constraints under which $\cfgnt{r}_0$ and $\cfgnt{r}_1$ may point to
 the same location in the symbolic heap. The second set, $\Phi_0$,
 contains constraints under which the reference $\cfgnt{r}_0$ points to

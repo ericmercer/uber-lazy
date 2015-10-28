@@ -21,7 +21,7 @@ location-field pair in the heap.
 \label{fig:exampleHeap}
 \end{figure}
 
-The path condition is a predicate of the program variables. The environment is a partial function so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
+The path condition is a predicate of references in the heap. The environment is a partial function so $\eta(\cfgnt{x}) = \cfgnt{r}$ is the reference
 $\cfgnt{r}$ associated with variable $\cfgnt{x}$. The notation
 $\eta^\prime = \eta[\cfgnt{x} \mapsto \cfgnt{v}]$ defines a new
 partial function $\eta^\prime$ that is the same as $\eta$ except that
@@ -64,7 +64,7 @@ a small-step operational semantics in the context of a syntactic machine with a 
 surface  syntax  (input) and machine  syntax (state) are shown
 in~\figref{fig:syntax}. The machine syntax omits the list based syntactic structures for the partial functions in the heap etc.  Terminals are in bold face while non-terminals
 are italicized. Ellipses indicate zero or more repetitions. Tuples
-omit the commas for compactness.
+omit the commas for compactness. The language only considers objects as values and does not support looping structures to focus the discussion on the symbolic heap representation. 
 
 \input{surface-syntax}
 \input{machine-syntax}

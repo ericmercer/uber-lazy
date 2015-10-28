@@ -1,19 +1,22 @@
 \section{GSE}
 \label{app:gse}
 This section introduces \gsetxt\ semantics on which \symtxt\ builds. GSE and its variants have the same non-deterministic choice given a reference to an uninitialized object; that reference can point to null, a new instance of an object with the correct type, or to an object of the same type that has been instantiated previously by GSE \cite{GSE03,KiasanKunit,Cadar:2008,Rosner:2015}. The objects instantiated for new instances are referred to as the \emph{input heap}. Only these objects comprise the potential alias set when GSE encounters references to uninitialized objects. In general, the GSE search space branches at uninitialized objects, and the number of branches depends on the size of the input heap. The function
-$\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
+
+The lazy initialization rules for GSE on the symbolic heap are in
+\figref{fig:lazyInit}: NULL, new, and alias.  The symbol $\cfgnt{C}$ represents a type (or class) while $\mathit{fields}\lp \mathrm{C}\rp$ returns the fields in the type. The function $\mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) =
 \{\lp\phi\ \cfgnt{l}\rp\ ...\}$ returns constraint-location
 pairs where the field $\cfgnt{f}$ is uninitialized.
-
-\[
+  \[
 \begin{array}{rcl}
 \mathbb{UN}(\cfgnt{L}, \cfgnt{R}, \cfgnt{r}, \cfgnt{f}) & = &\{ \lp\phi\ \cfgnt{l}\rp \mid \lp \phi\ \cfgnt{l}\rp  \in \cfgnt{L}\lp \cfgnt{r}\rp  \wedge \exists \phi^\prime \lp \lp \phi^\prime\ \cfgnt{l}_\mathit{un}\rp  \in \cfgnt{L}\lp \cfgnt{R}\lp l,\cfgnt{f}\rp\rp \wedge \mathbb{S}\lp \phi \wedge \phi^\prime \rp\rp\}\\
 \end{array}
 \]
+The function $\mathbb{S}\lp \phi \wedge \phi^\prime \rp$ returns true
+if there is a satisfying assignment of references for $\phi \wedge
+\phi^\prime$; otherwise it returns false.
 
 
-The lazy initialization rules for GSE on the symbolic heap are in
-\figref{fig:lazyInit}: NULL, new, and alias. The rules rely on fresh references and locations that strictly increase so it is possible to minimize over a set to find the first created. Further, references are partitioned to support latter proofs: $\mathrm{init}_\cfgnt{r}()$ for the input
+The rules rely on fresh references and locations that strictly increase so it is possible to minimize over a set to find the first created (i.e., references and locations are ordered). As such, the $\mathrm{min}_l$ function is able to return $(\phi_x\ \cfgnt{l}_x)$ the earliest created uninitialized location in a set, and similarly, $\mathrm{min}_r$ is able to return the earliest created reference in a set. Further, references are partitioned to support latter proofs: $\mathrm{init}_\cfgnt{r}()$ for the input
   heap
   ; $\mathrm{fresh}_\cfgnt{r}()$ for \emph{auxiliary
   literals}
@@ -23,11 +26,11 @@ The lazy initialization rules for GSE on the symbolic heap are in
   only input heap references appear in constraints to express potential aliasing, and only stack references appear in environments, expressions, or continuations.  Finally, the \emph{isInit} function is true for initialized references from the input heap (i.e., potential aliases). 
 
 How the lazy
-initialization is used is defined in \figref{fig:lazy} with the $\rgse$ relation collecting all the rules into a single relation on states. This relation is used later by the proof. GSE initialization takes place on the field-access rule in \figref{fig:lazy},
+initialization is used is defined in \figref{fig:lazy} with the $\rgse$ relation collecting all the rules into a single relation on states.  GSE initialization takes place on the field-access rule in \figref{fig:lazy},
 using the $\rightarrow_I^*$ relation from \figref{fig:lazyInit}, to ensure the accessed field is
 instantiated. Initialization in GSE never
 happens for more than one object on any use of $\rightarrow_I^*$:
-the set $\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case splits when it instantiates: each choice is a new unique heap. This changes in the next section with the new symbolic initialization that collects all the choices into a single heap using guarded value sets.
+the set $\Lambda$ is either empty or contains exactly one location. This property is an artifact of how GSE case splits when it instantiates: each choice, NULL, new, or an alias, is a new unique heap. This changes in the next section with the new symbolic initialization that collects all the choices into a single heap using guarded value sets. The field-write rule also uses $\theta$ to represent a set of constraint-location pairs, which in GSE, again should always be a singleton set for the same reason as previously mentioned.
 
 The rest of the rules in \figref{fig:lazy} do not initialize, but they are included to elucidate how symbolic initialization differs from GSE with lazy initialization. In particular, there is no branching in the search space on reference compare for GSE because references point to a single location after initialization. The new symbolic initialization using guarded value sets in this papers changes this behavior. 
 

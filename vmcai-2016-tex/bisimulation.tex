@@ -8,13 +8,11 @@
 %possible program behaviors. 
 
 The theorems in this section establish the soundness and
-completeness of the symbolic heap approach with respect to Generalized
-Symbolic Execution (\gsetxt{}). Intuitively, the theorems imply that any properties proven
-with~\gsetxt{} can also be proved using the~\symtxt{}
+completeness of the symbolic heap approach with respect to \gsetxt{}. Intuitively, the theorems imply that any properties proven
+with~\gsetxt{} can also be proven using the~\symtxt{}
 algorithm. What follows is a brief description of the requisite terminology,
 followed by the theorem statements. The proofs for the theorems, as well as
-the complete set of semantic rules for~\gsetxt{} and~\symtxt{} can
-be found in ~\cite{Hillery:2015}. 
+the complete set of semantic rules for~\gsetxt{} and~\symtxt{} are in ~\cite{Hillery:2015}. 
 
 The theorems assert the existence of a
 bisimulation between sets of states related by~\gsetxt{} ($p \rgse
@@ -23,7 +21,7 @@ q^\prime$). The relations are on the universe of \emph{well-formed}
 states $S$, which have the properties in \secref{sec:symheap} with the
 constraint that the states are \emph{feasible}: successors exist
 unless at \cfgt{end}. Let $p \rgse p^\prime$ be a union over relations
-for~\gsetxt{} (see~\cite{Hillery:2015}): $\rgse = \rgse^\mathit{A} \cup
+for~\gsetxt{}: $\rgse = \rgse^\mathit{A} \cup
 \rgse^\mathit{A^\prime} \cup \rgse^\mathit{W} \cup
 \rgse^\mathit{W^\prime} \cup \rgse^\mathit{E} \cup
 \rgse^\mathit{E^\prime} \cup \rcom$, where \emph{A} is a field access
@@ -36,7 +34,7 @@ left and right operands $\lp \cfgnt{v}\ \cfgt{=}\ \cfgnt{*}
 \rightarrow \cfgnt{k}\rp$, the prime symbol indicates a null reference
 in the operation or a false outcome, and \emph{\com} is everything
 else in the language. Any state relation, say $\rightarrow_x^Y$, is
-trivially extended to sets of states as
+extended to sets of states as
 $$
 P \hookrightarrow_x^Y P^\prime \defeq \forall p \in P\ (\forall p^\prime\ (p \rightarrow_x^Y p^\prime \Leftrightarrow p^\prime \in P^\prime))
 $$
@@ -120,7 +118,7 @@ If $\sqsubset$ is a bisimulation, then the greatest fixed point of $F_\sim(\sqsu
 Other than the use of a meta-relation, $\rsgse$, \defref{bisimulation} reasons over the typical forward and backward
 simulation~\cite{Sangiorgi:2011}.
 
-In the following lemma, $S$ is the universe of well-formed states, and $S_{FA} \subseteq S$ is the set of states at a field access continuation having computed the base reference.
+In the following lemma, $S$ is the universe of well-formed states, and $S_{\mathit{FA}} \subseteq S$ is the set of states at a field access continuation having computed the base reference.
 \begin{lemma}[\textrm{F{\footnotesize IELD}} \textrm{A{\footnotesize CCESS}} preserves $\sqsubset\ \subseteq F_\sim(\sqsubset)$]
 If $P \in 2^{S_\mathit{FA}}$ and $q \in S$ are such that $P \sqsubset q$, then $(P\ q)$ is in the functional associated to bisimulation.
 \label{lem:access}
@@ -151,10 +149,10 @@ $$
 %a contradiction.
 %\end{proof}
 
-Similar lemmas are proved for field write and equals reference. These
-require additional lemmas on the summarize machine
+Similar lemmas are proven for field write and equals reference. These
+require additional lemmas on the initialization relation
 $\rightarrow_S$: that it preserves determinism, the
-homomorphism, and the satisfiability of the homomorphism constraint
+homomorphism, and the satisfiability of the homomorphism constraint.
 
 \begin{theorem}
 \label{th:bisim}
